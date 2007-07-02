@@ -51,19 +51,4 @@
 	{
 	}
 
-	#include "kvi_tal_application_kde.moc"
-
-#else
-
-	KviTalApplication::KviTalApplication(int &argc,char ** argv)
-	: QApplication(argc,argv)
-	{
-	}
-
-	KviTalApplication::~KviTalApplication()
-	{
-	}
-
-	#include "kvi_tal_application_qt.moc"
-
 #endif

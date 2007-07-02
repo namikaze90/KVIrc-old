@@ -26,7 +26,7 @@
 //=============================================================================
 
 #include <q3wizard.h>
-
+#include "kvi_settings.h"
 class KVILIB_API KviTalWizard : public Q3Wizard
 {
 	Q_OBJECT

@@ -37,8 +37,6 @@
 	{
 	}
 
-	#include "kvi_tal_toolbar_kde.moc"
-
 #else
 
 	#ifdef COMPILE_USE_QT4
@@ -52,7 +50,6 @@
 		{
 			setFrameStyle(QFrame::NoFrame);
 		}
-		#include "kvi_tal_toolbar_qt4.moc"
 
 	#else
 		KviTalToolBar::KviTalToolBar(const QString &label,QMainWindow *w,QT_TOOLBARDOCK_TYPE dock,bool bNewLine,const char * nam)
@@ -64,7 +61,6 @@
 		{
 		}
 		
-	#include "kvi_tal_toolbar_qt3.moc"
 	#endif
 
 	KviTalToolBar::~KviTalToolBar()

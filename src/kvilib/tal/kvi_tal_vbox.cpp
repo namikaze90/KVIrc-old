@@ -25,9 +25,3 @@
 #define __KVILIB__
 #include "kvi_tal_vbox.h"
 
-#ifdef COMPILE_USE_QT4
-	#include "kvi_tal_vbox_qt4.moc"
-#else
-	#include "kvi_tal_vbox_qt3.moc"
-#endif
-

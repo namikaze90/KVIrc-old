@@ -120,6 +120,3 @@ void KviTalToolTip::maybeTip(const QPoint & p)
 	// does nothing here.. and in Qt 4.x will even fail to work
 }
 
-#ifndef COMPILE_ON_WINDOWS
-	#include "kvi_tal_tooltip.moc"
-#endif

@@ -23,6 +23,8 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#ifdef COMPILE_KDE_SUPPORT //for the stupid qmake
+
 #include <kmainwindow.h>
 
 class KVILIB_API KviTalMainWindow : public KMainWindow
@@ -32,5 +34,5 @@ public:
 	KviTalMainWindow(QWidget * par,const char * nam);
 	~KviTalMainWindow();
 };
-
+#endif
 #endif // _KVI_TAL_MAINWINDOW_KDE_H_

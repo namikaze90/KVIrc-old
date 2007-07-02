@@ -24,11 +24,3 @@
 
 #define __KVILIB__
 #include "kvi_tal_textedit.h"
-
-
-#ifdef COMPILE_USE_QT4
-	#include "kvi_tal_textedit_qt4.moc"
-#else
-	#include "kvi_tal_textedit_qt3.moc"
-#endif
-

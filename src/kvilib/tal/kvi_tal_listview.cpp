@@ -798,8 +798,6 @@
 	    }
 	}
 	
-
-	#include "kvi_tal_listview_qt4.moc"
 #else
 	#include <qpainter.h>
 	#include <qstyle.h>
@@ -1534,8 +1532,6 @@
 		KviTalListViewItem::paintFocus(p, cg, r);
 	    }
 	}
-
-	#include "kvi_tal_listview_qt3.moc"
 #endif
 
 

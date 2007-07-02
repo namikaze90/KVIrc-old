@@ -26,7 +26,7 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_ON_WINDOWS
+#if defined(COMPILE_ON_WINDOWS) && !defined(__GNUC__)
 	// we don't have a configure script here
 	// so we can't check the size of types
 	// We rely on the ms specific definitions then

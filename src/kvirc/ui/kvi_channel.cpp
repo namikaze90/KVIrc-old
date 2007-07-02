@@ -26,8 +26,6 @@
 // Channel widget : abstraction of an IRC channel
 //
 
-#define __KVIRC__
-
 #include "kvi_toolwindows_container.h"
 #include "kvi_styled_controls.h"
 #include "kvi_channel.h"
@@ -1623,5 +1621,3 @@ void KviChannel::unhighlight()
 	if(!m_pTaskBarItem)return;
 	m_pTaskBarItem->unhighlight();
 }
-
-#include "kvi_channel.moc"

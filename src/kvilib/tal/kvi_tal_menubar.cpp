@@ -36,8 +36,6 @@
 	{
 	}
 
-	#include "kvi_tal_menubar_kde.moc"
-
 #else
 
 	KviTalMenuBar::KviTalMenuBar(QWidget * par,const char * nam)
@@ -52,7 +50,5 @@
 	KviTalMenuBar::~KviTalMenuBar()
 	{
 	}
-
-	#include "kvi_tal_menubar_qt.moc"
 
 #endif

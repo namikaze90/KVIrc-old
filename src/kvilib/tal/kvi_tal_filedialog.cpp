@@ -71,9 +71,6 @@
 		QFileDialog::setDirectory(szDirectory);
 	}
 
-
-	#include "kvi_tal_filedialog_qt4.moc"
-
 #else
 
 	#ifdef COMPILE_KDE_SUPPORT
@@ -123,8 +120,6 @@
 		}
 	
 	
-		#include "kvi_tal_filedialog_kde.moc"
-	
 	#else
 	
 		#include <qdir.h>
@@ -169,8 +164,6 @@
 			setDir(QDir(szDirectory));
 		}
 	
-	
-		#include "kvi_tal_filedialog_qt.moc"
-	
+
 	#endif
 #endif

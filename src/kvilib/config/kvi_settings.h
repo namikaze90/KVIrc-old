@@ -38,6 +38,7 @@
 
 	#define FEEL_LIKE_I_AM_COMPILING_UNDER_WINDOZE
 	#define COMPILE_ON_WINDOWS
+	#define WINVER 0x0501
 
 	// Windows has no config.h
 

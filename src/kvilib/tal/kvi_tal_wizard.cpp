@@ -25,10 +25,3 @@
 #define __KVILIB__
 #include "kvi_tal_wizard.h"
 
-
-#ifdef COMPILE_USE_QT4
-	#include "kvi_tal_wizard_qt4.moc"
-#else
-	#include "kvi_tal_wizard_qt3.moc"
-#endif
-

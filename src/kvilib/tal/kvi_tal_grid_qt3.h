@@ -25,6 +25,8 @@
 //
 //=============================================================================
 
+#ifndef COMPILE_USE_QT4
+
 #include <qgrid.h>
 
 class KVILIB_API KviTalGrid : public QGrid
@@ -35,5 +37,5 @@ public:
 	: QGrid(n,orient,pParent) {};
 	~KviTalGrid() {};
 };
-
+#endif
 #endif // _KVI_TAL_GRID_QT3_H_

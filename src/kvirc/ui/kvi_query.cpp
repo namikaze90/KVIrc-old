@@ -654,5 +654,3 @@ void KviQuery::ownAction(const QString &buffer)
 		m_pUserListView->userAction(connection()->currentNickName(),KVI_USERACTION_ACTION);
 	}
 }
-
-#include "kvi_query.moc"

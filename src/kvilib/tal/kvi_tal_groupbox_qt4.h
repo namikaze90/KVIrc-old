@@ -24,24 +24,11 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 //=============================================================================
-
+#ifdef COMPILE_USE_QT4
 #include <q3groupbox.h>
 
-class KVILIB_API KviTalGroupBox : public Q3GroupBox
-{
-	Q_OBJECT
-public:
-	KviTalGroupBox(QWidget * parent = 0)
-	: Q3GroupBox(parent) {};
-	KviTalGroupBox(const QString & title,QWidget * parent = 0)
-	: Q3GroupBox(title,parent) {};
-	KviTalGroupBox(int strips,Qt::Orientation orientation,QWidget * parent = 0)
-	: Q3GroupBox(strips,orientation,parent) {};
-	KviTalGroupBox(int strips,Qt::Orientation orientation,const QString & title,QWidget * parent = 0)
-	: Q3GroupBox(strips,orientation,title,parent) {};
-	~KviTalGroupBox() {};
-};
-
+#define KviTalGroupBox Q3GroupBox
+#endif
 
 
 #endif // _KVI_TAL_GROUPBOX_QT4_H_

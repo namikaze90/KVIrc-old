@@ -23,6 +23,9 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#ifndef COMPILE_KDE_SUPPORT
+#ifndef COMPILE_USE_QT4 // stupid automoc
+
 #include <qfiledialog.h>
 
 class KVILIB_API KviTalFileDialog : public QFileDialog
@@ -41,4 +44,6 @@ public:
 		{ return getExistingDirectory(dir,parent,0 /* name */,caption); };
 };
 
+#endif
+#endif
 #endif // _KVI_TAL_FILEDIALOG_QT_H_

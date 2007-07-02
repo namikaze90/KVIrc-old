@@ -23,15 +23,6 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include <qapplication.h>
-
-
-class KVILIB_API KviTalApplication : public QApplication
-{
-	Q_OBJECT
-public:
-	KviTalApplication(int &argc,char ** argv);
-	~KviTalApplication();
-};
+#define KviTalApplication QApplication
 
 #endif // _KVI_TAL_APPLICATION_QT_H_

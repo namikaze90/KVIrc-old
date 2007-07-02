@@ -24,18 +24,7 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 //=============================================================================
-
-#include "kvi_settings.h"
-
-#include <q3hbox.h>
-
-class KVILIB_API KviTalHBox : public Q3HBox
-{
-	Q_OBJECT
-public:
-	KviTalHBox(QWidget * pParent,char* name=0)
-	: Q3HBox(pParent,name) {};
-	virtual ~KviTalHBox() {};
-};
+#include <Q3HBox>
+#define KviTalHBox  Q3HBox
 
 #endif // _KVI_TAL_HBOX_QT4_H_

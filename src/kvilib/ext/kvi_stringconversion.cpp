@@ -233,21 +233,27 @@ namespace KviStringConversion
 	
 	bool fromString(const QString & szValue,QFont &buffer)
 	{
-		KviStr str = szValue;
-		KviStr family,pointSize,styleHint,weight,options;
-		str.getToken(family,',');
-		str.getToken(pointSize,',');
-		str.getToken(styleHint,',');
-		str.getToken(weight,','); 
-		if(!family.isEmpty())buffer.setFamily(family.ptr());
-		int i;
+		if(szValue.isEmpty()) return false;
+		QString str = szValue;
+		QString family,pointSize,styleHint,weight,options;
+		family=KviQString::getToken(str,',');
+		pointSize=KviQString::getToken(str,',');
+		styleHint=KviQString::getToken(str,',');
+		weight=KviQString::getToken(str,','); 
+		if(!family.isEmpty())buffer.setFamily(family);
+		int iPointSize,iStyleHint,iWeight;
 		bool bOk;
-		i = pointSize.toInt(&bOk);
-		if(bOk && (i > 0))buffer.setPointSize(i);
-		i = styleHint.toInt(&bOk);
-		if(bOk && (i >= 0))buffer.setStyleHint((QFont::StyleHint)i);
-		i = weight.toInt(&bOk);
-		if(bOk && (i >= 0))buffer.setWeight(i);
+		iPointSize = pointSize.toInt(&bOk);
+		if(!bOk || (iPointSize < 0))
+			iPointSize = -1;
+		iStyleHint = styleHint.toInt(&bOk);
+		if(!bOk || (iStyleHint < 0))
+			iStyleHint=0;
+		iWeight = weight.toInt(&bOk);
+		if(!bOk || (iWeight < 0))
+			iWeight=-1;
+		buffer=QFont(family,iPointSize,iWeight);
+		buffer.setStyleHint((QFont::StyleHint)iStyleHint);
 		if(!str.isEmpty())
 		{
 			buffer.setBold(str.contains("b"));

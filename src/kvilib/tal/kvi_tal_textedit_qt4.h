@@ -25,6 +25,7 @@
 //
 //=============================================================================
 
+#include "kvi_settings.h"
 #include <q3textedit.h>
 
 class KVILIB_API KviTalTextEdit : public Q3TextEdit

@@ -40,6 +40,9 @@
 			//#include <tpipv6.h>
 		#endif
 	#endif
+	#ifdef __GNUC__
+		#include <ws2tcpip.h>
+	#endif
 #else
 	#include <sys/types.h>
 	#include <sys/socket.h>

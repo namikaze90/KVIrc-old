@@ -117,7 +117,6 @@
 	}
 
 
-	#include "kvi_tal_iconview_qt4.moc"
 #else
 
 	KviTalIconView::KviTalIconView(QWidget * pParent,Qt::WFlags f)
@@ -210,6 +209,5 @@
 	}
 
 
-	#include "kvi_tal_iconview_qt3.moc"
 #endif
 

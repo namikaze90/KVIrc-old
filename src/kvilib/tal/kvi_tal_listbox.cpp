@@ -263,8 +263,6 @@
 	    return RTTI;
 	}
 	
-
-	#include "kvi_tal_listbox_qt4.moc"
 #else
 	#include <qpainter.h>
 	#include <qstyle.h>
@@ -508,6 +506,5 @@
 	    return RTTI;
 	}
 	
-	#include "kvi_tal_listbox_qt3.moc"
 #endif
 

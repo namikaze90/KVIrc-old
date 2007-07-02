@@ -25,7 +25,8 @@
 //
 //=============================================================================
 
-#include <q3tabdialog.h>
+#include "kvi_settings.h"
+#include <Q3TabDialog>
 
 class KVILIB_API KviTalTabDialog : public Q3TabDialog
 {

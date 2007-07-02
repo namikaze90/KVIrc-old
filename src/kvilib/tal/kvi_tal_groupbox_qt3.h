@@ -24,7 +24,7 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 //=============================================================================
-
+#ifndef COMPILE_USE_QT4
 #include <qgroupbox.h>
 
 class KVILIB_API KviTalGroupBox : public QGroupBox
@@ -41,7 +41,7 @@ public:
 	: QGroupBox(strips,orientation,title,parent) {};
 	~KviTalGroupBox() {};
 };
-
+#endif
 
 
 #endif // _KVI_TAL_GROUPBOX_QT3_H_

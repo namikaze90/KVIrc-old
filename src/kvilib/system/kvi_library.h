@@ -32,10 +32,9 @@
 
 
 #include "kvi_settings.h"
-
+#include "kvi_qstring.h"
 
 #ifdef COMPILE_ON_WINDOWS
-
 	//#include <windows.h>
 	#include <winsock2.h> // this will pull in windows.h
 
@@ -45,10 +44,14 @@
 	{
 #ifndef DEBUG
 		// this is to avoid the ugly message boxes when the dll has
-		// ... but do it only in release mode
+		// ... but do it only in release modeSEM_FAILCRITICALERRORS
 		UINT nOldErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+		//#error got it
 #endif
+		//#error got it2
 		kvi_library_t ret = LoadLibrary(path);
+//		MessageBox(NULL,path,"load",0);
+
 #ifndef DEBUG
 		SetErrorMode(nOldErrorMode);
 #endif
@@ -62,12 +65,15 @@
 
 	inline void * kvi_library_symbol(kvi_library_t lib,const char * symName)
 	{
-		return GetProcAddress(lib,symName);
+		return (void*)GetProcAddress(lib,symName);
 	};
 
 	inline const char * kvi_library_error()
 	{
-		return "Windoze-like error";
+		QString szBuffer;
+		KviQString::sprintf(szBuffer,"Windozze-like error %i",GetLastError());
+//		MessageBox(NULL,"wah!",KviQString::toLocal8Bit(szBuffer).data(),0);
+		return KviQString::toLocal8Bit(szBuffer);
 	};
 
 #else

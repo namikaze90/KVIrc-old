@@ -402,6 +402,7 @@ KviIrcView::KviIrcView(QWidget *parent,KviFrame *pFrm,KviWindow *pWnd)
 	// let's go!
 	applyOptions();
 	
+	
 	if(KVI_OPTION_UINT(KviOption_uintAutoFlushLogs)) //m_iFlushTimer
 	{
 		m_iFlushTimer = startTimer(KVI_OPTION_UINT(KviOption_uintAutoFlushLogs)*60*1000);
@@ -460,6 +461,7 @@ KviIrcView::~KviIrcView()
 
 void KviIrcView::setFont(const QFont &f)
 {
+	debug("setting a font");
 	if(m_pFm)
 	{
 		// force an update to the font variables
@@ -482,6 +484,7 @@ void KviIrcView::setFont(const QFont &f)
 
 void KviIrcView::applyOptions()
 {
+	debug("apply options");
 	flushLog();
 	setFont(KVI_OPTION_FONT(KviOption_fontIrcView));
 	if(m_iFlushTimer) killTimer(m_iFlushTimer);
@@ -5288,5 +5291,3 @@ void KviIrcView::maybeTip(const QPoint &pnt)
 	if((linkUnderMouse == m_pLastLinkUnderMouse) && linkUnderMouse)doLinkToolTip(rctLink,linkCmd,linkText);
 	else m_pLastLinkUnderMouse = 0; //
 }
-
-#include "kvi_ircview.moc"

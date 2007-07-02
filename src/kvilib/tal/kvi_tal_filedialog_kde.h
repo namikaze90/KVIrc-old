@@ -23,6 +23,8 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#ifdef COMPILE_KDE_SUPPORT
+
 #include <kfiledialog.h>
 #include <qfiledialog.h>
 
@@ -47,4 +49,5 @@ public:
 	};
 };
 
+#endif
 #endif // _KVI_TAL_FILEDIALOG_KDE_H_

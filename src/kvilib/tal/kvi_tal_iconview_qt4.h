@@ -95,5 +95,4 @@ public:
 	KviTalIconViewItem * nextItem() const { return (KviTalIconViewItem *)Q3IconViewItem::nextItem(); };
 };
 
-
 #endif // _KVI_TAL_ICONVIEW_QT4_H_

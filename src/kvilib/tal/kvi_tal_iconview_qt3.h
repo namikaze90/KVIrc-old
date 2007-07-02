@@ -24,7 +24,7 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 //=============================================================================
-
+#ifndef COMPILE_USE_QT4
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
 
@@ -96,5 +96,5 @@ public:
 	KviTalIconViewItem * nextItem() const { return (KviTalIconViewItem *)QIconViewItem::nextItem(); };
 };
 
-
+#endif
 #endif // _KVI_TAL_ICONVIEW_QT3_H_

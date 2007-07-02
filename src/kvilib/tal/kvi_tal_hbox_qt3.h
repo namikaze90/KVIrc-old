@@ -26,7 +26,7 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
+#ifdef COMPILE_USE_QT4
 #include <qhbox.h>
 
 class KVILIB_API KviTalHBox : public QHBox
@@ -37,5 +37,5 @@ public:
 	: QHBox(pParent) {};
 	virtual ~KviTalHBox() {};
 };
-
+#endif
 #endif // _KVI_TAL_HBOX_QT3_H_
