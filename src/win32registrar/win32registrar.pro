@@ -1,4 +1,6 @@
-CONFIG   += precompile_header debug_and_release thread
+include(../../config.pri)
+
+CONFIG   += precompile_header thread
 LANGUAGE  = C++
 TEMPLATE = app
 TARGET = win32registrar

@@ -1,4 +1,6 @@
-CONFIG   += precompile_header release thread dll
+include(../../../config.pri)
+
+CONFIG   += precompile_header thread dll
 LANGUAGE  = C++
 TEMPLATE = lib
 

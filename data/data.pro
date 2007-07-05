@@ -1,6 +1,6 @@
-TEMPLATE      = subdirs
+include(../config.pri)
 
-CONFIG += debug_and_release
+TEMPLATE      = subdirs
 
 DESTDIR = ../bin/image
 

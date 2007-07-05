@@ -5,7 +5,9 @@ win32 {
 	DEFINES -= UNICODE
 }
 
-CONFIG   += precompile_header release thread
+include(../../config.pri)
+
+CONFIG   += precompile_header thread
 LANGUAGE  = C++
 TEMPLATE = app
 TARGET = kvirc
