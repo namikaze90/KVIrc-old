@@ -9,3 +9,5 @@ Makefile
 .mospics
 moc_*.cpp
 .pics
+*.bak
+Makefile*

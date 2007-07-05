@@ -29,3 +29,7 @@ build_flags
 build_number
 make_pragma
 cvs.log
+bin
+*.bak
+Makefile*
+build

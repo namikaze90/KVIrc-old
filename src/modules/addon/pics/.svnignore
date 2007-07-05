@@ -4,3 +4,5 @@ core
 .pics
 .mospics
 .xvpics
+*.bak
+Makefile*

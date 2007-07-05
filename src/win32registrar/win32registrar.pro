@@ -22,3 +22,11 @@ RC_FILE = win32registrar.rc
 
 target.path = ../../bin/image/
 INSTALLS += target 
+
+CONFIG(debug, debug|release) {
+    MOC_DIR      = ../../build/$$TARGET/debug/moc
+		OBJECTS_DIR  = ../../build/$$TARGET/debug/obj
+ } else {
+    MOC_DIR      = ../../build/$$TARGET/release/moc
+		OBJECTS_DIR  = ../../build/$$TARGET/release/obj
+ }

@@ -8,3 +8,5 @@ Makefile
 .libs
 .mospics
 .pics
+*.bak
+Makefile*

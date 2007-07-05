@@ -7,3 +7,5 @@ Makefile
 *.moc
 .libs
 moc_editor.cpp
+*.bak
+Makefile*

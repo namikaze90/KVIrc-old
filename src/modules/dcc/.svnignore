@@ -7,3 +7,5 @@ Makefile
 *.moc
 .libs
 tags
+*.bak
+Makefile*

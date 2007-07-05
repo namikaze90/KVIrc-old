@@ -10,3 +10,5 @@ Makefile
 .pics
 .xvpics
 moc_*
+*.bak
+Makefile*

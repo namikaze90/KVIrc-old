@@ -8,3 +8,5 @@ Makefile
 moc_*.cpp
 .libs
 moc_editor.cpp
+*.bak
+Makefile*

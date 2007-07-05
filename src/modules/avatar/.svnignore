@@ -7,3 +7,5 @@ Makefile
 *.moc
 .libs
 moc_*.cpp
+*.bak
+Makefile*

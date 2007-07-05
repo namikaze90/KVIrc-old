@@ -13,3 +13,5 @@ stamp.h.in
 *.o
 *.lo
 *.moc
+Makefile*
+*.bak

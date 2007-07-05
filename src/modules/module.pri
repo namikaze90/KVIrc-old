@@ -39,3 +39,11 @@ RC_FILE = ../../../data/resources/commctrl.rc
 
 target.path = ../../../bin/image/modules/
 INSTALLS += target 
+
+CONFIG(debug, debug|release) {
+    MOC_DIR      = ../../../build/modules/$$TARGET/debug/moc
+		OBJECTS_DIR  = ../../../build/modules/$$TARGET/debug/obj
+ } else {
+    MOC_DIR      = ../../../build/modules/$$TARGET/release/moc
+		OBJECTS_DIR  = ../../../build/modules/$$TARGET/release/obj
+ }
