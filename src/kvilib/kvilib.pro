@@ -1,4 +1,4 @@
-CONFIG   += precompile_header debug_and_release thread dll
+CONFIG   += precompile_header release thread dll
 LANGUAGE  = C++
 TEMPLATE = lib
 TARGET = kvilib
@@ -212,3 +212,7 @@ LIBS += -leay32 \
 RC_FILE = ../../data/resources/auto-generated/kvilib.rc
 
 include( using_kvilib.pri )
+
+
+target.path = ../../bin/image/
+INSTALLS += target 

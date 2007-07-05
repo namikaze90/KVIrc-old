@@ -1,4 +1,4 @@
-CONFIG   += precompile_header debug_and_release thread dll
+CONFIG   += precompile_header release thread dll
 LANGUAGE  = C++
 TEMPLATE = lib
 
@@ -36,3 +36,6 @@ LIBS += -lkvilib \
       -lkvirc
       
 RC_FILE = ../../../data/resources/commctrl.rc
+
+target.path = ../../../bin/image/modules/
+INSTALLS += target 

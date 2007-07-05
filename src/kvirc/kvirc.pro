@@ -5,7 +5,7 @@ win32 {
 	DEFINES -= UNICODE
 }
 
-CONFIG   += precompile_header debug_and_release thread
+CONFIG   += precompile_header release thread
 LANGUAGE  = C++
 TEMPLATE = app
 TARGET = kvirc
@@ -447,3 +447,6 @@ include( ../kvilib/using_kvilib.pri )
 include( using_kvirc.pri )
 
 RC_FILE = ../../data/resources/kvirc.rc
+
+target.path = ../../bin/image/
+INSTALLS += target 

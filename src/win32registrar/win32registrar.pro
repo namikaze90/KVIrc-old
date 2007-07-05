@@ -19,3 +19,6 @@ SOURCES += win32registrar.cpp
 LIBS += -lshlwapi
 
 RC_FILE = win32registrar.rc
+
+target.path = ../../bin/image/
+INSTALLS += target 
