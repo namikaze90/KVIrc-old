@@ -31,5 +31,5 @@ make_pragma
 cvs.log
 bin
 *.bak
-Makefile*
+Makefile.*
 build
