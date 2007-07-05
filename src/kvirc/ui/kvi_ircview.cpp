@@ -148,6 +148,7 @@
 
 #ifdef COMPILE_USE_QT4
 	#include <q3mimefactory.h>
+	#include <QTimer>
 	#define QMimeSourceFactory Q3MimeSourceFactory
 #endif
 
@@ -400,7 +401,11 @@ KviIrcView::KviIrcView(QWidget *parent,KviFrame *pFrm,KviWindow *pWnd)
 	// and catch all mouse events
 	setMouseTracking(true);
 	// let's go!
+#ifdef COMPILE_USE_QT4
+	QTimer::singleShot(0, this, SLOT(applyOptions()));
+#else
 	applyOptions();
+#endif
 	
 	
 	if(KVI_OPTION_UINT(KviOption_uintAutoFlushLogs)) //m_iFlushTimer
