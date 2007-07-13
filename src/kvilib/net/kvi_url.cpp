@@ -21,7 +21,7 @@
 //
 
 
-#define __KVILIB__
+
 
 
 #include "kvi_url.h"

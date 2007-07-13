@@ -22,7 +22,7 @@
 //
 //=============================================================================
 
-#define __KVILIB__
+
 
 #include "kvi_useridentity.h"
 #include "kvi_locale.h"

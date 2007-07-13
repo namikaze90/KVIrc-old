@@ -58,6 +58,21 @@
 
 #elif defined(Q_OS_MAC)
 	#include "kvi_maccfg.h"
+	
+	#define KVILIB_API
+	#define KVIRC_API
+
+	#ifndef VERSION
+		#define VERSION "?.?.?"
+	#endif
+	
+	#ifndef BUILD_DATE
+		#define BUILD_DATE "?"
+	#endif
+	
+	#ifndef BUILD_FLAGS
+		#define BUILD_FLAGS "?"
+	#endif
 #endif
 
 #define KVI_VERSION VERSION

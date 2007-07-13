@@ -23,7 +23,6 @@
 //
 //=============================================================================
 
-#define __KVILIB__
 #include "kvi_dcophelper.h"
 
 #ifdef COMPILE_KDE_SUPPORT

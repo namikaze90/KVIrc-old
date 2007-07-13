@@ -20,8 +20,6 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#define __KVILIB__
-
 
 
 /*
@@ -93,6 +91,7 @@
 #define F2(x, y, z) F1(z, x, y)
 #define F3(x, y, z) (x ^ y ^ z)
 #define F4(x, y, z) (y ^ (x | ~z))
+	
 
 // This is the central step in the MD5 algorithm.
 #define MD5STEP(f,w,x,y,z,in,s) \
@@ -292,6 +291,7 @@ KviStr KviMd5::result()
 
 	// m_pBuf now contains the md5 sum
 	KviStr ret;
+
 	ret.bufferToHex((char *)m_pBuf,16);
 
 	return ret;
