@@ -442,8 +442,16 @@ SOURCES += ui/kvi_actiondrawer.cpp \
     
 FORMS += 
 RESOURCES += 
-    
-LIBS += -L$$DESTDIR -lshlwapi -lws2_32 -Wl,--out-implib,$$DESTDIR/libkvirc.a
+   
+LIBS += -L$$DESTDIR
+ 
+win32 {
+	LIBS += -lshlwapi -lws2_32 -Wl,--out-implib,$$DESTDIR/libkvirc.a
+}
+
+mac {
+	LIBS += -lpthread -lssl -lcrypto -lz -lkvilib 
+}
 
 include( ../kvilib/using_kvilib.pri )
 include( using_kvirc.pri )

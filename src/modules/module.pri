@@ -34,10 +34,13 @@ INCLUDEPATH += ../../kvirc/kernel/ \
     ../../kvirc/sparser/ \
     ../../kvirc/ui/
     
+
 LIBS += -lkvilib \
-      -lkvirc
-      
-RC_FILE = ../../../data/resources/commctrl.rc
+	      -lkvirc
+	      
+win32 {      
+	RC_FILE = ../../../data/resources/commctrl.rc
+}
 
 target.path = ../../../bin/image/modules/
 INSTALLS += target 

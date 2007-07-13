@@ -207,11 +207,17 @@ DEFINES += __KVILIB__ \
     
 DEFINES -= UNICODE
 
-LIBS += -leay32 \
-    -lssleay32 \
-    -lws2_32
+win32 {
+	LIBS += -leay32 \
+ 	   -lssleay32 \
+ 	   -lws2_32
     
-RC_FILE = ../../data/resources/auto-generated/kvilib.rc
+	RC_FILE = ../../data/resources/auto-generated/kvilib.rc
+}
+
+mac {
+	LIBS += -lpthread -lssl -lcrypto -lz
+}
 
 include( using_kvilib.pri )
 
