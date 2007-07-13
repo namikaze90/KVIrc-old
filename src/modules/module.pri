@@ -35,10 +35,14 @@ INCLUDEPATH += ../../kvirc/kernel/ \
     ../../kvirc/ui/
     
 
-LIBS += -lkvilib \
-	      -lkvirc
+LIBS += -lkvilib
 	      
-win32 {      
+mac {
+      LIBS += -Wl,-undefined,dynamic_lookup
+}
+
+win32 { 
+	LIBS += -lkvirc  
 	RC_FILE = ../../../data/resources/commctrl.rc
 }
 

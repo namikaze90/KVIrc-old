@@ -27,7 +27,7 @@
 
 #include "kvi_settings.h"
 
-#if defined(COMPILE_ON_WINDOWS) && defined(__GNUC__)
+#if defined(__GNUC__)
 	#include "qapplication.h"
 #endif
 
