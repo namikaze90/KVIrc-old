@@ -4,7 +4,7 @@ HEADERS += libkviident.h
  						
 SOURCES += libkviident.cpp
  						
-mac {
+win32 {
 	LIBS += -lws2_32
 }
 
