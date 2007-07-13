@@ -56,35 +56,8 @@
 		#define KVIRC_API __declspec(dllimport)
 	#endif
 
-#else
-
-	#ifdef KVIRC_EXTERNAL_MODULE
-		// when compiling an external module
-		// include the last configuration
-		#include "kvi_configstatus.h"
-	#else
-		#ifdef HAVE_CONFIG_H
-			#include "config.h"
-		#else
-			#error "You're missing the config.h file: you must run configure before running make!"
-		#endif
-	#endif
-
-	#define KVILIB_API
-	#define KVIRC_API
-
-	#ifndef VERSION
-		#define VERSION "?.?.?"
-	#endif
-	
-	#ifndef BUILD_DATE
-		#define BUILD_DATE "?"
-	#endif
-	
-	#ifndef BUILD_FLAGS
-		#define BUILD_FLAGS "?"
-	#endif
-
+#elif defined(__MACBUILD___)
+	#include "kvi_maccfg.h"
 #endif
 
 #define KVI_VERSION VERSION
