@@ -6,8 +6,8 @@ win32{
 }
 
 mac {
-        INCLUDEPATH += /System/Library/Perl/5.8.6/darwin-thread-multi-2level/CORE/
-        LIBS += -lperl -L/System/Library/Perl/5.8.6/darwin-thread-multi-2level/CORE/
+        INCLUDEPATH += $(PERLDIR)/CORE/
+        LIBS += -lperl -L$(PERLDIR)/CORE/
 }
 
  
