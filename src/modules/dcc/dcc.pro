@@ -36,4 +36,6 @@ SOURCES += adpcmcodec.cpp \
  						
 include(../module.pri)
 
-LIBS += -lws2_32
+win32 {
+	LIBS += -lws2_32
+}

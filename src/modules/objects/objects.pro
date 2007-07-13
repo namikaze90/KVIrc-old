@@ -1,6 +1,8 @@
 QT += xml
 
-LIBS += -lws2_32
+win32 {
+	LIBS += -lws2_32
+}
 
 PRECOMPILED_HEADER  = pch.h
 

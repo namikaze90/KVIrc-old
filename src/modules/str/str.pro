@@ -2,7 +2,13 @@ TARGET = kvistr
  
 SOURCES += libkvistr.cpp
 
-LIBS += -leay32 \
-    -lssleay32 
- 						
+win32{
+	LIBS += -leay32 \
+	    -lssleay32 
+}
+
+mac {
+ LIBS += -lssl -lcrypto
+}			
+
 include(../module.pri)

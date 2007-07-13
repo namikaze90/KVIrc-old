@@ -4,6 +4,8 @@ HEADERS += libkviident.h
  						
 SOURCES += libkviident.cpp
  						
-LIBS += -lws2_32
+mac {
+	LIBS += -lws2_32
+}
 
 include(../module.pri)
