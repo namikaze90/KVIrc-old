@@ -56,7 +56,7 @@
 		#define KVIRC_API __declspec(dllimport)
 	#endif
 
-#elif defined(__MACBUILD___)
+#elif defined(Q_OS_MAC)
 	#include "kvi_maccfg.h"
 #endif
 
