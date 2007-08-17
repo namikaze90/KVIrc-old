@@ -2004,6 +2004,8 @@ const kvi_wchar_t * KviIrcView::getTextLine(int iMsgType,
 	line_ptr->pChunks[0].colors.back = KVI_OPTION_MSGTYPE(iMsgType).back();
 	line_ptr->pChunks[0].colors.fore = KVI_OPTION_MSGTYPE(iMsgType).fore();
 	line_ptr->pChunks[0].customFore=QColor();
+	line_ptr->szText = "";
+	line_ptr->pChunks[0].iTextLen = 0;
 	
 	if(bEnableTimeStamp && KVI_OPTION_BOOL(KviOption_boolIrcViewTimestamp))
 	{
@@ -2016,30 +2018,14 @@ const kvi_wchar_t * KviIrcView::getTextLine(int iMsgType,
 		
 		if(KVI_OPTION_BOOL(KviOption_boolUseSpecialColorForTimestamp))
 		{
-			// we need three chunks: the first one uses the default colors
-			// for the message type, the second one the special colors
-			// of the timestamp and the third one goes back to the defaults
-			line_ptr->pChunks[0].iTextLen = 0;
-
-			line_ptr->uChunkCount=3;
-			line_ptr->pChunks=(KviIrcViewLineChunk *)kvi_realloc((void *)line_ptr->pChunks,3 * sizeof(KviIrcViewLineChunk));
-
-			line_ptr->pChunks[1].type = KVI_TEXT_COLOR;
-			line_ptr->pChunks[1].iTextStart = 0;
-			line_ptr->pChunks[1].iTextLen = iTimeStampLength-1;
-			line_ptr->pChunks[1].colors.back = KVI_OPTION_UINT(KviOption_uintTimeStampBackground);
-			line_ptr->pChunks[1].colors.fore = KVI_OPTION_UINT(KviOption_uintTimeStampForeground);
-
-			line_ptr->pChunks[2].type = KVI_TEXT_COLOR;
-			line_ptr->pChunks[2].iTextStart = iTimeStampLength-1;
-			line_ptr->pChunks[2].iTextLen = 1;
-			line_ptr->pChunks[2].colors.back = KVI_OPTION_MSGTYPE(iMsgType).back();
-			line_ptr->pChunks[2].colors.fore = KVI_OPTION_MSGTYPE(iMsgType).fore();
-			line_ptr->pChunks[2].customFore=QColor();
-			iCurChunk+=2;
-		} else {
-			// only one chunk
-			line_ptr->pChunks[0].iTextLen = iTimeStampLength;
+			KviQString::sprintf(szTimestamp,"%c%i,%i%Q,%c",
+					KVI_TEXT_COLOR,
+					KVI_OPTION_UINT(KviOption_uintTimeStampBackground),
+					KVI_OPTION_UINT(KviOption_uintTimeStampForeground),
+					&szTimestamp,
+					KVI_TEXT_RESET);
+			int iLength = szTimestamp.length();
+			p = (kvi_wchar_t*)kvi_realloc(p,(iLength+kvi_wstrlen(p)+1)*sizeof(kvi_wchar_t));
 		}
 
 		// We need the timestamp string to be added
@@ -2054,10 +2040,6 @@ const kvi_wchar_t * KviIrcView::getTextLine(int iMsgType,
 		
 		for(int i=0;i<iTimeStampLength;i++)
 			*data_ptr_aux++  = *stamp_ptr_aux++;
-	} else {
-		// Timestamp not needed... but we don't want null strings floating around
-		line_ptr->szText = "";
-		line_ptr->pChunks[0].iTextLen = 0;
 	}
 
 	//

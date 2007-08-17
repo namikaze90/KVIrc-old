@@ -54,6 +54,7 @@ protected:
 	QLineEdit    * m_pTermsEdit;
 public:
 	KviHelpWidget * helpWidget(){ return m_pHelpWidget; };
+	void navigate(const QString& file);
 protected:
 	virtual QPixmap * myIconPtr();
 	virtual void fillCaptionBuffers();

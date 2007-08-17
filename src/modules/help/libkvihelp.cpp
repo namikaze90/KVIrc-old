@@ -140,11 +140,15 @@ static bool help_kvs_cmd_search(KviKvsModuleCommandCall * c)
 
 static bool help_kvs_cmd_open(KviKvsModuleCommandCall * c)
 { 
-	QString doc;
+	QString doc,tmpDoc;
 	KVSM_PARAMETERS_BEGIN(c)
-		KVSM_PARAMETER("document",KVS_PT_STRING,KVS_PF_OPTIONAL,doc)
+		KVSM_PARAMETER("document",KVS_PT_STRING,KVS_PF_OPTIONAL,tmpDoc)
 	KVSM_PARAMETERS_END(c)
-	if(doc.isEmpty())doc = "index.html";
+	doc=tmpDoc;
+	if(doc.isEmpty())
+		g_pApp->getGlobalKvircDirectory(doc,KviApp::Help,"index.html");
+	else
+		g_pApp->getGlobalKvircDirectory(doc,KviApp::Help,tmpDoc);
 #ifdef COMPILE_USE_QT4
 	Q3MimeSourceFactory * f = Q3MimeSourceFactory::defaultFactory();
 #else
@@ -153,7 +157,7 @@ static bool help_kvs_cmd_open(KviKvsModuleCommandCall * c)
 	if(f)
 	{
 		if(!f->data(doc))
-			doc = "nohelpavailable.html";
+			g_pApp->getLocalKvircDirectory(doc,KviApp::Help,"nohelpavailable.html");
 	}
 
 	if(!c->switches()->find('n',"new"))
@@ -161,19 +165,19 @@ static bool help_kvs_cmd_open(KviKvsModuleCommandCall * c)
 		KviHelpWidget * w = (KviHelpWidget *)c->window()->frame()->child("help_widget","KviHelpWidget");
 		if(w)
 		{
-			w->textBrowser()->setSource(doc);
+			w->navigate(doc);
 			return true;
 		}
 	}
 	if(c->switches()->find('m',"mdi")) 
 	{
 		KviHelpWindow *w = new KviHelpWindow(c->window()->frame(),"Help browser");
-		w->textBrowser()->setSource(doc);
+		w->navigate(doc);
 		c->window()->frame()->addWindow(w);
 	} else {
 		KviHelpWidget *w = new KviHelpWidget(c->window()->frame()->splitter(),
 			c->window()->frame(),true);
-		w->textBrowser()->setSource(doc);
+		w->navigate(doc);
 		w->show();
 		//debug ("mostro");
 	}

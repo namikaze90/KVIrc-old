@@ -53,6 +53,7 @@ protected slots:
 	void showIndex();
 	void suicide();
 public:
+	void navigate(const QString& target);
 	virtual QSize sizeHint() const;
 	QTextBrowser * textBrowser() { return m_pTextBrowser; }
 };

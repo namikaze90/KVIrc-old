@@ -97,13 +97,16 @@ KviHelpWidget::~KviHelpWidget()
 	if(m_bIsStandalone)g_pHelpWidgetList->removeRef(this);
 }
 
+void KviHelpWidget::navigate( const QString& file)
+{
+	m_pTextBrowser->setSource(QUrl::fromLocalFile(file));
+}
+
 void KviHelpWidget::showIndex()
 {
-#ifdef COMPILE_USE_QT4
-	m_pTextBrowser->setSource(QUrl("index.html"));
-#else
-	m_pTextBrowser->setSource("index.html");
-#endif
+	QString szIndex;
+	g_pApp->getLocalKvircDirectory(szIndex,KviApp::Help,"index.html");
+	navigate(szIndex);
 }
 
 void KviHelpWidget::resizeEvent(QResizeEvent *e)
