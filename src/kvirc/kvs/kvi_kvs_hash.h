@@ -26,13 +26,11 @@
 
 #include "kvi_settings.h"
 
-#include "kvi_dict.h"
+#include <QHash>
 #include "kvi_qstring.h"
 
 #include "kvi_kvs_variant.h"
 #include "kvi_heapobject.h"
-
-typedef KVIRC_API KviDictIterator<KviKvsVariant> KviKvsHashIterator;
 
 // This class must not have virtual funcitons nor destructor
 // Otherwise it will happily crash on windows when it is
@@ -44,19 +42,19 @@ public:
 	KviKvsHash(const KviKvsHash &h);
 	~KviKvsHash();
 protected:
-	KviDict<KviKvsVariant> * m_pDict;
+	QHash<QString, KviKvsVariant*> * m_pDict;
 public:
 	void unset(const QString &szKey){ m_pDict->remove(szKey); };
-	void set(const QString &szKey,KviKvsVariant * pVal){ m_pDict->replace(szKey,pVal); };
-	KviKvsVariant * find(const QString &szKey) const { return m_pDict->find(szKey); };
+	void set(const QString &szKey,KviKvsVariant * pVal){ m_pDict->insert(szKey,pVal); };
+	KviKvsVariant * find(const QString &szKey) const { return m_pDict->value(szKey); };
 	KviKvsVariant * get(const QString &szKey);
 
 	bool isEmpty() const { return m_pDict->isEmpty(); };
-	kvs_uint_t size() const { return m_pDict->count(); };
+	kvs_uint_t size() const { return m_pDict->size(); };
 
 	void appendAsString(QString &szBuffer) const;
 	
-	const KviDict<KviKvsVariant> * dict(){ return m_pDict; };
+	const QHash<QString, KviKvsVariant*> * dict()  const { return m_pDict; };
 
 	void serialize(QString& result);
 };

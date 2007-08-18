@@ -1142,9 +1142,10 @@ bool KviKvsTreeNodeOperationArrayAppend::execute(KviKvsRunTimeContext * c)
 		break;
 		case KviKvsVariantData::Hash:
 		{
-			KviKvsHashIterator it(*(v.hash()->dict()));
-			while(KviKvsVariant * pInternal = it.current())
+			QHash<QString, KviKvsVariant*>::iterator it(v.hash()->dict()->begin());
+			while(it != v.hash()->dict()->end())
 			{
+				KviKvsVariant * pInternal = it.value();
 				a->set(a->size(),new KviKvsVariant(*pInternal));
 				++it;
 			}

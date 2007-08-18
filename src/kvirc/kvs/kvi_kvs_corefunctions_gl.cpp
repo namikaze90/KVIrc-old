@@ -944,12 +944,15 @@ namespace KviKvsCoreFunctions
 
 		KviKvsArray * a = new KviKvsArray();
 		kvs_int_t idx = 0;
-		KviKvsHashIterator it(*(pHash->dict()));
-		while(it.current())
+		QHash<QString, KviKvsVariant*>::iterator it(pHash->dict()->begin());
+		for (
+			;
+			it != pHash->dict()->end();
+			++it
+			)
 		{
-			a->set(idx,new KviKvsVariant(it.currentKey()));
+			a->set(idx,new KviKvsVariant(it.key()));
 			idx++;
-			++it;
 		}
 		KVSCF_pRetBuffer->setArray(a);
 #endif

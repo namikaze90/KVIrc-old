@@ -1117,9 +1117,14 @@ namespace KviKvsCoreFunctions
 				case KviKvsVariantData::Hash:
 				{
 					KviKvsHash * h = v->hash();
-					KviKvsHashIterator it(*(h->dict()));
-					while(KviKvsVariant * pInternal = it.current())
+					QHash<QString, KviKvsVariant*>::iterator it(h->dict()->begin());
+					for (
+							;
+							it != h->dict()->end();
+							++it
+							)
 					{
+						KviKvsVariant * pInternal = it.value();
 						a->set(uIdx,new KviKvsVariant(*pInternal));
 						uIdx++;
 						++it;

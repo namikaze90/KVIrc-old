@@ -130,9 +130,12 @@ bool KviKvsTreeNodeSpecialCommandForeach::execute(KviKvsRunTimeContext * c)
 			break;
 			case KviKvsVariantData::Hash:
 			{
-				KviKvsHashIterator it(*(pArg->hash()->dict()));
-				while(KviKvsVariant * pOne = it.current())
+				QHash<QString, KviKvsVariant*>::iterator it(
+						pArg->hash()->dict()->begin()
+						);
+				while(it != pArg->hash()->dict()->end())
 				{
+					KviKvsVariant * pOne = it.value();
 					v->result()->copyFrom(*pOne);
 
 					if(!m_pLoop->execute(c))
