@@ -1,4 +1,4 @@
-#define __KVIRC__
+
 
 
 #include <qlayout.h> 

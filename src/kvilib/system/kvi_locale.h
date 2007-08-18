@@ -33,6 +33,10 @@
 
 #include <qapplication.h>
 
+
+#include <QHash>
+#include <QByteArray>
+
 class QTextCodec;
 class KviMessageCatalogue;
 
@@ -94,8 +98,8 @@ public:
 	KviMessageCatalogue();
 	~KviMessageCatalogue();
 protected:
-	KviAsciiDict<KviTranslationEntry> * m_pMessages;
-	QTextCodec                        * m_pTextCodec;
+	QHash<QByteArray, KviTranslationEntry*> * m_pMessages;
+	QTextCodec                             * m_pTextCodec;
 public:
 	bool load(const QString& name);
 	const char * translate(const char * text);

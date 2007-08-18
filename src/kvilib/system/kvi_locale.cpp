@@ -476,12 +476,15 @@ KviMessageCatalogue::KviMessageCatalogue()
 	//m_uEncoding = 0;
 	m_pTextCodec = QTextCodec::codecForLocale();
 
-	m_pMessages = new KviAsciiDict<KviTranslationEntry>(1123,true,false); // dictSize, case sensitive , don't copy keys
-	m_pMessages->setAutoDelete(true);
+	m_pMessages = new QHash<QByteArray, KviTranslationEntry*>(); // dictSize, case sensitive , don't copy keys
 }
 
 KviMessageCatalogue::~KviMessageCatalogue()
 {
+	foreach(KviTranslationEntry* e,*m_pMessages)
+	{
+		delete e;
+	}
 	delete m_pMessages;
 }
 
@@ -585,7 +588,7 @@ bool KviMessageCatalogue::load(const QString& name)
 	// Ok...we can run now
 
 	int dictSize = kvi_getFirstBiggerPrime(numberOfStrings);
-	m_pMessages->resize(dictSize);
+	//m_pMessages->resize(dictSize);
 
 	KviStr szHeader;
 
@@ -613,7 +616,7 @@ bool KviMessageCatalogue::load(const QString& name)
 			continue;
 		}
 
-		m_pMessages->insert(e->m_szKey.ptr(),e);
+		m_pMessages->insert(QByteArray(e->m_szKey.ptr()),e);
 	}
 
 	kvi_free(buffer);
@@ -653,14 +656,14 @@ bool KviMessageCatalogue::load(const QString& name)
 
 const char * KviMessageCatalogue::translate(const char *text)
 {
-	KviTranslationEntry * aux = m_pMessages->find(text);
+	KviTranslationEntry * aux = m_pMessages->value(QByteArray(text));
 	if(aux)return aux->m_szEncodedTranslation.ptr();
 	return text;
 }
 
 const QString & KviMessageCatalogue::translateToQString(const char *text)
 {
-	KviTranslationEntry * aux = m_pMessages->find(text);
+	KviTranslationEntry * aux = m_pMessages->value(QByteArray(text));
 	if(aux)
 	{
 		if(aux->m_pQTranslation)return *(aux->m_pQTranslation);

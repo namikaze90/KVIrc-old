@@ -22,7 +22,7 @@
 //
 //=============================================================================
 
-#define __KVIRC__
+
 #define KVI_WINDOW_MIN_WIDTH 100
 #define KVI_WINDOW_MIN_HEIGHT 100
 

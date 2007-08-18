@@ -21,7 +21,7 @@
 //
 //=============================================================================
 
-#define __KVIRC__
+
 
 #include "kvi_statusbarapplet.h"
 #include "kvi_frame.h"
