@@ -111,7 +111,7 @@ void KviTalToolTip::remove(QWidget * widget)
 void KviTalToolTip::tip(const QRect & rect,const QString & text)
 {
 	debug("TOOL TIP AT %d,%d",rect.topLeft().x(),rect.topLeft().y());
-	QToolTip::showText(m_pParent->mapToGlobal(rect.topLeft()),text);
+	QToolTip::showText(m_pParent->mapToGlobal(rect.topLeft()),text,m_pParent);
 }
 #endif
 

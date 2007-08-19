@@ -44,7 +44,7 @@ static bool http_kvs_complete_get(KviKvsModuleCommandCall * c,QString &szUrl,QSt
 		return true;
 	}
 
-	QUrl url(szUrl);
+	QUrl url = QUrl::fromEncoded(szUrl.toUtf8());
 
 	QString tmp;
 
