@@ -22,7 +22,7 @@
 //
 //=============================================================================
 
-#define __KVIRC__
+
 
 #include "kvi_kvs_dnsmanager.h"
 #include "kvi_dns.h"
@@ -162,13 +162,13 @@ void KviKvsDnsManager::dnsLookupTerminated(KviDns * pDns)
 			o->window()->output(KVI_OUT_HOSTLOOKUP,__tr2qs("Error: %Q"),&szErr);
 		} else {
 			int idx = 1;
-			for(QString * h = o->dns()->hostnameList()->first();h;h = o->dns()->hostnameList()->next())
+			foreach(QString * h,*(o->dns()->hostnameList()))
 			{
 				o->window()->output(KVI_OUT_HOSTLOOKUP,__tr2qs("Hostname %d: %Q"),idx,h);
 				idx++;
 			}
 			idx = 1;
-			for(QString * a = o->dns()->ipAddressList()->first();a;a = o->dns()->ipAddressList()->next())
+			foreach(QString * a,*(o->dns()->ipAddressList()))
 			{
 				o->window()->output(KVI_OUT_HOSTLOOKUP,__tr2qs("IP address %d: %Q"),idx,a);
 				idx++;

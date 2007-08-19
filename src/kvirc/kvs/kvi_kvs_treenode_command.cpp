@@ -22,7 +22,7 @@
 //
 //=============================================================================
 
-#define __KVIRC__
+
 
 #include "kvi_kvs_treenode_command.h"
 #include "kvi_kvs_treenode_switchlist.h"

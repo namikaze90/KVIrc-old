@@ -32,7 +32,7 @@
 #include "kvi_asciidict.h"
 
 #include <openssl/ssl.h>
-
+#include <QHash>
 
 class KVILIB_API KviSSLCertificate
 {
@@ -41,45 +41,45 @@ public:
 	~KviSSLCertificate();
 protected:
 	X509 * m_pX509;
-	KviAsciiDict<KviStr> * m_pSubject;
-	KviAsciiDict<KviStr> * m_pIssuer;
-	int                  m_iPubKeyBits;
-	KviStr               m_szPubKeyType;
-	int                  m_iSerialNumber;
-	int                  m_iVersion;
-	KviStr               m_szSignatureType;
-	KviStr               m_szSignatureContents;
+	QHash<QString,QString> * m_pSubject;
+	QHash<QString,QString> * m_pIssuer;
+	int                      m_iPubKeyBits;
+	QString                  m_szPubKeyType;
+	int                      m_iSerialNumber;
+	int                      m_iVersion;
+	QString                  m_szSignatureType;
+	QString                  m_szSignatureContents;
 private:
 	void extractSubject();
 	void extractIssuer();
 	void extractPubKeyInfo();
 	void extractSerialNumber();
 	void extractSignature();
-	const char * dictEntry(KviAsciiDict<KviStr> * dict,const char * entry);
-	void splitX509String(KviAsciiDict<KviStr> * dict,const char * t);
+	const QString& dictEntry(QHash<QString,QString> * dict,const QString& entry);
+	void splitX509String(QHash<QString,QString> * dict,const QString& t);
 //	void getPKeyType(int type,KviStr &buffer);
 public:
 	void setX509(X509 * x509);
 
-	const char * signatureType(){ return m_szSignatureType.ptr(); };
-	const char * signatureContents(){ return m_szSignatureContents.ptr(); };
+	const QString& signatureType(){ return m_szSignatureType; };
+	const QString& signatureContents(){ return m_szSignatureContents; };
 
-	const char * subjectCountry(){ return dictEntry(m_pSubject,"C"); };
-	const char * subjectStateOrProvince(){ return dictEntry(m_pSubject,"ST"); };
-	const char * subjectLocality(){ return dictEntry(m_pSubject,"L"); };
-	const char * subjectOrganization(){ return dictEntry(m_pSubject,"O"); };
-	const char * subjectOrganizationalUnit(){ return dictEntry(m_pSubject,"OU"); };
-	const char * subjectCommonName(){ return dictEntry(m_pSubject,"CN"); };
+	const QString& subjectCountry(){ return dictEntry(m_pSubject,"C"); };
+	const QString& subjectStateOrProvince(){ return dictEntry(m_pSubject,"ST"); };
+	const QString& subjectLocality(){ return dictEntry(m_pSubject,"L"); };
+	const QString& subjectOrganization(){ return dictEntry(m_pSubject,"O"); };
+	const QString& subjectOrganizationalUnit(){ return dictEntry(m_pSubject,"OU"); };
+	const QString& subjectCommonName(){ return dictEntry(m_pSubject,"CN"); };
 	
-	const char * issuerCountry(){ return dictEntry(m_pIssuer,"C"); };
-	const char * issuerStateOrProvince(){ return dictEntry(m_pIssuer,"ST"); };
-	const char * issuerLocality(){ return dictEntry(m_pIssuer,"L"); };
-	const char * issuerOrganization(){ return dictEntry(m_pIssuer,"O"); };
-	const char * issuerOrganizationalUnit(){ return dictEntry(m_pIssuer,"OU"); };
-	const char * issuerCommonName(){ return dictEntry(m_pIssuer,"CN"); };
+	const QString& issuerCountry(){ return dictEntry(m_pIssuer,"C"); };
+	const QString& issuerStateOrProvince(){ return dictEntry(m_pIssuer,"ST"); };
+	const QString& issuerLocality(){ return dictEntry(m_pIssuer,"L"); };
+	const QString& issuerOrganization(){ return dictEntry(m_pIssuer,"O"); };
+	const QString& issuerOrganizationalUnit(){ return dictEntry(m_pIssuer,"OU"); };
+	const QString& issuerCommonName(){ return dictEntry(m_pIssuer,"CN"); };
 
 	int publicKeyBits(){ return m_iPubKeyBits; };
-	const char * publicKeyType(){ return m_szPubKeyType.ptr(); };
+	const QString& publicKeyType(){ return m_szPubKeyType; };
 
 	int serialNumber(){ return m_iSerialNumber; };
 
@@ -101,17 +101,17 @@ public:
 	KviSSLCipherInfo(SSL_CIPHER * c);
 	~KviSSLCipherInfo();
 protected:
-	KviStr       m_szVersion;
-	int          m_iNumBits;
-	int          m_iNumBitsUsed;
-	KviStr       m_szName;
-	KviStr       m_szDescription;
+	QString       m_szVersion;
+	int           m_iNumBits;
+	int           m_iNumBitsUsed;
+	QString       m_szName;
+	QString       m_szDescription;
 public:
-	const char * name(){ return m_szName.ptr(); };
-	const char * description(){ return m_szDescription.ptr(); };
+	const QString& name(){ return m_szName; };
+	const QString& description(){ return m_szDescription; };
 	int bits(){ return m_iNumBits; };
 	int bitsUsed(){ return m_iNumBitsUsed; };
-	const char * version(){ return m_szVersion.ptr(); };
+	const QString& version(){ return m_szVersion; };
 #ifdef COMPILE_ON_WINDOWS
 	// On windows we need to override new and delete operators
 	// to ensure that always the right new/delete pair is called for an object instance
@@ -140,7 +140,7 @@ public:
 public:
 	SSL        * m_pSSL;
 	SSL_CTX    * m_pSSLCtx;
-	KviStr       m_szPass;
+	QString      m_szPass;
 public:
 	static void globalInit();
 	static void globalDestroy();

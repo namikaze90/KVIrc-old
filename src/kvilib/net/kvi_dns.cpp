@@ -63,15 +63,23 @@
 KviDnsResult::KviDnsResult()
 {
 	m_iError = KviError_success;
-	m_pHostnameList = new KviPtrList<QString>;
-	m_pHostnameList->setAutoDelete(true);
-	m_pIpAddressList = new KviPtrList<QString>;
-	m_pIpAddressList->setAutoDelete(true);
+	m_pHostnameList = new QList<QString*>;
+	//m_pHostnameList->setAutoDelete(true);
+	m_pIpAddressList = new QList<QString*>;
+	//m_pIpAddressList->setAutoDelete(true);
 
 }
 
 KviDnsResult::~KviDnsResult()
 {
+	foreach(QString* tmp,*m_pHostnameList)
+	{
+		delete tmp;
+	}
+	foreach(QString* tmp,*m_pIpAddressList)
+	{
+		delete tmp;
+	}
 	delete m_pHostnameList;
 	delete m_pIpAddressList;
 }
@@ -396,12 +404,12 @@ KviDnsResult * KviDns::result()
 	return m_pDnsResult;
 }
 
-KviPtrList<QString> * KviDns::hostnameList()
+QList<QString*> * KviDns::hostnameList()
 {
 	return result()->hostnameList();
 }
 
-KviPtrList<QString> * KviDns::ipAddressList()
+QList<QString*> * KviDns::ipAddressList()
 {
 	return result()->ipAddressList();
 }

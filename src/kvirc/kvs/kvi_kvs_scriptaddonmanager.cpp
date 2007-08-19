@@ -22,7 +22,7 @@
 //
 //=============================================================================
 
-#define __KVIRC__
+
 
 #include "kvi_kvs_scriptaddonmanager.h"
 #include "kvi_kvs_script.h"

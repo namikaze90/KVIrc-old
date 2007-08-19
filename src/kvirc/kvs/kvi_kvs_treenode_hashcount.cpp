@@ -22,7 +22,7 @@
 //
 //=============================================================================
 
-#define __KVIRC__
+
 
 #include "kvi_kvs_treenode_hashcount.h"
 #include "kvi_kvs_variant.h"

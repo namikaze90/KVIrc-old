@@ -277,7 +277,7 @@ void KviIrcConnectionTargetResolver::proxyLookupTerminated(KviDns *)
 		{
 			QString szFirstHostname = m_pProxyDns->firstHostname();
 
-			for(QString * addr = m_pProxyDns->hostnameList()->next();addr;addr = m_pProxyDns->hostnameList()->next())
+			foreach(QString * addr,*(m_pProxyDns->hostnameList()))
 			{
 				if(!_OUTPUT_QUIET)
 					m_pConsole->output(KVI_OUT_SYSTEMMESSAGE,
@@ -407,7 +407,7 @@ void KviIrcConnectionTargetResolver::serverLookupTerminated(KviDns *)
 
 	if(m_pServerDns->hostnameCount() > 1)
 	{
-		for(QString * addr = m_pServerDns->hostnameList()->next();addr;addr = m_pServerDns->hostnameList()->next())
+		foreach(QString * addr,*(m_pServerDns->hostnameList()))
 		{
 			if(!_OUTPUT_QUIET)
 				m_pConsole->output(KVI_OUT_SYSTEMMESSAGE,

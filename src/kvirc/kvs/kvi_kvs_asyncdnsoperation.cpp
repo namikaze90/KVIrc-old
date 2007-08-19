@@ -22,7 +22,7 @@
 //
 //=============================================================================
 
-#define __KVIRC__
+
 
 #include "kvi_kvs_asyncdnsoperation.h"
 #include "kvi_dns.h"
@@ -105,13 +105,14 @@ void KviKvsAsyncDnsOperation::lookupTerminated(KviDns *)
 		pWnd->output(KVI_OUT_HOSTLOOKUP,__tr2qs("Error: %Q"),&strDescription);
 	} else {
 		int idx = 1;
-		for(QString * h = m_pDns->hostnameList()->first();h;h = m_pDns->hostnameList()->next())
+		
+		foreach(QString* h,*m_pDns->hostnameList())
 		{
 			pWnd->output(KVI_OUT_HOSTLOOKUP,__tr2qs("Hostname %d: %Q"),idx,h);
 			idx++;
 		}
 		idx = 1;
-		for(QString * a = m_pDns->ipAddressList()->first();a;a = m_pDns->ipAddressList()->next())
+		foreach(QString* a,*m_pDns->ipAddressList())
 		{
 			pWnd->output(KVI_OUT_HOSTLOOKUP,__tr2qs("IP address %d: %Q"),idx,a);
 			idx++;

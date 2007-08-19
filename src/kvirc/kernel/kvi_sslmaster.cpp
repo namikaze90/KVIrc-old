@@ -19,7 +19,7 @@
 //   along with this program. If not, write to the Free Software Foundation,
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
-#define __KVIRC__
+
 
 #include "kvi_sslmaster.h"
 
@@ -37,8 +37,8 @@ namespace KviSSLMaster
 KVIRC_API void printSSLCipherInfo(KviWindow * wnd,const char * description,KviSSLCipherInfo * c)
 {
 	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]: %c%s"),KVI_TEXT_BOLD,description);
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:  Cipher: %c%s"),KVI_TEXT_BOLD,c->name());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:  Version: %c%s"),KVI_TEXT_BOLD,c->version());
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:  Cipher: %c%Q"),KVI_TEXT_BOLD,&(c->name()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:  Version: %c%Q"),KVI_TEXT_BOLD,&(c->version()));
 	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:  Bits: %c%d (%d used)"),KVI_TEXT_BOLD,c->bits(),c->bitsUsed());
 //	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:  Description: %c%s"),KVI_TEXT_BOLD,c->description());
 }
@@ -49,28 +49,28 @@ KVIRC_API void printSSLCertificate(KviWindow * wnd,const char * description,KviS
 	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:  Version: %c%d"),KVI_TEXT_BOLD,c->version());
 	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:  Serial number: %c%d"),KVI_TEXT_BOLD,c->serialNumber());
 	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:  Subject:"));
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Common name: %c%s"),KVI_TEXT_BOLD,c->subjectCommonName());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Organization: %c%s"),KVI_TEXT_BOLD,c->subjectOrganization());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Organizational unit: %c%s"),KVI_TEXT_BOLD,c->subjectOrganizationalUnit());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Country: %c%s"),KVI_TEXT_BOLD,c->subjectCountry());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     State or province: %c%s"),KVI_TEXT_BOLD,c->subjectStateOrProvince());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Locality: %c%s"),KVI_TEXT_BOLD,c->subjectLocality());
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Common name: %c%Q"),KVI_TEXT_BOLD,&(c->subjectCommonName()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Organization: %c%Q"),KVI_TEXT_BOLD,&(c->subjectOrganization()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Organizational unit: %c%Q"),KVI_TEXT_BOLD,&(c->subjectOrganizationalUnit()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Country: %c%Q"),KVI_TEXT_BOLD,&(c->subjectCountry()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     State or province: %c%Q"),KVI_TEXT_BOLD,&(c->subjectStateOrProvince()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Locality: %c%Q"),KVI_TEXT_BOLD,&(c->subjectLocality()));
 	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:   Issuer:"));
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Common name: %c%s"),KVI_TEXT_BOLD,c->issuerCommonName());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Organization: %c%s"),KVI_TEXT_BOLD,c->issuerOrganization());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Organizational unit: %c%s"),KVI_TEXT_BOLD,c->issuerOrganizationalUnit());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Country: %c%s"),KVI_TEXT_BOLD,c->issuerCountry());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     State or province: %c%s"),KVI_TEXT_BOLD,c->issuerStateOrProvince());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Locality: %c%s"),KVI_TEXT_BOLD,c->issuerLocality());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:   Public key: %c%s (%d bits)"),KVI_TEXT_BOLD,c->publicKeyType(),c->publicKeyBits());
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:   Signature type: %c%s"),KVI_TEXT_BOLD,c->signatureType());
-	KviStr tmp = c->signatureContents();
-	if(tmp.len() > 40)
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Common name: %c%Q"),KVI_TEXT_BOLD,&(c->issuerCommonName()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Organization: %c%Q"),KVI_TEXT_BOLD,&(c->issuerOrganization()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Organizational unit: %c%Q"),KVI_TEXT_BOLD,&(c->issuerOrganizationalUnit()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Country: %c%Q"),KVI_TEXT_BOLD,&(c->issuerCountry()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     State or province: %c%Q"),KVI_TEXT_BOLD,&(c->issuerStateOrProvince()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:     Locality: %c%Q"),KVI_TEXT_BOLD,&(c->issuerLocality()));
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:   Public key: %c%Q (%d bits)"),KVI_TEXT_BOLD,&(c->publicKeyType()),c->publicKeyBits());
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:   Signature type: %c%Q"),KVI_TEXT_BOLD,&(c->signatureType()));
+	QString tmp = c->signatureContents();
+	if(tmp.length() > 40)
 	{
-		tmp.cutRight(tmp.len() - 40);
+		tmp=tmp.left(40);
 		tmp.append("...");
 	}
-	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:   Signature contents: %c%s"),KVI_TEXT_BOLD,tmp.ptr());
+	wnd->output(KVI_OUT_SSL,__tr2qs("[SSL]:   Signature contents: %c%Q"),KVI_TEXT_BOLD,&tmp);
 
 }
 

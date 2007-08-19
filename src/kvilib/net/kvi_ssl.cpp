@@ -334,7 +334,7 @@ KviSSL::Result KviSSL::useCertificateFile(const char * cert,const char * pass)
 {
 	if(!m_pSSLCtx)return NotInitialized;
 	m_szPass = pass;
-	if(m_szPass.len() < 4)m_szPass.append("xxxx");
+	if(m_szPass.length() < 4)m_szPass.append("xxxx");
 	X509 * x509 = 0;
 
 	FILE * f = fopen(cert,"r");
@@ -359,7 +359,7 @@ KviSSL::Result KviSSL::usePrivateKeyFile(const char * key,const char * pass)
 {
 	if(!m_pSSLCtx)return NotInitialized;
 	m_szPass = pass;
-	if(m_szPass.len() < 4)m_szPass.append("xxxx");
+	if(m_szPass.length() < 4)m_szPass.append("xxxx");
 
 	EVP_PKEY * k = 0;
 
@@ -481,10 +481,8 @@ KviSSLCipherInfo * KviSSL::getCurrentCipherInfo()
 
 KviSSLCertificate::KviSSLCertificate(X509 * x509)
 {
-	m_pSubject = new KviAsciiDict<KviStr>(17);
-	m_pSubject->setAutoDelete(true);
-	m_pIssuer = new KviAsciiDict<KviStr>(17);
-	m_pIssuer->setAutoDelete(true);
+	m_pSubject = new QHash<QString,QString>();
+	m_pIssuer = new QHash<QString,QString>();
 	m_pX509 = 0;
 	setX509(x509);
 }
@@ -546,40 +544,34 @@ void KviSSLCertificate::extractIssuer()
 	splitX509String(m_pIssuer,t);
 }
 
-void KviSSLCertificate::splitX509String(KviAsciiDict<KviStr> * dict,const char * t)
+void KviSSLCertificate::splitX509String(QHash<QString,QString> * dict,const QString& t)
 {
-	KviStr buf = t;
-	int cnt;
-	KviStr ** arr = buf.splitToArray('/',50,&cnt);
-	if(arr)
+	QString buffer = t;
+	QStringList list = buffer.split('/');
+	int cnt = list.count();
+	if(cnt > 0)
 	{
-		if(cnt > 0)
+		for(int i=0;i<cnt;i++)
 		{
-			for(int i=0;i<cnt;i++)
+			if(list[i].contains('='))
 			{
-				int idx = arr[i]->findFirstIdx('=');
-				if(idx != -1)
+				QString szTok = list[i].section('=',0,0);
+				list[i]=list[i].section('=',1);
+				if(!szTok.isEmpty() && !list[i].isEmpty())
 				{
-					KviStr szTok = arr[i]->left(idx);
-					arr[i]->cutLeft(idx + 1);
-					if(szTok.hasData() && arr[i]->hasData())
-					{
-						dict->replace(szTok.ptr(),new KviStr(arr[i]->ptr()));
-					}
+					dict->insert(szTok,list[i]);
 				}
 			}
 		}
-
-		KviStr::freeArray(arr);
 	}
 }
 
 
-const char * KviSSLCertificate::dictEntry(KviAsciiDict<KviStr> * dict,const char * entry)
+const QString& KviSSLCertificate::dictEntry(QHash<QString,QString> * dict,const QString& entry)
 {
-	KviStr * t = dict->find(entry);
-	if(!t)return __tr("Unknown");
-	return t->ptr();
+	QString t = dict->value(entry);
+	if(t.isEmpty())return __tr2qs("Unknown");
+	return t;
 }
 
 
@@ -637,7 +629,7 @@ void KviSSLCertificate::extractSignature()
 
 	for(i = 0;i < m_pX509->signature->length;i++)
 	{
-		if(m_szSignatureContents.hasData())m_szSignatureContents.append(":");
+		if(!m_szSignatureContents.isEmpty())m_szSignatureContents.append(":");
 		m_szSignatureContents.append(hexdigits[(m_pX509->signature->data[i] & 0xf0) >> 4]);
 		m_szSignatureContents.append(hexdigits[(m_pX509->signature->data[i] & 0x0f)]);
 	}

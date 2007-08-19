@@ -404,13 +404,12 @@ static bool objects_kvs_fnc_variables(KviKvsModuleFunctionCall * c)
 		c->warning(__tr2qs("Object does not exists"));
 		return true;
 	}
-	KviDictIterator<KviKvsVariant> it(* ob->dataContainer()->dict());
+	QHash<QString,KviKvsVariant*>::iterator it(ob->dataContainer()->dict()->begin());
 	KviKvsHash* pHash = new KviKvsHash();
 	c->returnValue()->setHash(pHash);
-	while(KviKvsVariant * t = it.current())
+	for(;it!=ob->dataContainer()->dict()->end();++it)
 	{
-		pHash->set(it.currentKey(),new KviKvsVariant(*t));
-		++it;
+		pHash->set(it.key(),new KviKvsVariant(*(it.value())));
 	}
 	return true;
 

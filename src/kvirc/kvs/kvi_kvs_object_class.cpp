@@ -22,7 +22,7 @@
 //
 //=============================================================================
 
-#define __KVIRC__
+
 
 #include "kvi_kvs_object_class.h"
 #include "kvi_kvs_object_controller.h"
