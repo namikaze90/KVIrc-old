@@ -220,7 +220,7 @@ void KviRemoteMircServerImportWizard::start()
 	connect(m_pRequest,SIGNAL(status(const QString &)),this,SLOT(getListMessage(const QString &)));
 
 	g_pApp->getTmpFileName(m_szTmpFileName,"servers.ini");
-	if(!m_pRequest->get(KviUrl(url),KviHttpRequest::StoreToFile,m_szTmpFileName))
+	if(!m_pRequest->get(QUrl(url),KviHttpRequest::StoreToFile,m_szTmpFileName))
 	{
 		delete m_pRequest;
 		m_pRequest = 0;

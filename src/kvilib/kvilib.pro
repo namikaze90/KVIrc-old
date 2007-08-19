@@ -1,21 +1,18 @@
 include(../../config.pri)
-
-CONFIG   += precompile_header thread dll
-LANGUAGE  = C++
+CONFIG += precompile_header \
+    thread \
+    dll
+LANGUAGE = C++
 TEMPLATE = lib
 TARGET = kvilib
 QT += core \
     gui \
     qt3support
+
 # Use Precompiled headers (PCH)
-PRECOMPILED_HEADER  = pch.h
-
-CONFIG(debug, debug|release) {
-     DESTDIR = ../../bin/debug/
- } else {
-     DESTDIR = ../../bin/release/
- }
-
+PRECOMPILED_HEADER = pch.h
+CONFIG(debug, debug|release):DESTDIR = ../../bin/debug/
+else:DESTDIR = ../../bin/release/
 HEADERS += tal/kvi_tal_application_kde.h \
     tal/kvi_tal_application_qt.h \
     tal/kvi_tal_filedialog_qt4.h \
@@ -70,7 +67,6 @@ HEADERS += tal/kvi_tal_application_kde.h \
     net/kvi_socket.h \
     net/kvi_sockettype.h \
     net/kvi_ssl.h \
-    net/kvi_url.h \
     irc/kvi_avatar.h \
     irc/kvi_avatarcache.h \
     irc/kvi_ircmask.h \
@@ -159,7 +155,6 @@ SOURCES += tal/kvi_tal_application.cpp \
     net/kvi_netutils.cpp \
     net/kvi_socket.cpp \
     net/kvi_ssl.cpp \
-    net/kvi_url.cpp \
     irc/kvi_avatar.cpp \
     irc/kvi_avatarcache.cpp \
     irc/kvi_ircmask.cpp \
@@ -203,32 +198,25 @@ FORMS +=
 RESOURCES += 
 DEFINES += __KVILIB__ \
     __QMAKE__
-    
-    
 DEFINES -= UNICODE
-
-win32 {
-	LIBS += -leay32 \
- 	   -lssleay32 \
- 	   -lws2_32
-    
-	RC_FILE = ../../data/resources/auto-generated/kvilib.rc
+win32 { 
+    LIBS += -leay32 \
+        -lssleay32 \
+        -lws2_32
+    RC_FILE = ../../data/resources/auto-generated/kvilib.rc
 }
-
-mac {
-	LIBS += -lpthread -lssl -lcrypto -lz
-}
-
+mac:LIBS += -lpthread \
+    -lssl \
+    -lcrypto \
+    -lz
 include( using_kvilib.pri )
-
-
 target.path = ../../bin/image/
-INSTALLS += target 
-
-CONFIG(debug, debug|release) {
-    MOC_DIR      = ../../build/$$TARGET/debug/moc
-		OBJECTS_DIR  = ../../build/$$TARGET/debug/obj
- } else {
-    MOC_DIR      = ../../build/$$TARGET/release/moc
-		OBJECTS_DIR  = ../../build/$$TARGET/release/obj
- }
+INSTALLS += target
+CONFIG(debug, debug|release) { 
+    MOC_DIR = ../../build/$$TARGET/debug/moc
+    OBJECTS_DIR = ../../build/$$TARGET/debug/obj
+}
+else { 
+    MOC_DIR = ../../build/$$TARGET/release/moc
+    OBJECTS_DIR = ../../build/$$TARGET/release/obj
+}

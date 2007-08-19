@@ -44,7 +44,7 @@ static bool http_kvs_complete_get(KviKvsModuleCommandCall * c,QString &szUrl,QSt
 		return true;
 	}
 
-	KviUrl url(szUrl);
+	QUrl url(szUrl);
 
 	QString tmp;
 

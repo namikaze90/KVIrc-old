@@ -31,12 +31,12 @@
 #include "kvi_sockettype.h"
 #include "kvi_databuffer.h"
 #include "kvi_inttypes.h"
-#include "kvi_url.h"
 
 #include <qobject.h>
 #include "kvi_asciidict.h"
 #include "kvi_file.h"
 #include <qstringlist.h>
+#include <QUrl>
 
 class KviDns;
 class KviSSL;
@@ -72,7 +72,7 @@ public:
 	~KviHttpRequest();
 protected:
 	// data
-	KviUrl                 m_url;
+	QUrl                   m_url;
 	QString                m_szFileName;
 	ProcessingType         m_eProcessingType;
 	ExistingFileAction     m_eExistingFileAction;
@@ -110,7 +110,7 @@ protected slots:
 	void dnsLookupDone(KviDns *d);
 	void haveServerIp();
 public:
-	const KviUrl & url(){ return m_url; };
+	const QUrl & url(){ return m_url; };
 	ProcessingType processingType(){ return m_eProcessingType; };
 	ExistingFileAction existingFileAction(){ return m_eExistingFileAction; };
 	const QString &fileName(){ return m_szFileName; };
@@ -123,7 +123,7 @@ public:
 	void reset();
 
 	void setPostData(const QString &szPostData){ m_szPostData = szPostData; };
-	void setUrl(const KviUrl &u){ m_url = u; };
+	void setUrl(const QUrl &u){ m_url = u; };
 	void setProcessingType(ProcessingType t){ m_eProcessingType = t; };
 	void setExistingFileAction(ExistingFileAction a){ m_eExistingFileAction = a; };
 	void setFileName(const QString &szFileName){ m_szFileName = szFileName; };
@@ -135,7 +135,7 @@ public:
 	bool start();
 
 	// this is a shortcut for reset()+setUrl()+setProcessingType()+setFileName()+start()
-	bool get(const KviUrl &u,ProcessingType p = WholeFile,const QString &szFileName = QString::null);
+	bool get(const QUrl &u,ProcessingType p = WholeFile,const QString &szFileName = QString::null);
 
 	const QString & lastError(){ return m_szLastError; };
 
@@ -178,7 +178,7 @@ public:
 protected:
 	KviHttpRequest * m_pRequest;
 
-	QString           m_szHost;
+	QString          m_szHost;
 	QString          m_szIp;
 	QString          m_szPath;
 	unsigned int     m_uContentOffset;

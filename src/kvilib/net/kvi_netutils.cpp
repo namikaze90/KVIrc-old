@@ -48,7 +48,6 @@
 // This effect is caused by the combination of broken CVS installation and
 // the ugly windows "text mode" files
 
-#define __KVILIB__
 
 
 
