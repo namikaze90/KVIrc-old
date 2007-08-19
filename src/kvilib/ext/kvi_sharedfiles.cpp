@@ -86,12 +86,10 @@ KviSharedFile::KviSharedFile(const QString &szName,const QString &szAbsPath,cons
 	m_szUserMask = szUserMask;
 	m_expireTime = expireTime;
 	m_uFileSize = uFileSize;
-#ifdef COMPILE_USE_QT4
+
 	// QT4ROX: Because they have finally moved the functionality of QString::contains() to QString::count(), and QString::contains() now does the right job
 	m_uWildCount = m_szUserMask.count('*');
-#else
-	m_uWildCount = m_szUserMask.contains('*');
-#endif
+
 	m_uNonWildCount = m_szUserMask.length() - m_uWildCount;
 }
 

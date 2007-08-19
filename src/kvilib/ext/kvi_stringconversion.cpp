@@ -272,11 +272,7 @@ namespace KviStringConversion
 	
 	bool fromString(const QString & szValue,QStringList &buffer)
 	{
-#ifdef COMPILE_USE_QT4
 		buffer = szValue.split(",");
-#else
-		buffer = QStringList::split(",",szValue);
-#endif
 		return true;
 	}
 

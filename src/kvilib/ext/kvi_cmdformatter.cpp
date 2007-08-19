@@ -62,11 +62,7 @@ namespace KviCommandFormatter
 			} else {
 				// we pretend this line to be empty
 				QString tmp = *it;
-#ifdef COMPILE_USE_QT4
 				tmp = tmp.trimmed();
-#else
-				tmp.stripWhiteSpace();
-#endif
 				if(!tmp.isEmpty())return false;
 				*it = ""; // set it to empty also in the main buffer
 			}
@@ -126,11 +122,8 @@ namespace KviCommandFormatter
 
 	void unindent(QString &buffer)
 	{
-#ifdef COMPILE_USE_QT4
 		QStringList list = buffer.split("\n",QString::KeepEmptyParts);
-#else
-		QStringList list = QStringList::split("\n",buffer,true);
-#endif
+		
 		while(hasLeadingChars(list,QChar('\t')) || hasLeadingChars(list,QChar(' ')))trimLeading(list);
 		//buffer = list.join("\n"); join implementation sux :D
 		// we WANT the last newline
@@ -161,11 +154,7 @@ namespace KviCommandFormatter
 
 	void bufferFromBlock(QString &buffer)
 	{
-#ifdef COMPILE_USE_QT4
 		buffer = buffer.trimmed();
-#else
-		buffer.stripWhiteSpace();
-#endif
 
 		if(buffer.isEmpty())return;
 
@@ -179,11 +168,7 @@ namespace KviCommandFormatter
 
 		unindent(buffer);
 
-#ifdef COMPILE_USE_QT4
 		buffer = buffer.trimmed();
-#else
-		buffer.stripWhiteSpace();
-#endif
 	}
 
 
@@ -202,11 +187,8 @@ namespace KviCommandFormatter
 
 	void indent(QString &buffer)
 	{
-#ifdef COMPILE_USE_QT4
 		QStringList list = buffer.split("\n",QString::KeepEmptyParts);
-#else
-		QStringList list = QStringList::split("\n",buffer,true);
-#endif
+
 		addLeading(list,QChar('\t'));
 		//buffer = list.join("\n"); join implementation sux :D
 		// we WANT the last newline

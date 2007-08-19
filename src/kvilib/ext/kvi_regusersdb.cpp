@@ -230,11 +230,9 @@ void KviRegisteredUser::setProperty(const QString & name,const QString & value)
 			m_pPropertyDict = new KviDict<QString>(7,false);
 			m_pPropertyDict->setAutoDelete(true);
 		}
-#ifdef COMPILE_USE_QT4
+		
 		QString * val = new QString(value.trimmed());
-#else
-		QString * val = new QString(value.stripWhiteSpace());
-#endif
+
 		if(!val->isEmpty())
 		{
 			m_pPropertyDict->replace(name,val);

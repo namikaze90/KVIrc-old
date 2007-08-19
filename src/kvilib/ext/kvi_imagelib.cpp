@@ -112,26 +112,17 @@ QPixmap KviImageLibrary::getImage(int zeroBasedIndex)
 	int xOffset=(zeroBasedIndex % imPerRow) * m_iWidth;
 	int yOffset=(zeroBasedIndex / imPerRow) * m_iHeight;
 
-#ifdef COMPILE_USE_QT4
 	QImage image(m_iWidth,m_iHeight,m_pLibrary->format());
-#else
-	QImage image(m_iWidth,m_iHeight,m_pLibrary->depth());
-#endif
 
 	int d = image.depth() / 8;
-#ifndef COMPILE_USE_QT4
-	if(d == 4)image.setAlphaBuffer(true); // Qt 4.x should manage it automagically
-#endif
+
 	//Copy the image data
 	//bitBlt(&image,0,0,m_pLibrary,xOffset,yOffset,m_iWidth,m_iHeight,Qt::CopyROP,false);
 
 	for(int i=0;i<m_iHeight;i++)
 		kvi_memmove(image.scanLine(i),m_pLibrary->scanLine(i + yOffset) + (xOffset * d),m_iWidth * d);
 
-#ifdef COMPILE_USE_QT4
 	QPixmap p = QPixmap::fromImage(image);
-#else
-	QPixmap p(image);
-#endif
+
 	return p;
 }
