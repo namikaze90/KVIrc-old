@@ -27,6 +27,17 @@
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
 
+///
+/// \namespace KviError
+///
+/// \brief A namespace to get descriptions of error codes.
+///
+/// This namespace provides functions to get
+/// an error description of an error code and
+/// an function to change system error codes
+/// to universal error codes.
+///
+
 #define KviError_success 0
 #define KviError_unknownError 1
 #define KviError_internalError 2
@@ -180,8 +191,19 @@
 
 namespace KviError
 {
+	///
+	/// Get an translated description for an error code.
+	///
 	KVILIB_API QString getDescription(int iErrorCode);
+	
+	///
+	/// Get the untranslated description for an error code. 
+	///
 	KVILIB_API const char * getUntranslatedDescription(int iErrorCode);
+	
+	///
+	/// Makes of system-specific error-codes an unverisal error code.
+	///
 	KVILIB_API int translateSystemError(int iErrNo);
 };
 

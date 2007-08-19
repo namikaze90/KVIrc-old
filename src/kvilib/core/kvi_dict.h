@@ -26,14 +26,9 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	#include <q3dict.h>
-	#define KviDict Q3Dict
-	#define KviDictIterator Q3DictIterator
-#else
-	#include <qdict.h>
-	#define KviDict QDict
-	#define KviDictIterator QDictIterator
-#endif
+// TODO: Qt4
+#include <q3dict.h>
+#define KviDict Q3Dict
+#define KviDictIterator Q3DictIterator
 
 #endif //_KVI_DICT_H_

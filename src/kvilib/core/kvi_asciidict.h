@@ -26,14 +26,9 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	#include <q3asciidict.h>
-	#define KviAsciiDict Q3AsciiDict
-	#define KviAsciiDictIterator Q3AsciiDictIterator
-#else
-	#include <qasciidict.h>
-	#define KviAsciiDict QAsciiDict
-	#define KviAsciiDictIterator QAsciiDictIterator
-#endif
+// TODO: Qt4
+#include <q3asciidict.h>
+#define KviAsciiDict Q3AsciiDict
+#define KviAsciiDictIterator Q3AsciiDictIterator
 
 #endif //_KVI_ASCIIDICT_H_

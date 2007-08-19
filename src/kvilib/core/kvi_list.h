@@ -27,24 +27,11 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	#include <q3ptrlist.h>
-	#define KviPtrList Q3PtrList
-	#define KviPtrListBase Q3PtrList
-	#define KviPtrListIterator Q3PtrListIterator
-#else
-	#if QT_VERSION >= 300
-		#include <qptrlist.h>
-		#define KviPtrList QPtrList
-		#define KviPtrListBase QPtrList
-		#define KviPtrListIterator QPtrListIterator
-	#else
-		#include <qlist.h>
-		#define KviPtrList QList
-		#define KviPtrListBase QList
-		#define KviPtrListIterator QListIterator
-	#endif
-#endif
+// TODO: Qt4
+#include <q3ptrlist.h>
+#define KviPtrList Q3PtrList
+#define KviPtrListBase Q3PtrList
+#define KviPtrListIterator Q3PtrListIterator
 
 // BROKEN MSVC LINKER
 #ifdef COMPILE_ON_WINDOWS

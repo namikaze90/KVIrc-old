@@ -135,115 +135,66 @@ namespace KviQString
 	extern KVILIB_API const QString empty;
 
 	///
-	/// A portability wrapper which with Qt3 and Qt4.
 	/// Returns a lowcase version of the parameter string.
 	///
 	inline QString toLower(const QString &s)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.toLower();
-#else
-		return s.lower();
-#endif
 	}
 	
 	inline int find(const QString &s,QChar c,int index = 0,bool cs = true)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.indexOf(c,index,cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
-#else
-		return s.find(c,index,cs);
-#endif
 	}
 
 	inline int find(const QString &s,char c,int index = 0,bool cs = true)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.indexOf(c,index,cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
-#else
-		return s.find(c,index,cs);
-#endif
 	}
 
 	inline int find(const QString &s,const QString & str,int index = 0,bool cs = true)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.indexOf(str,index,cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
-#else
-		return s.find(str,index,cs);
-#endif
 	}
 
 	inline int find(const QString &s,const QRegExp & rx,int index = 0)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.indexOf(rx,index);
-#else
-		return s.find(rx,index);
-#endif
 	}
 
 	inline int find(const QString &s,const char * str,int index = 0)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.indexOf(QString(str),index);
-#else
-		return s.find(str,index);
-#endif
 	}
 
 	inline int findRev(const QString &s,QChar c,int index = -1,bool cs = true)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.lastIndexOf(c,index,cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
-#else
-		return s.findRev(c,index,cs);
-#endif
 	}
 
 	inline int findRev(const QString &s,char c,int index = -1,bool cs = true)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.lastIndexOf(c,index,cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
-#else
-		return s.findRev(c,index,cs);
-#endif
 	}
 
 	inline int findRev(const QString &s,const QString & str,int index = -1,bool cs = true)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.lastIndexOf(str,index,cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
-#else
-		return s.findRev(str,index,cs);
-#endif
 	}
 
 	inline int findRev(const QString &s,const QRegExp & rx,int index = -1)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.lastIndexOf(rx,index);
-#else
-		return s.findRev(rx,index);
-#endif
 	}
 
 	inline int findRev(const QString &s,const char * str,int index = -1)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.lastIndexOf(QString(str),index);
-#else
-		return s.findRev(str,index);
-#endif
 	}
 
 	inline QString trimmed(const QString &s)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.trimmed();
-#else
-		return s.stripWhiteSpace();
-#endif
 	}
 
 	// WARNING: DO NOT USE CONSTRUCTS LIKE char * c = KviQString::toUtf8(something).data();
@@ -257,11 +208,7 @@ namespace KviQString
 	//          transit to qt 4.x more or less cleanly...
 	inline KviQCString toUtf8(const QString &s)
 	{
-#ifdef COMPILE_USE_QT4
 		return s.toUtf8();
-#else
-		return s.utf8();
-#endif
 	}
 
 	inline KviQCString toLocal8Bit(const QString &s)
