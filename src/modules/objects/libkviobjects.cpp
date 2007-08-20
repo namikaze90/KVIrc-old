@@ -268,9 +268,9 @@ static bool objects_kvs_fnc_exists(KviKvsModuleFunctionCall * c)
 	/*
 		@doc: objects.exists
 		@title:
-			objects.exists
+			$objects.exists
 		@type:
-			command
+			function
 		@short:
 			Check if an object exists.
 		@syntax:
@@ -296,9 +296,9 @@ static bool objects_kvs_fnc_instances(KviKvsModuleFunctionCall * c)
 	/*
 		@doc: objects.instances
 		@title:
-			objects.instances
+			$objects.instances
 		@type:
-			command
+			function
 		@short:
 			List object instances
 		@syntax:
@@ -376,9 +376,9 @@ static bool objects_kvs_fnc_instances(KviKvsModuleFunctionCall * c)
 /*
 		@doc: objects.variables
 		@title:
-			objects.variables
+			$objects.variables
 		@type:
-			command
+			function
 		@short:
 			List object's variables.
 		@syntax:
@@ -415,7 +415,7 @@ static bool objects_kvs_fnc_variables(KviKvsModuleFunctionCall * c)
 /*
 		@doc: objects.classAllHandlers
 		@title:
-			objects.classAllHandlers
+			$objects.classAllHandlers
 		@type:
 			function
 		@short:
@@ -460,9 +460,9 @@ static bool objects_kvs_fnc_classes(KviKvsModuleFunctionCall * c)
 	/*
 		@doc: objects.classes
 		@title:
-			objects.classes
+			$objects.classes
 		@type:
-			command
+			function
 		@short:
 			List user defined classes
 		@syntax:
