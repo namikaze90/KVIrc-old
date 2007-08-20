@@ -27,10 +27,6 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	#include "kvi_tal_widgetstack_qt4.h"
-#else
-	#include "kvi_tal_widgetstack_qt3.h"
-#endif
+#include "kvi_tal_widgetstack_qt4.h"
 
 #endif // _KVI_TAL_WIDGETSTACK_H_

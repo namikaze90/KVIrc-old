@@ -24,11 +24,10 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 //=============================================================================
-#ifdef COMPILE_USE_QT4
+
 #include <q3groupbox.h>
 
 #define KviTalGroupBox Q3GroupBox
-#endif
 
 
 #endif // _KVI_TAL_GROUPBOX_QT4_H_

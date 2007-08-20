@@ -27,10 +27,6 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	#include "kvi_tal_vbox_qt4.h"
-#else
-	#include "kvi_tal_vbox_qt3.h"
-#endif
+#include "kvi_tal_vbox_qt4.h"
 
 #endif // _KVI_TAL_VBOX_H_

@@ -39,29 +39,16 @@
 
 #else
 
-	#ifdef COMPILE_USE_QT4
-		KviTalToolBar::KviTalToolBar(const QString &label,Q3MainWindow *w,QT_TOOLBARDOCK_TYPE dock,bool bNewLine,const char * nam)
-		: Q3ToolBar(label,w,dock,bNewLine,nam)
-		{
-			setFrameStyle(QFrame::NoFrame);
-		}
-		KviTalToolBar::KviTalToolBar(Q3MainWindow *w,const char * name)
-		: Q3ToolBar(w,name)
-		{
-			setFrameStyle(QFrame::NoFrame);
-		}
-
-	#else
-		KviTalToolBar::KviTalToolBar(const QString &label,QMainWindow *w,QT_TOOLBARDOCK_TYPE dock,bool bNewLine,const char * nam)
-		: QToolBar(label,w,dock,bNewLine,nam)
-		{
-		}
-		KviTalToolBar::KviTalToolBar(QMainWindow *w,const char * name)
-		: QToolBar(w,name)
-		{
-		}
-		
-	#endif
+	KviTalToolBar::KviTalToolBar(const QString &label,Q3MainWindow *w,QT_TOOLBARDOCK_TYPE dock,bool bNewLine,const char * nam)
+	: Q3ToolBar(label,w,dock,bNewLine,nam)
+	{
+		setFrameStyle(QFrame::NoFrame);
+	}
+	KviTalToolBar::KviTalToolBar(Q3MainWindow *w,const char * name)
+	: Q3ToolBar(w,name)
+	{
+		setFrameStyle(QFrame::NoFrame);
+	}
 
 	KviTalToolBar::~KviTalToolBar()
 	{

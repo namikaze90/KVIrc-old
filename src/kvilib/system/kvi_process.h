@@ -26,12 +26,9 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	#include <q3process.h>
-	#define KviProcess Q3Process
-#else
-	#include <qprocess.h>
-	#define KviProcess QProcess
-#endif
+// TODO: Qt4
+#include <q3process.h>
+#define KviProcess Q3Process
+
 
 #endif //!_KVI_PROCESS_H_

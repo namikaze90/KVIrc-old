@@ -26,7 +26,6 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-#ifdef COMPILE_USE_QT4
 #include <q3grid.h>
 
 class KVILIB_API KviTalGrid : public Q3Grid
@@ -37,5 +36,4 @@ public:
 	: Q3Grid(n,orient,pParent) {};
 	~KviTalGrid() {};
 };
-#endif
 #endif // _KVI_TAL_GRID_QT4_H_

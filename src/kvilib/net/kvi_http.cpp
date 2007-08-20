@@ -273,11 +273,7 @@ bool KviHttpRequest::event(QEvent *e)
 			case KVI_HTTP_REQUEST_THREAD_EVENT_REQUESTSENT:
 			{
 				QString * req = ((KviThreadDataEvent<QString> *)e)->getData();
-#ifdef COMPILE_USE_QT4
 				QStringList sl = req->split("\r\n");
-#else
-				QStringList sl = QStringList::split("\r\n",*req);
-#endif
 				emit requestSent(sl);
 				delete req;
 				return true;

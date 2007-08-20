@@ -41,10 +41,6 @@
 // present in qt 3.3.6 AND in qt 4.1.2.
 //
 
-#ifdef COMPILE_USE_QT4
-	#include "kvi_tal_listbox_qt4.h"
-#else
-	#include "kvi_tal_listbox_qt3.h"
-#endif
+#include "kvi_tal_listbox_qt4.h"
 
 #endif // _KVI_TAL_LISTBOX_H_

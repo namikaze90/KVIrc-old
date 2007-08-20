@@ -184,13 +184,8 @@ bool KviIrcServerDataBase::makeCurrentBestServerInNetwork(const QString &szNetNa
 
 	for(KviIrcServer * s = r->m_pServerList->first();s;s = r->m_pServerList->next())
 	{
-#ifdef COMPILE_USE_QT4
 		if(s->m_szDescription.contains("random",Qt::CaseInsensitive) ||
 			(s->m_szDescription.contains("round",Qt::CaseInsensitive) && s->m_szDescription.contains("robin",Qt::CaseInsensitive)))
-#else
-		if(s->m_szDescription.contains("random",false) ||
-			(s->m_szDescription.contains("round",false) && s->m_szDescription.contains("robin",false)))
-#endif
 		{
 			r->setCurrentServer(s);
 			return true;
@@ -343,11 +338,7 @@ search_finished:
 	if(!(bIsValidIpV4 || bIsValidIpV6))
 	{
 		// is it a valid hostname ? (must contain at least one dot)
-#ifdef COMPILE_USE_QT4
 		if(!d->szServer.contains('.'))
-#else
-		if(d->szServer.contains('.') < 1)
-#endif
 		{
 			// assume it is a network name!
 			KviIrcServerDataBaseRecord * r = m_pRecords->find(d->szServer);

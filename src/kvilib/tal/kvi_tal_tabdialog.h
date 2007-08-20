@@ -27,10 +27,6 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	#include "kvi_tal_tabdialog_qt4.h"
-#else
-	#include "kvi_tal_tabdialog_qt3.h"
-#endif
+#include "kvi_tal_tabdialog_qt4.h"
 
 #endif // _KVI_TAL_TABDIALOG_H_

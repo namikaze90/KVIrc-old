@@ -39,19 +39,13 @@
 
 #else
 
-	#ifdef COMPILE_USE_QT4
-		KviTalMainWindow::KviTalMainWindow(QWidget * par,const char * nam)
-		: Q3MainWindow(par,nam)
-		{
-		}
 
-	#else
-		KviTalMainWindow::KviTalMainWindow(QWidget * par,const char * nam)
-		: QMainWindow(par,nam)
-		{
-		}
+	KviTalMainWindow::KviTalMainWindow(QWidget * par,const char * nam)
+	: Q3MainWindow(par,nam)
+	{
+	}
 
-	#endif
+
 	
 	KviTalMainWindow::~KviTalMainWindow()
 	{
