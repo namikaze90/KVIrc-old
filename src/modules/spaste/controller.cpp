@@ -86,23 +86,38 @@ bool SPasteController::pasteClipboardInit(void)
 
 void SPasteController::pasteFile(void)
 {
-// TODO: Qt4
-#ifndef COMPILE_USE_QT4
     QString line;
-    if(m_pFile->readLine(line,999) != -1)
+	char linebuffer[1024];
+
+	// Bad: QFile can't read utf8 encoded files only with ASCII encoding
+	// http://doc.trolltech.com/4.3/qiodevice.html#readLine
+    if(m_pFile->readLine(linebuffer,1024) != -1)
     {
-	if(line.isEmpty())
-		line = QChar(KVI_TEXT_RESET);
+		QString line(linebuffer);
+		kvi_i32_t linesize = line.size();
+		
+		//char at line.size() is always \0
+		linesize--;
+		
+		// '\r' or '\n' characters will be read to so remove them at end of line
+		while (linesize >=0 and (line.at(linesize) == QChar('\r') || line.at(linesize) == QChar('\n')))
+		{
+			line.chop(1);
+			linesize--;
+		}
+		
+		if(line.isEmpty()) line = QChar(KVI_TEXT_RESET);
+		
         if( (!g_pApp->windowExists(m_pWindow)) || m_pWindow->console()->isNotConnected() )
         { 
             m_pFile->close();
             delete this;
         } else m_pWindow->ownMessage(line.ascii());
+		
     } else { //File finished
         m_pFile->close();
         delete this;
     }
-#endif
 }
 
 void SPasteController::pasteClipboard(void)
