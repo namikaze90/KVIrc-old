@@ -128,11 +128,7 @@ KviPackageIOEngine::~KviPackageIOEngine()
 bool KviPackageIOEngine::updateProgress(int iProgress,const QString &szLabel)
 {
 	if(!m_pProgressDialog)return true;
-#ifdef COMPILE_USE_QT4
 	m_pProgressDialog->setValue(iProgress);
-#else
-	m_pProgressDialog->setProgress(iProgress);
-#endif
 	m_pProgressDialogLabel->setText(szLabel);
 	qApp->processEvents();
 	if(m_pProgressDialog->wasCanceled())
@@ -145,14 +141,10 @@ bool KviPackageIOEngine::updateProgress(int iProgress,const QString &szLabel)
 
 void KviPackageIOEngine::showProgressDialog(const QString &szCaption,int iTotalSteps)
 {
-#ifdef COMPILE_USE_QT4
 	m_pProgressDialog = new QProgressDialog(QString(""),__tr2qs("Cancel"),0,iTotalSteps,0);
 	m_pProgressDialog->setModal(true);
 	m_pProgressDialog->setWindowTitle(szCaption);
-#else
-	m_pProgressDialog = new QProgressDialog(QString(""),__tr2qs("Cancel"),iTotalSteps,0,"",true);
-	m_pProgressDialog->setCaption(szCaption);
-#endif
+
 	m_pProgressDialogLabel = new QLabel(m_pProgressDialog);
 	m_pProgressDialogLabel->setMaximumSize(500,300);
 	m_pProgressDialog->setLabel(m_pProgressDialogLabel);
@@ -234,67 +226,37 @@ bool KviPackageWriter::addFileInternal(const QFileInfo * fi,const QString &szLoc
 bool KviPackageWriter::addDirectory(const QString &szLocalDirectoryName,const QString &szTargetDirectoryPrefix,kvi_u32_t uAddFileFlags)
 {
 	QDir d(szLocalDirectoryName);
-#ifdef COMPILE_USE_QT4
 	QDir::Filters iFlags;
-#else
-	int iFlags;
-#endif
+
 	iFlags = QDir::Files | QDir::Readable;
 	if(!(uAddFileFlags & FollowSymLinks))
 		iFlags |= QDir::NoSymLinks;
 
 	// QT4SUX: Because the QDir::entryInfoList() breaks really a lot of code by returning an object that behaves in a _totally_ different way.. it's also much slower
 
-#ifdef COMPILE_USE_QT4
 	int j;
 	QFileInfoList sl = d.entryInfoList(iFlags);
 	for(j=0;j<sl.size();j++)
 	{
-#else
-	const QFileInfoList * sl = d.entryInfoList(iFlags);
-	if(!sl)return false;
-	QFileInfoListIterator it(*sl);
-	while(QFileInfo * fi = it.current())
-	{
-#endif
 		QString szSFileName = szLocalDirectoryName;
 		KviQString::ensureLastCharIs(szSFileName,QChar(KVI_PATH_SEPARATOR_CHAR));
-#ifdef COMPILE_USE_QT4
+
 		QFileInfo slowCopy = sl.at(j);
 		szSFileName += slowCopy.fileName();
-#else
-		szSFileName += fi->fileName();
-#endif
+
 		QString szDFileName = szTargetDirectoryPrefix;
 		KviQString::ensureLastCharIs(szDFileName,QChar(KVI_PATH_SEPARATOR_CHAR));
-#ifdef COMPILE_USE_QT4
 		szDFileName += slowCopy.fileName();
 		if(!addFileInternal(&slowCopy,szSFileName,szDFileName,uAddFileFlags))
 			return false;
-#else
-		szDFileName += fi->fileName();
-		if(!addFileInternal(fi,szSFileName,szDFileName,uAddFileFlags))
-			return false;
-#endif
-#ifndef COMPILE_USE_QT4
-		++it;
-#endif
 	}
 	iFlags = QDir::Dirs | QDir::Readable;
 	if(!(uAddFileFlags & FollowSymLinks))
 		iFlags |= QDir::NoSymLinks;
 	sl = d.entryInfoList(iFlags);
-#ifdef COMPILE_USE_QT4
 	for(j=0;j<sl.size();j++)
 	{
 		QString szDir = sl.at(j).fileName();
-#else
-	if(!sl)return false;
-	QFileInfoListIterator it2(*sl);
-	while(QFileInfo * fi2 = it2.current())
-	{
-		QString szDir = fi2->fileName();
-#endif
 		if(!KviQString::equalCS(szDir,"..") && !KviQString::equalCS(szDir,"."))
 		{
 			QString szSDirName = szLocalDirectoryName;
@@ -306,9 +268,6 @@ bool KviPackageWriter::addDirectory(const QString &szLocalDirectoryName,const QS
 			if(!addDirectory(szSDirName,szDDirName,uAddFileFlags))
 				return false;
 		}
-#ifndef COMPILE_USE_QT4
-		++it2;
-#endif
 	}
 	
 	return true;
