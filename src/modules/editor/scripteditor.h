@@ -81,22 +81,17 @@ signals:
 protected:
 	virtual void keyPressEvent(QKeyEvent * e);
 	void contentsMousePressEvent(QMouseEvent *);
-#ifdef COMPILE_USE_QT4
+
 	Q3PopupMenu *createPopupMenu( const QPoint& pos );
-#else
-	QPopupMenu *createPopupMenu( const QPoint& pos );
-#endif
 	QWidget *m_pParent;
 	QString m_szHelp;
 
 };
 
-#ifdef COMPILE_USE_QT4
-	#include <q3syntaxhighlighter.h>
-	#define QSyntaxHighlighter Q3SyntaxHighlighter
-#else
-	#include <qobjectlist.h>
-#endif
+
+#include <q3syntaxhighlighter.h>
+#define QSyntaxHighlighter Q3SyntaxHighlighter
+
 class KviScriptSyntaxHighlighter : public QSyntaxHighlighter
 {
 public:

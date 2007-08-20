@@ -36,12 +36,11 @@
 #include <qtooltip.h>
 #include <qimage.h>
 #include <kvi_tal_textedit.h>
-#ifdef COMPILE_USE_QT4
+
+// TODO: Qt4
 #include <q3multilineedit.h>
 #include <QDateTime>
-#else
-#include <qmultilineedit.h>
-#endif
+
 #include <qbuffer.h>
 #include <qlabel.h>
 
@@ -192,11 +191,7 @@ void KviSaveThemeDialog::imageSelectionChanged(const QString &szImagePath)
 	{
 		QPixmap out;
 		if(pix.width() > 300 || pix.height() > 225)
-			#ifdef COMPILE_USE_QT4
 			out.convertFromImage(pix.scaled(300,225,Qt::KeepAspectRatio));
-		#else
-			out.convertFromImage(pix.smoothScale(300,225,QImage::ScaleMin));
-#endif
 		else
 			out.convertFromImage(pix);
 		m_pImageLabel->setPixmap(out);

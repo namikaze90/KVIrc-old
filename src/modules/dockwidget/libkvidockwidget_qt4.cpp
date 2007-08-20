@@ -22,8 +22,6 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-
 #ifdef COMPILE_ON_WINDOWS
 	#define ICON_SIZE 16
 #else
@@ -684,5 +682,3 @@ KVIRC_MODULE(
 	0,
 	dockwidget_module_cleanup
 )
-
-#endif

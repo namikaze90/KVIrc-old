@@ -38,11 +38,7 @@ class QPushButton;
 class QPixmap;
 class KviKvsScriptAddon;
 
-#ifdef COMPILE_USE_QT4
-	#include <QTextDocument>
-#else
-	#include <qsimplerichtext.h>
-#endif
+#include <QTextDocument>
 
 class KviScriptAddonListViewItem : public KviTalListViewItem
 {
@@ -51,11 +47,8 @@ public:
 	~KviScriptAddonListViewItem();
 protected:
 	KviKvsScriptAddon * m_pAddon;
-#ifdef COMPILE_USE_QT4
+
 	QTextDocument * m_pText;
-#else
-	QSimpleRichText * m_pText;
-#endif	
 	QPixmap * m_pIcon;
 	KviTalListView * m_pListView;
 	QString m_szKey;

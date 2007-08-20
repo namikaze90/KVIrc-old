@@ -42,15 +42,13 @@
 
 #include <qlayout.h>
 #include <qlabel.h>
-#ifdef COMPILE_USE_QT4
+
+// TODO: Qt4
 #include <q3header.h>
 #include <qevent.h>
 #include <QImageWriter>
 #include <QImageReader>
 
-#else
-#include <qheader.h>
-#endif
 #include "kvi_asciidict.h"
 #include <qimage.h>
 #include <qstring.h>
@@ -749,18 +747,10 @@ void KviRegisteredUsersDialog::exportClicked()
 					if(!av->pixmap()->isNull())
 					{
 						if(!f.save(1))goto write_error;
-#ifdef COMPILE_USE_QT4
 						QImageWriter io;
 						io.setDevice(&f);
 						io.setFormat("PNG");						
 						if(!io.write(av->pixmap()->convertToImage()))goto write_error;
-#else
-						QImageIO io;
-						io.setImage(av->pixmap()->convertToImage());
-						io.setIODevice(&f);
-						io.setFormat("PNG");
-						if(!io.write())goto write_error;
-#endif	
 					} else {
 						if(!f.save(0))goto write_error;
 					}
@@ -854,23 +844,12 @@ void KviRegisteredUsersDialog::importClicked()
 		{
 			// there is an avatar
 			QImage img;
-#ifdef COMPILE_USE_QT4
 			QImageReader io;
 			io.setDevice(&f);
 			io.setFormat("PNG");
 			img=io.read();
 //			if(io.read())goto read_error;
 
-#else
-			QImageIO io;
-			io.setImage(img);
-			io.setIODevice(&f);
-			io.setFormat("PNG");
-
-			if(!io.read())goto read_error;
-
-			img = io.image();
-#endif
 			if(img.isNull())debug("Ops.. readed a null image ?");
 
 			KviStr fName = u->name();

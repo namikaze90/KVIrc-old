@@ -252,11 +252,7 @@ bool KviKvsObject_workspace::functionactivateNextWindow(KviKvsObjectFunctionCall
 bool KviKvsObject_workspace::functionactivatePrevWindow(KviKvsObjectFunctionCall *c)
 {
 	if(widget()){
-		#ifdef COMPILE_USE_QT4
-			((QWorkspace *)widget())->activatePreviousWindow();
-		#else
-		((QWorkspace *)widget())->activatePrevWindow();
-		#endif
+		((QWorkspace *)widget())->activatePreviousWindow();
 	}
 		return true;
 }

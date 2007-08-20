@@ -54,11 +54,10 @@
 #include <qcheckbox.h>
 #include <qtooltip.h>
 #include <qpainter.h>
-#ifdef COMPILE_USE_QT4
-	#include <q3header.h>
-#else
-	#include <qheader.h>
-#endif
+
+// TODO: Qt4
+#include <q3header.h>
+
 #include <qtabwidget.h>
 #include <kvi_tal_groupbox.h>
 #include "kvi_valuelist.h"
@@ -654,13 +653,8 @@ KviActionEditor::KviActionEditor(QWidget * par)
 	
 	QGridLayout * l = new QGridLayout(this,1,1,2,2);
 
-#ifdef COMPILE_USE_QT4
 	m_pSplitter = new QSplitter(Qt::Horizontal,this);
 	m_pSplitter->setOpaqueResize(false);
-
-#else
-	m_pSplitter = new QSplitter(QSplitter::Horizontal,this);
-#endif
 
 	l->addWidget(m_pSplitter,0,0);
 	
@@ -669,11 +663,9 @@ KviActionEditor::KviActionEditor(QWidget * par)
 	m_pListView = new KviActionEditorListView(box);
 	//m_pListView->setMultiSelection(false);
 	m_pListView->setShowSortIndicator(true);
-#ifdef COMPILE_USE_QT4
+
 	m_pListView->setFocusPolicy(Qt::StrongFocus);
-#else
-	m_pListView->setFocusPolicy(QWidget::StrongFocus);
-#endif
+
 	connect(m_pListView,SIGNAL(currentChanged(KviTalListViewItem *)),this,SLOT(currentChanged(KviTalListViewItem *)));
 
 

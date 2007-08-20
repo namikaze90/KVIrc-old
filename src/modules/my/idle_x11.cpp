@@ -37,9 +37,9 @@ int IdlePlatform::secondsIdle() { return 0; }
 #include<X11/Xutil.h>
 #include<X11/extensions/scrnsaver.h>
 
-#ifdef COMPILE_USE_QT4
-	#include <qdesktopwidget.h>
-#endif
+
+#include <qdesktopwidget.h>
+
 
 static XErrorHandler old_handler = 0;
 extern "C" int xerrhandler(Display* dpy, XErrorEvent* err)
@@ -90,19 +90,17 @@ bool IdlePlatform::init()
 	return false;
 }
 
-#ifdef COMPILE_USE_QT4
-	#include <qx11info_x11.h>
-#endif
+
+#include <qx11info_x11.h>
+
 
 int IdlePlatform::secondsIdle()
 {
 	if(!d->ss_info)
 		return 0;
-#ifdef COMPILE_USE_QT4
+
 	if(!XScreenSaverQueryInfo(QApplication::desktop()->screen()->x11Display(), QX11Info::appRootWindow(), d->ss_info))
-#else
-	if(!XScreenSaverQueryInfo(QApplication::desktop()->screen()->x11Display(), qt_xrootwin(), d->ss_info))
-#endif
+
 		return 0;
 	return d->ss_info->idle / 1000;
 }

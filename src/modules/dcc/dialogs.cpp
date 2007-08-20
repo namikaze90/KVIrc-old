@@ -55,9 +55,9 @@ KviDccAcceptBox::KviDccAcceptBox(KviDccBroker * br,KviDccDescriptor * dcc,const 
 {
 	QVBoxLayout * vb = new QVBoxLayout(this,4,4);
 	QLabel * l = new QLabel(text,this);
-#ifdef COMPILE_USE_QT4
+
 	l->setWordWrap(true);
-#endif
+
 	vb->addWidget(l);
 	QHBoxLayout *hb = new QHBoxLayout(4);
 	vb->addLayout(hb,Qt::AlignCenter);
@@ -118,9 +118,9 @@ KviDccRenameBox::KviDccRenameBox(KviDccBroker * br,KviDccDescriptor * dcc,const 
 {
 	QVBoxLayout * vb = new QVBoxLayout(this,4,4);
 	QLabel * l = new QLabel(text,this);
-#ifdef COMPILE_USE_QT4
+
 	l->setWordWrap(true);
-#endif
+
 	vb->addWidget(l);
 
 	QHBoxLayout *hb = new QHBoxLayout(4);

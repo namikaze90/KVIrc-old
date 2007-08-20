@@ -36,11 +36,7 @@ KviKvsScriptWindowWindow::KviKvsScriptWindowWindow(KviFrame * pParent,const QStr
 : KviWindow(KVI_WINDOW_TYPE_SCRIPTOBJECT,pParent,szName)
 {
 	m_pCentralWidget = 0;
-	#ifdef COMPILE_USE_QT4
-		setBackgroundMode(Qt::NoBackground);
-	#else
-		setBackgroundMode(QWidget::NoBackground);
-	#endif
+	setBackgroundMode(Qt::NoBackground);
 }
 
 KviKvsScriptWindowWindow::~KviKvsScriptWindowWindow()

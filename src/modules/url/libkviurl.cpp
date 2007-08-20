@@ -145,11 +145,7 @@ UrlDialog::UrlDialog(KviPtrList<KviUrl> *g_pList)
 	connect(m_pUrlList,SIGNAL(rightButtonPressed(KviTalListViewItem *, const QPoint &, int)),SLOT(popup(KviTalListViewItem *, const QPoint &, int)));
 
 //	setFocusHandlerNoChildren(m_pUrlList);
-#ifdef COMPILE_USE_QT4
 	m_pUrlList->setFocusPolicy(Qt::StrongFocus);
-#else
-	m_pUrlList->setFocusPolicy(QWidget::StrongFocus);
-#endif
 	m_pUrlList->setFocus();
 }
 
@@ -523,12 +519,8 @@ void loadUrlList()
 	QFile file;
 	file.setName(QString::fromUtf8(urllist.ptr()));
 	if (!file.open(IO_ReadOnly))return;
-#ifdef COMPILE_USE_QT4
-	Q3TextStream stream(&file);
-#else
-	QTextStream stream(&file);
-#endif
 
+	Q3TextStream stream(&file);
 
 	g_pList->clear();
 
@@ -587,11 +579,9 @@ void loadBanList()
 	QFile file;
 	file.setName(QString::fromUtf8(banlist.ptr()));
 	if (!file.open(IO_ReadOnly))return;
-#ifdef COMPILE_USE_QT4
+
 	Q3TextStream stream(&file);
-#else
-	QTextStream stream(&file);
-#endif
+
 	g_pBanList->clear();
 
 	int i=0;

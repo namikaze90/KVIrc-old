@@ -32,9 +32,7 @@
 #include "kvi_tal_tooltip.h"
 #include <qevent.h>
 
-#ifdef COMPILE_USE_QT4
-	#include <qdesktopwidget.h>
-#endif
+#include <qdesktopwidget.h>
 
 extern KviOptionsInstanceManager * g_pOptionsInstanceManager;
 

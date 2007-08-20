@@ -55,9 +55,9 @@
 #include <qimage.h>
 #include <kvi_tal_textedit.h>
 //#include <qmultilineedit.h>
-#ifdef COMPILE_USE_QT4
+
 #include <QCloseEvent>
-#endif
+
 #include <qbuffer.h>
 
 #include "kvi_options.h"

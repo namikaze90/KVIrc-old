@@ -36,12 +36,11 @@
 #include <qtooltip.h>
 #include <qimage.h>
 #include <kvi_tal_textedit.h>
-#ifdef COMPILE_USE_QT4
+
+// TODO: Qt4
 #include <q3multilineedit.h>
 #include <QDateTime>
-#else
-#include <qmultilineedit.h>
-#endif
+
 #include <qbuffer.h>
 #include <qlabel.h>
 #include <qregexp.h>
@@ -333,11 +332,9 @@ void KviPackThemeDialog::imageSelectionChanged(const QString &szImagePath)
 	{
 		QPixmap out;
 		if(pix.width() > 300 || pix.height() > 225)
-#ifdef COMPILE_USE_QT4
-			out.convertFromImage(pix.scaled(300,225,Qt::KeepAspectRatio,Qt::SmoothTransformation));
-#else
-			out.convertFromImage(pix.smoothScale(300,225,QImage::ScaleMin));
-#endif
+
+		out.convertFromImage(pix.scaled(300,225,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+
 		else
 			out.convertFromImage(pix);
 		m_pImageLabel->setPixmap(out);
@@ -374,11 +371,7 @@ bool KviPackThemeDialog::packTheme()
 	if(!pix.isNull())
 	{
 		if(pix.width() > 300 || pix.height() > 225)
-		#ifdef COMPILE_USE_QT4
 			out.convertFromImage(pix.scaled(300,225,Qt::KeepAspectRatio));
-	#else
-			out.convertFromImage(pix.smoothScale(300,225,QImage::ScaleMin));
-#endif
 		else
 			out.convertFromImage(pix);
 	} else {
@@ -407,11 +400,9 @@ bool KviPackThemeDialog::packTheme()
 	if(!out.isNull())
 	{
 		QByteArray * pba = new QByteArray();
-#ifdef COMPILE_USE_QT4
-	QBuffer buffer(pba,0);
-#else		
-		QBuffer buffer(*pba);
-#endif	
+
+		QBuffer buffer(pba,0);
+
 		buffer.open(IO_WriteOnly);
 		out.save(&buffer,"PNG");
 		buffer.close();
@@ -445,11 +436,8 @@ bool KviPackThemeDialog::packTheme()
 		{
 			KviQString::sprintf(szTmp,"Theme%dScreenshot",iIdx);
 			QByteArray * pba = new QByteArray();
-#ifdef COMPILE_USE_QT4
 			QBuffer bufferz(pba,0);
-#else
-			QBuffer bufferz(*pba);
-#endif
+
 			bufferz.open(IO_WriteOnly);
 			pixScreenshot.save(&bufferz,"PNG");
 			bufferz.close();

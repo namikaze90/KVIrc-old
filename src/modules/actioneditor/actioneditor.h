@@ -71,13 +71,9 @@ class QToolButton;
 class QSimpleRichText;
 class QPushButton;
 
-#ifdef COMPILE_USE_QT4
-	#include <q3simplerichtext.h>
-	#define QSimpleRichText Q3SimpleRichText
-#else
-	#include <qsimplerichtext.h>
-#endif
 
+#include <q3simplerichtext.h>
+#define QSimpleRichText Q3SimpleRichText
 
 
 class KviActionEditorListViewItem : public KviTalListViewItem

@@ -74,13 +74,10 @@ public:
 	bool functionresetMatrix(KviKvsObjectFunctionCall *c);
 	bool functiontranslateMatrix(KviKvsObjectFunctionCall *c);
 
-#ifdef COMPILE_USE_QT4
 	bool functionsetOpacity(KviKvsObjectFunctionCall *c);
 	bool functionsetSmoothPixmapTransform(KviKvsObjectFunctionCall *c);
 	bool functionsetTextAntialiasing(KviKvsObjectFunctionCall *c);
 	bool functionsetAntialiasing(KviKvsObjectFunctionCall *c);
-#endif
-
 
 
 protected:

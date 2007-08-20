@@ -59,11 +59,8 @@ KviHelpWindow::KviHelpWindow(KviFrame * lpFrm,const char * name)
 		if ( QFileInfo( szDoclist ).exists() && QFileInfo( szDict ).exists() ) {
 			g_pDocIndex->readDict();
 		} else {
-#ifdef COMPILE_USE_QT4
 			QProgressDialog* pProgressDialog = new QProgressDialog( __tr2qs("Indexing help files"), __tr2qs("Cancel"), 0,100 );
-#else
-			QProgressDialog* pProgressDialog = new QProgressDialog( __tr2qs("Indexing help files"), __tr2qs("Cancel"), 100 );
-#endif
+
 			connect(g_pDocIndex,SIGNAL(indexingProgress(int)), pProgressDialog, SLOT(setProgress(int)) );
 			g_pDocIndex->makeIndex();
 			g_pDocIndex->writeDict();
@@ -146,11 +143,8 @@ void KviHelpWindow::loadProperties(KviConfig *cfg)
 void KviHelpWindow::refreshIndex()
 {
 	m_pIndexListBox->clear();
-#ifdef COMPILE_USE_QT4
 	QProgressDialog* pProgressDialog = new QProgressDialog( __tr2qs("Indexing help files"), __tr2qs("Cancel"), 0,100 );
-#else
-	QProgressDialog* pProgressDialog = new QProgressDialog( __tr2qs("Indexing help files"), __tr2qs("Cancel"), 100 );
-#endif
+
 	connect(g_pDocIndex,SIGNAL(indexingProgress(int)), pProgressDialog, SLOT(setProgress(int)) );
 	g_pDocIndex->makeIndex();
 	g_pDocIndex->writeDict();
@@ -181,11 +175,9 @@ void KviHelpWindow::startSearch()
 	(*it) = (*it).replace( "\"", "" );
     }
     if ( str.contains( '\"' ) ) {
-#ifdef COMPILE_USE_QT4
+
 	if ( (str.count( '\"' ))%2 == 0 ) {
-#else
-	if ( (str.contains( '\"' ))%2 == 0 ) {
-#endif
+
 	    int beg = 0;
 	    int end = 0;
 	    QString s;
@@ -211,11 +203,9 @@ void KviHelpWindow::startSearch()
 	    return;
 	}
     }
-#ifdef COMPILE_USE_QT4
+
     setCursor( Qt::WaitCursor );
-#else
-    setCursor( waitCursor );
-#endif
+
     m_foundDocs.clear();
     m_foundDocs = g_pDocIndex->query( m_terms, termSeq, seqWords );
  
@@ -244,11 +234,7 @@ void KviHelpWindow::startSearch()
     if ( !s.isEmpty() )
 	m_terms << s;
 
-#ifdef COMPILE_USE_QT4
     setCursor( Qt::ArrowCursor );
-#else
-    setCursor( arrowCursor );
-#endif
 }
 
 QTextBrowser * KviHelpWindow::textBrowser()

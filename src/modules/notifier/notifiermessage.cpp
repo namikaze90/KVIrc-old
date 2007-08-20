@@ -51,12 +51,10 @@
 #include <qdesktopwidget.h>
 #include <qtooltip.h>
 
-#ifdef COMPILE_USE_QT4
-	#define QPopupMenu Q3PopupMenu
-	#include <q3popupmenu.h>
-#else
-	#include <qpopupmenu.h>
-#endif
+// TODO: Qt4
+#define QPopupMenu Q3PopupMenu
+#include <q3popupmenu.h>
+
 
 extern kvi_time_t g_tNotifierDisabledUntil;
 

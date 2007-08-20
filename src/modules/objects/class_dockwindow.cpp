@@ -27,13 +27,11 @@
 #include "kvi_frame.h"
 #include "kvi_locale.h"
 #include "kvi_qstring.h"
-#ifdef COMPILE_USE_QT4
-	#include <q3dockwindow.h>
-	#define QT_DOCK_WINDOW Q3DockWindow
-#else
-	#include <qdockwindow.h>
-	#define QT_DOCK_WINDOW QDockWindow
-#endif
+
+// TODO: Qt4
+#include <q3dockwindow.h>
+#define QT_DOCK_WINDOW Q3DockWindow
+
 #include <qlayout.h>
 
 /*

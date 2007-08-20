@@ -629,11 +629,8 @@ static bool file_kvs_fnc_ls(KviKvsModuleFunctionCall * c)
 		return true;
 	}
 
-#ifdef COMPILE_USE_QT4
 	QFlags<QDir::Filter> iFlags = 0;
-#else
-	int iFlags = 0;
-#endif
+
 	if(szFlags.isEmpty())iFlags = QDir::Dirs | QDir::Files | QDir::NoSymLinks | QDir::Readable | QDir::Writable | QDir::Executable | QDir::Hidden | QDir::System;
 	else {
 		if(szFlags.find('d',false) != -1)iFlags |= QDir::Dirs;
@@ -645,11 +642,8 @@ static bool file_kvs_fnc_ls(KviKvsModuleFunctionCall * c)
 		if(szFlags.find('h',false) != -1)iFlags |= QDir::Hidden;
 		if(szFlags.find('s',false) != -1)iFlags |= QDir::System;
 	}
-#ifdef COMPILE_USE_QT4
 	QFlags<QDir::SortFlag> iSort = 0;
-#else
-	int iSort = 0;
-#endif
+
 	if(szFlags.isEmpty())iSort = QDir::Unsorted;
 	else {
 		if(szFlags.find('n',false) != -1)iSort |= QDir::Name;

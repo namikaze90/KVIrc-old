@@ -41,12 +41,9 @@
 #include <qpushbutton.h>
 #include "kvi_tal_tooltip.h"
 
-#ifdef COMPILE_USE_QT4
-	#include <q3header.h>
-#else
-	#include <qheader.h>
-	#include <qobjectlist.h>
-#endif
+// TODO: Qt4
+#include <q3header.h>
+
 #include "kvi_tal_popupmenu.h"
 #include <qtoolbutton.h>
 #include <qcheckbox.h>
@@ -66,9 +63,8 @@ KviGeneralOptionsFrontWidget::KviGeneralOptionsFrontWidget(QWidget *parent,const
 {
 	createLayout(1,1);
 	QLabel * l = new QLabel(szText,this);
-#ifdef COMPILE_USE_QT4
+
 	l->setWordWrap(true);
-#endif
 	l->setAlignment(Qt::AlignTop);
 	layout()->addWidget(l,0,0);
 }
@@ -323,43 +319,26 @@ bool KviOptionsDialog::recursiveSearch(KviOptionsListViewItem * pItem,const QStr
 	QTabWidget * pTabWidgetToMark = 0;
 	
 	QObject * o;
-#ifdef COMPILE_USE_QT4
 	QObjectList ol = pItem->m_pOptionsWidget->queryList();
 	if(ol.count() > 0)
 	{
 		for(QObjectList::Iterator it = ol.begin();it != ol.end();++it)
 		{
 			o = *it;
-#else
-	QObjectList * ol = pItem->m_pOptionsWidget->queryList();
-	if(ol)
-	{
-		QObjectListIt it(*ol);
-		while((o = it.current())/* && (!bFoundSomethingHere)*/)
-		{
-#endif
 			QString szText;
 			if(o->inherits("QLabel"))szText = ((QLabel *)o)->text();
 			else if(o->inherits("QCheckBox"))szText = ((QCheckBox *)o)->text();
 			else if(o->inherits("KviTalGroupBox"))szText = ((KviTalGroupBox *)o)->title();
 #ifdef COMPILE_INFO_TIPS
 			if(o->inherits("QWidget"))
-#ifdef COMPILE_USE_QT4
-				szText.append(((QWidget *)o)->toolTip());
-#else
-				szText.append(QToolTip::textFor((QWidget*)o));
-#endif
+			szText.append(((QWidget *)o)->toolTip());
 #endif
 			if(!szText.isEmpty())
 			{
 				bool bOk = true;
 				for(int j=0;j<lKeywords.count();j++)
 				{
-#ifdef COMPILE_USE_QT4
 					if(szText.find(lKeywords.at(j),0,false) == -1)
-#else
-					if(szText.find(*(lKeywords.at(j)),0,false) == -1)
-#endif
 					{
 						bOk = false;
 						break;
@@ -413,14 +392,7 @@ bool KviOptionsDialog::recursiveSearch(KviOptionsListViewItem * pItem,const QStr
 					}
 				}
 			}
-
-#ifndef COMPILE_USE_QT4
-			++it;
-#endif
 		}
-#ifndef COMPILE_USE_QT4
-		delete ol;
-#endif
 	}
 
 	if(pTabWidgetToMark)

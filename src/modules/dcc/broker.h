@@ -26,11 +26,7 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	// #define COMPILE_DCC_CANVAS
-#else
-	#define COMPILE_DCC_CANVAS
-#endif
+// #define COMPILE_DCC_CANVAS
 
 #include "kvi_string.h"
 #include "kvi_list.h"

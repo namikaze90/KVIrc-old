@@ -37,14 +37,10 @@
 
 #include "notifiermessage.h"
 
-#ifdef COMPILE_USE_QT4
-	#define QPtrList Q3PtrList
-	#define QPtrListIterator Q3PtrListIterator
-	#include <q3ptrlist.h>
-#else
-	#include <qptrlist.h>
-	//#include <qptrlistiterator.h>
-#endif
+// TODO: Qt4
+#define QPtrList Q3PtrList
+#define QPtrListIterator Q3PtrListIterator
+#include <q3ptrlist.h>
 
 class QPainter;
 class KviWindow;

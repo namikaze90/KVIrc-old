@@ -371,12 +371,10 @@ KVSO_BEGIN_REGISTERCLASS(KviKvsObject_painter,"painter","object")
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"translate",functiontranslateMatrix)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"reset",functionresetMatrix)
 
-#ifdef COMPILE_USE_QT4
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"setOpacity",functionsetOpacity)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"setTextAntialiasing",functionsetTextAntialiasing)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"setAntialiasing",functionsetAntialiasing)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"setSmoothPixmapTransform",functionsetSmoothPixmapTransform)
-#endif
 
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"begin",functionbegin)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"end",functionend)
@@ -596,9 +594,7 @@ bool KviKvsObject_painter::functiondrawWinFocusRect(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_END(c)
 	QString function="$drawWinFocusRect";
 	KVSO_PARAMETERS_PAINTER(pXOrArray,iY,iW,iH)
-#ifndef COMPILE_USE_QT4
-		if(m_pPainter)	m_pPainter->drawWinFocusRect(iX,iY,iW,iH);
-#endif
+
 	return true;
 }
 bool KviKvsObject_painter::functiondrawEllipse(KviKvsObjectFunctionCall *c)
@@ -843,7 +839,7 @@ bool KviKvsObject_painter::functiondrawText(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("mode",KVS_PT_STRING,KVS_PF_OPTIONAL,szMode)
 	KVSO_PARAMETERS_END(c)
 	if(!m_pPainter)return true;
-#ifdef COMPILE_USE_QT4
+
 	if (!szMode.isEmpty()){
 		if(KviQString::equalCI(szMode,"RTL"))m_pPainter->setLayoutDirection(Qt::RightToLeft);
 		else if(KviQString::equalCI(szMode,"LTR"))m_pPainter->setLayoutDirection(Qt::LeftToRight);
@@ -853,15 +849,8 @@ bool KviKvsObject_painter::functiondrawText(KviKvsObjectFunctionCall *c)
 				return true;
 		}
 	}
+	m_pPainter->drawText(iX,iY,szText);
 
-	 m_pPainter->drawText(iX,iY,szText);
-#else
-	if(KviQString::equalCI(szMode,"Auto")) m_pPainter->drawText(iX,iY,szText,iLen,QPainter::Auto);
-	else if(KviQString::equalCI(szMode,"RTL")) m_pPainter->drawText(iX,iY,szText,iLen,QPainter::RTL);
-	else if(KviQString::equalCI(szMode,"LTR"))m_pPainter->drawText(iX,iY,szText,iLen,QPainter::LTR);
-	else c->warning(__tr2qs("Invalid mode '%Q'"),&szMode);
-
-#endif
 	return true;
 }
 
@@ -955,7 +944,6 @@ bool KviKvsObject_painter::functionresetMatrix(KviKvsObjectFunctionCall *c)
     return true;
 }
 
-#ifdef COMPILE_USE_QT4
 bool KviKvsObject_painter::functionsetOpacity(KviKvsObjectFunctionCall *c)
 {
 	if(!m_pPainter)return true; 
@@ -1000,6 +988,5 @@ bool KviKvsObject_painter::functionsetSmoothPixmapTransform(KviKvsObjectFunction
 	m_pPainter->setRenderHint(QPainter::SmoothPixmapTransform,bEnabled);
 	return true;
 }
-#endif
 
 

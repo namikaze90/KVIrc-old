@@ -100,9 +100,9 @@ KviSetupPage::KviSetupPage(KviSetupWizard * w)
 	l->setText(szHeader);
 
 	m_pTextLabel = new QLabel(m_pVBox);
-#ifdef COMPILE_USE_QT4
+
 	m_pTextLabel->setWordWrap(true);
-#endif
+
 	m_pTextLabel->setAlignment(Qt::AlignJustify | Qt::AlignVCenter);
 	m_pVBox->setStretchFactor(m_pTextLabel,1);
 }

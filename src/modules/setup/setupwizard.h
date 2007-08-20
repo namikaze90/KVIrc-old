@@ -30,13 +30,11 @@
 #include <qlabel.h>
 #include <qpixmap.h>
 #include <qlineedit.h>
-#ifdef COMPILE_USE_QT4
+
+// TODO: Qt4
 #include <q3buttongroup.h>
 #define KviTalVButtonGroup Q3VButtonGroup
-#else
- #include <qvbuttongroup.h>
-#define KviTalVButtonGroup QVButtonGroup
-#endif
+
 #include <qradiobutton.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>

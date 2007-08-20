@@ -44,13 +44,12 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qgroupbox.h>
-#ifdef COMPILE_USE_QT4
+
+// TODO: Qt4
 #include <qevent.h>
 #include <q3header.h>
 #include <q3vbox.h>
-#else
-#include <qheader.h>
-#endif
+
 #include "kvi_asciidict.h"
 #include <qimage.h>
 #include <qstring.h>
@@ -88,11 +87,8 @@ KviReguserPropertiesDialog::KviReguserPropertiesDialog(QWidget * p,KviDict<QStri
 
 	QGridLayout * g = new QGridLayout(this,3,3,4,4);
 
-#ifdef COMPILE_USE_QT4
 	m_pTable = new Q3Table(this);
-#else
-	m_pTable = new QTable(this);
-#endif
+
 	g->addMultiCellWidget(m_pTable,0,1,0,1);
 
 	m_pTable->setNumCols(2);
@@ -448,11 +444,8 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 	addTab(p2,__tr2qs("Properties"));
 
 	// Ignore TAB
-#ifdef COMPILE_USE_QT4
 	Q3VBox * vb = new Q3VBox(this);
-#else
-	QVBox * vb = new QVBox(this);
-#endif
+
 	vb->setMargin(10);
 
 	m_pIgnoreEnabled = new KviStyledCheckBox(__tr2qs("Enable ignore for this user"),vb);

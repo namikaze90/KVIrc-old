@@ -36,15 +36,10 @@
 #include "kvi_tal_popupmenu.h"
 #include "kvi_tal_hbox.h" 
 
-#ifdef COMPILE_USE_QT4
+// TODO: Qt4
 #include <q3table.h>
 #define KviTalTable Q3Table
 #define KviTalTableItem Q3TableItem
-#else
-#include <qtable.h>
-#define KviTalTable QTable
-#define KviTalTableItem QTableItem
-#endif
 
 class KviTextIconTableItem;
 

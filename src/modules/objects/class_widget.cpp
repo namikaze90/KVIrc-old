@@ -42,12 +42,8 @@
 #include "class_widget.h"
 #include "class_pixmap.h"
 
-#ifdef COMPILE_USE_QT4
-	#include <QKeyEvent>
-	#include <QDesktopWidget>
-#else
-	#include <qwidgetlist.h>
-#endif
+#include <QKeyEvent>
+#include <QDesktopWidget>
 
 #include <qwidget.h>
 #include <qtooltip.h>
@@ -68,7 +64,7 @@ const char * const widgettypes_tbl[] = {
 			"Maximize",
 			"NoAutoErase"
 			   };
-#ifdef COMPILE_USE_QT4
+
 const Qt::WidgetAttribute widgetattributes_cod[]= {
 	Qt::WA_OpaquePaintEvent,
 	Qt::WA_NoSystemBackground,
@@ -86,9 +82,6 @@ const char * const widgetattributes_tbl[] = {
 
 
 const Qt::WindowType widgettypes_cod[] = {
-#else 
-const int widgettypes_cod[] = {
-#endif
 		Qt::WType_TopLevel,
 		Qt::WType_Dialog,
 		Qt::WType_Popup,
@@ -103,19 +96,11 @@ const int widgettypes_cod[] = {
 };
 
 
-#ifdef COMPILE_USE_QT4
+#define QT_WIDGET_TABFOCUS Qt::TabFocus
+#define	QT_WIDGET_CLICKFOCUS Qt::ClickFocus
+#define QT_WIDGET_STRONGFOCUS Qt::StrongFocus
+#define QT_WIDGET_NOFOCUS Qt::NoFocus
 
-	#define QT_WIDGET_TABFOCUS Qt::TabFocus
-	#define	QT_WIDGET_CLICKFOCUS Qt::ClickFocus
-	#define QT_WIDGET_STRONGFOCUS Qt::StrongFocus
-	#define QT_WIDGET_NOFOCUS Qt::NoFocus
-
-#else
-	#define QT_WIDGET_TABFOCUS QWidget::TabFocus
-	#define	QT_WIDGET_CLICKFOCUS QWidget::ClickFocus
-	#define QT_WIDGET_STRONGFOCUS QWidget::StrongFocus
-	#define QT_WIDGET_NOFOCUS QWidget::NoFocus
-#endif
 
 
 #define widgettypes_num	(sizeof(widgettypes_tbl) / sizeof(widgettypes_tbl[0]))
@@ -601,10 +586,7 @@ KVSO_BEGIN_REGISTERCLASS(KviKvsObject_widget,"widget","object")
 	KVSO_REGISTER_HANDLER(KviKvsObject_widget,"foregroundColor",function_foregroundColor)
 	KVSO_REGISTER_HANDLER(KviKvsObject_widget,"setMask",function_setMask)
 
-	// QT4 only
-#ifdef COMPILE_USE_QT4
 	KVSO_REGISTER_HANDLER(KviKvsObject_widget,"setAttribute",function_setAttribute)
-#endif
 
 	// events
 	KVSO_REGISTER_STANDARD_NOTHINGRETURN_HANDLER(KviKvsObject_widget,"mousePressEvent")
@@ -622,9 +604,9 @@ KVSO_BEGIN_REGISTERCLASS(KviKvsObject_widget,"widget","object")
 	KVSO_REGISTER_STANDARD_NOTHINGRETURN_HANDLER(KviKvsObject_widget,"moveEvent")
 	KVSO_REGISTER_STANDARD_NOTHINGRETURN_HANDLER(KviKvsObject_widget,"paintEvent")
 	KVSO_REGISTER_STANDARD_NOTHINGRETURN_HANDLER(KviKvsObject_widget,"keyPressEvent")
-#ifdef COMPILE_USE_QT4
+
 	KVSO_REGISTER_STANDARD_NOTHINGRETURN_HANDLER(KviKvsObject_widget,"maybeTipEvent")
-#endif
+
 
 
 KVSO_END_REGISTERCLASS(KviKvsObject_widget)
@@ -654,7 +636,6 @@ bool KviKvsObject_widget::eventFilter(QObject *o,QEvent *e)
 			
 		switch(e->type())
 		{
-			#ifdef COMPILE_USE_QT4
 			case QEvent::ToolTip:
 			{
 				QHelpEvent *helpEvent = static_cast<QHelpEvent *>(e);
@@ -667,7 +648,6 @@ bool KviKvsObject_widget::eventFilter(QObject *o,QEvent *e)
 				QToolTip::showText(helpEvent->globalPos(),szTooltip);
 				break;
 			}
-			#endif
 			case QEvent::Paint:
 			{
 				QRect rect=((QPaintEvent *)e)->rect();
@@ -1537,11 +1517,9 @@ bool KviKvsObject_widget::function_setWFlags(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("widget_flags",KVS_PT_STRINGLIST,KVS_PF_OPTIONAL,wflags)
 	KVSO_PARAMETERS_END(c)
 	if (!widget()) return true;
-	#ifdef COMPILE_USE_QT4
-		Qt::WindowFlags flag,sum=0;
-	#else
-		int flag,sum=0;
-	#endif
+
+	Qt::WindowFlags flag,sum=0;
+
 	for ( QStringList::Iterator it = wflags.begin(); it != wflags.end(); ++it )
 	{
 			
@@ -1561,12 +1539,9 @@ bool KviKvsObject_widget::function_setWFlags(KviKvsObjectFunctionCall *c)
 
 		}
 	
-#ifdef COMPILE_USE_QT4
 	widget()->setWindowFlags(sum);
-#else
-	 widget()->reparent(widget()->parentWidget(),sum,QPoint(widget()->x(),widget()->y()));
-#endif
-	 return true;
+
+	return true;
 }
 
 bool KviKvsObject_widget::function_setFont(KviKvsObjectFunctionCall *c)
@@ -1707,16 +1682,13 @@ bool KviKvsObject_widget::function_setMask(KviKvsObjectFunctionCall *c)
 		return true;
 	}
 	QPixmap * pm=((KviKvsObject_pixmap *)obj)->getPixmap();
-#ifdef COMPILE_USE_QT4
 	QBitmap mask(pm->mask());
-#else
-	QBitmap mask(*pm->mask());
-#endif
+
 	if (mask.isNull()) c->warning(__tr2qs("Null mask"));
 	widget()->setMask(mask);
 	return true;
 }
-#ifdef COMPILE_USE_QT4
+
 bool KviKvsObject_widget::function_setAttribute(KviKvsObjectFunctionCall *c)
 {
 	QString attribute;
@@ -1740,5 +1712,4 @@ bool KviKvsObject_widget::function_setAttribute(KviKvsObjectFunctionCall *c)
 	else c->warning(__tr2qs("Unknown widget attribute '%Q'"),&attribute);	
 	return true;
 }
-#endif
 

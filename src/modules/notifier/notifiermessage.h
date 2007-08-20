@@ -41,14 +41,12 @@
 #include "kvi_list.h"
 #include "kvi_time.h"
 
-#ifdef COMPILE_USE_QT4
-	#define QSimpleRichText Q3SimpleRichText
-	#define QPopupMenu Q3PopupMenu
-	#include <q3popupmenu.h>
-	#include <q3simplerichtext.h>
-#else
-	#include <qsimplerichtext.h>
-#endif
+// TODO: Qt4
+#define QSimpleRichText Q3SimpleRichText
+#define QPopupMenu Q3PopupMenu
+#include <q3popupmenu.h>
+#include <q3simplerichtext.h>
+
 
 class KviWindow;
 class KviNotifierWindow;

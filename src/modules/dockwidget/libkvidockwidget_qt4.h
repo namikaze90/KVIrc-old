@@ -21,8 +21,6 @@
 //
 
 #include "kvi_settings.h"
-//#ifdef COMPILE_USE_QT4
-
 #include "kvi_frame.h"
 
 class KviTalPopupMenu;
@@ -75,7 +73,5 @@ protected slots:
 
 	void activatedSlot( QSystemTrayIcon::ActivationReason reason );
 };
-
-//#endif
 
 #endif //_KVI_DOCKWIDGET_QT4_H_

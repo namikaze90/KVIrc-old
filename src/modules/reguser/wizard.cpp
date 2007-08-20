@@ -31,9 +31,8 @@
 #include "kvi_pixmap.h"
 #include "kvi_regusersdb.h"
 #include "kvi_iconmanager.h"
-#ifdef COMPILE_USE_QT4
+
 #include <QDesktopWidget>
-#endif
 
 #include <qcheckbox.h>
 #include <qlabel.h>

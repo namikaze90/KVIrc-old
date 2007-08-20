@@ -32,9 +32,9 @@
 
 #include "kvi_frame.h"
 
-#ifdef COMPILE_USE_QT4
-	#include <q3mimefactory.h>
-#endif
+// TODO: Qt4
+#include <q3mimefactory.h>
+
 
 
 #include <qsplitter.h>
@@ -149,11 +149,9 @@ static bool help_kvs_cmd_open(KviKvsModuleCommandCall * c)
 		g_pApp->getGlobalKvircDirectory(doc,KviApp::Help,"index.html");
 	else
 		g_pApp->getGlobalKvircDirectory(doc,KviApp::Help,tmpDoc);
-#ifdef COMPILE_USE_QT4
+
 	Q3MimeSourceFactory * f = Q3MimeSourceFactory::defaultFactory();
-#else
-	QMimeSourceFactory * f = QMimeSourceFactory::defaultFactory();
-#endif
+
 	if(f)
 	{
 		if(!f->data(doc))

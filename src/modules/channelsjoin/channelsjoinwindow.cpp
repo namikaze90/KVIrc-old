@@ -42,11 +42,10 @@
 #include <qlayout.h>
 #include <qcheckbox.h>
 #include <qpushbutton.h>
-#ifdef COMPILE_USE_QT4
-	#include <q3header.h>
-#else
-	#include <qheader.h>
-#endif
+
+// TODO: Qt4
+#include <q3header.h>
+
 #include <qevent.h>
 
 extern KviChannelsJoinWindow * g_pChannelsWindow;
@@ -98,12 +97,7 @@ KviChannelsJoinWindow::KviChannelsJoinWindow(QWidget * par, const char * name)
 	m_pJoinButton->setDefault(true);
 	connect(m_pJoinButton,SIGNAL(clicked()),this,SLOT(joinClicked()));
 
-#ifdef COMPILE_USE_QT4
 	g->addMultiCellWidget(m_pJoinButton,2,2,0,1,Qt::AlignHCenter);
-#else
-	g->addMultiCellWidget(m_pJoinButton,2,2,0,1,AlignHCenter);
-#endif
-
 
 	m_pShowAtStartupCheck = new KviStyledCheckBox(__tr2qs("Show this window after connecting"),this);
 	m_pShowAtStartupCheck->setChecked(KVI_OPTION_BOOL(KviOption_boolShowChannelsJoinOnIrc));

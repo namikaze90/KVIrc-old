@@ -25,10 +25,6 @@
 
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	#include "libkvidockwidget_qt4.h"
-#else
-	#include "libkvidockwidget_qt3.h"
-#endif
+#include "libkvidockwidget_qt4.h"
 
 #endif // _KVI_TAL_DOCK_H_

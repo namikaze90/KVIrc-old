@@ -34,16 +34,12 @@
 #include "kvi_tal_listbox.h"
 #include "kvi_dict.h"
 #include "kvi_tal_popupmenu.h"
-#ifdef COMPILE_USE_QT4
-	#include <q3intdict.h>
-	#include <q3simplerichtext.h>
-	#define QSimpleRichText Q3SimpleRichText
-#else
-	#include <qsimplerichtext.h>
-	#include <qintdict.h>
 
+// TODO: Qt4
+#include <q3intdict.h>
+#include <q3simplerichtext.h>
+#define QSimpleRichText Q3SimpleRichText
 
-#endif
 
 class KviRegisteredUsersDialogItemBase : public KviTalListViewItem
 {
@@ -115,11 +111,7 @@ public:
 	QPushButton * m_pImportButton;
 	QPushButton * m_pExportButton;
 	QPushButton * m_pAddGroupButton;
-#ifdef COMPILE_USE_QT4
 	Q3IntDict<KviRegisteredUserGroup> m_TmpDict;
-#else
-	QIntDict<KviRegisteredUserGroup> m_TmpDict;
-#endif
 
 	protected slots:
 	void itemPressed(KviTalListViewItem *it,const QPoint &pnt,int c);

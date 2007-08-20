@@ -563,20 +563,6 @@ static bool system_kvs_fnc_dcop(KviKvsModuleFunctionCall *c)
 				int iii;
 				ret >> iii;
 				c->returnValue()->setInteger(iii);
-			} else if(szRetType == "QCStringList")
-			{
-#ifndef COMPILE_USE_QT4
-				QCStringList csl;
-				ret >> csl;
-				KviKvsArray * arry = new KviKvsArray();
-				int idx = 0;
-				for(QCStringList::Iterator iter = csl.begin();iter != csl.end();++iter)
-				{
-					arry->set(idx,new KviKvsVariant(QString(*iter)));
-					idx++;
-				}
-				c->returnValue()->setArray(arry);
-#endif
 			} else if(szRetType == "QStringList")
 			{
 				QStringList csl;

@@ -23,18 +23,15 @@
 //==================================================================================
 #include "kvi_settings.h"
 
-#ifdef COMPILE_USE_QT4
-	#define QPopupMenu Q3PopupMenu
-	#define QSimpleRichText Q3SimpleRichText
+// TODO: Qt4
+#define QPopupMenu Q3PopupMenu
+#define QSimpleRichText Q3SimpleRichText
 
-	#include <q3popupmenu.h>
-	#include <q3simplerichtext.h>
-#else
-	#include <qpopupmenu.h>
-	#include <qsimplerichtext.h>
-#endif
+#include <q3popupmenu.h>
+#include <q3simplerichtext.h>
 
-	#include <qpainter.h>
+
+#include <qpainter.h>
 
 #include "notifiermessage.h"
 #include "notifierwindow.h"
@@ -127,11 +124,9 @@ KviNotifierWindow::KviNotifierWindow()
 	if(m_iInputHeight < 10)m_iInputHeight = 10;
 
 	setBackgroundMode(Qt::NoBackground);
-#ifdef COMPILE_USE_QT4
+
 	setFocusPolicy(Qt::NoFocus);
-#else
-	setFocusPolicy(QWidget::NoFocus);
-#endif
+
 	setMouseTracking(true);
 	//setCursor(m_cursor);
 	
@@ -402,18 +397,13 @@ void KviNotifierWindow::heartbeat()
 				m_eState = Hiding;
 			} else {
 				m_dOpacity += OPACITY_STEP;
-#ifdef COMPILE_USE_QT4
 				targetOpacity = isActiveWindow() ? KVI_OPTION_UINT(KviOption_uintNotifierActiveTransparency) : KVI_OPTION_UINT(KviOption_uintNotifierInactiveTransparency);
 
 				targetOpacity/=100;
 				if(m_dOpacity >= targetOpacity)
 				{
 					m_dOpacity = targetOpacity;
-#else
-				if(m_dOpacity >= 1.0)
-				{
-					m_dOpacity = 1.0;
-#endif
+
 					m_eState = Visible;
 					stopShowHideTimer();
 					startBlinking();
@@ -429,7 +419,6 @@ void KviNotifierWindow::heartbeat()
 
 			}
 		break;
-#ifdef COMPILE_USE_QT4
 		case FocusingOn:
 			targetOpacity = KVI_OPTION_UINT(KviOption_uintNotifierActiveTransparency);
 			targetOpacity/=100;
@@ -464,7 +453,6 @@ void KviNotifierWindow::heartbeat()
 
 			setWindowOpacity(m_dOpacity);
 			break;
-#endif
 		case Hiding:
 			m_dOpacity -= OPACITY_STEP;
 			#if defined(COMPILE_USE_QT4) && (defined(COMPILE_ON_WINDOWS) || defined(Q_OS_MACX)) 
@@ -686,12 +674,8 @@ void KviNotifierWindow::paintEvent(QPaintEvent * e)
 	#endif
 		px.end();
 	} else {
-#ifdef COMPILE_USE_QT4
 		QPainter px(this);
 		px.drawPixmap(0,0,m_pixForeground);
-#else
-		bitBlt(this,QPoint(0,0),&m_pixForeground);
-#endif
 	}
 }
 
@@ -1202,14 +1186,12 @@ inline void KviNotifierWindow::setCursor(int cur) {
 
 void KviNotifierWindow::enterEvent(QEvent * e)
 {
-#ifdef COMPILE_USE_QT4
 	if(!m_pShowHideTimer) {
 		m_pShowHideTimer = new QTimer();
 		connect(m_pShowHideTimer,SIGNAL(timeout()),this,SLOT(heartbeat()));
 	}
 	m_eState = FocusingOn;
 	m_pShowHideTimer->start(40);
-#endif
 }
 
 void KviNotifierWindow::leaveEvent(QEvent * e)
@@ -1219,14 +1201,12 @@ void KviNotifierWindow::leaveEvent(QEvent * e)
 	m_pWndTabs->resetIcons();
 	if (!m_bResizing)
 		setCursor(-1);
-#ifdef COMPILE_USE_QT4
 	if(!m_pShowHideTimer) {
 		m_pShowHideTimer = new QTimer();
 		connect(m_pShowHideTimer,SIGNAL(timeout()),this,SLOT(heartbeat()));
 	}
 	m_eState = FocusingOff;
 	m_pShowHideTimer->start(40);
-#endif
 }
 
 void KviNotifierWindow::contextPopup(const QPoint &pos)

@@ -69,25 +69,6 @@
 #include <ctype.h>
 
 
-#ifndef COMPILE_USE_QT4
-int TermList::compareItems( QPtrCollection::Item i1, QPtrCollection::Item i2 )
-
-{
-
-    if( ( (Term*)i1 )->frequency == ( (Term*)i2 )->frequency )
-
-	return 0;
-
-    if( ( (Term*)i1 )->frequency < ( (Term*)i2 )->frequency )
-
-	return -1;
-
-    return 1;
-
-}
-#endif
-
-
 QDataStream &operator>>( QDataStream &s, Document &l )
 
 {
@@ -522,9 +503,6 @@ QStringList Index::query( const QStringList &terms, const QStringList &termSeq, 
 
     QStringList results;
 
-#ifndef COMPILE_USE_QT4
-    qHeapSort( minDocs );
-#endif
     if ( termSeq.isEmpty() ) {
 
 	for ( C = minDocs.begin(); C != minDocs.end(); ++C )
@@ -597,11 +575,7 @@ QStringList Index::getWildcardTerms( const QString &term )
 
     QStringList terms = split( term );
 
-#ifdef COMPILE_USE_QT4
 	QStringList::Iterator iter;
-#else
-    KviValueList<QString>::iterator iter;
-#endif
 
 
     KviDictIterator<Entry> it( dict );

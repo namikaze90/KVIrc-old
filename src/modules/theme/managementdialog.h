@@ -29,13 +29,11 @@
 #include "kvi_theme.h"
 
 #include <qdialog.h>
-#ifdef COMPILE_USE_QT4
+
+// TODO: Qt4
 #include <q3simplerichtext.h>
 #define KviTalSimpleRichText Q3SimpleRichText
-#else
-#include <qsimplerichtext.h>
-#define KviTalSimpleRichText QSimpleRichText
-#endif
+
 #include "kvi_tal_listbox.h"
 #include <qcombobox.h>
 #include "kvi_tal_popupmenu.h"

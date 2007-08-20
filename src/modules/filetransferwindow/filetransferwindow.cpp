@@ -39,11 +39,10 @@
 #include <qsplitter.h>
 #include <qtooltip.h>
 #include "kvi_tal_hbox.h"
-#ifdef COMPILE_USE_QT4
-	#include <q3header.h>
-#else
-	#include <qheader.h>
-#endif
+
+// TODO: Qt4
+#include <q3header.h>
+
 #include <qpainter.h>
 #include <qmessagebox.h>
 #include <qclipboard.h>
@@ -579,14 +578,7 @@ void KviFileTransferWindow::copyLocalFileToClipboard()
 	if(!t)return;
 	QString tmp = t->localFileName();
 	if(tmp.isEmpty())return;
-#ifdef COMPILE_USE_QT4
 	QApplication::clipboard()->setText(tmp);
-#else
-	QApplication::clipboard()->setSelectionMode(false);
-	QApplication::clipboard()->setText(tmp);
-	QApplication::clipboard()->setSelectionMode(true);
-	QApplication::clipboard()->setText(tmp);
-#endif
 }
 
 void KviFileTransferWindow::openLocalFileFolder()

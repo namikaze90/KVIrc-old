@@ -86,11 +86,8 @@ KviChannelListViewItem::~KviChannelListViewItem()
 {
 	delete m_pData;
 }
-#ifdef COMPILE_USE_QT4
+
 int KviChannelListViewItem::width ( const QFontMetrics & fm, const KviTalListView * lv, int column ) const
-#else
-int KviChannelListViewItem::width ( const QFontMetrics & fm, const QListView * lv, int column ) const
-#endif
 {
 	debug("width request");
 	QString szText;
@@ -123,14 +120,7 @@ void KviChannelListViewItem::paintCell(QPainter * p,const QColorGroup &cg,int co
 	int marg = lv->itemMargin();
 	int r = marg;
 
-#ifdef COMPILE_USE_QT4
-
 	p->fillRect( 0, 0, width, height(), cg.brush(lv->viewport()->backgroundRole()) );
-#else
-	const QColorGroup::ColorRole crole = QPalette::backgroundRoleFromMode(lv->viewport()->backgroundMode());
-	
-	p->fillRect( 0, 0, width, height(), cg.brush( crole ) );
-#endif
 
 	if ( isSelected() &&
 		(column == 0 || lv->allColumnsShowFocus()) ) {

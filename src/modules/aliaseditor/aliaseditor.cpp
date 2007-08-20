@@ -210,12 +210,8 @@ KviAliasEditor::KviAliasEditor(QWidget * par)
 
 	QGridLayout * l = new QGridLayout(this,1,1,2,2);
 
-#ifdef COMPILE_USE_QT4
 	m_pSplitter = new QSplitter(Qt::Horizontal,this);
 	m_pSplitter->setOpaqueResize(false);
-#else
-	m_pSplitter = new QSplitter(QSplitter::Horizontal,this);
-#endif
 
 	l->addWidget(m_pSplitter,0,0);
 	

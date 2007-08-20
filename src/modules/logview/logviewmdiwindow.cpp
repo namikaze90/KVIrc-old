@@ -32,11 +32,10 @@
 #include "kvi_qcstring.h"
 #include "kvi_app.h"
 #include "kvi_fileutils.h"
-#ifdef COMPILE_USE_QT4
-	#include <q3progressdialog.h>
-#else
-	#include <qprogressdialog.h> 
-#endif
+
+// TODO: Qt4
+#include <q3progressdialog.h>
+
 #include "kvi_valuelist.h"
 #include "kvi_accel.h"
 #include <qpixmap.h>
@@ -68,11 +67,9 @@ KviLogViewMDIWindow::KviLogViewMDIWindow(KviModuleExtensionDescriptor * d,KviFra
 {
 	g_pLogViewWindow = this;
 //	m_pLogViewWidget = new KviLogViewWidget(this);
-	#ifdef COMPILE_USE_QT4
+
 	m_pSplitter = new QSplitter(Qt::Horizontal,this,"main_splitter");
-#else
-	m_pSplitter = new QSplitter(QSplitter::Horizontal,this,"main_splitter");
-#endif
+
 	m_pTabWidget = new QTabWidget(m_pSplitter);
 	
 	m_pIndexTab  = new KviTalVBox(m_pTabWidget);
@@ -153,11 +150,9 @@ KviLogViewMDIWindow::KviLogViewMDIWindow(KviModuleExtensionDescriptor * d,KviFra
 	layout->addWidget(w,11,1);
 
 	m_pIrcView = new KviIrcView(m_pSplitter,g_pFrame,this);
-#ifdef COMPILE_USE_QT4
+
 	m_pIrcView->setFocusPolicy(Qt::ClickFocus);
-#else
-		m_pIrcView->setFocusPolicy(QWidget::ClickFocus);
-#endif
+
 	KviValueList<int> li;
 	li.append(110);
 	li.append(width()-110);
@@ -250,15 +245,10 @@ void KviLogViewMDIWindow::setupItemList()
 	QDate toDate   = m_pToDateEdit->date();
 
 	QString textBuffer;
-#ifdef COMPILE_USE_QT4
+
 	Q3ProgressDialog progress( __tr2qs_ctx("Filtering files...","logview"),
 		__tr2qs_ctx("Abort filtering","logview"), m_logList.count(),
                           this, "progress", TRUE );
-#else
-	QProgressDialog progress( __tr2qs_ctx("Filtering files...","logview"),
-		__tr2qs_ctx("Abort filtering","logview"), m_logList.count(),
-                          this, "progress", TRUE );
-#endif
 
 
 	int i=0;

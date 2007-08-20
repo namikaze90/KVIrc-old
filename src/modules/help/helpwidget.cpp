@@ -52,9 +52,7 @@ KviHelpWidget::KviHelpWidget(QWidget * par,KviFrame * lpFrm,bool bIsStandalone)
 //#warning "Re enable this when using Qt 3.0 : QProcess "
 	m_pTextBrowser = new QTextBrowser(this,"text_browser");
 	m_pTextBrowser->setFrameStyle(QFrame::StyledPanel|QFrame::Sunken);
-#ifndef COMPILE_USE_QT4
-	m_pTextBrowser->setFocusPolicy(QWidget::NoFocus);
-#endif
+
 	m_pToolBar = new KviTalHBox(this);
 
 	m_pBtnIndex = new KviStyledToolButton(m_pToolBar);

@@ -35,17 +35,12 @@
 #include "kvi_tal_listbox.h"
 #include "kvi_dict.h"
 #include <kvi_tal_tabdialog.h>
-#ifdef COMPILE_USE_QT4
+
+// TODO: Qt4
 #include <q3table.h>
 #define Kvi_Tal_Table Q3Table
 #define Kvi_Tal_TableItem Q3TableItem
 
-#else
-#include <qtable.h>
-#define Kvi_Tal_Table QTable
-#define Kvi_Tal_TableItem QTableItem
-
-#endif
 #include "kvi_tal_popupmenu.h"
 
 #ifndef _EDITUSER_CPP_
@@ -61,11 +56,8 @@ public:
 	KviReguserPropertiesDialog(QWidget *p,KviDict<QString> * dict);
 	~KviReguserPropertiesDialog();
 protected:
-#ifdef COMPILE_USE_QT4
 	Q3Table *m_pTable;
-#else
-	QTable             * m_pTable;
-#endif
+
 	KviDict<QString>     * m_pPropertyDict;
 	QPushButton        * m_pDelButton;
 	QPushButton        * m_pAddButton;
