@@ -60,7 +60,7 @@
 
 #include <qdatetime.h>
 
-
+#define QT4_TAG " (QT4) "
 
 
 extern KVIRC_API KviSharedFilesManager * g_pSharedFilesManager;
@@ -1140,11 +1140,6 @@ void KviServerParser::parseCtcpRequestVersion(KviCtcpMessage *msg)
 		if(!KVI_OPTION_BOOL(KviOption_boolIgnoreCtcpVersion))
 		{
 			QString szVersion;
-#ifdef COMPILE_USE_QT4
-	#define QT4_TAG " (QT4) "
-#else
-	#define QT4_TAG
-#endif
 
 #ifdef COMPILE_ON_WINDOWS
 			szVersion = "KVIrc " KVI_VERSION QT4_TAG " '" KVI_RELEASE_NAME "' " KVI_SOURCES_DATE " - build " KVI_BUILD_DATE;

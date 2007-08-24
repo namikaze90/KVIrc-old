@@ -1003,11 +1003,7 @@ namespace KviKvsCoreFunctions
 	#ifdef COMPILE_SCRIPTTOOLBAR
 			"ScriptToolBar",
 	#endif // COMPILE_SCRIPTTOOLBAR
-	#ifdef COMPILE_USE_QT4
 			"Qt4",
-	#else
-			"Qt3",
-	#endif
 	#ifdef COMPILE_NEW_KVS
 			"KVS",
 	#endif

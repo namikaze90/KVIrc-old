@@ -90,9 +90,10 @@
 #include <qstringlist.h>
 #include "kvi_asciidict.h"
 #include <qmime.h>
-#ifdef COMPILE_USE_QT4
-	#include <q3mimefactory.h>
-#endif
+
+// TODO: Qt4
+#include <q3mimefactory.h>
+
 #include "kvi_tal_listbox.h"
 #include <qclipboard.h>
 #include <qmessagebox.h>
@@ -103,10 +104,8 @@
 	#include "kvi_ssl.h"
 #endif
 
-#ifdef COMPILE_USE_QT4
 #ifdef COMPILE_ON_WINDOWS
 #include <QPluginLoader>
-#endif
 #endif
 
 KVIRC_API KviApp                       * g_pApp                    = 0; // global application pointer
@@ -217,7 +216,6 @@ void KviApp::setup()
 	loadDirectories();
 	KviStringConversion::init(m_szGlobalKvircDir,m_szLocalKvircDir);
 
-#ifdef COMPILE_USE_QT4
 #ifdef COMPILE_ON_WINDOWS
 	//need to load image plugins:(
 	QString szPluginsDir;
@@ -225,7 +223,6 @@ void KviApp::setup()
 	setLibraryPaths(QStringList(szPluginsDir));
 	//KviMessageBox::information(libraryPaths().join(";"));
 	//debug("%1",loader.isLoaded());
-#endif
 #endif
 
 	// check if we want to permanently disable the splash screen
@@ -263,11 +260,8 @@ void KviApp::setup()
 	list.append(tmp);
 	getGlobalKvircDirectory(tmp,HelpNoIntl);
 	list.append(tmp);
-#ifdef COMPILE_USE_QT4
+
 	Q3MimeSourceFactory::defaultFactory()->setFilePath(list);
-#else
-	QMimeSourceFactory::defaultFactory()->setFilePath(list);
-#endif
 
 	KVI_SPLASH_SET_PROGRESS(1)
 
@@ -469,7 +463,7 @@ void KviApp::setup()
 
 	KviDoubleBuffer::init();
 
-#ifdef COMPILE_USE_QT4
+
 	QString szStylesheetFile;
 	getGlobalKvircDirectory(szStylesheetFile,Config,"style.css");
 	if(KviFileUtils::fileExists(szStylesheetFile))
@@ -480,7 +474,7 @@ void KviApp::setup()
 		szStyleData.replace("local://",m_szLocalKvircDir);
 		setStyleSheet(szStyleData);
 	}
-#endif
+
 
 	// create the frame window, we're almost up and running...
 	createFrame();

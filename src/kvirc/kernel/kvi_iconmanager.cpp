@@ -45,9 +45,7 @@
 #endif
 #include <qcursor.h>
 
-#ifdef COMPILE_USE_QT4
-	#include <qevent.h>
-#endif
+#include <qevent.h>
 
 // kvi_app.cpp
 extern QPixmap * g_pUserChanStatePixmap;

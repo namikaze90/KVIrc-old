@@ -1369,11 +1369,7 @@ KviKvsVariant* KviKvsVariant::unserialize(const QString& data)
 {
 	KviKvsVariant* pResult = 0;
 
-#ifdef COMPILE_USE_QT4
 	const QChar * aux = (const QChar *)data.constData();
-#else
-	const QChar * aux = (const QChar *)data.ucs2();
-#endif
 	
 	pResult = unserialize(&aux);
 

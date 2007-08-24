@@ -35,9 +35,9 @@
 #include "kvi_ircconnectionserverinfo.h"
 #include "kvi_locale.h"
 
-#ifdef COMPILE_USE_QT4
-	#include <q3mimefactory.h>
-#endif
+// TODO: Qt4
+#include <q3mimefactory.h>
+
 
 namespace KviKvsCoreSimpleCommands
 {
@@ -137,11 +137,7 @@ namespace KviKvsCoreSimpleCommands
 			QString szOriginal = szTopic;
 	
 			QString topik = szTopic;
-#ifdef COMPILE_USE_QT4
 			QStringList pl = Q3MimeSourceFactory::defaultFactory()->filePath();
-#else
-			QStringList pl = QMimeSourceFactory::defaultFactory()->filePath();
-#endif
 
 			bool bLowCaseTried = false;
 			bool bFound = KviFileUtils::fileExists(szTopic);
