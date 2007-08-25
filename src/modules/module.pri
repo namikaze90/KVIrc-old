@@ -55,10 +55,10 @@ target.path = ../../../bin/image/modules/
 INSTALLS += target 
 
 CONFIG(debug, debug|release) {
-	MOC_DIR      = ../../../build/modules/$$replace($$TARGET,kvi,)/debug/moc
-	OBJECTS_DIR  = ../../../build/modules/$$replace($$TARGET,kvi,)/debug/obj
+	MOC_DIR      = ../../../build/modules/$$replace(TARGET,kvi,)/debug/moc
+	OBJECTS_DIR  = ../../../build/modules/$$replace(TARGET,kvi,)/debug/obj
 } else {
-	MOC_DIR      = ../../../build/modules/$$replace($$TARGET,kvi,)/release/moc
-	OBJECTS_DIR  = ../../../build/modules/$$replace($$TARGET,kvi,)/release/obj
+	MOC_DIR      = ../../../build/modules/$$replace(TARGET,kvi,)/release/moc
+	OBJECTS_DIR  = ../../../build/modules/$$replace(TARGET,kvi,)/release/obj
 }
 
