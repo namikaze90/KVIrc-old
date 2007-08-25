@@ -879,8 +879,10 @@ void KviIrcSocket::proxySendTargetDataV5()
 	bool bRemoteDns=!(
 		
 		(KviNetUtils::isValidStringIp(m_pIrcServer->ip()) 
-		|| KviNetUtils::isValidStringIp_V6(m_pIrcServer->ip()))
-
+#ifdef COMPILE_IPV6_SUPPORT
+		|| KviNetUtils::isValidStringIp_V6(m_pIrcServer->ip())
+#endif
+		)
 		&& m_pIrcServer->cacheIp()
 		);
 	int bufLen = bRemoteDns ? 4 + 1 + m_pIrcServer->hostName().utf8().length() + 2

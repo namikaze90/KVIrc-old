@@ -209,6 +209,10 @@ mac:LIBS += -lpthread \
     -lssl \
     -lcrypto \
     -lz
+
+unix:LIBS += -lpthread -lssl -lcrypto -lz
+unix:DEFINES += COMPILE_THREADS_USE_POSIX COMPILE_USE_QT4
+
 include( using_kvilib.pri )
 target.path = ../../bin/image/
 INSTALLS += target

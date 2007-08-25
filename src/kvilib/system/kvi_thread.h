@@ -140,7 +140,7 @@
 			// We don't care about exit codes at all
 			#define kvi_threadExit() thr_exit(0)
 		#else
-// FIXME: 			#warning "Missing a decent thread implementation: we're going to fail , sorry!"
+		 	#error "Missing a decent thread implementation: we're going to fail , sorry!"
 		#endif
 	#endif
 #endif	

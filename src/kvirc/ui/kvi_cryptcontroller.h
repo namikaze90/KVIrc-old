@@ -29,8 +29,10 @@
 
 
 // Qt4 moc bails out on this ??????
+// Yes.. .it does.
+// And bails out hardly if COMPILE_CRYPT_SUPPORT is not defined...
 
-#if defined(COMPILE_CRYPT_SUPPORT) || defined(Q_MOC_RUN)
+#if defined(COMPILE_CRYPT_SUPPORT)
 	#include <qwidget.h>
 	#include "kvi_tal_listbox.h"
 	#include <qpushbutton.h>

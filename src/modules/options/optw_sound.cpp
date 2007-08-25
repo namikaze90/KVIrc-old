@@ -35,9 +35,7 @@
 #include <qpushbutton.h>
 #include "kvi_tal_hbox.h"
 
-#ifdef COMPILE_INFO_TIPS
-	#include "kvi_tal_tooltip.h"
-#endif
+#include "kvi_tal_tooltip.h"
 
 // FIXME: This module doesn't Cancel properly when auto-detection is performed!
 

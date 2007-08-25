@@ -32,7 +32,7 @@
 #include "kvi_ircserver.h"
 #include "idle.h"
 Idle* g_pIdle;
-#ifdef COMPILE_NEW_KVS
+
 #define GET_KVS_CONSOLE \
 	kvs_uint_t  uiWnd; \
 	KviConsole *wnd =0; \
@@ -43,13 +43,11 @@ Idle* g_pIdle;
 	{ \
 		if(c->window()->console()) wnd = c->window()->console(); \
 			else c->warning(__tr2qs("This window has no associated irc context")); \
-	} \
-	else \
-	{ \
+	} else { \
 		wnd = g_pApp->findConsole(uiWnd); \
 		if(!wnd)c->warning(__tr2qs("No such irc context (%d)"),uiWnd); \
 	} 	
-#endif
+
 /*
 	@doc: my.nick
 	@type:

@@ -22,8 +22,9 @@
 //
 //=============================================================================
 
-#define __KVILIB__
-
+#ifndef __KVILIB__
+	#define __KVILIB__
+#endif
 
 #include "kvi_tal_filedialog.h"
 

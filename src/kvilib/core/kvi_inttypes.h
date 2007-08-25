@@ -26,6 +26,19 @@
 
 #include "kvi_settings.h"
 
+#include <qglobal.h>
+
+// we now rely on Qt to provide correct integral types
+typedef qint64 kvi_i64_t;
+typedef quint64 kvi_u64_t;
+typedef qint32 kvi_i32_t;
+typedef quint32 kvi_u32_t;
+typedef qint16 kvi_i16_t;
+typedef quint16 kvi_u16_t;
+typedef qint8 kvi_i8_t;
+typedef quint8 kvi_u8_t;
+
+#if 0
 #if defined(COMPILE_ON_WINDOWS) && !defined(__GNUC__)
 	// we don't have a configure script here
 	// so we can't check the size of types
@@ -90,6 +103,7 @@
 	// assume that char is always 8 bit
 	typedef char kvi_i8_t;
 	typedef unsigned char kvi_u8_t;
+#endif
 #endif
 
 #endif //_KVI_INTTYPES_H_
