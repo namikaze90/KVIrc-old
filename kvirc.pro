@@ -1,16 +1,17 @@
 include(config.pri)
 
-TEMPLATE      = subdirs
+TEMPLATE = subdirs
 SUBDIRS = src data
+
 
 win32 {
 
-CONFIG(debug, debug|release) {
-   D = d
- } else {
-   D = 
- }
- 
+	CONFIG(debug, debug|release) {
+		D = d
+	} else {
+		D = 
+	}
+
 	dlls.path = bin/image
 	dlls.files = $$[QT_INSTALL_LIBS]/Qt3Support$${D}4.dll \
 				$$[QT_INSTALL_LIBS]/QtNetwork$${D}4.dll \
@@ -28,17 +29,42 @@ CONFIG(debug, debug|release) {
 	
 	iconengines.path = bin/image/qt-plugins/iconengines
 	iconengines.files = $$[QT_INSTALL_PLUGINS]/iconengines/qsvg$${D}4.dll
-	
+
 	INSTALLS += dlls imageformats
 }
 
-doc.path = bin/image/doc
-doc.files = doc/*.txt
+unix {
 
-license.path = bin/image/license
-license.files = doc/COPYING
+	doc.path = $${KVI_INSTALL_PREFIX}/doc/$${KVI_PACKAGE}-$${KVI_VERSION_BRANCH}/
+	doc.files = doc/*.txt
 
-stuff.path = bin/image/
-stuff.files = ChangeLog FAQ
+	license.path = $${KVI_INSTALL_PREFIX}/doc/$${KVI_PACKAGE}-$${KVI_VERSION_BRANCH}/
+	license.files = doc/COPYING
+
+	stuff.path = $${KVI_INSTALL_PREFIX}/doc/$${KVI_PACKAGE}-$${KVI_VERSION_BRANCH}/
+	stuff.files = ChangeLog FAQ
+}
+
+win32 {
+	doc.path = bin/image/doc
+	doc.files = doc/*.txt
+
+	license.path = bin/image/license
+	license.files = doc/COPYING
+
+	stuff.path = bin/image/
+	stuff.files = ChangeLog FAQ
+}
+
+mac {
+	doc.path = bin/image/doc
+	doc.files = doc/*.txt
+
+	license.path = bin/image/license
+	license.files = doc/COPYING
+
+	stuff.path = bin/image/
+	stuff.files = ChangeLog FAQ
+}
 
 INSTALLS += doc license stuff
