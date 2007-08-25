@@ -136,15 +136,15 @@ typedef bool (*KviModuleEventParseProc)(KviModule *,KviWindow *,KviParameterList
 
 class KVIRC_API KviModule : public KviKvsModuleInterface
 {
-	friend class KviAsciiDict<KviModule>;
+	friend class QHash<QString,KviModule*>;
 	friend class KviModuleManager;
 	friend class KviUserParser;
 protected:
-	KviModule(kvi_library_t handle,KviModuleInfo * info,const char * name,const char * filename);
+	KviModule(kvi_library_t handle,KviModuleInfo * info,const QString& name,const QString& filename);
 	~KviModule();
 private:
-	KviStr                                     m_szName;
-	KviStr                                     m_szFileName;
+	QString                                     m_szName;
+	QString                                     m_szFileName;
 	KviModuleInfo                            * m_pModuleInfo;
 	kvi_library_t                              m_dlHandle;
 	unsigned int                               m_uLock;
@@ -154,9 +154,9 @@ protected:
 	unsigned int secondsSinceLastAccess();
 public:
 	// name of this module: always low case , single word
-	const char    * name(){ return m_szName.ptr(); };
+	QString name(){ return m_szName; };
 	// filename of this module (with NO path): formatted as "libkvi%s.so",name()
-	const char    * filename(){ return m_szFileName.ptr(); };
+	QString filename(){ return m_szFileName; };
 	kvi_library_t   handle(){ return m_dlHandle; };
 	KviModuleInfo * moduleInfo(){ return m_pModuleInfo; };
 	

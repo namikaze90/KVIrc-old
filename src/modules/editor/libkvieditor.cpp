@@ -20,20 +20,18 @@
 //
 
 #include "kvi_module.h"
-
 #include "kvi_window.h"
-
 #include "scripteditor.h"
+#include <QSet>
 
 KviModule * g_pEditorModulePointer = 0;
 
-KviPtrList<KviScriptEditorImplementation> * g_pScriptEditorWindowList = 0;
+QSet<KviScriptEditorImplementation*> * g_pScriptEditorWindowList;
 
 static bool editor_module_init(KviModule * m)
 {
-	g_pScriptEditorWindowList = new KviPtrList<KviScriptEditorImplementation>;
-	g_pScriptEditorWindowList->setAutoDelete(false);
-
+	g_pScriptEditorWindowList = new QSet<KviScriptEditorImplementation*>;
+	
 	g_pEditorModulePointer = m;
 
 	return true;
@@ -41,9 +39,9 @@ static bool editor_module_init(KviModule * m)
 
 static bool editor_module_cleanup(KviModule *m)
 {
-	while(g_pScriptEditorWindowList->first())
+	foreach(KviScriptEditorImplementation* impl,*g_pScriptEditorWindowList)
 	{
-		QObject * w = g_pScriptEditorWindowList->first()->parent();;
+		QObject * w = impl->parent();
 		while(w)
 		{
 			//debug("%s %s %i %s",__FILE__,__FUNCTION__,__LINE__,w->className());
@@ -56,7 +54,7 @@ static bool editor_module_cleanup(KviModule *m)
 			}
 		w = w->parent();
 		}
-		delete g_pScriptEditorWindowList->first();
+		delete impl;
 	}
 	delete g_pScriptEditorWindowList;
 	g_pScriptEditorWindowList = 0;

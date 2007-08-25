@@ -32,27 +32,10 @@
 #include <QSyntaxHighlighter>
 #include <qdialog.h>
 #include <qcheckbox.h>
-#include "kvi_tal_listbox.h"
 #include <qevent.h> 
 #include "kvi_qcstring.h"
 
-#include "kvi_tal_popupmenu.h"
-
-#include "kvi_list.h"
 #include "kvi_selectors.h"
-typedef KviPtrList<int> ColumnList;
-
-class KviCompletionBox: public KviTalListBox
-{
-	Q_OBJECT
-public:
-	KviCompletionBox(QWidget * parent);
-	~KviCompletionBox(){};
-	
-	void updateContents(QString word);
-protected:
-	virtual void keyPressEvent(QKeyEvent * e);
-};
 
 class KviScriptEditorWidget : public QTextEdit
 {
@@ -65,7 +48,6 @@ public:
 	void updateOptions();
 	void find1();
 	QString m_szFind;
-	KviCompletionBox *completelistbox;
 public slots:
 	void slotFind();
 	void slotHelp();
@@ -107,7 +89,7 @@ public:
 	KviScriptEditorWidgetColorOptions(QWidget * pParent);
 	~KviScriptEditorWidgetColorOptions();
 private:
-	KviPtrList<KviSelectorInterface> * m_pSelectorInterfaceList;
+	QVector<KviSelectorInterface*> * m_pSelectorInterfaceList;
 protected:
 	KviColorSelector * addColorSelector(QWidget * pParent,const QString & txt,QColor * pOption,bool bEnabled);
 

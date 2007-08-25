@@ -27,9 +27,6 @@
 
 #include <qlayout.h>
 #include <qtoolbutton.h>
-#include <kvi_tal_groupbox.h>
-#include "kvi_tal_popupmenu.h"
-#include "kvi_tal_scrollview.h"
 #include <qmessagebox.h>
 #include <qtimer.h>
 
@@ -43,7 +40,6 @@
 #include "kvi_qstring.h"
 #include "kvi_config.h"
 #include "kvi_module.h"
-#include "kvi_list.h"
 //
 #include "kvi_app.h"
 #include "kvi_console.h"
@@ -51,9 +47,11 @@
 #include "kvi_iconmanager.h"
 #include "kvi_kvs_kernel.h"
 
+#include <QSet>
+#include <QMenu>
 #include <qlayout.h>
 
-extern KviPtrList<KviScriptEditorImplementation> * g_pScriptEditorWindowList;
+extern QSet<KviScriptEditorImplementation*> * g_pScriptEditorWindowList;
 extern KviModule * g_pEditorModulePointer;
 
 
@@ -69,98 +67,11 @@ static QTextCharFormat variableFormat;
 static QTextCharFormat normalFormat;
 static QColor          bgColor; 
 
-KviCompletionBox::KviCompletionBox(QWidget * parent = 0)
-: KviTalListBox(parent)
-{
-	setPaletteForegroundColor(QColor(0,0,0));
-	setPaletteBackgroundColor(QColor(255,255,255));
-	setHScrollBarMode(KviTalListBox::AlwaysOff);
-
-	QFont listfont=font();
-	listfont.setPointSize(8);
-	setFont(listfont);
-	setVariableWidth(false);
-	setFixedWidth(200);
-	//completelistbox->setColumnMode(KviTalListBox::Variable);
-	hide();
-}
-
-void KviCompletionBox::updateContents(QString buffer)
-{
-	buffer=buffer.stripWhiteSpace();
-	KviPtrList<QString> list;
-	clear();
-	
-	QString szModule;
-	QChar* pCur = (QChar *)buffer.ucs2();
-	
-	int pos=buffer.find('.');
-	
-	if(pos>0)
-	{
-		szModule=buffer.left(pos);
-		if(szModule[0].unicode()=='$')
-			szModule.remove(0,1);
-	}
-	
-	if(pCur->unicode() == '$')
-	{
-		buffer.remove(0,1);
-		if(!buffer.isEmpty())
-		{
-			if(szModule.isEmpty())
-				KviKvsKernel::instance()->completeFunction(buffer,&list);
-			else
-				debug("we need a module completion!");
-			for ( QString* szCurrent = list.first(); szCurrent; szCurrent = list.next() )
-			{
-				szCurrent->prepend('$');
-				//szCurrent->append('(');
-				insertItem(*szCurrent);
-			}
-		}
-	}
-	else
-	{
-		if(szModule.isEmpty())
-			KviKvsKernel::instance()->completeCommand(buffer,&list);
-		else
-			debug("we need a module completion!");
-		for ( QString* szCurrent = list.first(); szCurrent; szCurrent = list.next() )
-		{
-			szCurrent->append(' ');
-			insertItem(*szCurrent);
-		}
-	}
-//	debug("%s %s %i %i",__FILE__,__FUNCTION__,__LINE__,count());
-}
-
-void KviCompletionBox::keyPressEvent(QKeyEvent * e)
-{
-//	debug("%s %s %i %x",__FILE__,__FUNCTION__,__LINE__,e->key());
-	switch(e->key())
-	{
-		case Qt::Key_Escape:
-			hide();
-			setFocus();
-			break;
-		case Qt::Key_Return:
-			break;
-		default:
-			if(!e->text().isEmpty())
-			{
-				e->ignore();
-			}
-		
-	}
-	KviTalListBox::keyPressEvent(e);
-}
 
 KviScriptEditorWidgetColorOptions::KviScriptEditorWidgetColorOptions(QWidget * pParent)
 : QDialog(pParent)
 {
-	m_pSelectorInterfaceList = new KviPtrList<KviSelectorInterface>;
-        m_pSelectorInterfaceList->setAutoDelete(false);
+	m_pSelectorInterfaceList = new QVector<KviSelectorInterface*>;
 	setCaption(__tr2qs_ctx("Preferences","editor"));
 	QGridLayout * g = new QGridLayout(this,3,3,4,4);
 /*
@@ -232,6 +143,10 @@ static QColor          backgroundColor(255,255,255);
 
 KviScriptEditorWidgetColorOptions::~KviScriptEditorWidgetColorOptions()
 {
+	foreach(KviSelectorInterface* i,*m_pSelectorInterfaceList)
+	{
+		delete i;
+	}
 	delete m_pSelectorInterfaceList;
 }
 
@@ -244,7 +159,7 @@ KviColorSelector * KviScriptEditorWidgetColorOptions::addColorSelector(QWidget *
 
 void KviScriptEditorWidgetColorOptions::okClicked()
 {
-	for(KviSelectorInterface * i = m_pSelectorInterfaceList->first();i;i = m_pSelectorInterfaceList->next())
+	foreach(KviSelectorInterface * i,*m_pSelectorInterfaceList)
 	{
 		i->commit();
 	}
@@ -631,7 +546,7 @@ KviScriptEditorImplementation::KviScriptEditorImplementation(QWidget * par)
 :KviScriptEditor(par)
 {
 	if(g_pScriptEditorWindowList->isEmpty())loadOptions();
-	g_pScriptEditorWindowList->append(this);
+	g_pScriptEditorWindowList->insert(this);
 	m_lastCursorPos=QPoint(0,0);
 	QGridLayout * g = new QGridLayout(this,2,3,0,0);
 
@@ -648,13 +563,12 @@ KviScriptEditorImplementation::KviScriptEditorImplementation(QWidget * par)
 	b->setMinimumWidth(24);
 	g->addWidget(b,1,0);
 
-	KviTalPopupMenu * pop = new KviTalPopupMenu(b);
-	pop->insertItem(__tr2qs_ctx("&Open...","editor"),this,SLOT(loadFromFile()));
-	pop->insertItem(__tr2qs_ctx("&Save As...","editor"),this,SLOT(saveToFile()));
-	pop->insertSeparator();
-	pop->insertItem(__tr2qs_ctx("&Configure Editor...","editor"),this,SLOT(configureColors()));
-	b->setPopup(pop);
-	b->setPopupDelay(1);
+	QMenu * pop = new QMenu(b);
+	pop->addAction(__tr2qs_ctx("&Open...","editor"),this,SLOT(loadFromFile()));
+	pop->addAction(__tr2qs_ctx("&Save As...","editor"),this,SLOT(saveToFile()));
+	pop->addSeparator();
+	pop->addAction(__tr2qs_ctx("&Configure Editor...","editor"),this,SLOT(configureColors()));
+	b->setMenu(pop);
 
 	g->setColStretch(1,1);
 	g->setColStretch(2,10);
@@ -678,7 +592,7 @@ KviScriptEditorImplementation::KviScriptEditorImplementation(QWidget * par)
 
 KviScriptEditorImplementation::~KviScriptEditorImplementation()
 {
-	g_pScriptEditorWindowList->removeRef(this);
+	g_pScriptEditorWindowList->remove(this);
 	if(g_pScriptEditorWindowList->isEmpty())saveOptions();
 }
 
