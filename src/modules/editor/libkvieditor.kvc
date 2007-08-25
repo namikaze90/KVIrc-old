@@ -1,0 +1,13 @@
+# KVIrc configuration file
+[Colors]
+Comment=MS%20Shell%20Dlg%202,8,5,50/#1a640a,#ffffff
+Punctuation=MS%20Shell%20Dlg%202,8,5,50/#000000,#ffffff
+Switch=MS%20Shell%20Dlg%202,8,5,50,i/#000000,#ffffff
+Keyword=MS%20Shell%20Dlg%202,8,5,75,b/#62275f,#ffffff
+Quotation=MS%20Shell%20Dlg%202,8,5,50/#000000,#ffffff
+Normal=MS%20Shell%20Dlg%202,8,5,50/#000000,#ffffff
+Function=MS%20Shell%20Dlg%202,8,5,75,b/#1b0ddf,#ffffff
+Background=224,223,227
+Bracket=MS%20Shell%20Dlg%202,8,5,50/#000000,#ffffff
+Variable=MS%20Shell%20Dlg%202,8,5,50/#5500ff,#ffffff
+Command=MS%20Shell%20Dlg%202,8,5,75,b/#000000,#ffffff

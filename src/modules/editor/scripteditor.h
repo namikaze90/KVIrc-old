@@ -28,8 +28,8 @@
 #include "kvi_scripteditor.h"
 
 #include <qlabel.h>
-#include <kvi_tal_textedit.h>
-#include <qsyntaxhighlighter.h>
+#include <QTextEdit>
+#include <QSyntaxHighlighter>
 #include <qdialog.h>
 #include <qcheckbox.h>
 #include "kvi_tal_listbox.h"
@@ -54,10 +54,10 @@ protected:
 	virtual void keyPressEvent(QKeyEvent * e);
 };
 
-class KviScriptEditorWidget : public KviTalTextEdit
+class KviScriptEditorWidget : public QTextEdit
 {
 	Q_OBJECT
-	Q_PROPERTY(bool contextSensitiveHelp READ contextSensitiveHelp)
+	//Q/_PROPERTY(bool contextSensitiveHelp READ contextSensitiveHelp)
 public:
 	KviScriptEditorWidget(QWidget * pParent);
 	virtual ~KviScriptEditorWidget();
@@ -66,39 +66,38 @@ public:
 	void find1();
 	QString m_szFind;
 	KviCompletionBox *completelistbox;
-	void completition(bool bCanComplete = 1);
-	void getWordBeforeCursor(QString &buffer,int index,bool *);
-	void getWordOnCursor(QString &buffer,int index) const;
-	bool contextSensitiveHelp() const;
 public slots:
 	void slotFind();
 	void slotHelp();
 	void slotReplace();
-	void slotComplete(const QString &str);
+//	void slotComplete(const QString &str);
 
 signals:
 	void keyPressed();
 protected:
-	virtual void keyPressEvent(QKeyEvent * e);
-	void contentsMousePressEvent(QMouseEvent *);
+//	virtual void keyPressEvent(QKeyEvent * e);
 
-	Q3PopupMenu *createPopupMenu( const QPoint& pos );
+	//Q3PopupMenu *createPopupMenu( const QPoint& pos );
 	QWidget *m_pParent;
 	QString m_szHelp;
 
 };
 
 
-#include <q3syntaxhighlighter.h>
-#define QSyntaxHighlighter Q3SyntaxHighlighter
+
 
 class KviScriptSyntaxHighlighter : public QSyntaxHighlighter
 {
-public:
-	KviScriptSyntaxHighlighter(KviScriptEditorWidget * pWidget);
-	virtual ~KviScriptSyntaxHighlighter();
-public:
-	virtual int highlightParagraph(const QString & text,int endStateOfLastPara);
+    Q_OBJECT
+
+ public:
+	 KviScriptSyntaxHighlighter(QTextDocument *parent = 0);
+
+ protected:
+     void highlightBlock(const QString &text);
+
+ private:
+     
 };
 
 class KviScriptEditorWidgetColorOptions : public QDialog

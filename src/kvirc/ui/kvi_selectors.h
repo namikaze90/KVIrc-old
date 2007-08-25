@@ -46,6 +46,7 @@
 #include "kvi_string.h"
 #include "kvi_pixmap.h"
 #include "kvi_styled_controls.h"
+#include <QTextCharFormat>
 
 //#ifndef _KVI_SELECTORS_CPP_
 //	extern void commitAllSelectors(QWidget * par,const char * classname);
@@ -363,6 +364,24 @@ private slots:
 	void removeClicked();
 };
 
-
+class KVIRC_API KviTextCharFormatSelector : public QWidget,  public KviSelectorInterface
+{
+	Q_OBJECT
+public:
+	KviTextCharFormatSelector(QWidget * par,const QString & txt,QTextCharFormat * pOption,bool bEnabled);
+	~KviTextCharFormatSelector();
+private:
+	KviColorSelector * m_pForegroundSelector;
+	KviColorSelector * m_pBackgroundSelector;
+	KviFontSelector  * m_pFontSelector;
+	
+	QFont            font;
+	QColor           foregroundColor;
+	QColor           backgroundColor;
+	QTextCharFormat  * m_pOption;
+public:
+	virtual void commit();
+	virtual void setEnabled(bool bEnabled);
+};
 
 #endif //!_KVI_SELECTORS_H_

@@ -979,6 +979,24 @@ unsigned char KviConfig::readUCharEntry(const QString & szKey,unsigned char iDef
 	return bOk ? iVal : iDefault;
 }
 
+QTextCharFormat KviConfig::readTextCharFormatEntry(const QString & szKey,const QTextCharFormat& def)
+{
+	KviConfigGroup * p_group = getCurrentGroup();
+	QString * p_str = p_group->find(szKey);
+	if(!p_str)return def;
+	QTextCharFormat buff;
+	KviStringConversion::fromString(*p_str,buff);
+	return buff;
+}
+void KviConfig::writeEntry(const QString & szKey,const QTextCharFormat& value)
+{
+	m_bDirty = true;
+	KviConfigGroup * p_group = getCurrentGroup();
+	QString *p_data = new QString();
+	KviStringConversion::toString(value,*p_data);
+	p_group->replace(szKey,p_data);
+}
+
 
 #ifdef COMPILE_ON_WINDOWS
 

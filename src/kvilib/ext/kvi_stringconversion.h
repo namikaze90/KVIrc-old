@@ -35,6 +35,7 @@
 #include <qfont.h>
 #include <qstringlist.h>
 #include <qstring.h>
+#include <QTextCharFormat>
 
 
 namespace KviStringConversion 
@@ -86,6 +87,10 @@ namespace KviStringConversion
 	// QStringList <-> QString
 	extern KVILIB_API void toString(const QStringList &sValue,QString &buffer);
 	extern KVILIB_API bool fromString(const QString &szValue,QStringList &buffer);
+	
+	// QTextCharFormat <-> QString
+	extern KVILIB_API void toString(const QTextCharFormat &fValue,QString &buffer);
+	extern KVILIB_API bool fromString(const QString &szValue,QTextCharFormat &buffer);
 };
 
 #endif //!_KVI_STRINGCONVERSION_H_

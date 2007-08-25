@@ -35,6 +35,7 @@
 #include <qfont.h>
 #include <qrect.h>
 #include <qstringlist.h>
+#include <QTextCharFormat>
 
 #define KVI_CONFIG_DEFAULT_GROUP "KVIrc"
 
@@ -144,6 +145,9 @@ public:
 	char readCharEntry(const QString & szKey,char iDefault);
 	void writeEntry(const QString & szKey,unsigned char iValue);
 	unsigned char readUCharEntry(const QString & szKey,unsigned char iDefault);
+	
+	QTextCharFormat readTextCharFormatEntry(const QString & szKey,const QTextCharFormat& def);
+	void writeEntry(const QString & szKey,const QTextCharFormat& value);
 
 	static void getFontProperties(KviStr & buffer,QFont *fnt);
 	static void setFontProperties(KviStr & str,QFont *fnt);

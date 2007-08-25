@@ -839,3 +839,54 @@ void KviCahnnelListSelector::removeClicked()
 	lst.setAutoDelete(TRUE);
 	lst.clear();
 }
+
+KviTextCharFormatSelector::KviTextCharFormatSelector(QWidget * par,const QString & txt,QTextCharFormat * pOption,bool bEnabled)
+:   QWidget(par),
+	KviSelectorInterface(),
+	font(pOption->font()),
+	foregroundColor(pOption->foreground()),
+	backgroundColor(pOption->background().color()),
+	m_pOption(pOption)
+{
+	QHBoxLayout *layout = new QHBoxLayout();
+
+	QLabel * pLabel = new QLabel(txt,this);
+
+	layout->addWidget(pLabel);
+	layout->setStretchFactor(pLabel,1);
+		
+	m_pForegroundSelector = new KviColorSelector(this,__tr2qs("Foreground"),&foregroundColor,bEnabled);
+	layout->addWidget(m_pForegroundSelector);
+	
+	m_pBackgroundSelector = new KviColorSelector(this,__tr2qs("Background"),&backgroundColor,bEnabled);
+	layout->addWidget(m_pBackgroundSelector);
+	
+	m_pFontSelector = new KviFontSelector(this,QString(),&font,bEnabled);
+	layout->addWidget(m_pFontSelector);
+	
+	setLayout(layout);
+}
+
+KviTextCharFormatSelector::~KviTextCharFormatSelector()
+{
+	
+}
+
+void KviTextCharFormatSelector::commit()
+{
+	m_pFontSelector->commit();
+	m_pBackgroundSelector->commit();
+	m_pForegroundSelector->commit();
+	
+	m_pOption->setFont(font);
+	m_pOption->setForeground(QBrush(foregroundColor));
+	m_pOption->setBackground(QBrush(backgroundColor));
+}
+
+
+void KviTextCharFormatSelector::setEnabled(bool bEnabled)
+{
+	m_pFontSelector->setEnabled(bEnabled);
+	m_pBackgroundSelector->setEnabled(bEnabled);
+	m_pForegroundSelector->setEnabled(bEnabled);
+}

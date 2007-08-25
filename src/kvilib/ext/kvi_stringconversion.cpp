@@ -30,6 +30,7 @@
 
 #include "kvi_qstring.h"
 #include <stdio.h>
+#include <QVariant>
 
 QString g_szGlobalDir;
 QString g_szLocalDir;
@@ -273,6 +274,36 @@ namespace KviStringConversion
 	bool fromString(const QString & szValue,QStringList &buffer)
 	{
 		buffer = szValue.split(",");
+		return true;
+	}
+	
+	void toString(const QTextCharFormat &szValue,QString &buffer)
+	{
+		QString tmpBuffer;
+		toString(szValue.font(),buffer);
+		buffer.append('/');
+		toString(szValue.foreground().color(),tmpBuffer);
+		buffer.append(tmpBuffer);
+		buffer.append(',');
+		toString(szValue.background().color(),tmpBuffer);
+		buffer.append(tmpBuffer);
+	}
+		
+	bool fromString(const QString & szValue,QTextCharFormat &buffer)
+	{
+		debug("from string");
+		QFont font;
+		debug(szValue.section('/',0,0));
+		fromString(szValue.section('/',0,0),font);
+		buffer.setFont(font);
+		QColor color;
+		debug(szValue.section('/',1,1));
+		debug(szValue.section('/',1,1).section(',',0,0));
+		fromString(szValue.section('/',1,1).section(',',0,0),color);
+		buffer.setForeground(QBrush(color));
+		debug(szValue.section('/',1,1).section(',',1,1));
+		fromString(szValue.section('/',1,1).section(',',1,1),color);
+		buffer.setBackground(QBrush(color));
 		return true;
 	}
 

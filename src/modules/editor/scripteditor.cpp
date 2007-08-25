@@ -53,22 +53,21 @@
 
 #include <qlayout.h>
 
-
 extern KviPtrList<KviScriptEditorImplementation> * g_pScriptEditorWindowList;
 extern KviModule * g_pEditorModulePointer;
 
 
-static QColor g_clrBackground(255,255,255);
-static QColor g_clrNormalText(0,0,0);
-static QColor g_clrBracket(255,0,0);
-static QColor g_clrComment(0,120,0);
-static QColor g_clrFunction(0,17,255);
-static QColor g_clrKeyword(85,85,255);
-static QColor g_clrVariable(255,0,0);
-static QColor g_clrPunctuation(180,180,0);
-static QColor g_clrFind(0,0,0);
-
-static QFont g_fntNormal("Courier New",8);
+static QTextCharFormat keywordFormat;
+static QTextCharFormat commandFormat;
+static QTextCharFormat commentFormat;
+static QTextCharFormat bracketFormat;
+static QTextCharFormat punctuationFormat;
+static QTextCharFormat quotationFormat;
+static QTextCharFormat functionFormat;
+static QTextCharFormat switchFormat;
+static QTextCharFormat variableFormat;
+static QTextCharFormat normalFormat;
+static QColor          bgColor; 
 
 KviCompletionBox::KviCompletionBox(QWidget * parent = 0)
 : KviTalListBox(parent)
@@ -164,34 +163,71 @@ KviScriptEditorWidgetColorOptions::KviScriptEditorWidgetColorOptions(QWidget * p
         m_pSelectorInterfaceList->setAutoDelete(false);
 	setCaption(__tr2qs_ctx("Preferences","editor"));
 	QGridLayout * g = new QGridLayout(this,3,3,4,4);
-
-	KviFontSelector * f = new KviFontSelector(this,__tr2qs_ctx("Font:","editor"),&g_fntNormal,true);
+/*
+ * static QTextCharFormat keywordFormat;
+static QTextCharFormat commandFormat;/
+static QTextCharFormat commentFormat;
+static QTextCharFormat bracketFormat;
+static QTextCharFormat punctuationFormat;
+static QTextCharFormat quotationFormat;
+static QTextCharFormat functionFormat;
+static QTextCharFormat switchFormat;
+static QTextCharFormat variableFormat;
+static QTextCharFormat normalFormat;/
+static QColor          backgroundColor(255,255,255); 
+*/
+	KviTextCharFormatSelector * f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Normal text:","editor"),&normalFormat,true);
 	g->addMultiCellWidget(f,0,0,0,2);
 	m_pSelectorInterfaceList->append(f);
-	KviTalGroupBox * gbox = new KviTalGroupBox(1,Qt::Horizontal,__tr2qs("Colors" ),this);
-	g->addMultiCellWidget(gbox,1,1,0,2);
-	KviColorSelector * s = addColorSelector(gbox,__tr2qs_ctx("Background:","editor"),&g_clrBackground,true);
-	s = addColorSelector(gbox,__tr2qs_ctx("Normal text:","editor"),&g_clrNormalText,true);
-	s = addColorSelector(gbox,__tr2qs_ctx("Brackets:","editor"),&g_clrBracket,true);
-	s = addColorSelector(gbox,__tr2qs_ctx("Comments:","editor"),&g_clrComment,true);
-	s = addColorSelector(gbox,__tr2qs_ctx("Functions:","editor"),&g_clrFunction,true);
-	s = addColorSelector(gbox,__tr2qs_ctx("Keywords:","editor"),&g_clrKeyword,true);
-	s = addColorSelector(gbox,__tr2qs_ctx("Variables:","editor"),&g_clrVariable,true);
-	s = addColorSelector(gbox,__tr2qs_ctx("Punctuation:","editor"),&g_clrPunctuation,true);
-	s = addColorSelector(gbox,__tr2qs_ctx("Find:","editor"),&g_clrFind,true);
 	
+	f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Command:","editor"),&commandFormat,true);
+	g->addMultiCellWidget(f,1,1,0,2);
+	m_pSelectorInterfaceList->append(f);
+	
+	f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Bracket:","editor"),&bracketFormat,true);
+	g->addMultiCellWidget(f,2,2,0,2);
+	m_pSelectorInterfaceList->append(f);
+	
+	f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Punctuation:","editor"),&punctuationFormat,true);
+	g->addMultiCellWidget(f,3,3,0,2);
+	m_pSelectorInterfaceList->append(f);
+	
+	f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Quotation:","editor"),&quotationFormat,true);
+	g->addMultiCellWidget(f,4,4,0,2);
+	m_pSelectorInterfaceList->append(f);
+	
+	f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Function:","editor"),&functionFormat,true);
+	g->addMultiCellWidget(f,5,5,0,2);
+	m_pSelectorInterfaceList->append(f);
+	
+	f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Switch:","editor"),&switchFormat,true);
+	g->addMultiCellWidget(f,6,6,0,2);
+	m_pSelectorInterfaceList->append(f);
+	
+	f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Variable:","editor"),&variableFormat,true);
+	g->addMultiCellWidget(f,7,7,0,2);
+	m_pSelectorInterfaceList->append(f);
+	
+	f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Keyword:","editor"),&keywordFormat,true);
+	g->addMultiCellWidget(f,8,8,0,2);
+	m_pSelectorInterfaceList->append(f);
+	
+	f = new KviTextCharFormatSelector(this,__tr2qs_ctx("Comment:","editor"),&commentFormat,true);
+	g->addMultiCellWidget(f,9,9,0,2);
+	m_pSelectorInterfaceList->append(f);
+		
 	QPushButton * b = new QPushButton(__tr2qs_ctx("&OK","editor"),this);
 	b->setDefault(true);
 	connect(b,SIGNAL(clicked()),this,SLOT(okClicked()));
-	g->addWidget(b,2,1);
+	g->addWidget(b,10,1);
 
 	b = new QPushButton(__tr2qs_ctx("Cancel","editor"),this);
 	connect(b,SIGNAL(clicked()),this,SLOT(reject()));
-	g->addWidget(b,2,2);
+	g->addWidget(b,10,2);
 
 
-	g->setRowStretch(0,1);
-	g->setColStretch(0,1);
+	//g->setRowStretch(0,1);
+	//g->setColStretch(0,1);
 }
 
 KviScriptEditorWidgetColorOptions::~KviScriptEditorWidgetColorOptions()
@@ -218,15 +254,18 @@ void KviScriptEditorWidgetColorOptions::okClicked()
 
 
 KviScriptEditorWidget::KviScriptEditorWidget(QWidget * pParent)
-: KviTalTextEdit(pParent)
+: QTextEdit(pParent)
 {
-	setWordWrap(KviTalTextEdit::NoWrap);
+	setWordWrapMode(QTextOption::NoWrap);
 	m_pParent=pParent;
 	m_szHelp="Nothing";
 	updateOptions();
 	m_szFind="";
-	completelistbox=new KviCompletionBox(this);
-	connect (completelistbox,SIGNAL(selected(const QString &)),this,SLOT(slotComplete(const QString &)));
+	
+	//TODO: Completion
+	
+	//completelistbox=new KviCompletionBox(this);
+	//connect (completelistbox,SIGNAL(selected(const QString &)),this,SLOT(slotComplete(const QString &)));
 }
 
 KviScriptEditorWidget::~KviScriptEditorWidget()
@@ -235,14 +274,14 @@ KviScriptEditorWidget::~KviScriptEditorWidget()
 }
 
 
-Q3PopupMenu * KviScriptEditorWidget::createPopupMenu( const QPoint& pos )
+/*Q3PopupMenu * KviScriptEditorWidget::createPopupMenu( const QPoint& pos )
 {
 	Q3PopupMenu *pop=KviTalTextEdit::createPopupMenu(pos);
 
 	pop->insertItem(__tr2qs("Context sensitive help"),this,SLOT(slotHelp()),Qt::CTRL+Qt::Key_H);
 	pop->insertItem(__tr2qs("&Replace"),this,SLOT(slotReplace()),Qt::CTRL+Qt::Key_R);
 	return pop;
-}
+}*/
 
 void KviScriptEditorWidget::slotFind()
 {
@@ -261,30 +300,25 @@ void KviScriptEditorWidget::slotReplace()
 }
 void KviScriptEditorWidget::slotHelp()
 {
-	contextSensitiveHelp();
+
 }
 
 
 void KviScriptEditorWidget::updateOptions()
 {
-	setPaper(QBrush(g_clrBackground));
-	setFont(g_fntNormal);
-	setColor(g_clrNormalText);
+	//setPaper(QBrush(g_clrBackground));
+	//setFont(g_fntNormal);
+	//setColor(g_clrNormalText);
 	
 	QPalette p = palette();
-	p.setColor(QColorGroup::Text,g_clrNormalText);
+	p.setColor(QColorGroup::Background,bgColor);
 	setPalette(p);
 	
-	setTextFormat(Qt::PlainText);
-	
-	// this will rehighlight everything
 	setText(text()); // an "hack" to ensure Update all in the editor
-	KviScriptSyntaxHighlighter *h = new KviScriptSyntaxHighlighter(this);
-	(void)h;
-	((KviScriptEditorImplementation*)m_pParent)->getFindlineedit()->setPaletteForegroundColor(g_clrFind);
+	new KviScriptSyntaxHighlighter(document());
 }
 
-void KviScriptEditorWidget::keyPressEvent(QKeyEvent * e)
+/*void KviScriptEditorWidget::keyPressEvent(QKeyEvent * e)
 {
 	if(e->state() == Qt::ControlButton)
 	{
@@ -302,274 +336,40 @@ void KviScriptEditorWidget::keyPressEvent(QKeyEvent * e)
 			case Qt::Key_U:
 				insert("$u");
 				return;
-			case Qt::Key_Enter:
-			case Qt::Key_Return:
-			case Qt::Key_Backspace:
-			case Qt::Key_PageUp:
-				 e->ignore(); // allow the parent to process it
-				 return;
 			break;
 		}
 	}
 
-	if(e->state() == Qt::ShiftButton)
-	{
-		if (e->key() == Qt::Key_Insert) 
-		{
-			completition();
-			return;
-		}
-	}
-	switch(e->key())
-	{	
-		case Qt::Key_Period:
-		case Qt::Key_Left:
-		case Qt::Key_Right:
-			if(!completelistbox->isVisible()) completition(0);
-			break;
-		case Qt::Key_Up:
-		case Qt::Key_Escape:
-		case Qt::Key_PageUp:
-		case Qt::Key_PageDown:
-		case Qt::Key_End:
-		case Qt::Key_Home:
-			if(completelistbox->isVisible()) completelistbox->hide();
-			break;
-		case Qt::Key_Down:
-			if(completelistbox->isVisible())
-			{
-				completelistbox->setFocus();
-				completelistbox->setCurrentItem(0);
-				return;
-			}
-			break;
-		case Qt::Key_Return:
-			KviTalTextEdit::keyPressEvent(e);
-			int para,pos;
-			getCursorPosition(&para,&pos);
-			if(para > 0)
-			{
-				QString szPrev=text(para-1);
-				if(!szPrev.isEmpty())
-				{
-					if(szPrev.at(szPrev.length() - 1).unicode() == ' ')
-						szPrev.remove(szPrev.length() - 1,1);
-					QString szCur;
-					const QChar * pCur = (const QChar *)szPrev.ucs2();
-					if(pCur)
-					{
-						while(pCur->unicode() && pCur->isSpace()) 
-						{
-							szCur.append(*pCur);
-							pCur++;
-						}
-					}
-					insertAt(szCur,para,0);
-					setCursorPosition(para,szCur.length()+pos);
-				}
-//				debug("|%i|",pos);
-			}
-			return;
-		default:
-			setFocus();
-			break;
-	}
-	KviTalTextEdit::keyPressEvent(e);
-	emit keyPressed();
-	if(completelistbox->isVisible()) 
-		completition(0);
-}
+	QTextEdit::keyPressEvent(e);
+}*/
 
-void KviScriptEditorWidget::contentsMousePressEvent(QMouseEvent *e)
+
+KviScriptSyntaxHighlighter::KviScriptSyntaxHighlighter(QTextDocument *parent)
+     : QSyntaxHighlighter(parent)
 {
-	completelistbox->hide();
-	if (e->button() == Qt::RightButton)
-	{
-//	bool bIsFirstWordInLine;
-	QString buffer;
-	int para = paragraphAt(e->pos());
-	int index=charAt(e->pos(),&para);
-	buffer=this->text(para);
-	getWordOnCursor(buffer,index);
-	QString tmp=buffer;
-	KviPtrList<QString> l;
-	if (tmp.left(1) == "$")
-	{	
-		tmp.remove(0,1);
-		KviKvsKernel::instance()->completeFunction(tmp,&l);
-		if (l.count() != 1) buffer="";
-		else buffer=*(l.at(0));
-	}
-	else
-	{
-		KviKvsKernel::instance()->completeCommand(tmp,&l);
-		if (l.count() != 1) buffer="";
-		else buffer=*(l.at(0));
-	}
-	//debug (buffer);
-	m_szHelp=buffer;
-	}
-	KviTalTextEdit::contentsMousePressEvent(e);
-
-}
-
-bool KviScriptEditorWidget::contextSensitiveHelp() const
-{
-	QString buffer;
-	int para,index;
-	getCursorPosition(&para,&index);
-	buffer=text(para);
-
-	getWordOnCursor(buffer,index);
-
-	/*
-	QString tmp=buffer;
-	KviPtrList<QString> * l;
-	if(tmp.left(1) == "$")
-	{
-		tmp.remove(0,1);
-		l = g_pUserParser->completeFunctionAllocateResult(tmp);
-	} else {
-		l = g_pUserParser->completeCommandAllocateResult(tmp);
-	}
-	
-	bool bOk = false;
-	if(l)
-	{
-		for(QString * s = l->first();s;s = l->next())
-		{
-			if(KviQString::equalCI(*s,buffer))
-			{
-				l->last();
-				bOk = true;
-			}
-		}
-	}
-	g_pUserParser->freeCompletionResult(l);
-	if(!bOk)return false;
-	*/
-
-	QString parse;
-	KviQString::sprintf(parse,"timer -s (help,0){ help -s %Q; }",&buffer);
-	debug ("parsing %s",parse.latin1());
-	KviKvsScript::run(parse,(KviWindow*)g_pApp->activeConsole());
-	
-	return true;
+  
 }
 
 
-void KviScriptEditorWidget::getWordOnCursor(QString &buffer,int index) const
-{
-	QRegExp re("[ \t=,\\(\\)\"}{\\[\\]\r\n+-*><;@!]");
-	//debug("BUFFER IS %s",buffer.utf8().data());
-	int start = buffer.findRev(re,index);
-	int end = buffer.find(re,index);
-
-	QString tmp;
-	if(start!=end)
-	{
-		if(start<0)start=0;
-		else start++;
-		if(end<0)end=index;
-		tmp = buffer.mid(start,end-start);
-	}
-	buffer = tmp;
-	//debug("BUFFER NOW IS %s",buffer.utf8().data());
-}
-
-void KviScriptEditorWidget::completition(bool bCanComplete)
-{
-	int line,index;
-	QString buffer;
-	QString word;
-	getCursorPosition(&line,&index);
-	buffer=this->text(line);
-	bool bIsFirstWordInLine;
-	getWordBeforeCursor(buffer,index,&bIsFirstWordInLine);
-	if(!buffer.isEmpty())
-		completelistbox->updateContents(buffer);
-	if (completelistbox->count() == 1) word=completelistbox->text(0);
-	if (!word.isEmpty() && bCanComplete)
-	{
-		insert(word);
-		completelistbox->hide();
-	}
-	if( completelistbox->count() == 0 )
-		completelistbox->hide();
-	else if(!completelistbox->isVisible())
-	{
-		if (completelistbox->count() <6) completelistbox->resize(completelistbox->width(),(completelistbox->count()*completelistbox->fontMetrics().height()+20));
-		else completelistbox->resize(completelistbox->width(),6*completelistbox->fontMetrics().height()+20);
-		int posy=paragraphRect(line).bottom();
-		int posx=fontMetrics().width(this->text(line).left(index));
-		completelistbox->move(posx,posy);
-		completelistbox->show();
-	}
-}
-
-void KviScriptEditorWidget::getWordBeforeCursor(QString &buffer,int index,bool *bIsFirstWordInLine)
-{
-	QString tmp = buffer.left(index);
-	buffer=tmp;
-	int idx = buffer.findRev(' ');
-	int idx1 = buffer.findRev("=");
-	int idx2 = buffer.findRev(','); 
-	int idx3 = buffer.findRev('(');
-	int idx4 = buffer.findRev('"');
-	if(idx1 > idx) idx= idx1;	
-	if(idx2 > idx)idx = idx2;
-	if(idx3 > idx)idx = idx3;
-	if(idx4 > idx)idx = idx4;
-	*bIsFirstWordInLine = false;
-	if(idx > -1)buffer.remove(0,idx);
-	else
-	{
-		*bIsFirstWordInLine = true;
-		buffer.insert(0," ");
-	}
-
-}
-
-void KviScriptEditorWidget::slotComplete(const QString &str)
-{
-	QString complete=str;
-	int line,index;
-	getCursorPosition(&line,&index);
-	QString buffer;
-	buffer=this->text(line);
-	bool bIsFirstWordInLine;
-	getWordBeforeCursor(buffer,index,&bIsFirstWordInLine);
-	int len=buffer.length();
-//	if (buffer[1].unicode() == '$') len --;
-	complete.remove(0,len-1);
-	if (buffer[1].unicode() == '$') complete.append("(");
-	else complete.append(" ");
-	insert (complete);
-	completelistbox->hide();
-	setFocus();
-}
-
-KviScriptSyntaxHighlighter::KviScriptSyntaxHighlighter(KviScriptEditorWidget * pWidget)
-: QSyntaxHighlighter(pWidget)
-{
-}
-
-KviScriptSyntaxHighlighter::~KviScriptSyntaxHighlighter()
-{
-}
 
 #define IN_COMMENT 1
 #define IN_LINE 2
 #define IN_STRING 4
 
-int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endStateOfLastPara)
-
+void KviScriptSyntaxHighlighter::highlightBlock(const QString &text)
 {
+	int endStateOfLastPara = previousBlockState();
 	const QChar * pBuf = (const QChar *)text.ucs2();
 	const QChar * c = pBuf;
-	if(!c)return endStateOfLastPara;
 	
-	if(endStateOfLastPara < 0)endStateOfLastPara = 0;
+	if(endStateOfLastPara < 0)
+	{
+		endStateOfLastPara = 0;
+	}
+	setCurrentBlockState(endStateOfLastPara);
+	
+	if(!c)return;
+	
 	
 	bool bNewCommand = !(endStateOfLastPara & IN_LINE);
 	bool bInComment = endStateOfLastPara & IN_COMMENT;
@@ -586,15 +386,16 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 			while(c->unicode() && (c->unicode() != '*'))c++;
 			if(!c->unicode())
 			{
-				setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrComment);
-				return IN_COMMENT;
+				setFormat(pBegin - pBuf,c - pBegin,commentFormat);
+				setCurrentBlockState(IN_COMMENT);
+				return ;
 			}
 			c++;
 			if(c->unicode() == '/')
 			{
 				// end of the comment!
 				c++;
-				setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrComment);
+				setFormat(pBegin - pBuf,c - pBegin,commentFormat);
 				bInComment = false;
 				bNewCommand = true;
 			}
@@ -613,7 +414,7 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 		if((c->unicode() == '{') || (c->unicode() == '}'))
 		{
 			c++;
-			setFormat(pBegin - pBuf,1,g_fntNormal,g_clrBracket);
+			setFormat(pBegin - pBuf,1,bracketFormat);
 			continue;
 		}
 
@@ -631,13 +432,13 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 					{
 						// array or hash count
 						c++;
-						setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrPunctuation);
+						setFormat(pBegin - pBuf,c - pBegin,punctuationFormat);
 						continue;
 					}
 				}
 				// comment until the end of the line
 				while(c->unicode())c++;
-				setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrComment);
+				setFormat(pBegin - pBuf,c - pBegin,commentFormat);
 				continue;
 			}
 			if(c->unicode() == '/')
@@ -646,12 +447,12 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 				if(c->unicode() == '/')
 				{
 					while(c->unicode())c++;
-					setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrComment);
+					setFormat(pBegin - pBuf,c - pBegin,commentFormat);
 					continue;
 				} else if(c->unicode() == '*')
 				{
 					c++;
-					setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrComment);
+					setFormat(pBegin - pBuf,c - pBegin,commentFormat);
 					bInComment = true;
 					continue;
 				}
@@ -661,7 +462,7 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 			{
 				c++;
 				while(c->unicode() && (c->isLetterOrNumber() || (c->unicode() == '.') || (c->unicode() == '_') || (c->unicode() == ':')))c++;
-				setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrKeyword);
+				setFormat(pBegin - pBuf,c - pBegin,keywordFormat);
 				// special processing for callbacks and magic commands
 				if(pBegin->unicode() == 'e')
 				{
@@ -706,10 +507,10 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 			if(c->unicode() == '$')
 			{
 				c++;
-				setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrKeyword);
+				setFormat(pBegin - pBuf,c - pBegin,keywordFormat);
 			} else {
 				while(c->unicode() && (c->isLetterOrNumber() || (c->unicode() == '.') || (c->unicode() == '_') || (c->unicode() == ':')))c++;
-				setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrFunction);
+				setFormat(pBegin - pBuf,c - pBegin,functionFormat);
 			}
 			continue;
 		}
@@ -722,7 +523,7 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 			if(c->isLetter())
 			{
 				while(c->unicode() && (c->isLetterOrNumber() || (c->unicode() == '_')))c++;
-				setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrKeyword);
+				setFormat(pBegin - pBuf,c - pBegin,switchFormat);
 				continue;
 			} else {
 				while(c!=pTmp) c--;
@@ -735,7 +536,7 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 			if(c->unicode() && (c->isLetterOrNumber() || (c->unicode() == ':') || (c->unicode() == '_')))
 			{
 				while(c->unicode() && (c->isLetterOrNumber() || (c->unicode() == ':') || (c->unicode() == '_')))c++;
-				setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrVariable);
+				setFormat(pBegin - pBuf,c - pBegin,variableFormat);
 				continue;
 			}
 			c--;
@@ -747,32 +548,33 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 		{
 			c++;
 			while(c->unicode() && c->isLetterOrNumber() || (c->unicode() == '_'))c++;
-			setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrNormalText);
+			setFormat(pBegin - pBuf,c - pBegin,quotationFormat);
 			continue;
 		}
 
 		if(c->unicode() == '\\')
 		{
 			c++;
-			setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrPunctuation);
+			setFormat(pBegin - pBuf,c - pBegin,punctuationFormat);
 			// the next char is to be interpreted as normal text
 			pBegin = c;
 			if(c->unicode() && (c->unicode() != '\n'))
 			{
 				c++;
-				setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrNormalText);
+				setFormat(pBegin - pBuf,c - pBegin,quotationFormat);
 				continue;
 			}
 			// this is never returned since Qt sux in string processing
 			// it sets the newlines to spaces and we have no secure way to undestand that this was the end of a line
-			return IN_LINE;
+			setCurrentBlockState(IN_LINE);
+			return;
 		}
 
 		if(c->unicode() == '"')
 		{
 			bInString = !bInString;
 			c++;
-			setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrPunctuation);
+			setFormat(pBegin - pBuf,c - pBegin,quotationFormat);
 			continue;
 		} else if(c->unicode() == ';')
 		{
@@ -780,15 +582,15 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 		}
 
 		c++;
-		if(bInString)
+		//if(bInString)
 		{
-			setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrNormalText);
-		} else {
-			setFormat(pBegin - pBuf,c - pBegin,g_fntNormal,g_clrPunctuation);
-		}
+			setFormat(pBegin - pBuf,c - pBegin,quotationFormat);
+		}/* else {
+			setFormat(pBegin - pBuf,c - pBegin,punctuationFormat);
+		}*/
 	}
 
-	bool i=TRUE;
+	/*bool i=TRUE;
 	QString szFind=((KviScriptEditorWidget *)textEdit())->m_szFind;
 	if (!szFind.isEmpty())
 	{
@@ -803,11 +605,15 @@ int KviScriptSyntaxHighlighter::highlightParagraph(const QString &text,int endSt
 			}
 		else i=false;
 		}
-	}
+	}*/
 	if(bInString)
-		return IN_LINE | IN_STRING;
-	else 
-		return 0;
+	{
+		setCurrentBlockState(IN_LINE | IN_STRING);
+		return ;
+	} else { 
+		setCurrentBlockState(0);
+		return;
+	}
 }
 
 // 22.02.2005 :: 00:01
@@ -832,7 +638,6 @@ KviScriptEditorImplementation::KviScriptEditorImplementation(QWidget * par)
 	m_pFindLineedit = new QLineEdit(" ",this);
 
 	m_pFindLineedit->setText("");
-	m_pFindLineedit->setPaletteForegroundColor(g_clrFind);
 
 	m_pEditor = new KviScriptEditorWidget(this);
 	g->addMultiCellWidget(m_pEditor,0,0,0,3);
@@ -884,17 +689,21 @@ void KviScriptEditorImplementation::loadOptions()
 
 	KviConfig cfg(tmp,KviConfig::Read);
 	
-	g_clrBackground = cfg.readColorEntry("Background",QColor(0,0,0));;
-	g_clrNormalText = cfg.readColorEntry("NormalText",QColor(100,255,0));
-	g_clrBracket = cfg.readColorEntry("Bracket",QColor(255,0,0));
-	g_clrComment = cfg.readColorEntry("Comment",QColor(0,120,0));
-	g_clrFunction = cfg.readColorEntry("Function",QColor(255,255,0));
-	g_clrKeyword = cfg.readColorEntry("Keyword",QColor(120,120,150));
-	g_clrVariable = cfg.readColorEntry("Variable",QColor(200,200,200));
-	g_clrPunctuation = cfg.readColorEntry("Punctuation",QColor(180,180,0));
-	g_clrFind = cfg.readColorEntry("Find",QColor(255,0,0));
-
-	g_fntNormal = cfg.readFontEntry("Font",QFont("Fixed",12));
+	cfg.setGroup("Colors");
+#define READ_ENTRY(x,y) y = cfg.readTextCharFormatEntry((x),(y))
+	READ_ENTRY("Keyword",keywordFormat);
+	READ_ENTRY("Command",commandFormat);
+	READ_ENTRY("Comment",commentFormat);
+	READ_ENTRY("Bracket",bracketFormat);
+	READ_ENTRY("Punctuation",punctuationFormat);
+	READ_ENTRY("Quotation",quotationFormat);
+	READ_ENTRY("Function",functionFormat);
+	READ_ENTRY("Switch",switchFormat);
+	READ_ENTRY("Variable",variableFormat);
+	READ_ENTRY("Normal",normalFormat);
+	bgColor = cfg.readColorEntry("Background",palette().color(QPalette::Background));
+	
+	debug("settings must be loaded");
 }
 
 bool KviScriptEditorImplementation::isModified()
@@ -927,16 +736,19 @@ void KviScriptEditorImplementation::saveOptions()
 
 	KviConfig cfg(tmp,KviConfig::Write);
 	
-	cfg.writeEntry("Background",g_clrBackground);;
-	cfg.writeEntry("NormalText",g_clrNormalText);
-	cfg.writeEntry("Bracket",g_clrBracket);
-	cfg.writeEntry("Comment",g_clrComment);
-	cfg.writeEntry("Function",g_clrFunction);
-	cfg.writeEntry("Keyword",g_clrKeyword);
-	cfg.writeEntry("Variable",g_clrVariable);
-	cfg.writeEntry("Punctuation",g_clrPunctuation);
-	cfg.writeEntry("Find",g_clrFind);
-	cfg.writeEntry("Font",g_fntNormal);
+	cfg.setGroup("Colors");
+	
+	cfg.writeEntry("Keyword",keywordFormat);
+	cfg.writeEntry("Command",commandFormat);
+	cfg.writeEntry("Comment",commentFormat);
+	cfg.writeEntry("Bracket",bracketFormat);
+	cfg.writeEntry("Punctuation",punctuationFormat);
+	cfg.writeEntry("Quotation",quotationFormat);
+	cfg.writeEntry("Function",functionFormat);
+	cfg.writeEntry("Switch",switchFormat);
+	cfg.writeEntry("Variable",variableFormat);
+	cfg.writeEntry("Normal",normalFormat);
+	cfg.writeEntry("Background",bgColor);
 }
 
 void KviScriptEditorImplementation::setFocus()
@@ -983,11 +795,8 @@ void KviScriptEditorImplementation::saveToFile()
 
 void KviScriptEditorImplementation::setText(const KviQCString &txt)
 {
-	m_pEditor->setText(txt.data());
-	m_pEditor->setTextFormat(Qt::PlainText);
-
-	m_pEditor->moveCursor(KviTalTextEdit::MoveEnd,false);
-	m_pEditor->setModified(false);
+	m_pEditor->clear();
+	m_pEditor->insertPlainText(txt);
 	updateRowColLabel();
 }
 
@@ -1001,11 +810,7 @@ QLineEdit * KviScriptEditorImplementation::getFindlineedit()
 }
 void KviScriptEditorImplementation::setText(const QString &txt)
 {
-	m_pEditor->setText(txt);
-	m_pEditor->setTextFormat(Qt::PlainText);
-
-	m_pEditor->moveCursor(KviTalTextEdit::MoveEnd,false);
-	m_pEditor->setModified(false);
+	m_pEditor->setPlainText(txt);
 	updateRowColLabel();
 }
 
@@ -1029,15 +834,6 @@ void KviScriptEditorImplementation::setFindLineeditReadOnly(bool b)
 
 void KviScriptEditorImplementation::updateRowColLabel()
 {
-	int iRow,iCol;
-	m_pEditor->getCursorPosition(&iRow,&iCol);
-	if(iRow != m_lastCursorPos.x() || iCol != m_lastCursorPos.y())
-	{
-		m_lastCursorPos = QPoint(iRow,iCol);
-		QString tmp;
-		KviQString::sprintf(tmp,__tr2qs_ctx("Row: %d Col: %d","editor"),iRow,iCol);
-		m_pRowColLabel->setText(tmp);
-	}
 }
 
 QPoint KviScriptEditorImplementation::getCursor()
@@ -1046,14 +842,6 @@ QPoint KviScriptEditorImplementation::getCursor()
 }
 void KviScriptEditorImplementation::setCursorPosition(QPoint pos)
 {
-	m_pEditor->setCursorPosition(pos.x(),pos.y());
-	m_pEditor->setFocus();
-	m_pEditor->ensureCursorVisible();
-	QString tmp;
-	KviQString::sprintf(tmp,__tr2qs_ctx("Row: %d Col: %d","editor"),pos.x(),pos.y());
-	m_pRowColLabel->setText(tmp);
-	
-	m_lastCursorPos=pos;
 }
 
 void KviScriptEditorImplementation::loadFromFile()
@@ -1068,7 +856,7 @@ void KviScriptEditorImplementation::loadFromFile()
 		if(KviFileUtils::loadFile(fName,buffer))
 		{
 			m_pEditor->setText(buffer);
-			m_pEditor->moveCursor(KviTalTextEdit::MoveEnd,false);
+//			m_pEditor->moveCursor(KviTalTextEdit::MoveEnd,false);
 			updateRowColLabel();
 		} else {
 			QString tmp;
