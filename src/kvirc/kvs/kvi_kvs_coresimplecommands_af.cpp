@@ -55,7 +55,7 @@
 #include "kvi_tal_tooltip.h"
 
 // kvi_app.cpp
-extern KviAsciiDict<KviWindow> * g_pGlobalWindowDict;
+extern QHash<QString,KviWindow*> * g_pGlobalWindowDict;
 
 namespace KviKvsCoreSimpleCommands
 {
@@ -120,8 +120,7 @@ namespace KviKvsCoreSimpleCommands
 	
 		if(KVSCSC_pSwitches->find('a',"all-networks"))
 		{
-			KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-			while(KviWindow * wnd = it.current())
+			foreach(KviWindow * wnd,*g_pGlobalWindowDict)
 			{
 				if(wnd->type()==KVI_WINDOW_TYPE_CONSOLE)
 				{
@@ -131,7 +130,6 @@ namespace KviKvsCoreSimpleCommands
 								pConsole->connection()->encodeText(szReason).data()
 								);
 				}
-				++it;
 			}
 		} else  {
 			KviQCString szR = KVSCSC_pConnection->encodeText(szReason);
@@ -174,8 +172,7 @@ namespace KviKvsCoreSimpleCommands
 		
 		if(KVSCSC_pSwitches->find('a',"all-networks"))
 		{
-			KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-			while(KviWindow * wnd = it.current())
+			foreach(KviWindow * wnd,*g_pGlobalWindowDict)
 			{
 				if(wnd->type()==KVI_WINDOW_TYPE_CONSOLE)
 				{
@@ -183,7 +180,6 @@ namespace KviKvsCoreSimpleCommands
 					if(pConsole->isConnected())
 						pConsole->connection()->sendFmtData("AWAY");
 				}
-				++it;
 			}
 		} else {
 			KVSCSC_REQUIRE_CONNECTION

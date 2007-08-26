@@ -24,11 +24,16 @@
 //
 //=================================================================================================
 
+//lets refuse using old classes
+#if 0
+
 #include "kvi_settings.h"
 
 // TODO: Qt4
 #include <q3asciidict.h>
 #define KviAsciiDict Q3AsciiDict
 #define KviAsciiDictIterator Q3AsciiDictIterator
+
+#endif
 
 #endif //_KVI_ASCIIDICT_H_

@@ -685,7 +685,7 @@ KviServerDetailsWidget::KviServerDetailsWidget(QWidget * par,KviIrcServer * s)
 	if(mexl)
 	{
 		for(KviModuleExtensionDescriptor * d = mexl->first();d;d = mexl->next())
-			m_pLinkFilterEditor->insertItem(d->name().ptr());
+			m_pLinkFilterEditor->insertItem(d->name());
 	} else {
 		if(!s->linkFilter().isEmpty())
 			m_pLinkFilterEditor->insertItem(s->linkFilter());

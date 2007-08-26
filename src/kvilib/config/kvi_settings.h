@@ -33,6 +33,7 @@
 //=============================================================================
 
 #include <qglobal.h>
+#include "kvi_version.h"
 
 #if defined(_OS_WIN32_) || defined(Q_OS_WIN32) || defined(Q_OS_WIN32_)
 
@@ -71,33 +72,17 @@
 	#define KVIRC_API
 #endif
 
-#ifndef VERSION
-	#define VERSION "?.?.?"
-#endif
-
 #ifndef BUILD_DATE
-	#define BUILD_DATE "?"
+	#define BUILD_DATE __DATE__
 #endif
 
 #ifndef BUILD_FLAGS
 	#define BUILD_FLAGS "?"
 #endif
 
-#ifndef PACKAGE
-	#define PACKAGE "kvirc"
-#endif
-
-#ifndef VERSION_BRANCH
-	#define VERSION_BRANCH "?.?"
-#endif
-
-
-#define KVI_VERSION VERSION
-#define KVI_VERSION_BRANCH VERSION_BRANCH
 #define KVI_BUILD_DATE BUILD_DATE
 #define KVI_BUILD_FLAGS BUILD_FLAGS
-
-#define KVI_RELEASE_NAME "Anomalies"
+#define KVI_RELEASE_NAME RELEASE_NAME
 
 // We want _GNU_SOURCE features
 #ifndef _GNU_SOURCE

@@ -247,7 +247,7 @@ void KviFrame::restoreModuleExtensionToolBars()
 		{
 			QString szMod = szEntry.left(idx);
 			szEntry.remove(0,idx + 1);
-			g_pModuleExtensionManager->allocateExtension("toolbar",KviStr(szEntry),firstConsole(),0,0,szMod);
+			g_pModuleExtensionManager->allocateExtension("toolbar",szEntry,firstConsole(),0,0,szMod);
 		}
 	}
 }
@@ -260,7 +260,7 @@ void KviFrame::saveModuleExtensionToolBars()
 	{
 		QString s = t->descriptor()->module()->name();
 		s += ":";
-		s += t->descriptor()->name().ptr();
+		s += t->descriptor()->name();
 
 		//debug("FOUND TOOLBAR %s",t->descriptor()->name().ptr());
 

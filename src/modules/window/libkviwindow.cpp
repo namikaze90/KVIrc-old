@@ -54,7 +54,7 @@
 
 
 // kvi_app.cpp
-extern KVIRC_API KviAsciiDict<KviWindow> * g_pGlobalWindowDict;
+extern KVIRC_API QHash<QString,KviWindow*> * g_pGlobalWindowDict;
 KviPtrList<KviUserWindow> * g_pUserWindowList = 0;
 
 // $window.caption $window.x $window.y $window.width $window.height $window.isActive $window.type
@@ -830,9 +830,8 @@ static bool window_kvs_fnc_list(KviKvsModuleFunctionCall * c)
 	{
 		// all contexts but no "no_context" windows
 		bool bAllWindows = KviQString::equalCI(szType,"all");
-		KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
 
-		while(KviWindow * wnd = it.current())
+		foreach(KviWindow * wnd,*g_pGlobalWindowDict)
 		{
 			if(wnd->context())
 			{
@@ -848,15 +847,13 @@ static bool window_kvs_fnc_list(KviKvsModuleFunctionCall * c)
 					}
 				}
 			}
-			++it;
 		}
 	} else if(KviQString::equalCI(szContext,"any"))
 	{
 		// all contexts and also "no_context" windows
 		bool bAllWindows = KviQString::equalCI(szType.lower(),"all");
-		KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
 
-		while(KviWindow * wnd = it.current())
+		foreach(KviWindow * wnd,*g_pGlobalWindowDict)
 		{
 			if(bAllWindows)
 			{
@@ -869,15 +866,13 @@ static bool window_kvs_fnc_list(KviKvsModuleFunctionCall * c)
 					id++;
 				}
 			}
-			++it;
 		}
 	} else if(KviQString::equalCI(szContext,"none"))
 	{
 		// only "no_context" windows
 		bool bAllWindows = KviQString::equalCI(szType.lower(),"all");
-		KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
 
-		while(KviWindow * wnd = it.current())
+		foreach(KviWindow * wnd,*g_pGlobalWindowDict)
 		{
 			if(!wnd->context())
 			{
@@ -893,7 +888,6 @@ static bool window_kvs_fnc_list(KviKvsModuleFunctionCall * c)
 					}
 				}
 			}
-			++it;
 		}
 
 	} else {
@@ -920,9 +914,8 @@ static bool window_kvs_fnc_list(KviKvsModuleFunctionCall * c)
 		}
 
 		bool bAllWindows = KviQString::equalCI(szType.lower(),"all");
-		KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
 
-		while(KviWindow * wnd = it.current())
+		foreach(KviWindow * wnd,*g_pGlobalWindowDict)
 		{
 			if(wnd->console())
 			{
@@ -941,7 +934,6 @@ static bool window_kvs_fnc_list(KviKvsModuleFunctionCall * c)
 					}
 				}
 			}
-			++it;
 		}
 	}
 	return true;

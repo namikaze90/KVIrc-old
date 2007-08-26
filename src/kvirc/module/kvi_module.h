@@ -194,9 +194,9 @@ public:
 	void unregisterCryptEngines();
 #endif
 
-	KviModuleExtensionDescriptor * registerExtension(const KviStr &szType,const KviStr &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r);
-	KviModuleExtensionDescriptor * registerExtension(const KviStr &szType,const KviStr &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r,const QPixmap &icon);
-	KviModuleExtensionDescriptor * findExtensionDescriptor(const KviStr &szType,const KviStr &szName);
+	KviModuleExtensionDescriptor * registerExtension(const QString &szType,const QString &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r);
+	KviModuleExtensionDescriptor * registerExtension(const QString &szType,const QString &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r,const QPixmap &icon);
+	KviModuleExtensionDescriptor * findExtensionDescriptor(const QString &szType,const QString &szName);
 	void unregisterAllExtensions();
 };
 

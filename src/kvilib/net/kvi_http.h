@@ -152,7 +152,7 @@ signals:
 	void status(const QString &message);
 	void data(const KviStr &data);
 	void binaryData(const KviDataBuffer &data);
-	void header(KviAsciiDict<KviStr> * hdr);
+	void header(QHash<QString,QString> * hdr);
 	void requestSent(const QStringList &request);
 };
 

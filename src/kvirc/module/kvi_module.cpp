@@ -169,18 +169,18 @@ KviModule::~KviModule()
 	*/
 }
 
-KviModuleExtensionDescriptor * KviModule::registerExtension(const KviStr &szType,const KviStr &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r)
+KviModuleExtensionDescriptor * KviModule::registerExtension(const QString &szType,const QString &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r)
 {
 	QPixmap pix; // null
 	return g_pModuleExtensionManager->registerExtension(this,szType,szName,szVisibleName,r,pix);
 }
 
-KviModuleExtensionDescriptor * KviModule::registerExtension(const KviStr &szType,const KviStr &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r,const QPixmap &icon)
+KviModuleExtensionDescriptor * KviModule::registerExtension(const QString &szType,const QString &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r,const QPixmap &icon)
 {
 	return g_pModuleExtensionManager->registerExtension(this,szType,szName,szVisibleName,r,icon);
 }
 
-KviModuleExtensionDescriptor * KviModule::findExtensionDescriptor(const KviStr &szType,const KviStr &szName)
+KviModuleExtensionDescriptor * KviModule::findExtensionDescriptor(const QString &szType,const QString &szName)
 {
 	return g_pModuleExtensionManager->findExtensionDescriptor(szType,szName);
 }

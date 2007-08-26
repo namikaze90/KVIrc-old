@@ -8,8 +8,9 @@ CONFIG += debug
 
 # Do not touch :)
 KVI_PACKAGE = "kvirc"
-KVI_VERSION = "3.9.9.99"
+KVI_VERSION = "3.9.9"
 KVI_VERSION_BRANCH = "3.9"
+
 
 # Platform specific sections
 unix {

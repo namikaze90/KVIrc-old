@@ -39,6 +39,7 @@
 #ifdef COMPILE_SSL_SUPPORT
 	#include "kvi_ssl.h"
 #endif
+#include <QHash>
 
 
 #define KVI_HTTP_REQUEST_THREAD_EVENT_CONNECTED (KVI_THREAD_USER_EVENT_BASE + 0xCAFE)
@@ -500,55 +501,45 @@ bool KviHttpRequest::processHeader(KviStr &szHeader)
 	emit status(tmp);
 	emit receivedResponse(QString(szResponse.ptr()));
 
-	KviPtrList<KviStr> hlist;
-	hlist.setAutoDelete(true);
-
+	QStringList hlist;
+	
 	idx = szHeader.findFirstIdx("\r\n");
 	while(idx != -1)
 	{
 		if(idx > 0)
 		{
-			hlist.append(new KviStr(szHeader.ptr(),idx));
+			hlist << QString::fromUtf8(szHeader.ptr(),idx);
 			szHeader.cutLeft(idx + 2);
 		}
 		idx = szHeader.findFirstIdx("\r\n");
 	}
-	if(szHeader.hasData())hlist.append(new KviStr(szHeader));
+	if(szHeader.hasData())hlist << QString::fromUtf8(szHeader.ptr());
 
-	KviAsciiDict<KviStr> hdr(11,false,true);
-	hdr.setAutoDelete(true);
+	QHash<QString,QString> hdr;
 
-	for(KviStr * s = hlist.first();s;s = hlist.next())
+	foreach(QString s,hlist)
 	{
-		idx = s->findFirstIdx(":");
-		if(idx != -1)
-		{
-			KviStr szName = s->left(idx);
-			s->cutLeft(idx + 1);
-			s->stripWhiteSpace();
-			hdr.replace(szName.ptr(),new KviStr(*s));
-			//debug("FOUND HEADER (%s)=(%s)",szName.ptr(),s->ptr());
-		}
+		hdr[s.section(':',0,0)]=s.section(':',1);
 	}
 
-	KviStr * size = hdr.find("Content-length");
-	if(size)
+	QString size = hdr["Content-length"];
+	if(!size.isEmpty())
 	{
 		bool bOk;
-		m_uTotalSize = size->toUInt(&bOk);
+		m_uTotalSize = size.toUInt(&bOk);
 		if(!bOk)m_uTotalSize = 0;
 	}
 
-	KviStr * contentEncoding = hdr.find("Content-encoding");
-	if(contentEncoding)
+	QString contentEncoding = hdr["Content-encoding"];
+	if(!contentEncoding.isEmpty())
 	{
-		m_bGzip = contentEncoding->equalsCI("gzip");
+		m_bGzip = (contentEncoding == "gzip");
 	}
 	
-	KviStr * transferEncoding = hdr.find("Transfer-Encoding");
-	if(transferEncoding)
+	QString transferEncoding = hdr["Transfer-Encoding"];
+	if(!transferEncoding.isEmpty())
 	{
-		if(kvi_strEqualCI(transferEncoding->ptr(),"chunked"))
+		if(transferEncoding=="chunked")
 		{
 			// be prepared to handle the chunked transfer encoding as required by HTTP/1.1
 			m_bChunkedTransferEncoding = true;
@@ -556,7 +547,7 @@ bool KviHttpRequest::processHeader(KviStr &szHeader)
 		}
 	}
 
-	emit header(&hdr);
+	emit(header(&hdr));
 
 	// check the status
 

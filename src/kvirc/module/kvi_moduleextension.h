@@ -52,16 +52,16 @@ class KVIRC_API KviModuleExtensionDescriptor
 	friend class KviModuleExtension;
 	friend class KviModuleExtensionManager; // only the manager allocates and deallocates these structures
 protected:
-	KviModuleExtensionDescriptor(KviModule * m,const KviStr &szType,const KviStr &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r,const QPixmap &pix);
+	KviModuleExtensionDescriptor(KviModule * m,const QString &szType,const QString &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r,const QPixmap &pix);
 public: // this has to be public because of QPtrList... but should be protected
 	~KviModuleExtensionDescriptor();
 private:
 	int                              m_iId;            // unique id assigned at creation time
-	KviStr                           m_szType;         // name of the service (toolbar , crypt engine...)
-	KviStr                           m_szName;         // name of the extension
+	QString                           m_szType;         // name of the service (toolbar , crypt engine...)
+	QString                           m_szName;         // name of the extension
 	QString                          m_szVisibleName;  // name that is VISIBLE and possibly translated
-	KviStr                           m_szAuthor;       // Author (visible)
-	KviStr                           m_szDescription;  // Description (visible!)
+	QString                           m_szAuthor;       // Author (visible)
+	QString                           m_szDescription;  // Description (visible!)
 	int                              m_iFlags;         // Flags (0 if not applicable)
 	QPixmap                        * m_pIcon;          // Icon (may be null!)
 	KviModuleExtensionAllocRoutine   m_allocRoutine;
@@ -74,17 +74,17 @@ public:
 
 	int id(){ return m_iId; };
 	KviModule * module(){ return m_pModule; };
-	const KviStr &type(){ return m_szType; };
-	const KviStr &name(){ return m_szName; };
+	const QString &type(){ return m_szType; };
+	const QString &name(){ return m_szName; };
 	const QString &visibleName(){ return m_szVisibleName; };
-	const KviStr &author(){ return m_szAuthor; };
-	const KviStr &description(){ return m_szDescription; };
+	const QString &author(){ return m_szAuthor; };
+	const QString &description(){ return m_szDescription; };
 	const QPixmap * icon(){ return m_pIcon; };
 	int flags(){ return m_iFlags; };
 
-	void setAuthor(const KviStr &szAuthor){ m_szAuthor = szAuthor; };
-	void setDescription(const KviStr &szDescription){ m_szDescription = szDescription; };
-	void setVisibleName(const KviStr &szVisibleName){ m_szVisibleName = szVisibleName; };
+	void setAuthor(const QString &szAuthor){ m_szAuthor = szAuthor; };
+	void setDescription(const QString &szDescription){ m_szDescription = szDescription; };
+	void setVisibleName(const QString &szVisibleName){ m_szVisibleName = szVisibleName; };
 	void setFlags(int iFlags){ m_iFlags = iFlags; };
 	void setIcon(const QPixmap &pix);
 	
@@ -107,19 +107,19 @@ protected:
 	KviModuleExtensionManager(); // KviApp calls this
 	~KviModuleExtensionManager(); // and this
 protected:
-	KviAsciiDict<KviModuleExtensionDescriptorList> * m_pExtensionDict;
+	QHash<QString,KviModuleExtensionDescriptorList*> * m_pExtensionDict;
 protected:
 	// Only KviModule can call this
-	KviModuleExtensionDescriptor * registerExtension(KviModule * m,const KviStr &szType,const KviStr &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r,const QPixmap &icon);
+	KviModuleExtensionDescriptor * registerExtension(KviModule * m,const QString &szType,const QString &szName,const QString &szVisibleName,KviModuleExtensionAllocRoutine r,const QPixmap &icon);
 	void unregisterExtensionsByModule(KviModule * m);
 public:
-	KviModuleExtensionDescriptor * findExtensionDescriptor(const KviStr &szType,const KviStr &szName);
+	KviModuleExtensionDescriptor * findExtensionDescriptor(const QString &szType,const QString &szName);
 	static KviModuleExtensionManager * instance(){ return g_pModuleExtensionManager; };
-	KviModuleExtensionDescriptorList * getExtensionList(const KviStr &szType);
-	KviModuleExtension * allocateExtension(const KviStr &szType,const KviStr &szName,KviWindow * pWnd = 0,KviDict<QVariant> * pParams = 0,void * pSpecial = 0,const char * preloadModule = 0);
-	KviModuleExtension * allocateExtension(const KviStr &szType,int id,KviWindow * pWnd = 0,KviDict<QVariant> * pParams = 0,void * pSpecial = 0,const char * preloadModule = 0);
+	KviModuleExtensionDescriptorList * getExtensionList(const QString &szType);
+	KviModuleExtension * allocateExtension(const QString &szType,const QString &szName,KviWindow * pWnd = 0,KviDict<QVariant> * pParams = 0,void * pSpecial = 0,const char * preloadModule = 0);
+	KviModuleExtension * allocateExtension(const QString &szType,int id,KviWindow * pWnd = 0,KviDict<QVariant> * pParams = 0,void * pSpecial = 0,const char * preloadModule = 0);
 private:
-	KviModuleExtensionDescriptorList * allocateExtensionGetDescriptorList(const KviStr &szType,const char * preloadModule);
+	KviModuleExtensionDescriptorList * allocateExtensionGetDescriptorList(const QString &szType,const char * preloadModule);
 };
 
 

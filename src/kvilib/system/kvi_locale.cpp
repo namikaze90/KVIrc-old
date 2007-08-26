@@ -46,12 +46,12 @@
 #include "kvi_file.h"
 
 
-KVILIB_API KviMessageCatalogue           * g_pMainCatalogue       = 0;
+KVILIB_API KviMessageCatalogue             * g_pMainCatalogue       = 0;
 
-static KviStr                              g_szLang;
-static KviTranslator                     * g_pTranslator          = 0;
-static KviAsciiDict<KviMessageCatalogue> * g_pCatalogueDict       = 0;
-static QTextCodec                        * g_pUtf8TextCodec       = 0;
+static KviStr                                g_szLang;
+static KviTranslator                       * g_pTranslator          = 0;
+static QHash<QString,KviMessageCatalogue*> * g_pCatalogueDict       = 0;
+static QTextCodec                          * g_pUtf8TextCodec       = 0;
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,7 +318,7 @@ protected:
 	}
 };
 
-static KviAsciiDict<KviSmartTextCodec>   * g_pSmartCodecDict      = 0;
+static QHash<QString,KviSmartTextCodec*>   * g_pSmartCodecDict      = 0;
 
 
 
@@ -777,14 +777,14 @@ namespace KviLocale
 		return &(supported_encodings[iIdx]);
 	}
 
-	QTextCodec * codecForName(const char * szName)
+	QTextCodec * codecForName(const QString& szName)
 	{
 		KviStr szTmp = szName;
 		int idx = szTmp.findFirstIdx('[');
 		if(idx != -1)
 		{
 			// composite codec: either UTF-8 [child codec] or child codec [UTF-8]
-			KviSmartTextCodec * c = g_pSmartCodecDict->find(szName);
+			KviSmartTextCodec * c = g_pSmartCodecDict->value(szName);
 			if(c)return c;
 			
 			
@@ -801,7 +801,7 @@ namespace KviLocale
 			}
 			if(c->ok())
 			{
-				g_pSmartCodecDict->replace(szName,c);
+				g_pSmartCodecDict->insert(szName,c);
 				return c;
 			} else {
 				delete c;
@@ -818,7 +818,7 @@ namespace KviLocale
 	bool loadCatalogue(const QString &name,const QString &szLocaleDir)
 	{
 		//debug("Looking up catalogue %s",name);
-		if(g_pCatalogueDict->find(KviQString::toUtf8(name).data()))return true; // already loaded
+		if(g_pCatalogueDict->value(name))return true; // already loaded
 
 		QString szBuffer;
 
@@ -838,7 +838,9 @@ namespace KviLocale
 	bool unloadCatalogue(const QString &name)
 	{
 		//debug("Unloading catalogue : %s",name);
-		return g_pCatalogueDict->remove(KviQString::toUtf8(name).data());
+		KviMessageCatalogue* cat = g_pCatalogueDict->value(name);
+		if(cat) delete cat;
+		return g_pCatalogueDict->remove(name);
 	}
 
 	bool findCatalogue(QString &szBuffer,const QString& name,const QString& szLocaleDir)
@@ -920,14 +922,13 @@ namespace KviLocale
 		// the main catalogue is supposed to be kvirc_<language>.mo
 		g_pMainCatalogue = new KviMessageCatalogue();
 		// the catalogue dict
-		g_pCatalogueDict = new KviAsciiDict<KviMessageCatalogue>;
-		g_pCatalogueDict->setAutoDelete(true);
+		g_pCatalogueDict = new QHash<QString,KviMessageCatalogue*>;
 
 		// the smart codec dict
-		g_pSmartCodecDict = new KviAsciiDict<KviSmartTextCodec>;
+		g_pSmartCodecDict = new QHash<QString,KviSmartTextCodec*>;
 		// the Qt docs explicitly state that we shouldn't delete
 		// the codecs by ourselves...
-		g_pSmartCodecDict->setAutoDelete(false);
+
 
 		if(g_szLang.hasData())
 		{
@@ -980,7 +981,7 @@ namespace KviLocale
 
 	KviMessageCatalogue * getLoadedCatalogue(const QString& name)
 	{
-		return g_pCatalogueDict->find(KviQString::toUtf8(name).data());
+		return g_pCatalogueDict->value(name);
 	}
 
 
@@ -988,7 +989,7 @@ namespace KviLocale
 	{
 		if(context)
 		{
-			KviMessageCatalogue * c = g_pCatalogueDict->find(context);
+			KviMessageCatalogue * c = g_pCatalogueDict->value(QString::fromUtf8(context));
 			if(!c)
 			{
 				// FIXME: Should really try to load the catalogue here!
@@ -1004,7 +1005,7 @@ namespace KviLocale
 	{
 		if(context)
 		{
-			KviMessageCatalogue * c = g_pCatalogueDict->find(context);
+			KviMessageCatalogue * c = g_pCatalogueDict->value(QString::fromUtf8(context));
 			if(!c)
 			{
 				// FIXME: Should really try to load the catalogue here!

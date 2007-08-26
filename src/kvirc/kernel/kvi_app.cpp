@@ -121,7 +121,7 @@ KVIRC_API KviTextIconWindow            * g_pTextIconWindow            = 0;
 KVIRC_API KviTalPopupMenu              * g_pInputPopup                = 0;
 KVIRC_API QStringList                  * g_pRecentTopicList           = 0;
 //KVIRC_API QStringList                  * g_pBookmarkList            = 0;
-KVIRC_API KviAsciiDict<KviWindow>      * g_pGlobalWindowDict          = 0;
+KVIRC_API QHash<QString,KviWindow*>    * g_pGlobalWindowDict          = 0;
 KVIRC_API KviMediaManager              * g_pMediaManager              = 0;
 //KVIRC_API KviRegisteredUserDataBase    * g_pRegisteredUserDataBase    = 0;
 KVIRC_API KviSharedFilesManager        * g_pSharedFilesManager        = 0;
@@ -454,8 +454,7 @@ void KviApp::setup()
 	KVI_SPLASH_SET_PROGRESS(91)
 
 	// Global window dictionary
-	g_pGlobalWindowDict = new KviAsciiDict<KviWindow>(41);
-	g_pGlobalWindowDict->setAutoDelete(false);
+	g_pGlobalWindowDict = new QHash<QString,KviWindow*>;
 	// Script object controller
 	//g_pScriptObjectController = new KviScriptObjectController(); gone
 
@@ -563,7 +562,14 @@ KviApp::~KviApp()
 	saveOptions();
 	saveIdentities();
 	KviUserIdentityManager::done();
-	if(m_pRecentChannelsDict) delete m_pRecentChannelsDict;
+	if(m_pRecentChannelsDict)
+	{
+		foreach(QStringList* l,*m_pRecentChannelsDict)
+		{
+			delete l;
+		}
+		delete m_pRecentChannelsDict;
+	}
 	// now kill the stuff that the frame depends on
 	saveIrcServerDataBase();
 	delete g_pIrcServerDataBase;
@@ -945,15 +951,13 @@ void KviApp::setClipboardText(const KviStr &str)
 
 void KviApp::setAvatarFromOptions()
 {
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
 
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(it.current()->type() == KVI_WINDOW_TYPE_CONSOLE)
+		if(w->type() == KVI_WINDOW_TYPE_CONSOLE)
 		{
-			((KviConsole *)it.current())->setAvatarFromOptions();
+			((KviConsole *)w)->setAvatarFromOptions();
 		}
-		++it;
 	}
 
 }
@@ -1608,12 +1612,9 @@ void KviApp::destroyFrame()
 
 bool KviApp::connectionExists(KviIrcConnection *cnn)
 {
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(it.current()->connection() == cnn)return true;
-		++it;
+		if(w->connection() == cnn)return true;
 	}
 	return false;
 }
@@ -1621,12 +1622,9 @@ bool KviApp::connectionExists(KviIrcConnection *cnn)
 
 bool KviApp::windowExists(KviWindow *wnd)
 {
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(it.current() == wnd)return true;
-		++it;
+		if(w == wnd)return true;
 	}
 	return false;
 }
@@ -1638,37 +1636,34 @@ unsigned int KviApp::windowCount()
 
 KviConsole * KviApp::findConsole(QString &server,QString &nick)
 {
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(it.current()->type() == KVI_WINDOW_TYPE_CONSOLE)
+		if(w->type() == KVI_WINDOW_TYPE_CONSOLE)
 		{
-			if(((KviConsole *)it.current())->isConnected())
+			if(((KviConsole *)w)->isConnected())
 			{
 				if(!server.isEmpty())
 				{
 					if(KviQString::equalCI(server,
-						((KviConsole *)it.current())->connection()->currentServerName()))
+						((KviConsole *)w)->connection()->currentServerName()))
 					{
 						if(!nick.isEmpty())
 						{
 							if(KviQString::equalCI(nick,
-								((KviConsole *)it.current())->connection()->currentNickName()))
-									return ((KviConsole *)it.current());
-						} else return ((KviConsole *)it.current());
+								((KviConsole *)w)->connection()->currentNickName()))
+									return ((KviConsole *)w);
+						} else return ((KviConsole *)w);
 					}
 				} else {
 					if(!nick.isEmpty())
 					{
 						if(KviQString::equalCI(nick,
-							((KviConsole *)it.current())->connection()->currentNickName()))
-								return ((KviConsole *)it.current());
+							((KviConsole *)w)->connection()->currentNickName()))
+								return ((KviConsole *)w);
 					}
 				}
 			}
 		}
-		++it;
 	}
 	return 0;
 }
@@ -1683,60 +1678,48 @@ KviConsole * KviApp::findConsole(KviStr &server,KviStr &nick)
 
 void KviApp::restartLagMeters()
 {
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(it.current()->type() == KVI_WINDOW_TYPE_CONSOLE)
+		if(w->type() == KVI_WINDOW_TYPE_CONSOLE)
 		{
-			if(((KviConsole *)it.current())->connection())
-				((KviConsole *)it.current())->connection()->restartLagMeter();
+			if(((KviConsole *)w)->connection())
+				((KviConsole *)w)->connection()->restartLagMeter();
 		}
-		++it;
 	}
 }
 
 void KviApp::restartNotifyLists()
 {
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(it.current()->type() == KVI_WINDOW_TYPE_CONSOLE)
+		if(w->type() == KVI_WINDOW_TYPE_CONSOLE)
 		{
-			if(((KviConsole *)it.current())->connection())
-				((KviConsole *)it.current())->connection()->restartNotifyList();
+			if(((KviConsole *)w)->connection())
+				((KviConsole *)w)->connection()->restartNotifyList();
 		}
-		++it;
 	}
 }
 
 void KviApp::resetAvatarForMatchingUsers(KviRegisteredUser * u)
 {
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(it.current()->type() == KVI_WINDOW_TYPE_CONSOLE)
+		if(w->type() == KVI_WINDOW_TYPE_CONSOLE)
 		{
-			((KviConsole *)it.current())->resetAvatarForMatchingUsers(u);
+			((KviConsole *)w)->resetAvatarForMatchingUsers(u);
 		}
-		++it;
 	}
 }
 
 KviConsole * KviApp::findConsole(unsigned int ircContextId)
 {
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(it.current()->type() == KVI_WINDOW_TYPE_CONSOLE)
+		if(w->type() == KVI_WINDOW_TYPE_CONSOLE)
 		{
-			if(((KviConsole *)it.current())->ircContextId() == ircContextId)
-				return ((KviConsole *)it.current());
+			if(((KviConsole *)w)->ircContextId() == ircContextId)
+				return ((KviConsole *)w);
 		}
-		++it;
 	}
 	return 0;
 }
@@ -1753,35 +1736,29 @@ KviConsole * KviApp::topmostConnectedConsole()
 
 	// try ANY connected console
 
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(it.current()->type() == KVI_WINDOW_TYPE_CONSOLE)
+		if(w->type() == KVI_WINDOW_TYPE_CONSOLE)
 		{
-			if(((KviConsole *)it.current())->isConnected())return (KviConsole *)(it.current());
+			if(((KviConsole *)w)->isConnected())return (KviConsole *)(w);
 		}
-		++it;
 	}
 
 	return 0;
 }
 
-KviWindow * KviApp::findWindow(const char * windowId)
+KviWindow * KviApp::findWindow(const QString & windowId)
 {
-	return g_pGlobalWindowDict->find(windowId);
+	return g_pGlobalWindowDict->value(windowId);
 }
 
 KviWindow * KviApp::findWindowByCaption(const QString &windowCaption,int iContextId)
 {
-	KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-
-	while(it.current())
+	foreach(KviWindow *w,*g_pGlobalWindowDict)
 	{
-		if(KviQString::equalCI(windowCaption,it.current()->plainTextCaption()) && 
-			(iContextId==-1 || it.current()->context()->id() == iContextId))
-				return it.current();
-		++it;
+		if(KviQString::equalCI(windowCaption,w->plainTextCaption()) && 
+			(iContextId==-1 || w->context()->id() == iContextId))
+				return w;
 	}
 	return 0;
 }
@@ -1853,7 +1830,7 @@ void KviApp::addRecentChannel(const QString& szChan,const QString& net)
 {
 	if(!m_pRecentChannelsDict)
 		buildRecentChannels();
-	QStringList* pList=m_pRecentChannelsDict->find(net.utf8().data());
+	QStringList* pList=m_pRecentChannelsDict->value(net);
 	if(pList)
 	{
 		if(!pList->contains(szChan)) pList->append(szChan);
@@ -1869,8 +1846,7 @@ void KviApp::buildRecentChannels()
 {
 	if(m_pRecentChannelsDict)
 		delete m_pRecentChannelsDict;
-	m_pRecentChannelsDict = new KviAsciiDict<QStringList>;
-	m_pRecentChannelsDict->setAutoDelete(TRUE);
+	m_pRecentChannelsDict = new QHash<QString,QStringList*>;
 	QString szChan,szNet;
 	for ( 
 		QStringList::Iterator it = KVI_OPTION_STRINGLIST(KviOption_stringlistRecentChannels).begin();
@@ -1884,7 +1860,7 @@ void KviApp::buildRecentChannels()
 			szNet = (*it).section( KVI_RECENT_CHANNELS_SEPARATOR, 1 );
 			if(!szNet.isEmpty())
 			{
-				QStringList* pList=m_pRecentChannelsDict->find(szNet.utf8().data());
+				QStringList* pList=m_pRecentChannelsDict->value(szNet);
 				if(pList)
 				{
 					if(!pList->contains(szChan)) pList->append(szChan);
@@ -1904,22 +1880,23 @@ void KviApp::saveRecentChannels()
 	if(!m_pRecentChannelsDict) return;
 	QString szTmp;
 	KVI_OPTION_STRINGLIST(KviOption_stringlistRecentChannels).clear();
-	KviAsciiDictIterator<QStringList> it( *m_pRecentChannelsDict );
-	for( ; it.current(); ++it )
+	QHash<QString,QStringList*>::iterator it( m_pRecentChannelsDict->begin() );
+	while(it!=m_pRecentChannelsDict->end())
 	{
-		for ( QStringList::Iterator it_str = it.current()->begin(); it_str != it.current()->end(); ++it_str ) {
+		for ( QStringList::Iterator it_str = it.value()->begin(); it_str != it.value()->end(); ++it_str ) {
 			szTmp=*it_str;
 			szTmp.append(KVI_RECENT_CHANNELS_SEPARATOR);
-			szTmp.append(it.currentKey());
+			szTmp.append(it.key());
 			KVI_OPTION_STRINGLIST(KviOption_stringlistRecentChannels).append(szTmp);
 		}
-        }
+		++it;
+   }
 }
 
 QStringList* KviApp::getRecentChannels(const QString& net)
 {
 	if(!m_pRecentChannelsDict) buildRecentChannels();
-	return m_pRecentChannelsDict->find(net.utf8().data());
+	return m_pRecentChannelsDict->value(net);
 }
 
 

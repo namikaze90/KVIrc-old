@@ -151,22 +151,8 @@
 /* #undef HAVE_SYS_SOUNDCARD_H */
 
 /* Name of package */
-#define PACKAGE "kvirc"
-
-/* Version number of package */
-#define VERSION "3.2.6"
-
-#define VERSION_BRANCH "3.2"
 
 
-/* Define if the system does not provide POSIX.1 features except with this
-   defined. */
-/* #undef _POSIX_1_SOURCE */
-
-/* Define if you need to in order for `stat' and other things to work. */
-/* #undef _POSIX_SOURCE */
-
-// for now we need this....dcc voice is not ported yet
 #define COMPILE_WITH_NO_SOUND
 
 #define COMPILE_DISABLE_DCC_VOICE
@@ -182,29 +168,5 @@
 
 /* define if you want perl scripting support */
 #define COMPILE_PERL_SUPPORT
-
-/* The size of a `int', as computed by sizeof. */
-#define SIZEOF_INT 4
-
-/* The size of a `long int', as computed by sizeof. */
-#define SIZEOF_LONG_INT 4
-
-/* The size of a `long long int', as computed by sizeof. */
-#define SIZEOF_LONG_LONG_INT 8
-
-/* The size of a `short int', as computed by sizeof. */
-#define SIZEOF_SHORT_INT 2
-
-/* The size of a `unsigned int', as computed by sizeof. */
-#define SIZEOF_UNSIGNED_INT 4
-
-/* The size of a `unsigned long int', as computed by sizeof. */
-#define SIZEOF_UNSIGNED_LONG_INT 4
-
-/* The size of a `unsigned long long int', as computed by sizeof. */
-#define SIZEOF_UNSIGNED_LONG_LONG_INT 8
-
-/* The size of a `unsigned short int', as computed by sizeof. */
-#define SIZEOF_UNSIGNED_SHORT_INT 2
 
 #endif //_KVI_WINCFG_H_

@@ -221,12 +221,6 @@
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
-/* Version number of package */
-#define VERSION "3.2.6"
-
-/* MAJOR.MINOR part of version */
-#define VERSION_BRANCH "3.2"
-
 /* Define to 1 if the X Window System is missing or not being used. */
 /* #undef X_DISPLAY_MISSING */
 

@@ -62,7 +62,7 @@
 #include <time.h>
 
 
-extern KVIRC_API KviAsciiDict<KviWindow> * g_pGlobalWindowDict;
+extern KVIRC_API QHash<QString,KviWindow*> * g_pGlobalWindowDict;
 static KviPtrList<KviDockWidget> * g_pDockWidgetList = 0;
 
 static QPixmap * g_pDock1 = 0;
@@ -217,8 +217,7 @@ void KviDockWidget::doAway(int id)
 {
 	if(id<0)
 	{
-		KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
-		while(KviWindow * wnd = it.current())
+		foreach(KviWindow * wnd,*g_pGlobalWindowDict)
 		{
 			if(wnd->type()==KVI_WINDOW_TYPE_CONSOLE)
 			{
@@ -231,7 +230,6 @@ void KviDockWidget::doAway(int id)
 							pConsole->connection()->encodeText(KVI_OPTION_STRING(KviOption_stringAwayMessage)).data()
 							);
 			}
- 			++it;
 		}
 	} else {
 		KviConsole* pConsole=g_pApp->findConsole((unsigned int)id);
@@ -262,11 +260,10 @@ void KviDockWidget::fillContextPopup()
 		
 		int iSeparator=m_pAwayPopup->insertSeparator();
 		
-		KviAsciiDictIterator<KviWindow> it(*g_pGlobalWindowDict);
 		bool bAllAway=1;
 		bool bAllUnaway=1;
 		int iNetCount=0;
-		while(KviWindow * wnd = it.current())
+		foreach(KviWindow * wnd,*g_pGlobalWindowDict)
 		{
 			if(wnd->type()==KVI_WINDOW_TYPE_CONSOLE)
 			{
@@ -286,7 +283,6 @@ void KviDockWidget::fillContextPopup()
 					iNetCount++;
 				}
 			}
- 			++it;
 		}
 		if(iNetCount==1)
 		{

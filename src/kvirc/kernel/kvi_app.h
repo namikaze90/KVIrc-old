@@ -36,7 +36,7 @@
 #include "kvi_tal_application.h"
 #include "kvi_list.h"
 #include "kvi_time.h"
-#include "kvi_asciidict.h" // ?
+#include <QHash>
 
 #define KVI_RECENT_CHANNELS_SEPARATOR ":"
 
@@ -105,7 +105,7 @@ protected:
 	bool                            m_bUpdateGuiPending;
 	KviPtrList<KviPendingAvatarChange> * m_pPendingAvatarChanges;
 	bool                            m_bSetupDone;
-	KviAsciiDict<QStringList>     * m_pRecentChannelsDict;
+	QHash<QString,QStringList*>   * m_pRecentChannelsDict;
 #ifdef COMPILE_PSEUDO_TRANSPARENCY
 	bool                            m_bUpdatePseudoTransparencyPending;
 #endif
@@ -238,7 +238,7 @@ public:
 	bool getReadOnlyConfigPath(QString &buffer,const char *config_name,KvircSubdir sbd = Config,bool bNoFail = false);
 
 	// kvi_app.cpp : Window stuff
-	KviWindow       * findWindow(const char * windowId);
+	KviWindow       * findWindow(const QString & windowId);
 	KviWindow       * findWindowByCaption(const QString &windowCaption,int iContextId=-1);
 	KviConsole      * findConsole(unsigned int ircContextId);
 	KviConsole      * findConsole(KviStr & server,KviStr & nick);

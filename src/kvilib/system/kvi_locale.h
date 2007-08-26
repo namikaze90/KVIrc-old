@@ -53,7 +53,7 @@ namespace KviLocale
 	// you MUST start iterating from 0 and terminate when
 	// you get an entry with a NULL szName
 	KVILIB_API EncodingDescription * encodingDescription(int iIdx);
-	KVILIB_API QTextCodec * codecForName(const char * szName);
+	KVILIB_API QTextCodec * codecForName(const QString& szName);
 	KVILIB_API const KviStr & localeName();
 	KVILIB_API bool findCatalogue(QString &szBuffer,const QString& name,const QString& szLocaleDir);
 	KVILIB_API bool loadCatalogue(const QString& name,const QString& szLocaleDir);

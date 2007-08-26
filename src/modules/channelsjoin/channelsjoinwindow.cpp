@@ -176,13 +176,13 @@ void KviChannelsJoinWindow::fillListView()
 	par = new KviTalListViewItem(m_pListView,__tr2qs("Registered Channels"));
 	par->setOpen(true);
 
-	KviAsciiDict<KviRegisteredChannelList> * d = g_pRegisteredChannelDataBase->channelDict();
+	QHash<QString,KviRegisteredChannelList*> * d = g_pRegisteredChannelDataBase->channelDict();
 	if(d)
 	{
-		KviAsciiDictIterator<KviRegisteredChannelList> it(*d);
-		while(it.current())
+		QHash<QString,KviRegisteredChannelList*>::const_iterator it(d->constBegin());
+		while(it!=d->constEnd())
 		{
-			chld = new KviTalListViewItem(par,it.currentKey());
+			chld = new KviTalListViewItem(par,it.key());
 			chld->setPixmap(0,*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)));
 			++it;
 		}

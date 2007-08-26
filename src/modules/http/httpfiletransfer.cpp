@@ -60,7 +60,7 @@ KviHttpFileTransfer::KviHttpFileTransfer()
 
 	connect(m_pHttpRequest,SIGNAL(status(const QString &)),this,SLOT(statusMessage(const QString &)));
 	connect(m_pHttpRequest,SIGNAL(terminated(bool)),this,SLOT(transferTerminated(bool)));
-	connect(m_pHttpRequest,SIGNAL(header(KviAsciiDict<KviStr> *)),this,SLOT(headersReceived(KviAsciiDict<KviStr> *)));
+	connect(m_pHttpRequest,SIGNAL(header(KviAsciiDict<KviStr> *)),this,SLOT(headersReceived(QHash<QString,QString> *)));
 	connect(m_pHttpRequest,SIGNAL(resolvingHost(const QString &)),this,SLOT(resolvingHost(const QString &)));
 	connect(m_pHttpRequest,SIGNAL(requestSent(const QStringList &)),this,SLOT(requestSent(const QStringList &)));
 	connect(m_pHttpRequest,SIGNAL(contactingHost(const QString &)),this,SLOT(contactingHost(const QString &)));
@@ -462,20 +462,20 @@ void KviHttpFileTransfer::transferTerminated(bool bSuccess)
 	}
 }
 
-void KviHttpFileTransfer::headersReceived(KviAsciiDict<KviStr> *h)
+void KviHttpFileTransfer::headersReceived(QHash<QString,QString> *h)
 {
 	if(!h)return;
 	KviWindow * out = transferWindow();
 
 	if(out && (!m_bNoOutput))out->output(KVI_OUT_GENERICSTATUS,__tr2qs_ctx("[HTTP %d]: Response headers:","http"),id());
-	KviAsciiDictIterator<KviStr> it(*h);
-	while(KviStr * s = it.current())
+	QHash<QString,QString>::iterator it(h->begin());
+	while(it!=h->end())
 	{
-		QString szHeader = it.currentKey();
+		QString szHeader = it.key();
 		szHeader += ": ";
-		szHeader += s->ptr();
+		szHeader += it.value();
 		m_lHeaders.append(szHeader);
-		if(out && (!m_bNoOutput))out->output(KVI_OUT_GENERICSTATUS,"[HTTP %d]:   %s: %s",id(),it.currentKey(),s->ptr());
+		if(out && (!m_bNoOutput))out->output(KVI_OUT_GENERICSTATUS,"[HTTP %d]:   %Q: %Q",id(),&(it.key()),&(it.value()));
 		++it;
 	}
 }

@@ -87,7 +87,7 @@ public:
 protected slots:
 	void statusMessage(const QString &txt);
 	void transferTerminated(bool bSuccess);
-	void headersReceived(KviAsciiDict<KviStr> *h);
+	void headersReceived(QHash<QString,QString> *h);
 	void requestSent(const QStringList &sl);
 
 	void resolvingHost(const QString &hostname);

@@ -40,6 +40,7 @@
 #include <qdatetime.h>
 #include "kvi_asciidict.h"
 #include <qstringlist.h>
+#include <QHash>
 
 class KviConsole;
 class QSplitter;
@@ -140,7 +141,7 @@ protected:
 	KviPixmap                             m_privateBackground;
 	QDateTime                             m_joinTime;
 	QString                               m_szNameWithUserFlag;
-	KviAsciiDict<QString>               * m_pTmpHighLighted;
+	QHash<QString,QString>              * m_pTmpHighLighted;
 	unsigned int                          m_uActionHistoryHotActionCount;
 	KviPtrList<KviChannelAction>        * m_pActionHistory;
 	kvi_time_t                            m_tLastReceivedWhoReply;
@@ -283,9 +284,9 @@ public:
 	bool hasChannelKey() { return !m_szChannelKey.isEmpty(); };
 	QString & channelKey(){ return m_szChannelKey; };
 
-    void addHighlightedUser(const char * nick);
-    void removeHighlightedUser(const char * nick);
-    bool isHighlightedUser(const char * nick) { return m_pTmpHighLighted->find(nick); };
+    void addHighlightedUser(const QString& nick);
+    void removeHighlightedUser(const QString& nick);
+    bool isHighlightedUser(const QString& nick) { return m_pTmpHighLighted->contains(nick); };
     KviIrcView * messageView() const { return m_pMessageView; };
 	virtual void lostUserFocus();
 	virtual void getTaskBarTipText(QString &buffer);
