@@ -61,7 +61,7 @@ void KviModuleExtensionDescriptor::setIcon(const QPixmap &pix)
 	else m_pIcon = new QPixmap(pix);
 }
 
-KviModuleExtension * KviModuleExtensionDescriptor::allocate(KviWindow * pWnd,KviDict<QVariant> * pParams,void * pSpecial)
+KviModuleExtension * KviModuleExtensionDescriptor::allocate(KviWindow * pWnd,QHash<QString,QVariant> * pParams,void * pSpecial)
 {
 	KviModuleExtensionAllocStruct s;
 	s.pDescriptor = this;
@@ -185,7 +185,7 @@ KviModuleExtensionDescriptor * KviModuleExtensionManager::findExtensionDescripto
 	return 0;
 }
 
-KviModuleExtension * KviModuleExtensionManager::allocateExtension(const QString &szType,const QString &szName,KviWindow * pWnd,KviDict<QVariant> * pParams,void * pSpecial,const char * preloadModule)
+KviModuleExtension * KviModuleExtensionManager::allocateExtension(const QString &szType,const QString &szName,KviWindow * pWnd,QHash<QString,QVariant> * pParams,void * pSpecial,const char * preloadModule)
 {
 	KviModuleExtensionDescriptorList * l = allocateExtensionGetDescriptorList(szType,preloadModule);
 	if(!l)return 0;
@@ -212,7 +212,7 @@ KviModuleExtension * KviModuleExtensionManager::allocateExtension(const QString 
 }
 
 
-KviModuleExtension * KviModuleExtensionManager::allocateExtension(const QString &szType,int id,KviWindow * pWnd,KviDict<QVariant> * pParams,void * pSpecial,const char * preloadModule)
+KviModuleExtension * KviModuleExtensionManager::allocateExtension(const QString &szType,int id,KviWindow * pWnd,QHash<QString,QVariant> * pParams,void * pSpecial,const char * preloadModule)
 {
 	KviModuleExtensionDescriptorList * l = allocateExtensionGetDescriptorList(szType,preloadModule);
 	if(!l)return 0;

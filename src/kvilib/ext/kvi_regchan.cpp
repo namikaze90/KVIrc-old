@@ -60,19 +60,19 @@ void KviRegisteredChannelDataBase::load(const QString& filename)
 {
 	KviConfig cfg(filename,KviConfig::Read);
 	m_pChannelDict->clear();
-	KviConfigIterator it(*(cfg.dict()));
-	while(KviConfigGroup * d = it.current())
+	KviConfigIterator it(cfg.dict()->begin());
+	while(it != cfg.dict()->end())
 	{
-		QString szMask = it.currentKey();
-		QString szChan(szMask);
+		QString szMask = it.key();
+		QString szChan = szMask;
 		KviQString::cutFromLast(szChan,'@',false);
 		KviQString::cutToLast(szMask,'@');
 		KviRegisteredChannel * c = new KviRegisteredChannel(szChan,szMask);
 		add(c);
-		KviConfigGroupIterator sit(*d);
-		while(QString * s = sit.current())
+		KviConfigGroup::iterator sit(it.value()->begin());
+		while(sit!=it.value()->end())
 		{
-			c->setProperty(sit.currentKey(),*s);
+			c->setProperty(sit.key(),sit.value());
 			++sit;
 		}
 		++it;

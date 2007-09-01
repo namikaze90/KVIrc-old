@@ -499,35 +499,35 @@ void KviFrame::saveWindowProperties(KviWindow * wnd,const char * szSection)
 	while(g_pWinPropertiesConfig->groupsCount() > 80)
 	{
 		// Kill the oldest group
-		KviConfigIterator it(*(g_pWinPropertiesConfig->dict()));
-		KviStr minKey;
+		KviConfigIterator it(g_pWinPropertiesConfig->dict()->begin());
+		QString minKey;
 		unsigned int minVal = time(0);
-		while(it.current() && minVal)
+		while((it != g_pWinPropertiesConfig->dict()->end()) && minVal)
 		{
-			QString * pVal = it.current()->find("EntryTimestamp");
-			if(pVal)
+			if(it.value()->contains("EntryTimestamp"))
 			{
+				QString val = it.value()->value("EntryTimestamp");
 				bool bOk;
-				unsigned int uVal = pVal->toUInt(&bOk);
+				unsigned int uVal = val.toUInt(&bOk);
 				if(bOk)
 				{
 					if(uVal < minVal)
 					{
 						minVal = uVal;
-						minKey = it.currentKey();
+						minKey = it.key();
 					}
 				} else {
 					minVal = 0;
-					minKey = it.currentKey();
+					minKey = it.key();
 				}
 			} else {
 				minVal = 0;
-				minKey = it.currentKey();
+				minKey = it.key();
 			}
 			++it;
 		}
 
-		if(minKey.hasData())g_pWinPropertiesConfig->clearGroup(minKey.ptr());
+		if(!minKey.isEmpty())g_pWinPropertiesConfig->clearGroup(minKey);
 		else debug("Oops...no minimum key found!");
 	}
 
@@ -1082,11 +1082,11 @@ void KviFrame::fillToolBarsPopup(KviTalPopupMenu * p)
 	}
 
 	// FIXME: Should this display "Hide %1" when the toolbar is already visible ?
-	KviDictIterator<KviCustomToolBarDescriptor> it2(*(KviCustomToolBarManager::instance()->descriptors()));
-	if(it2.current())
+	QHash<QString,KviCustomToolBarDescriptor*>::iterator it2(KviCustomToolBarManager::instance()->descriptors()->begin());
+	if(it2 != KviCustomToolBarManager::instance()->descriptors()->end())
 	{
 		if(cnt > 0)p->insertSeparator();
-		while(KviCustomToolBarDescriptor * d = it2.current())
+		while(KviCustomToolBarDescriptor * d = it2.value())
 		{
 			QString label = __tr2qs("Show %1").arg(d->label());
 			QString ico = d->iconId();

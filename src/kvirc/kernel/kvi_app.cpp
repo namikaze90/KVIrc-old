@@ -1539,10 +1539,10 @@ void KviApp::saveConfiguration()
 
 void KviApp::autoConnectToServers()
 {
-	KviPtrList<KviIrcServer> * l = g_pIrcServerDataBase->autoConnectOnStartupServers();
+	QSet<KviIrcServer*> * l = g_pIrcServerDataBase->autoConnectOnStartupServers();
 	if(l)
 	{
-		for(KviIrcServer * s = l->first();s;s = l->next())
+		foreach(KviIrcServer * s,*l)
 		{
 			QString szCommand = "server -u \"id:";
 			if(s->id().isEmpty())s->generateUniqueId();
@@ -1553,10 +1553,10 @@ void KviApp::autoConnectToServers()
 		g_pIrcServerDataBase->clearAutoConnectOnStartupServers();
 	}
 	
-	KviPtrList<KviIrcServerDataBaseRecord> * lr = g_pIrcServerDataBase->autoConnectOnStartupNetworks();
+	QSet<KviIrcServerDataBaseRecord*> * lr = g_pIrcServerDataBase->autoConnectOnStartupNetworks();
 	if(lr)
 	{
-		for(KviIrcServerDataBaseRecord * r = lr->first();r;r = lr->next())
+		foreach(KviIrcServerDataBaseRecord * r,*lr)
 		{
 			QString szCommandx = "server -u \"net:";
 			szCommandx += r->network()->name();

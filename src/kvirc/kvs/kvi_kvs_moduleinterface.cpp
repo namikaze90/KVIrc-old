@@ -48,17 +48,17 @@ bool KviKvsModuleCallbackCommandCall::getParameterCode(unsigned int uParamIdx,QS
 
 KviKvsModuleInterface::KviKvsModuleInterface()
 {
-	m_pModuleSimpleCommandExecRoutineDict = new KviDict<KviKvsModuleSimpleCommandExecRoutine>(17,false);
-	m_pModuleSimpleCommandExecRoutineDict->setAutoDelete(true);
-	m_pModuleFunctionExecRoutineDict = new KviDict<KviKvsModuleFunctionExecRoutine>(17,false);
-	m_pModuleFunctionExecRoutineDict->setAutoDelete(true);
-	m_pModuleCallbackCommandExecRoutineDict = new KviDict<KviKvsModuleCallbackCommandExecRoutine>(17,false);
-	m_pModuleCallbackCommandExecRoutineDict->setAutoDelete(true);
+	m_pModuleSimpleCommandExecRoutineDict = new QHash<QString,KviKvsModuleSimpleCommandExecRoutine*>;
+	m_pModuleFunctionExecRoutineDict = new QHash<QString,KviKvsModuleFunctionExecRoutine*>;
+	m_pModuleCallbackCommandExecRoutineDict = new QHash<QString,KviKvsModuleCallbackCommandExecRoutine*>;
 }
 
 KviKvsModuleInterface::~KviKvsModuleInterface()
 {
 	kvsUnregisterAllEventHandlers();
+	foreach(KviKvsModuleSimpleCommandExecRoutine* i , *m_pModuleSimpleCommandExecRoutineDict) {delete i;}
+	foreach(KviKvsModuleFunctionExecRoutine* i , *m_pModuleFunctionExecRoutineDict) {delete i;}
+	foreach(KviKvsModuleCallbackCommandExecRoutine* i , *m_pModuleCallbackCommandExecRoutineDict) {delete i;}
 	delete m_pModuleSimpleCommandExecRoutineDict;
 	delete m_pModuleFunctionExecRoutineDict;
 	delete m_pModuleCallbackCommandExecRoutineDict;
@@ -66,12 +66,12 @@ KviKvsModuleInterface::~KviKvsModuleInterface()
 
 #define COMPLETE_WORD_BY_DICT(__word,__list,__type,__dict) \
 	{ \
-		KviDictIterator<__type> it(*__dict); \
+		QHash<QString,__type *>::iterator it(__dict->begin()); \
 		int l = __word.length(); \
-		while(it.current()) \
+		while(it != __dict->end()) \
 		{ \
-			if(KviQString::equalCIN(__word,it.currentKey(),l)) \
-				__list->append(new QString(it.currentKey())); \
+			if(KviQString::equalCIN(__word,it.key(),l)) \
+				__list->append(new QString(it.key())); \
 			++it; \
 		} \
 	}
@@ -90,17 +90,17 @@ void KviKvsModuleInterface::completeFunction(const QString &szFunctionBegin,KviP
 
 void KviKvsModuleInterface::kvsRegisterSimpleCommand(const QString &szCommand,KviKvsModuleSimpleCommandExecRoutine r)
 {
-	m_pModuleSimpleCommandExecRoutineDict->replace(szCommand,new KviKvsModuleSimpleCommandExecRoutine(r));
+	m_pModuleSimpleCommandExecRoutineDict->insert(szCommand,new KviKvsModuleSimpleCommandExecRoutine(r));
 }
 
 void KviKvsModuleInterface::kvsRegisterCallbackCommand(const QString &szCommand,KviKvsModuleCallbackCommandExecRoutine r)
 {
-	m_pModuleCallbackCommandExecRoutineDict->replace(szCommand,new KviKvsModuleCallbackCommandExecRoutine(r));
+	m_pModuleCallbackCommandExecRoutineDict->insert(szCommand,new KviKvsModuleCallbackCommandExecRoutine(r));
 }
 
 void KviKvsModuleInterface::kvsRegisterFunction(const QString &szFunction,KviKvsModuleFunctionExecRoutine r)
 {
-	m_pModuleFunctionExecRoutineDict->replace(szFunction,new KviKvsModuleFunctionExecRoutine(r));
+	m_pModuleFunctionExecRoutineDict->insert(szFunction,new KviKvsModuleFunctionExecRoutine(r));
 }
 
 
@@ -135,6 +135,32 @@ void KviKvsModuleInterface::kvsUnregisterRawEventHandler(unsigned int uRawIdx)
 {
 	KviKvsEventManager::instance()->removeModuleRawHandler(uRawIdx,this);
 }
+void KviKvsModuleInterface::kvsUnregisterAllSimpleCommands()
+{
+	foreach(KviKvsModuleSimpleCommandExecRoutine* i,*m_pModuleSimpleCommandExecRoutineDict)
+	{
+		delete i;
+	}
+	m_pModuleSimpleCommandExecRoutineDict->clear();
+};
+
+void KviKvsModuleInterface::kvsUnregisterAllCallbackCommands()
+{
+	foreach(KviKvsModuleCallbackCommandExecRoutine* i,*m_pModuleCallbackCommandExecRoutineDict)
+	{
+		delete i;
+	}
+	m_pModuleCallbackCommandExecRoutineDict->clear();
+};
+
+void KviKvsModuleInterface::kvsUnregisterAllFunctions()
+{
+	foreach(KviKvsModuleFunctionExecRoutine* i,*m_pModuleFunctionExecRoutineDict)
+	{
+		delete i;
+	}
+	m_pModuleFunctionExecRoutineDict->clear();
+};
 
 void KviKvsModuleInterface::kvsUnregisterAllAppEventHandlers()
 {

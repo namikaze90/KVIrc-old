@@ -75,9 +75,9 @@ protected:
 	KviIsOnNotifyListManager(KviIrcConnection * pConnection);
 	~KviIsOnNotifyListManager();
 private:
-	KviDict<QString>      * m_pRegUserDict;            // dict notifystring->reguser name
-	KviPtrList<QString> * m_pNotifyList;                  // list of notifystring (total)
-	KviPtrList<QString> * m_pIsOnList;                    // list of notifystring (one session)
+	QHash<QString,QString>      * m_pRegUserDict;            // dict notifystring->reguser name
+	KviPtrList<QString>   * m_pNotifyList;                  // list of notifystring (total)
+	KviPtrList<QString>   * m_pIsOnList;                    // list of notifystring (one session)
 	QString               m_szIsOnString;                 // m_pIsOnList in form of a string
 	KviPtrList<QString> * m_pOnlineList;                  //
 	KviPtrList<QString> * m_pUserhostList;
@@ -148,7 +148,7 @@ public:
 	KviWatchNotifyListManager(KviIrcConnection * pConnection);
 	~KviWatchNotifyListManager();
 protected:
-	KviDict<QString> * m_pRegUserDict;            // dict notifystring->reguser name
+	QHash<QString,QString> * m_pRegUserDict;            // dict notifystring->reguser name
 protected:
 	void buildRegUserDict();
 	virtual void start();

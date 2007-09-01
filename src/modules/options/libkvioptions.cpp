@@ -41,7 +41,7 @@
 #include "kvi_dict.h"
 
 
-KviDict<KviOptionsDialog> * g_pOptionsDialogDict = 0;
+QHash<QString,KviOptionsDialog*> * g_pOptionsDialogDict = 0;
 
 KviOptionsInstanceManager * g_pOptionsInstanceManager = 0;
 
@@ -98,7 +98,7 @@ static bool options_kvs_cmd_dialog(KviKvsModuleCommandCall * c)
 		KVSM_PARAMETER("options_group",KVS_PT_STRING,KVS_PF_OPTIONAL,szGroup)
 	KVSM_PARAMETERS_END(c)
 	if(szGroup.isEmpty())szGroup = "general";
-	KviOptionsDialog * d = g_pOptionsDialogDict->find(szGroup);
+	KviOptionsDialog * d = g_pOptionsDialogDict->value(szGroup);
 	if(d)
 	{
 		if(c->hasSwitch('t',"toplevel"))
@@ -264,7 +264,7 @@ static bool options_kvs_fnc_isdialog(KviKvsModuleFunctionCall * c)
 		KVSM_PARAMETER("options_group",KVS_PT_STRING,KVS_PF_OPTIONAL,szGroup)
 	KVSM_PARAMETERS_END(c)
 	if(szGroup.isEmpty())szGroup = "general";
-	c->returnValue()->setBoolean(g_pOptionsDialogDict->find(szGroup));
+	c->returnValue()->setBoolean(g_pOptionsDialogDict->value(szGroup));
 	return true;
 }
 
@@ -279,24 +279,17 @@ static bool options_module_init(KviModule * m)
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"edit",options_kvs_cmd_edit);
 	KVSM_REGISTER_FUNCTION(m,"isDialog",options_kvs_fnc_isdialog);
 
-	g_pOptionsDialogDict = new KviDict<KviOptionsDialog>;
-	g_pOptionsDialogDict->setAutoDelete(false);
+	g_pOptionsDialogDict = new QHash<QString,KviOptionsDialog*>;
 
 	return true;
 }
 
 static bool options_module_cleanup(KviModule *m)
 {
-	KviDictIterator<KviOptionsDialog> it(*g_pOptionsDialogDict);
-	KviPtrList<KviOptionsDialog> l;
-	l.setAutoDelete(false);
-	KviOptionsDialog * d;
-	while(d = it.current())
+	foreach(KviOptionsDialog * d,*g_pOptionsDialogDict)
 	{
-		l.append(d);
-		++it;
+		delete d;
 	}
-	for(d = l.first();d;d = l.next())delete d;
 	delete g_pOptionsDialogDict;
 	g_pOptionsDialogDict = 0;
     

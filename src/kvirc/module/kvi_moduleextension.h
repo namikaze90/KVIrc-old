@@ -41,7 +41,7 @@ typedef struct _KviModuleExtensionAllocStructTag
 {
 	KviModuleExtensionDescriptor * pDescriptor; // module extension that this alloc routine refers to
 	KviWindow                    * pWindow;     // may be 0!
-	KviDict<QVariant>              * pParams;     // parameter dict (may be 0!)
+	QHash<QString,QVariant>      * pParams;     // parameter dict (may be 0!)
 	void                         * pSpecial;    // special parameter passed to the alloc routine, may be 0
 } KviModuleExtensionAllocStruct;
 
@@ -70,7 +70,7 @@ private:
 	KviModule                      * m_pModule;        // module pointer
 public:
 	// pParams ownership is NOT taken
-	KviModuleExtension * allocate(KviWindow * pWnd = 0,KviDict<QVariant> * pParams = 0,void * pSpecial = 0);
+	KviModuleExtension * allocate(KviWindow * pWnd = 0,QHash<QString,QVariant> * pParams = 0,void * pSpecial = 0);
 
 	int id(){ return m_iId; };
 	KviModule * module(){ return m_pModule; };
@@ -116,8 +116,8 @@ public:
 	KviModuleExtensionDescriptor * findExtensionDescriptor(const QString &szType,const QString &szName);
 	static KviModuleExtensionManager * instance(){ return g_pModuleExtensionManager; };
 	KviModuleExtensionDescriptorList * getExtensionList(const QString &szType);
-	KviModuleExtension * allocateExtension(const QString &szType,const QString &szName,KviWindow * pWnd = 0,KviDict<QVariant> * pParams = 0,void * pSpecial = 0,const char * preloadModule = 0);
-	KviModuleExtension * allocateExtension(const QString &szType,int id,KviWindow * pWnd = 0,KviDict<QVariant> * pParams = 0,void * pSpecial = 0,const char * preloadModule = 0);
+	KviModuleExtension * allocateExtension(const QString &szType,const QString &szName,KviWindow * pWnd = 0,QHash<QString,QVariant> * pParams = 0,void * pSpecial = 0,const char * preloadModule = 0);
+	KviModuleExtension * allocateExtension(const QString &szType,int id,KviWindow * pWnd = 0,QHash<QString,QVariant> * pParams = 0,void * pSpecial = 0,const char * preloadModule = 0);
 private:
 	KviModuleExtensionDescriptorList * allocateExtensionGetDescriptorList(const QString &szType,const char * preloadModule);
 };

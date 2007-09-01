@@ -295,11 +295,11 @@ bool KviPerlInterpreter::execute(
 	return true;
 }
 
-static KviDict<KviPerlInterpreter> * g_pInterpreters = 0;
+static QHash<QString,KviPerlInterpreter*> * g_pInterpreters = 0;
 
 static KviPerlInterpreter * perlcore_get_interpreter(const QString &szContextName)
 {
-	KviPerlInterpreter * i = g_pInterpreters->find(szContextName);
+	KviPerlInterpreter * i = g_pInterpreters->value(szContextName);
 	if(i)return i;
 	i = new KviPerlInterpreter(szContextName);
 	if(!i->init())
@@ -307,13 +307,13 @@ static KviPerlInterpreter * perlcore_get_interpreter(const QString &szContextNam
 		delete i;
 		return 0;
 	}
-	g_pInterpreters->replace(szContextName,i);
+	g_pInterpreters->insert(szContextName,i);
 	return i;
 }
 
 static void perlcore_destroy_interpreter(const QString &szContextName)
 {
-	KviPerlInterpreter * i = g_pInterpreters->find(szContextName);
+	KviPerlInterpreter * i = g_pInterpreters->value(szContextName);
 	if(!i)return;
 	g_pInterpreters->remove(szContextName);
 	i->done();
@@ -322,14 +322,10 @@ static void perlcore_destroy_interpreter(const QString &szContextName)
 
 static void perlcore_destroy_all_interpreters()
 {
-	KviDictIterator<KviPerlInterpreter> it(*g_pInterpreters);
-	
-	while(it.current())
+	foreach(KviPerlInterpreter * i,*g_pInterpreters)
 	{
-		KviPerlInterpreter * i = it.current();
 		i->done();
 		delete i;
-		++it;
 	}
 	g_pInterpreters->clear();
 }
@@ -376,8 +372,7 @@ static bool perlcore_module_ctrl(KviModule * m,const char * cmd,void * param)
 static bool perlcore_module_init(KviModule * m)
 {
 #ifdef COMPILE_PERL_SUPPORT
-	g_pInterpreters = new KviDict<KviPerlInterpreter>(17,false);
-	g_pInterpreters->setAutoDelete(false);
+	g_pInterpreters = new QHash<QString,KviPerlInterpreter*>;
 	return true;
 #else // !COMPILE_PERL_SUPPORT
 	return false;

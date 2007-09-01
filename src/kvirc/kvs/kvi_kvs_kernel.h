@@ -76,11 +76,11 @@ public:
 private:
 	static KviKvsKernel * m_pKvsKernel; // global kernel object
 
-	KviDict<KviKvsSpecialCommandParsingRoutine>     * m_pSpecialCommandParsingRoutineDict;
+	QHash<QString,KviKvsSpecialCommandParsingRoutine*>     * m_pSpecialCommandParsingRoutineDict;
 	
-	KviDict<KviKvsCoreSimpleCommandExecRoutine>     * m_pCoreSimpleCommandExecRoutineDict;
-	KviDict<KviKvsCoreCallbackCommandExecRoutine>   * m_pCoreCallbackCommandExecRoutineDict;
-	KviDict<KviKvsCoreFunctionExecRoutine>          * m_pCoreFunctionExecRoutineDict;
+	QHash<QString,KviKvsCoreSimpleCommandExecRoutine*>     * m_pCoreSimpleCommandExecRoutineDict;
+	QHash<QString,KviKvsCoreCallbackCommandExecRoutine*>   * m_pCoreCallbackCommandExecRoutineDict;
+	QHash<QString,KviKvsCoreFunctionExecRoutine*>          * m_pCoreFunctionExecRoutineDict;
 	
 	KviKvsHash                                    * m_pGlobalVariables;
 	KviKvsVariantList                             * m_pEmptyParameterList;
@@ -101,24 +101,24 @@ public:
 	KviKvsAsyncOperationManager * asyncOperationManager(){ return m_pAsyncOperationManager; };
 
 	void registerSpecialCommandParsingRoutine(const QString &szCmdName,KviKvsSpecialCommandParsingRoutine * r)
-		{ m_pSpecialCommandParsingRoutineDict->replace(szCmdName,r); };
+		{ m_pSpecialCommandParsingRoutineDict->insert(szCmdName,r); };
 	KviKvsSpecialCommandParsingRoutine * findSpecialCommandParsingRoutine(const QString &szCmdName)
-		{ return m_pSpecialCommandParsingRoutineDict->find(szCmdName); };
+		{ return m_pSpecialCommandParsingRoutineDict->value(szCmdName); };
 
 	void registerCoreSimpleCommandExecRoutine(const QString &szCmdName,KviKvsCoreSimpleCommandExecRoutine * r)
-		{ m_pCoreSimpleCommandExecRoutineDict->replace(szCmdName,r); };
+		{ m_pCoreSimpleCommandExecRoutineDict->insert(szCmdName,r); };
 	KviKvsCoreSimpleCommandExecRoutine * findCoreSimpleCommandExecRoutine(const QString &szCmdName)
-		{ return m_pCoreSimpleCommandExecRoutineDict->find(szCmdName); };
+		{ return m_pCoreSimpleCommandExecRoutineDict->value(szCmdName); };
 
 	void registerCoreFunctionExecRoutine(const QString &szFncName,KviKvsCoreFunctionExecRoutine * r)
-		{ m_pCoreFunctionExecRoutineDict->replace(szFncName,r); };
+		{ m_pCoreFunctionExecRoutineDict->insert(szFncName,r); };
 	KviKvsCoreFunctionExecRoutine * findCoreFunctionExecRoutine(const QString &szFncName)
-		{ return m_pCoreFunctionExecRoutineDict->find(szFncName); };
+		{ return m_pCoreFunctionExecRoutineDict->value(szFncName); };
 
 	void registerCoreCallbackCommandExecRoutine(const QString &szCmdName,KviKvsCoreCallbackCommandExecRoutine * r)
-		{ m_pCoreCallbackCommandExecRoutineDict->replace(szCmdName,r); };
+		{ m_pCoreCallbackCommandExecRoutineDict->insert(szCmdName,r); };
 	KviKvsCoreCallbackCommandExecRoutine * findCoreCallbackCommandExecRoutine(const QString &szCmdName)
-		{ return m_pCoreCallbackCommandExecRoutineDict->find(szCmdName); };
+		{ return m_pCoreCallbackCommandExecRoutineDict->value(szCmdName); };
 
 	void completeCommand(const QString &szCommandBegin,KviPtrList<QString> * pMatches);
 	void completeFunction(const QString &szFunctionBegin,KviPtrList<QString> * pMatches);

@@ -191,30 +191,27 @@ void KviActionDrawer::fill()
 {
 	KviActionManager::loadAllAvailableActions();
 
-	KviDict<KviActionDrawerPage> pages;
-	pages.setAutoDelete(false);
+	QHash<QString,KviActionDrawerPage*> pages;
 
-	KviDict<KviAction> * d = KviActionManager::instance()->actions();
+	QHash<QString,KviAction*> * d = KviActionManager::instance()->actions();
 	if(!d)return; // ooops
 
-	KviDictIterator<KviAction> it(*d);
-	while(KviAction * a = it.current())
+	foreach(KviAction * a ,*d)
 	{
 		KviActionCategory * c = a->category();
 		if(!c)c = KviActionManager::categoryGeneric();
-		KviActionDrawerPage * p = pages.find(c->visibleName());
+		KviActionDrawerPage * p = pages.value(c->visibleName());
 		if(!p)
 		{
 			p = new KviActionDrawerPage(this,c->description());
-			pages.replace(c->visibleName(),p);
+			pages.insert(c->visibleName(),p);
 			addTab(p,c->visibleName());
 			//p->show();
 		}
 		p->add(a);
-		++it;
 	}
 
-	KviActionDrawerPage * p = pages.find(KviActionManager::categoryIrc()->visibleName());
+	KviActionDrawerPage * p = pages.value(KviActionManager::categoryIrc()->visibleName());
 	if(p)
 	{
 		int iii = indexOf(p);

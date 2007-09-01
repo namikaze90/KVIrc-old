@@ -55,8 +55,7 @@ static bool action_kvs_cmd_list(KviKvsModuleCommandCall * c)
 {
 	KviWindow * pOut = c->window();
 
-	KviDictIterator<KviAction> it(*(KviActionManager::instance()->actions()));
-	while(KviAction * a = it.current())
+	foreach(KviAction * a,*(KviActionManager::instance()->actions()))
 	{
 		if(a->isKviUserActionNeverOverrideThis())
 			pOut->output(KVI_OUT_VERBOSE,__tr2qs("%cCore action: %Q"),KVI_TEXT_BOLD,&(a->name()));
@@ -66,7 +65,6 @@ static bool action_kvs_cmd_list(KviKvsModuleCommandCall * c)
 		pOut->output(KVI_OUT_VERBOSE,__tr2qs("Category: %Q"),&(a->category()->visibleName()));
 		pOut->output(KVI_OUT_VERBOSE,__tr2qs("Description: %Q"),&(a->description()));
 		pOut->output(KVI_OUT_VERBOSE,"  "); // spacer
-		++it;
 	}
 	return true;
 }

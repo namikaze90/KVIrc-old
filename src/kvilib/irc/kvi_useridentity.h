@@ -28,7 +28,7 @@
 #include "kvi_heapobject.h"
 #include "kvi_pixmap.h"
 #include "kvi_config.h"
-#include "kvi_dict.h"
+#include <QHash>
 
 class KVILIB_API KviUserIdentity : public KviHeapObject
 {
@@ -120,15 +120,15 @@ protected:
 	~KviUserIdentityManager();
 protected:
 	static KviUserIdentityManager * m_pInstance;
-	KviDict<KviUserIdentity> * m_pIdentityDict;
+	QHash<QString,KviUserIdentity*> * m_pIdentityDict;
 	QString m_szDefaultIdentity;
 public:
 	static void init();
 	static void done();
 	static KviUserIdentityManager * instance(){ return m_pInstance; };
 
-	KviDict<KviUserIdentity> * identityDict(){ return m_pIdentityDict; };
-	const KviUserIdentity * findIdentity(const QString &szId){ return m_pIdentityDict->find(szId); };
+	QHash<QString,KviUserIdentity*> * identityDict(){ return m_pIdentityDict; };
+	const KviUserIdentity * findIdentity(const QString &szId){ return m_pIdentityDict->value(szId); };
 	// NEVER NULL
 	const KviUserIdentity * defaultIdentity();
 

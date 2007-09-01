@@ -66,14 +66,14 @@ static bool texticons_kvs_fnc_get(KviKvsModuleFunctionCall * c)
 	} else {
 		KviKvsHash* hash = new KviKvsHash();
 		
-		KviDictIterator<KviTextIcon> it(*(g_pTextIconManager->textIconDict()));
+		QHash<QString,KviTextIcon*>::iterator it(g_pTextIconManager->textIconDict()->begin());
 		
-		while(KviTextIcon * i = it.current())
+		while(it != g_pTextIconManager->textIconDict()->end())
 		{
-			if(i->id()!=-1)
-				hash->set(it.currentKey(),new KviKvsVariant( (kvs_int_t)(i->id()) ));
+			if(it.value()->id()!=-1)
+				hash->set(it.key(),new KviKvsVariant( (kvs_int_t)(it.value()->id()) ));
 			else
-				hash->set(it.currentKey(),new KviKvsVariant(i->filename()));
+				hash->set(it.key(),new KviKvsVariant(it.value()->filename()));
 			++it;
 		}
 		c->returnValue()->setHash(hash);

@@ -189,8 +189,7 @@ KviUserListView::KviUserListView(QWidget * parent,KviWindowToolPageButton* butto
 {
 	setAutoDelete(0);
 	m_pKviWindow  = pWnd;
-	m_pEntryDict  = new KviDict<KviUserListEntry>(dictSize,false);
-	m_pEntryDict->setAutoDelete(true);
+	m_pEntryDict  = new QHash<QString,KviUserListEntry*>;
 
 	m_pUsersLabel = new QLabel(this,"userslabel");
 	KviTalToolTip::add(m_pUsersLabel,label_text);
@@ -605,7 +604,7 @@ KviUserListEntry * KviUserListView::join(const QString &nick,const QString &user
 		const QString &host,int iFlags)
 {
 	// Ok..an user joins the channel
-	KviUserListEntry * it = m_pEntryDict->find(nick);
+	KviUserListEntry * it = m_pEntryDict->value(nick);
 	if(it == 0)
 	{
 		// add an entry to the global dict
@@ -648,7 +647,7 @@ void KviUserListView::triggerUpdate()
 
 bool KviUserListView::avatarChanged(const QString &nick)
 {
-	KviUserListEntry * it = m_pEntryDict->find(nick);
+	KviUserListEntry * it = m_pEntryDict->value(nick);
 	if(it)
 	{
 		int oldH = it->m_iHeight;
@@ -704,7 +703,7 @@ bool KviUserListView::userActionVerifyMask(const QString &nick,const QString &us
 	// change (unless they were not known at all)
 	// This will also update the username and hostname
 	// if needed.
-	KviUserListEntry * it = m_pEntryDict->find(QString(nick));
+	KviUserListEntry * it = m_pEntryDict->value(nick);
 	if(it)
 	{
 		it->m_lastActionTime = kvi_unixTime();
@@ -750,7 +749,7 @@ void KviUserListView::userAction(const QString &nick,const QString &user,const Q
 	// on the channel, so we can keep track of his channeel
 	// idle time. This will also update the username and hostname
 	// if needed.
-	KviUserListEntry * it = m_pEntryDict->find(QString(nick));
+	KviUserListEntry * it = m_pEntryDict->value(nick);
 	if(it)
 	{
 		it->m_lastActionTime = kvi_unixTime();
@@ -773,7 +772,7 @@ void KviUserListView::userAction(KviIrcMask *user,int actionTemperature)
 	// on the channel, so we can keep track of his channeel
 	// idle time. This will also update the username and hostname
 	// if needed.
-	KviUserListEntry * it = m_pEntryDict->find(QString(user->nick()));
+	KviUserListEntry * it = m_pEntryDict->value(user->nick());
 	if(it)
 	{
 		it->m_lastActionTime = kvi_unixTime();
@@ -793,7 +792,7 @@ void KviUserListView::userAction(const QString &nick,int actionTemperature)
 	// on the channel, so we can keep track of his channeel
 	// idle time. This will also update the username and hostname
 	// if needed.
-	KviUserListEntry * it = m_pEntryDict->find(nick);
+	KviUserListEntry * it = m_pEntryDict->value(nick);
 	if(it)
 	{
 		it->m_lastActionTime = kvi_unixTime();
@@ -806,14 +805,14 @@ void KviUserListView::userAction(const QString &nick,int actionTemperature)
 
 kvi_time_t KviUserListView::getUserJoinTime(const QString &szNick)
 {
-	KviUserListEntry * e = m_pEntryDict->find(szNick);
+	KviUserListEntry * e = m_pEntryDict->value(szNick);
 	if(!e)return (kvi_time_t)0;
 	return e->m_joinTime;
 }
 
 kvi_time_t KviUserListView::getUserLastActionTime(const QString &szNick)
 {
-	KviUserListEntry * e = m_pEntryDict->find(szNick);
+	KviUserListEntry * e = m_pEntryDict->value(szNick);
 	if(!e)return (kvi_time_t)0;
 	return e->m_lastActionTime;
 }
@@ -821,7 +820,7 @@ kvi_time_t KviUserListView::getUserLastActionTime(const QString &szNick)
 
 int KviUserListView::getUserModeLevel(const QString &szNick)
 {
-	KviUserListEntry * e = m_pEntryDict->find(szNick);
+	KviUserListEntry * e = m_pEntryDict->value(szNick);
 	if(!e)return 0;
 	if(e->m_iFlags & KVI_USERFLAG_MODEMASK)
 	{
@@ -849,18 +848,16 @@ void KviUserListView::prependUserFlag(const QString &nick,QString &buffer)
 
 int KviUserListView::flags(const QString &nick)
 {
-	KviUserListEntry * it = m_pEntryDict->find(nick);
+	KviUserListEntry * it = m_pEntryDict->value(nick);
 	return it ? it->m_iFlags : 0;
 }
 
 #define SET_FLAG_FUNC(__funcname,__flag) \
 	bool KviUserListView::__funcname(const QString &nick,bool bYes) \
 	{ \
-		KviUserListEntry * it = m_pEntryDict->find(nick); \
+		KviUserListEntry * it = m_pEntryDict->value(nick); \
 		if(!it)return false; \
-		m_pEntryDict->setAutoDelete(false); \
 		partInternal(nick,false); \
-		m_pEntryDict->setAutoDelete(true); \
 		if(bYes) \
 		{ \
 			if(!(it->m_iFlags & __flag))it->m_iFlags |= __flag; \
@@ -883,7 +880,7 @@ SET_FLAG_FUNC(voice,KVI_USERFLAG_VOICE)
 #define GET_FLAG_FUNC(__funcname,__flag) \
 	bool KviUserListView::__funcname(const QString &nick,bool bAtLeast) \
 	{ \
-		KviUserListEntry * it = m_pEntryDict->find(nick); \
+		KviUserListEntry * it = m_pEntryDict->value(nick); \
 		return it ? (bAtLeast ? (it->m_iFlags >= __flag) : (it->m_iFlags & __flag)) : false; \
 	}
 
@@ -943,14 +940,12 @@ void KviUserListView::appendSelectedNicknames(QString &buffer)
 }
 
 void KviUserListView::select(const QString& nick){
-	KviDictIterator<KviUserListEntry> it(*m_pEntryDict);
-	while(it.current())
+	foreach(KviUserListEntry *e,*m_pEntryDict)
 	{
-		((KviUserListEntry *)it.current())->m_bSelected = false;
-		++it;
+		e->m_bSelected = false;
 	}
 
-	KviUserListEntry * entry = m_pEntryDict->find(nick);
+	KviUserListEntry * entry = m_pEntryDict->value(nick);
 	if(entry)
 	{
 		entry->m_bSelected = true;
@@ -964,7 +959,7 @@ void KviUserListView::select(const QString& nick){
 
 bool KviUserListView::partInternal(const QString &nick,bool bRemove)
 {
-	KviUserListEntry * it = m_pEntryDict->find(nick);
+	KviUserListEntry * it = m_pEntryDict->value(nick);
 	if(it)
 	{
 		// so, first of all..check if this item is over, or below the top item
@@ -1030,7 +1025,7 @@ bool KviUserListView::partInternal(const QString &nick,bool bRemove)
 
 bool KviUserListView::nickChange(const QString &oldNick,const QString &newNick)
 {
-	KviUserListEntry * it = m_pEntryDict->find(oldNick);
+	KviUserListEntry * it = m_pEntryDict->value(oldNick);
 	if(it)
 	{
 		QString user      = it->m_pGlobalData->user();
@@ -1085,11 +1080,11 @@ void KviUserListView::updateUsersLabel()
 void KviUserListView::partAllButOne(const QString &whoNot)
 {
 	QStringList ll;
-	KviDictIterator<KviUserListEntry> it(*m_pEntryDict);
-	while(it.current())
+	QHash<QString,KviUserListEntry*>::iterator it(m_pEntryDict->begin());
+	while(it != m_pEntryDict->end())
 	{
-		if(!KviQString::equalCI(whoNot,it.currentKey()))
-			ll.append(it.currentKey());
+		if(!KviQString::equalCI(whoNot,it.key()))
+			ll.append(it.key());
 		++it;
 	}
 	for(QStringList::Iterator it2 = ll.begin();it2 != ll.end();it2++)
@@ -1100,11 +1095,11 @@ void KviUserListView::partAllButOne(const QString &whoNot)
 
 void KviUserListView::removeAllEntries()
 {
-	KviDictIterator<KviUserListEntry> it(*m_pEntryDict);
-	while(it.current())
+	QHash<QString,KviUserListEntry*>::iterator it(m_pEntryDict->begin());
+	while(it != m_pEntryDict->end())
 	{
-		m_pIrcUserDataBase->removeUser(it.currentKey(),
-			((KviUserListEntry *)it.current())->m_pGlobalData);
+		m_pIrcUserDataBase->removeUser(it.key(),
+			it.value()->m_pGlobalData);
 		++it;
 	}
 	m_pEntryDict->clear();
@@ -1801,12 +1796,10 @@ void KviUserListViewArea::mousePressEvent(QMouseEvent *e)
 			if(!entry->m_bSelected){
 				entry->m_bSelected = true;
 				m_pListView->m_iSelectedCount=1;
-				KviDictIterator<KviUserListEntry> it(*(m_pListView->m_pEntryDict));
-				while(it.current())
+				foreach(KviUserListEntry* e,*(m_pListView->m_pEntryDict))
 				{
-					if(it.current()!=entry)
-						((KviUserListEntry *)it.current())->m_bSelected = false;
-					++it;
+					if(e!=entry)
+						e->m_bSelected = false;
 				}
 			}
 			if(m_pListView->m_iSelectedCount == 1)

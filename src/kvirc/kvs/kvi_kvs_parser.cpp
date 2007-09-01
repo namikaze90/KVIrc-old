@@ -2675,7 +2675,7 @@ KviKvsTreeNodeVariable * KviKvsParser::parsePercent(bool bInObjScope)
 	
 	if(m_pGlobals)
 	{
-		if(m_pGlobals->find(szIdentifier))return new KviKvsTreeNodeGlobalVariable(pBegin,szIdentifier);
+		if(m_pGlobals->contains(szIdentifier))return new KviKvsTreeNodeGlobalVariable(pBegin,szIdentifier);
 	}
 
 	if(m_iFlags & AssumeLocals)

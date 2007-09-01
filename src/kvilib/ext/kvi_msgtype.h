@@ -45,10 +45,14 @@
 
 class KVILIB_API KviMsgType
 {
+	friend class KviConfig;
 public:
 	KviMsgType(const char * type,int pixId,unsigned char fore,unsigned char back,bool bLog,int iLevel);
 	KviMsgType(const KviMsgType &msg);
 	~KviMsgType();
+protected:
+	//we rely on KviConfig to setup proper options
+	KviMsgType();
 public:
 	const char *  m_szType;
 	int           m_iPixId;

@@ -32,6 +32,7 @@
 
 #include "kvi_config.h"
 #include "kvi_locale.h"
+#include "kvi_stringconversion.h"
 
 /*
 	@doc: registered_users
@@ -146,12 +147,15 @@ KviRegisteredUser::KviRegisteredUser(const QString & name)
 	m_bIgnoreEnabled=false;
 	m_szName        = name;
 	m_pPropertyDict = 0;
-	m_pMaskList     = new KviPtrList<KviIrcMask>;
-	m_pMaskList->setAutoDelete(true);
+	m_pMaskList     = new QSet<KviIrcMask*>;
 }
 
 KviRegisteredUser::~KviRegisteredUser()
 {
+	foreach(KviIrcMask* m,*m_pMaskList)
+	{
+		delete m;
+	}
 	if(m_pPropertyDict)delete m_pPropertyDict;
 	delete m_pMaskList;
 }
@@ -164,7 +168,7 @@ bool KviRegisteredUser::isIgnoreEnabledFor(IgnoreFlags flag)
 
 KviIrcMask * KviRegisteredUser::findMask(const KviIrcMask &mask)
 {
-	for(KviIrcMask * m = m_pMaskList->first();m;m = m_pMaskList->next())
+	foreach(KviIrcMask* m,*m_pMaskList)
 	{
 		if(*m == mask)return m;
 	}
@@ -179,19 +183,19 @@ bool KviRegisteredUser::addMask(KviIrcMask * mask)
         mask = 0;
 		return false;
 	}
-	m_pMaskList->append(mask);
+	m_pMaskList->insert(mask);
 	return true;
 }
 
 bool KviRegisteredUser::removeMask(KviIrcMask * mask)
 {
 	if(!mask)return false;
-	return m_pMaskList->removeRef(mask);
+	return m_pMaskList->remove(mask);
 }
 
 bool KviRegisteredUser::matches(const KviIrcMask &mask)
 {
-	for(KviIrcMask * m = m_pMaskList->first();m;m = m_pMaskList->next())
+	foreach(KviIrcMask* m,*m_pMaskList)
 	{
 		if(m->matches(mask))return true;
 	}
@@ -200,7 +204,7 @@ bool KviRegisteredUser::matches(const KviIrcMask &mask)
 
 bool KviRegisteredUser::matchesFixed(const KviIrcMask &mask)
 {
-	for(KviIrcMask * m = m_pMaskList->first();m;m = m_pMaskList->next())
+	foreach(KviIrcMask* m,*m_pMaskList)
 	{
 		if(m->matchesFixed(mask))return true;
 	}
@@ -209,7 +213,7 @@ bool KviRegisteredUser::matchesFixed(const KviIrcMask &mask)
 
 bool KviRegisteredUser::matchesFixed(const QString & nick,const QString & user,const QString & host)
 {
-	for(KviIrcMask * m = m_pMaskList->first();m;m = m_pMaskList->next())
+	foreach(KviIrcMask* m,*m_pMaskList)
 	{
 		if(m->matchesFixed(nick,user,host))return true;
 	}
@@ -227,18 +231,14 @@ void KviRegisteredUser::setProperty(const QString & name,const QString & value)
 	{
 		if(!m_pPropertyDict)
 		{
-			m_pPropertyDict = new KviDict<QString>(7,false);
-			m_pPropertyDict->setAutoDelete(true);
+			m_pPropertyDict = new QHash<QString,QString>;
 		}
 		
-		QString * val = new QString(value.trimmed());
+		QString val = value.trimmed();
 
-		if(!val->isEmpty())
+		if(!val.isEmpty())
 		{
-			m_pPropertyDict->replace(name,val);
-		} else {
-			delete val;
-            val = 0;
+			m_pPropertyDict->insert(name,val);
 		}
 	} else {
 		if(m_pPropertyDict)m_pPropertyDict->remove(name);
@@ -249,8 +249,7 @@ bool KviRegisteredUser::getProperty(const QString & name,QString &value)
 {
 	if(!m_pPropertyDict)return false;
 	if(name.isEmpty()) return false;
-	QString * pValue = m_pPropertyDict->find(name);
-	if(pValue)value = *pValue;
+	if(m_pPropertyDict->contains(name))value = m_pPropertyDict->value(name);
 	else return false;
 	return true;
 }
@@ -259,8 +258,7 @@ const QString & KviRegisteredUser::getProperty(const QString & name)
 {
 	if(!m_pPropertyDict)return KviQString::empty;
 	if(name.isEmpty())return KviQString::empty;
-	QString * pValue = m_pPropertyDict->find(name);
-	if(pValue)return *pValue;
+	if(m_pPropertyDict->contains(name)) return m_pPropertyDict->value(name);
 	return KviQString::empty;
 }
 
@@ -268,16 +266,10 @@ bool KviRegisteredUser::getBoolProperty(const QString & name,bool def)
 {
 	if(!m_pPropertyDict)return def;
 	if(name.isEmpty()) return def;
-	QString * pValue = m_pPropertyDict->find(name);
-	if(pValue)
+	if(m_pPropertyDict->contains(name))
 	{
-		// be flexible , allow more "true" values (pragma)
-		if(KviQString::equalCS(*pValue,"1"))return true;
-		if(KviQString::equalCI(*pValue,"true"))return true;
-		if(KviQString::equalCI(*pValue,"yes"))return true;
-		//if(KviQString::equalCI(*pValue,"yeah"))return true;
-		//if(KviQString::equalCI(*pValue,"sure"))return true;
-		//if(KviQString::equalCI(*pValue,"sureashell"))return true;
+		KviStringConversion::fromString(m_pPropertyDict->value(name),def);
+		return def;
 	}
 	return def;
 }
@@ -304,22 +296,34 @@ KviRegisteredUserGroup::~KviRegisteredUserGroup()
 
 KviRegisteredUserDataBase::KviRegisteredUserDataBase()
 {
-	m_pUserDict = new KviDict<KviRegisteredUser>(31,false); // do not copy keys
-	m_pUserDict->setAutoDelete(true);
+	m_pUserDict = new QHash<QString,KviRegisteredUser*>; // do not copy keys
 
-	m_pWildMaskList = new KviRegisteredMaskList;
-	m_pWildMaskList->setAutoDelete(true);
+	m_pWildMaskList = new QSet<KviRegisteredMask*>;
 
-	m_pMaskDict = new KviDict<KviRegisteredMaskList>(49,false); // copy keys here!
-	m_pMaskDict->setAutoDelete(true);
+	m_pMaskDict = new QHash<QString,KviRegisteredMaskList*>;
 	
-	m_pGroupDict = new  KviDict<KviRegisteredUserGroup>(5,false); // copy keys here!
-	m_pGroupDict->setAutoDelete(true);
+	m_pGroupDict = new  QHash<QString,KviRegisteredUserGroup*>;
 }
 
 KviRegisteredUserDataBase::~KviRegisteredUserDataBase()
 {
 	emit(databaseCleared());
+	foreach(KviRegisteredUser* i,*m_pUserDict)
+	{
+		delete i;
+	}
+	foreach(KviRegisteredMask* i,*m_pWildMaskList)
+	{
+		delete i;
+	}
+	foreach(KviRegisteredMaskList* i,*m_pMaskDict)
+	{
+		delete i;
+	}
+	foreach(KviRegisteredUserGroup* i,*m_pGroupDict)
+	{
+		delete i;
+	}
 	delete m_pUserDict;
 	delete m_pWildMaskList;
 	delete m_pMaskDict;
@@ -329,9 +333,9 @@ KviRegisteredUserDataBase::~KviRegisteredUserDataBase()
 KviRegisteredUser * KviRegisteredUserDataBase::addUser(const QString & name)
 {
 	if(name.isEmpty()) return false;
-	if(m_pUserDict->find(name))return 0;
+	if(m_pUserDict->contains(name))return 0;
 	KviRegisteredUser * u = new KviRegisteredUser(name);
-	m_pUserDict->replace(u->name(),u); //u->name() because we're NOT copying keys!
+	m_pUserDict->insert(u->name(),u); //u->name() because we're NOT copying keys!
 	emit(userAdded(name));
 	return u;
 }
@@ -339,100 +343,50 @@ KviRegisteredUser * KviRegisteredUserDataBase::addUser(const QString & name)
 KviRegisteredUserGroup * KviRegisteredUserDataBase::addGroup(const QString & name)
 {
 	if(name.isEmpty()) return false;
-	if(m_pGroupDict->find(name))return 0;
+	if(m_pGroupDict->contains(name))return 0;
 	KviRegisteredUserGroup * pGroup = new KviRegisteredUserGroup(name);
-	m_pGroupDict->replace(pGroup->name(),pGroup); //u->name() because we're NOT copying keys!
+	m_pGroupDict->insert(pGroup->name(),pGroup); //u->name() because we're NOT copying keys!
 	return pGroup;
 }
 
 KviRegisteredUser * KviRegisteredUserDataBase::getUser(const QString & name)
 {
 	if(name.isEmpty()) return 0;
-	KviRegisteredUser * u = m_pUserDict->find(name);
+	KviRegisteredUser * u = m_pUserDict->value(name);
 	if(!u)
 	{
 		u = new KviRegisteredUser(name);
-		m_pUserDict->replace(u->name(),u); //u->name() because we're NOT copying keys!
+		m_pUserDict->insert(u->name(),u); //u->name() because we're NOT copying keys!
 	}
 	return u;
 }
 
-static void append_mask_to_list(KviRegisteredMaskList *l,KviRegisteredUser *u,KviIrcMask *mask)
-{
-	KviRegisteredMask * newMask = new KviRegisteredMask(u,mask);
-	int idx = 0;
-	for(KviRegisteredMask * m = l->first();m;m = l->next())
-	{
-		if(m->nonWildChars() < newMask->nonWildChars())
-		{
-			l->insert(idx,newMask);
-			return;
-		}
-		idx++;
-	}
-	l->append(newMask);
-}
+//static void append_mask_to_list(KviRegisteredMaskList *l,KviRegisteredUser *u,KviIrcMask *mask)
+//{
+//	KviRegisteredMask * newMask = new KviRegisteredMask(u,mask);
+//	foreach(KviRegisteredMask *m,*l)
+//	{
+//		if(m->nonWildChars() < newMask->nonWildChars())
+//		{
+//			l->remove()
+//			l->insert(newMask);
+//			return;
+//		}
+//	}
+//	l->append(newMask);
+//}
 
 KviRegisteredUser * KviRegisteredUserDataBase::addMask(KviRegisteredUser * u,KviIrcMask * mask)
 {
 	if(!u || !mask) return 0;
-	__range_valid(u == m_pUserDict->find(u->name()));
+	__range_valid(u == m_pUserDict->value(u->name()));
 
-	KviRegisteredMaskList * l;
-	if(mask->hasWildNick())
-	{
-		for(KviRegisteredMask * m = m_pWildMaskList->first();m;m = m_pWildMaskList->next())
-		{
-			if(*(m->mask()) == *mask)
-			{
-				delete mask;
-                mask = 0;
-				return m->user();
-			}
-		}
-		// not found ...ok... add it
-		// masks with more info go first in the list
-		l = m_pWildMaskList;
-	} else {
-		l = m_pMaskDict->find(mask->nick());
-		if(l)
-		{
-			// FIXME: #warning "Here we could compare the host and username only: nick matches for sure"
-			for(KviRegisteredMask * m = l->first();m;m = l->next())
-			{
-				if(*(m->mask()) == *mask)
-				{
-					delete mask;
-                    mask = 0;
-					return m->user();
-				}
-			}
-			// not found ...ok... add it
-		} else {
-			// not found ...ok... add it
-			// this is the first mask in the list
-			l = new KviRegisteredMaskList;
-			l->setAutoDelete(true);
-			if(!u->addMask(mask))
-			{
-				debug(" Ops...got an incoherent regusers action...recovered ?");
-				delete l;
-                l = 0;
-			} else {
-				append_mask_to_list(l,u,mask);
-				m_pMaskDict->insert(mask->nick(),l);
-			}
-			return 0;
-		}
-	}
-	// Ok...add it
 	if(!u->addMask(mask))
 	{
 		debug("ops...got an incoherent regusers action...recovered ?");
 		return 0; // ops...already there ?
 	}
-	append_mask_to_list(l,u,mask);
-	return 0;
+	return u;
 }
 
 void KviRegisteredUserDataBase::copyFrom(KviRegisteredUserDataBase * db)
@@ -443,39 +397,32 @@ void KviRegisteredUserDataBase::copyFrom(KviRegisteredUserDataBase * db)
 	m_pGroupDict->clear();
 	emit(databaseCleared());
 
-	KviDictIterator<KviRegisteredUser> it(*(db->m_pUserDict));
+	QHash<QString,KviRegisteredUser*>::iterator it(db->m_pUserDict->begin());
 
-	while(KviRegisteredUser * theCur = it.current())
+	while(it!=db->m_pUserDict->end())
 	{
+		KviRegisteredUser * theCur = it.value();
 		KviRegisteredUser * u = getUser(theCur->name());
 		// copy masks
-		KviPtrList<KviIrcMask> * l = theCur->maskList();
-		for(KviIrcMask * m=l->first();m;m = l->next())
+		QSet<KviIrcMask*> * l = theCur->maskList();
+		foreach(KviIrcMask * m,*l)
 		{
 			KviIrcMask * m2 = new KviIrcMask(*m);
 			addMask(u,m2);
 		}
 		// copy properties
-		KviDict<QString> * pd = theCur->propertyDict();
-		if(pd)
-		{
-			KviDictIterator<QString> pdi(*pd);
-			while(pdi.current())
-			{
-				u->setProperty(pdi.currentKey(),*(pdi.current()));
-				++pdi;
-			}
-		}
+		*(u->propertyDict())=*(theCur->propertyDict());
+		
 		u->m_iIgnoreFlags=theCur->m_iIgnoreFlags;
 		u->m_bIgnoreEnabled=theCur->m_bIgnoreEnabled;
 		u->setGroup(theCur->group());
 		++it;
 	}
 	
-	KviDictIterator<KviRegisteredUserGroup> git(*db->m_pGroupDict);
-	while(git.current())
+	QHash<QString,KviRegisteredUserGroup*>::iterator git(db->m_pGroupDict->begin());
+	while(git != db->m_pGroupDict->end())
 	{
-		addGroup(git.currentKey());	
+		addGroup(git.key());	
 		++git;
 	}
 }
@@ -484,15 +431,15 @@ void KviRegisteredUserDataBase::copyFrom(KviRegisteredUserDataBase * db)
 bool KviRegisteredUserDataBase::removeUser(const QString & name)
 {
 	if(name.isEmpty()) return false;
-	KviRegisteredUser * u = m_pUserDict->find(name);
+	KviRegisteredUser * u = m_pUserDict->value(name);
 	if(!u)return false;
-	while(KviIrcMask * mask = u->maskList()->first())
+	foreach(KviIrcMask * mask,*(u->maskList()))
 	{
 		if(!removeMaskByPointer(mask))
 			debug("Ops... removeMaskByPointer(%s) failed ?",KviQString::toUtf8(name).data());
 	}
 	emit(userRemoved(name));
-	m_pUserDict->remove(name);
+	delete m_pUserDict->take(name);
 	return true;
 }
 bool KviRegisteredUserDataBase::removeGroup(const QString & name)
@@ -522,31 +469,31 @@ bool KviRegisteredUserDataBase::removeMaskByPointer(KviIrcMask * mask)
 	if(mask->hasWildNick())
 	{
 		// remove from the wild list
-		for(KviRegisteredMask * m = m_pWildMaskList->first();m;m = m_pWildMaskList->next())
+		foreach(KviRegisteredMask * m,*m_pWildMaskList)
 		{
 			if(m->mask() == mask)
 			{
 				// ok..got it, remove from the list and from the user struct (user struct deletes it!)
 				emit(userChanged(mask->nick()));
 				m->user()->removeMask(mask);    // this one deletes m->mask()
-				m_pWildMaskList->removeRef(m);  // this one deletes m
+				m_pWildMaskList->remove(m);  // this one deletes m
 				return true;
 			}
 		}
 		// not found ...opz :)
 	} else {
-		KviRegisteredMaskList * l = m_pMaskDict->find(mask->nick());
+		KviRegisteredMaskList * l = m_pMaskDict->value(mask->nick());
 		if(l)
 		{
 			// FIXME: #warning "Here we could compare the host and username only: nick matches for sure"
-			for(KviRegisteredMask * m = l->first();m;m = l->next())
+			foreach(KviRegisteredMask * m,*l)
 			{
 				if(m->mask() == mask)
 				{
 					QString nick = mask->nick();
 					emit(userChanged(nick));
 					m->user()->removeMask(mask); // this one deletes m->mask() (or mask)
-					l->removeRef(m);             // this one deletes m
+					l->remove(m);             // this one deletes m
 					if(l->count() == 0)m_pMaskDict->remove(nick);
 					return true;
 				}
@@ -591,16 +538,16 @@ KviRegisteredMask * KviRegisteredUserDataBase::findMatchingMask(const QString & 
 {
 	// first lookup the nickname in the maskDict
 	if(nick.isEmpty()) return false;
-	KviRegisteredMaskList * l = m_pMaskDict->find(nick);
+	KviRegisteredMaskList * l = m_pMaskDict->value(nick);
 	if(l)
 	{
-		for(KviRegisteredMask *m = l->first();m;m = l->next())
+		foreach(KviRegisteredMask *m,*l)
 		{
 			if(m->mask()->matchesFixed(nick,user,host))return m;
 		}
 	}
 	// not found....lookup the wild ones
-	for(KviRegisteredMask * m = m_pWildMaskList->first();m;m = m_pWildMaskList->next())
+	foreach(KviRegisteredMask *m,*m_pWildMaskList)
 	{
 		if(m->mask()->matchesFixed(nick,user,host))return m;
 	}
@@ -618,16 +565,16 @@ KviRegisteredMask * KviRegisteredUserDataBase::findExactMask(const KviIrcMask &m
 {
 	// first lookup the nickname in the maskDict
 	if(mask.nick()=="") return 0;
-	KviRegisteredMaskList * l = m_pMaskDict->find(mask.nick());
+	KviRegisteredMaskList * l = m_pMaskDict->value(mask.nick());
 	if(l)
 	{
-		for(KviRegisteredMask *m = l->first();m;m = l->next())
+		foreach(KviRegisteredMask *m,*l)
 		{
 			if(*(m->mask()) == mask)return m;
 		}
 	}
 	// not found....lookup the wild ones
-	for(KviRegisteredMask * m = m_pWildMaskList->first();m;m = m_pWildMaskList->next())
+	foreach(KviRegisteredMask *m,*m_pWildMaskList)
 	{
 		if(*(m->mask()) == mask)return m;
 	}
@@ -646,11 +593,11 @@ void KviRegisteredUserDataBase::load(const QString & filename)
 	QString szCurrent;
 	KviConfig cfg(filename,KviConfig::Read);
 
-	KviConfigIterator it(*cfg.dict());
-	while(it.current())
+	KviConfigIterator it(cfg.dict()->begin());
+	while(it!=cfg.dict()->end())
 	{
-		cfg.setGroup(it.currentKey());
-		szCurrent=it.currentKey();
+		cfg.setGroup(it.key());
+		szCurrent=it.key();
 		if(KviQString::equalCSN("#Group ",szCurrent,7))
 		{
 			szCurrent.remove(0,7);
@@ -662,21 +609,21 @@ void KviRegisteredUserDataBase::load(const QString & filename)
 			{
 				u->setIgnoreEnabled(cfg.readBoolEntry("IgnoreEnabled",false));
 				u->setIgnoreFlags(cfg.readIntEntry("IgnoreFlags",0));
-				KviConfigGroupIterator sdi(*(it.current()));
-				while(sdi.current())
+				KviConfigGroup::iterator sdi(it.value()->begin());
+				while(sdi != it.value()->end())
 				{
-					QString tmp = sdi.currentKey();
+					QString tmp = sdi.key();
 					if(KviQString::equalCSN("prop_",tmp,5))
 					{
 						tmp.remove(0,5);
-						u->setProperty(tmp,*(sdi.current()));
+						u->setProperty(tmp,sdi.value());
 					} else if(KviQString::equalCSN("mask_",tmp,5))
 					{
-						KviIrcMask * mask = new KviIrcMask(*(sdi.current()));
+						KviIrcMask * mask = new KviIrcMask(sdi.value());
 						addMask(u,mask);
 					} else if(KviQString::equalCI(tmp,"Group"))
 					{
-						u->setGroup(*(sdi.current()));
+						u->setGroup(sdi.value());
 					}
 					++sdi;
 				}
@@ -684,7 +631,7 @@ void KviRegisteredUserDataBase::load(const QString & filename)
 		}
 		++it;
 	}
-	if(!m_pGroupDict->find(__tr("Default")))
+	if(!m_pGroupDict->value(__tr("Default")))
 		addGroup(__tr("Default"));
 }
 
@@ -695,28 +642,26 @@ void KviRegisteredUserDataBase::save(const QString & filename)
 	cfg.clear();
 	cfg.preserveEmptyGroups(true);
 
-	KviDictIterator<KviRegisteredUser> it(*m_pUserDict);
-
-	while(it.current())
+	foreach(KviRegisteredUser *u, *m_pUserDict)
 	{
-		cfg.setGroup(it.current()->name());
+		cfg.setGroup(u->name());
 		// Write properties
-		cfg.writeEntry("IgnoreEnabled",it.current()->ignoreEnagled());
-		cfg.writeEntry("IgnoreFlags",it.current()->ignoreFlags());
-		if(it.current()->propertyDict())
+		cfg.writeEntry("IgnoreEnabled",u->ignoreEnagled());
+		cfg.writeEntry("IgnoreFlags",u->ignoreFlags());
+		if(u->propertyDict())
 		{
-			KviDictIterator<QString> pit(*(it.current()->propertyDict()));
-			while(pit.current())
+			QHash<QString,QString>::iterator pit(u->propertyDict()->begin());
+			while(pit != u->propertyDict()->end())
 			{
 				QString tmp = "prop_";
-				tmp.append(pit.currentKey());
-				cfg.writeEntry(tmp,*(pit.current()));
+				tmp.append(pit.key());
+				cfg.writeEntry(tmp,pit.value());
 				++pit;
 			}
 		}
 		// Write masks
 		int idx = 0;
-		for(KviIrcMask * m = it.current()->maskList()->first();m;m = it.current()->maskList()->next())
+		foreach(KviIrcMask * m,*(u->maskList()))
 		{
 			QString tmp;
 			KviQString::sprintf(tmp,"mask_%d",idx);
@@ -725,17 +670,14 @@ void KviRegisteredUserDataBase::save(const QString & filename)
 			cfg.writeEntry(tmp,mask);
 			++idx;
 		}
-		cfg.writeEntry("Group",it.current()->group());
-		++it;
+		cfg.writeEntry("Group",u->group());
 	}
 	
-	KviDictIterator<KviRegisteredUserGroup> git(*m_pGroupDict);
 	QString szTmp;
-	while(git.current())
+	foreach(KviRegisteredUserGroup*u,*m_pGroupDict)
 	{
-		KviQString::sprintf(szTmp,"#Group %Q",&(git.current()->name()));
+		KviQString::sprintf(szTmp,"#Group %Q",&(u->name()));
 		cfg.setGroup(szTmp);
-		++git;
 	}
 	
 }

@@ -32,13 +32,25 @@ KviKvsAliasManager * KviKvsAliasManager::m_pAliasManager = 0;
 KviKvsAliasManager::KviKvsAliasManager()
 {
 	m_pAliasManager = this;
-	m_pAliasDict = new KviDict<KviKvsScript>(51,false);
-	m_pAliasDict->setAutoDelete(true);
+	m_pAliasDict = new QHash<QString,KviKvsScript*>;
 }
 
 KviKvsAliasManager::~KviKvsAliasManager()
 {
+	foreach(KviKvsScript* s,*m_pAliasDict)
+	{
+		delete s;
+	}
 	delete m_pAliasDict;
+}
+
+void KviKvsAliasManager::clear()
+{
+	foreach(KviKvsScript* s,*m_pAliasDict)
+	{
+		delete s;
+	}
+	m_pAliasDict->clear();
 }
 
 void KviKvsAliasManager::init()
@@ -63,12 +75,10 @@ void KviKvsAliasManager::done()
 
 void KviKvsAliasManager::completeCommand(const QString &word,KviPtrList<QString> * matches)
 {
-	KviDictIterator<KviKvsScript> it(*m_pAliasDict);
-	while(it.current())
+	foreach(KviKvsScript* s,*m_pAliasDict)
 	{
-		if(KviQString::equalCIN(word,it.current()->name(),word.length()))
-			matches->append(new QString(it.current()->name()));
-		++it;
+		if(KviQString::equalCIN(word,s->name(),word.length()))
+			matches->append(new QString(s->name()));
 	}
 }
 
@@ -79,40 +89,33 @@ void KviKvsAliasManager::save(const QString & filename)
 	KviConfig cfg(filename,KviConfig::Write);
 	cfg.clear();
 
-	KviDictIterator<KviKvsScript> it(*m_pAliasDict);
-
-	while(it.current())
+	foreach(KviKvsScript* s,*m_pAliasDict)
 	{
-		cfg.setGroup(it.current()->name());
-		cfg.writeEntry("_Buffer",it.current()->code());
-		++it;
+		cfg.setGroup(s->name());
+		cfg.writeEntry("_Buffer",s->code());
 	}
 }
 
 void KviKvsAliasManager::load(const QString & filename)
 {
+	foreach(KviKvsScript* s,*m_pAliasDict)
+	{
+		delete s;
+	}
 	m_pAliasDict->clear();
 	KviConfig cfg(filename,KviConfig::Read);
 
-	KviConfigIterator it(*(cfg.dict()));
+	QHash<QString,KviConfigGroup*>::iterator it(cfg.dict()->begin());
 
-	KviPtrList<QString> l;
-	l.setAutoDelete(true);
-
-	while(it.current())
+	while(it!=cfg.dict()->end())
 	{
-		l.append(new QString(it.currentKey()));
-		++it;
-	}
-
-	for(QString * s = l.first();s;s = l.next())
-	{
-		cfg.setGroup(*s);
+		QString s = it.key();
+		cfg.setGroup(s);
 		QString szCode = cfg.readQStringEntry("_Buffer","");
 		if(!szCode.isEmpty())
 		{
-			KviKvsScript * m = new KviKvsScript(*s,szCode);
-			m_pAliasDict->insert(*s,m);
+			KviKvsScript * m = new KviKvsScript(s,szCode);
+			m_pAliasDict->insert(s,m);
 		}
 		++it;
 	}

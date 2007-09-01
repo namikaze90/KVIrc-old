@@ -51,28 +51,28 @@ void KviKvsTreeNodeSwitchList::dump(const char * prefix)
 	debug("%s SwitchList",prefix);
 	if(m_pShortSwitchDict)
 	{
-		KviIntDictIterator<KviKvsTreeNodeData> it(*m_pShortSwitchDict);
-		while(it.current())
+		QHash<int,KviKvsTreeNodeData*>::iterator it(m_pShortSwitchDict->begin());
+		while(it != m_pShortSwitchDict->end())
 		{
 			QString tmp = prefix;
 			tmp.append("  Sw(");
-			QChar c((unsigned short)it.currentKey());
+			QChar c((unsigned short)it.key());
 			tmp.append(c);
 			tmp.append("): ");
-			it.current()->dump(tmp.utf8().data());
+			it.value()->dump(tmp);
 			++it;
 		}
 	}
 	if(m_pLongSwitchDict)
 	{
-		KviDictIterator<KviKvsTreeNodeData> it(*m_pLongSwitchDict);
-		while(it.current())
+		QHash<QString,KviKvsTreeNodeData*>::iterator it(m_pLongSwitchDict->begin());
+		while(it != m_pLongSwitchDict->end())
 		{
 			QString tmp = prefix;
 			tmp.append("  Sw(");
-			tmp.append(it.currentKey());
+			tmp.append(it.key());
 			tmp.append("): ");
-			it.current()->dump(tmp.utf8().data());
+			it.value()->dump(tmp);
 			++it;
 		}
 	}
@@ -82,11 +82,10 @@ void KviKvsTreeNodeSwitchList::addShort(int iShortKey,KviKvsTreeNodeData * p)
 {
 	if(!m_pShortSwitchDict)
 	{
-		m_pShortSwitchDict = new KviIntDict<KviKvsTreeNodeData>(11);
-		m_pShortSwitchDict->setAutoDelete(true);
+		m_pShortSwitchDict = new QHash<int,KviKvsTreeNodeData*>;
 	}
 
-	m_pShortSwitchDict->replace(iShortKey,p);
+	m_pShortSwitchDict->insert(iShortKey,p);
 	p->setParent(this);
 }
 
@@ -94,11 +93,10 @@ void KviKvsTreeNodeSwitchList::addLong(const QString &szLongKey,KviKvsTreeNodeDa
 {
 	if(!m_pLongSwitchDict)
 	{
-		m_pLongSwitchDict = new KviDict<KviKvsTreeNodeData>(11);
-		m_pLongSwitchDict->setAutoDelete(true);
+		m_pLongSwitchDict = new QHash<QString,KviKvsTreeNodeData*>;
 	}
 
-	m_pLongSwitchDict->replace(szLongKey,p);
+	m_pLongSwitchDict->insert(szLongKey,p);
 	p->setParent(this);
 }
 
@@ -109,31 +107,33 @@ bool KviKvsTreeNodeSwitchList::evaluate(KviKvsRunTimeContext * c,KviKvsSwitchLis
 
 	if(m_pShortSwitchDict)
 	{
-		KviIntDictIterator<KviKvsTreeNodeData> it(*m_pShortSwitchDict);
-		while(KviKvsTreeNodeData * d = it.current())
+		QHash<int,KviKvsTreeNodeData*>::iterator it(m_pShortSwitchDict->begin());
+		while(it != m_pShortSwitchDict->end())
 		{
+			KviKvsTreeNodeData * d = it.value();
 			KviKvsVariant * v = new KviKvsVariant();
 			if(!d->evaluateReadOnly(c,v))
 			{
 				delete v; 
 				return false;
 			}
-			pSwList->addShort(it.currentKey(),v);
+			pSwList->addShort(it.key(),v);
 			++it;
 		}
 	}
 	if(m_pLongSwitchDict)
 	{
-		KviDictIterator<KviKvsTreeNodeData> it(*m_pLongSwitchDict);
-		while(KviKvsTreeNodeData * d = it.current())
+		QHash<QString,KviKvsTreeNodeData*>::iterator it(m_pLongSwitchDict->begin());
+		while(it != m_pLongSwitchDict->end())
 		{
+			KviKvsTreeNodeData * d = it.value();
 			KviKvsVariant * v = new KviKvsVariant();
 			if(!d->evaluateReadOnly(c,v))
 			{
 				delete v; 
 				return false;
 			}
-			pSwList->addLong(it.currentKey(),v);
+			pSwList->addLong(it.key(),v);
 			++it;
 		}
 	}
@@ -145,23 +145,19 @@ KviKvsTreeNodeData * KviKvsTreeNodeSwitchList::getStandardRebindingSwitch()
 	KviKvsTreeNodeData * d;
 	if(m_pShortSwitchDict)
 	{
-		d = m_pShortSwitchDict->find('r');
+		d = m_pShortSwitchDict->value('r');
 		if(d)
 		{
-			m_pShortSwitchDict->setAutoDelete(false);
 			m_pShortSwitchDict->remove('r');
-			m_pShortSwitchDict->setAutoDelete(true);
 			return d;
 		}
 	}
 	if(m_pLongSwitchDict)
 	{
-		d = m_pLongSwitchDict->find("rebind");
+		d = m_pLongSwitchDict->value("rebind");
 		if(d)
 		{
-			m_pLongSwitchDict->setAutoDelete(false);
 			m_pLongSwitchDict->remove("rebind");
-			m_pLongSwitchDict->setAutoDelete(true);
 			return d;
 		}
 	}

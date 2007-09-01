@@ -43,11 +43,13 @@ void KviKvsSwitchList::clear()
 {
 	if(m_pShortSwitchDict)
 	{
+		foreach(KviKvsVariant*i,*m_pShortSwitchDict){delete i;}
 		delete m_pShortSwitchDict;
 		m_pShortSwitchDict = 0;
 	}
 	if(m_pLongSwitchDict)
 	{
+		foreach(KviKvsVariant*i,*m_pLongSwitchDict){delete i;}
 		delete m_pLongSwitchDict;
 		m_pLongSwitchDict = 0;
 	}
@@ -57,19 +59,17 @@ void KviKvsSwitchList::addShort(unsigned short uShortKey,KviKvsVariant * pVarian
 {
 	if(!m_pShortSwitchDict)
 	{
-		m_pShortSwitchDict = new KviIntDict<KviKvsVariant>(11);
-		m_pShortSwitchDict->setAutoDelete(true);
+		m_pShortSwitchDict = new QHash<long,KviKvsVariant*>;
 	}
-	m_pShortSwitchDict->replace(uShortKey,pVariant);
+	m_pShortSwitchDict->insert(uShortKey,pVariant);
 }
 
 void KviKvsSwitchList::addLong(const QString &szLongKey,KviKvsVariant * pVariant)
 {
 	if(!m_pLongSwitchDict)
 	{
-		m_pLongSwitchDict = new KviDict<KviKvsVariant>(11);
-		m_pLongSwitchDict->setAutoDelete(true);
+		m_pLongSwitchDict = new QHash<QString,KviKvsVariant*>;
 	}
-	m_pLongSwitchDict->replace(szLongKey,pVariant);
+	m_pLongSwitchDict->insert(szLongKey,pVariant);
 }
 

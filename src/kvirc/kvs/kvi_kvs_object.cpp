@@ -638,14 +638,14 @@ KviKvsObject::~KviKvsObject()
 	// Disconnect all the signals
 	if(m_pSignalDict)
 	{
-		KviDictIterator<KviKvsObjectConnectionList> it(*m_pSignalDict);
+		QHash<QString,KviKvsObjectConnectionList*>::iterator it(m_pSignalDict->begin());
 
-		while(it.current())
+		while(it != m_pSignalDict->end())
 		{
-			KviKvsObjectConnectionListIterator cit(*(it.current()));
+			KviKvsObjectConnectionListIterator cit(*(it.value()));
 			while(cit.current())
 			{
-				disconnectSignal(it.currentKey(),cit.current());
+				disconnectSignal(it.key(),cit.current());
 				// ++cit // NO!...we point to the next now!
 			}
 			// the iterator should automatically point to the next now
@@ -715,11 +715,10 @@ bool KviKvsObject::connectSignal(const QString &sigName,KviKvsObject * pTarget,c
 
 	if(!m_pSignalDict)
 	{
-		m_pSignalDict = new KviDict<KviKvsObjectConnectionList>(7,false);
-		m_pSignalDict->setAutoDelete(true);
+		m_pSignalDict = new QHash<QString,KviKvsObjectConnectionList*>;
 	}
 
-	KviKvsObjectConnectionList * l = m_pSignalDict->find(sigName);
+	KviKvsObjectConnectionList * l = m_pSignalDict->value(sigName);
 	if(!l)
 	{
 		l = new KviKvsObjectConnectionList;
@@ -753,7 +752,7 @@ bool KviKvsObject::disconnectSignal(const QString &sigName,KviKvsObject * pTarge
 {
 	if(!m_pSignalDict)return false; //no such signal to disconnect
 
-	KviKvsObjectConnectionList * l = m_pSignalDict->find(sigName);
+	KviKvsObjectConnectionList * l = m_pSignalDict->value(sigName);
 	if(!l)return false;
 
 	KviKvsObjectConnectionListIterator it(*l);
@@ -766,7 +765,7 @@ bool KviKvsObject::disconnectSignal(const QString &sigName,KviKvsObject * pTarge
 			{
 				pTarget->unregisterConnection(sl);
 				l->removeRef(sl);
-				if(l->isEmpty())m_pSignalDict->remove(sigName);
+				if(l->isEmpty()) delete m_pSignalDict->take(sigName);
 				if(m_pSignalDict->isEmpty())
 				{
 					delete m_pSignalDict;
@@ -783,13 +782,13 @@ bool KviKvsObject::disconnectSignal(const QString &sigName,KviKvsObject * pTarge
 bool KviKvsObject::disconnectSignal(const QString &sigName,KviKvsObjectConnection * pConnection)
 {
 	if(!m_pSignalDict)return false;
-	KviKvsObjectConnectionList * l = m_pSignalDict->find(sigName);
+	KviKvsObjectConnectionList * l = m_pSignalDict->value(sigName);
 	//__range_valid(l);
 	if(!l)return false;
 	pConnection->pTargetObject->unregisterConnection(pConnection);
 	//__range_valid(l->findRef(pConnection) > -1);
 	l->removeRef(pConnection);
-	if(l->isEmpty())m_pSignalDict->remove(sigName);
+	if(l->isEmpty()) delete m_pSignalDict->take(sigName);
 	if(m_pSignalDict->isEmpty())
 	{
 		delete m_pSignalDict;
@@ -815,7 +814,7 @@ int KviKvsObject::emitSignal(const QString &sigName,KviKvsObjectFunctionCall * p
 {
 	if(!m_pSignalDict)return 0;
 
-	KviKvsObjectConnectionList * l = m_pSignalDict->find(sigName);
+	KviKvsObjectConnectionList * l = m_pSignalDict->value(sigName);
 	if(!l)return 0; // no slots registered
 
 	KviKvsVariant retVal;
@@ -1517,7 +1516,7 @@ KviKvsObjectFunctionHandler * KviKvsObject::lookupFunctionHandler(const QString 
 	if(classOverride.isEmpty() && m_pFunctionHandlers)
 	{
 		// lookup the local overrides
-		h = m_pFunctionHandlers->find(funcName);
+		h = m_pFunctionHandlers->value(funcName);
 	}
 
 	if(!h)
@@ -1656,15 +1655,14 @@ void KviKvsObject::registerPrivateImplementation(const QString &szFunctionName,c
 	} else {
 		if(!m_pFunctionHandlers)
 		{
-			m_pFunctionHandlers = new KviDict<KviKvsObjectFunctionHandler>(7,false);
-			m_pFunctionHandlers->setAutoDelete(true);
+			m_pFunctionHandlers = new QHash<QString,KviKvsObjectFunctionHandler*>;
 		}
 
 		QString szContext = m_pClass->name();
 		szContext += "[privateimpl]::";
 		szContext += szFunctionName;
 
-		m_pFunctionHandlers->replace(szFunctionName,new KviKvsObjectScriptFunctionHandler(szContext,szCode));
+		m_pFunctionHandlers->insert(szFunctionName,new KviKvsObjectScriptFunctionHandler(szContext,szCode));
 	}
 }
 

@@ -41,8 +41,7 @@ KviConfig::KviConfig(const QString &filename,FileMode f,bool bLocal8Bit)
 	m_szGroup              = KVI_CONFIG_DEFAULT_GROUP;
 	m_bPreserveEmptyGroups = false;
 	m_bReadOnly            = (f == KviConfig::Read);
-	m_pDict                = new KviDict<KviConfigGroup>(17,false);
-	m_pDict->setAutoDelete(true);
+	m_pDict                = new QHash<QString,KviConfigGroup*>;
 	if(f != KviConfig::Write)load();
 }
 
@@ -54,23 +53,29 @@ KviConfig::KviConfig(const char* filename,FileMode f,bool bLocal8Bit)
 	m_szGroup              = KVI_CONFIG_DEFAULT_GROUP;
 	m_bPreserveEmptyGroups = false;
 	m_bReadOnly            = (f == KviConfig::Read);
-	m_pDict                = new KviDict<KviConfigGroup>(17,false);
-	m_pDict->setAutoDelete(true);
+	m_pDict                = new QHash<QString,KviConfigGroup*>;
 	if(f != KviConfig::Write)load();
 }
 
 
 KviConfig::~KviConfig()
 {
+	foreach(KviConfigGroup* g,*m_pDict)
+	{
+		delete g;
+	}
 	if(m_bDirty)save();
 	delete m_pDict;
 }
 
 void KviConfig::clear()
 {
+	foreach(KviConfigGroup* g,*m_pDict)
+	{
+		delete g;
+	}
 	delete m_pDict;
-	m_pDict      = new KviDict<KviConfigGroup>(17,false);
-	m_pDict->setAutoDelete(true);
+	m_pDict->clear();
 	m_bDirty     = false;
 	m_szGroup    = KVI_CONFIG_DEFAULT_GROUP;
 }
@@ -78,8 +83,9 @@ void KviConfig::clear()
 void KviConfig::clearGroup(const QString & szGroup)
 {
 	m_bDirty = true;
-	m_pDict->remove(szGroup);
-	if(!m_pDict->find(m_szGroup))m_szGroup = KVI_CONFIG_DEFAULT_GROUP; //removed the current one
+	if(m_pDict->contains(szGroup))
+		delete m_pDict->take(szGroup);
+	if(!m_pDict->contains(m_szGroup))m_szGroup = KVI_CONFIG_DEFAULT_GROUP; //removed the current one
 }
 
 void KviConfig::clearKey(const QString & szKey)
@@ -281,11 +287,10 @@ bool KviConfig::load()
 							QString szGroup = m_bLocal8Bit ?
 								QString::fromLocal8Bit(tmp.ptr(),tmp.len()) :
 								QString::fromUtf8(tmp.ptr(),tmp.len());
-							p_group = m_pDict->find(szGroup);
+							p_group = m_pDict->value(szGroup);
 							if(!p_group)
 							{
-								p_group = new KviConfigGroup(17,false);
-								p_group->setAutoDelete(true);
+								p_group = new KviConfigGroup;
 								m_pDict->insert(szGroup,p_group);
 							}
 						}
@@ -311,25 +316,22 @@ bool KviConfig::load()
 							if(*z)
 							{
 								tmp.hexDecode(z);
-								QString * pVal = new QString( m_bLocal8Bit ? 
+								QString val = m_bLocal8Bit ? 
 									QString::fromLocal8Bit(tmp.ptr(),tmp.len()) :
-									QString::fromUtf8(tmp.ptr(),tmp.len())
-									);
+									QString::fromUtf8(tmp.ptr(),tmp.len());
 								if(!p_group)
 								{
 									// ops...we're missing a group
 									// use the default one
-									p_group = new KviConfigGroup(17,false);
-									p_group->setAutoDelete(true);
+									p_group = new KviConfigGroup;
 									m_pDict->insert(KVI_CONFIG_DEFAULT_GROUP,p_group);
 								}
-								p_group->replace(szKey,pVal);
+								p_group->insert(szKey,val);
 							} else {
 								// we in fact need this (mercy :D)
 								// otherwise the empty options will be treated as non-existing ones
 								// and will get the defaults (which is bad)
-								QString * pVal = new QString(QString::null);
-								p_group->replace(szKey,pVal);
+								p_group->insert(szKey,QString::null);
 							}
 						}
 					}
@@ -496,26 +498,27 @@ bool KviConfig::save()
 	if(!f.openForWriting())return false;
 	if(f.writeBlock("# KVIrc configuration file\n",27) != 27)return false;
 
-	KviDictIterator<KviConfigGroup> it(*m_pDict);
-	while (it.current())
+	QHash<QString,KviConfigGroup*>::iterator it(m_pDict->begin());
+	while (it != m_pDict->end())
 	{
-		if((it.current()->count() != 0) || (m_bPreserveEmptyGroups))
+		if((it.value()->count() != 0) || (m_bPreserveEmptyGroups))
 		{
-			KviStr group(m_bLocal8Bit ? KviQString::toLocal8Bit(it.currentKey()) : KviQString::toUtf8(it.currentKey()));
+			KviStr group(m_bLocal8Bit ? KviQString::toLocal8Bit(it.key()) : KviQString::toUtf8(it.key()));
 			group.hexEncodeWithTable(encode_table);
 
 			if(!f.putChar('['))return false;
 			if(f.writeBlock(group.ptr(),group.len()) < (int) group.len())return false;
 			if(f.writeBlock("]\n",2) < 2)return false;
 
-			KviConfigGroup * dict = (KviConfigGroup *)it.current();
-			KviConfigGroupIterator it2(*dict);
+			KviConfigGroup * dict = it.value();
+			KviConfigGroup::iterator it2(dict->begin());
 
 			KviStr szName,szValue;
-			while(QString * p_str = it2.current())
+			while(it2!=dict->end())
 			{
-				szName = m_bLocal8Bit ? KviQString::toLocal8Bit(it2.currentKey()) : KviQString::toUtf8(it2.currentKey());
-				szValue = m_bLocal8Bit ? KviQString::toLocal8Bit(*p_str) : KviQString::toUtf8(*p_str);
+				QString str = it2.value();
+				szName = m_bLocal8Bit ? KviQString::toLocal8Bit(it2.key()) : KviQString::toUtf8(it2.key());
+				szValue = m_bLocal8Bit ? KviQString::toLocal8Bit(str) : KviQString::toUtf8(str);
 				szName.hexEncodeWithTable(encode_table);
 				szValue.hexEncodeWhiteSpace();
 				
@@ -549,23 +552,22 @@ void KviConfig::setGroup(const QString & szGroup)
 bool KviConfig::hasKey(const QString & szKey)
 {
 	KviConfigGroup * p_group = getCurrentGroup();
-	return (p_group->find(szKey) != 0);
+	return p_group->contains(szKey);
 }
 
 bool KviConfig::hasGroup(const QString & szGroup)
 {
-	return (m_pDict->find(szGroup) != 0);
+	return m_pDict->contains(szGroup);
 }
 
 KviConfigGroup * KviConfig::getCurrentGroup()
 {
 	if(m_szGroup.isEmpty())m_szGroup = KVI_CONFIG_DEFAULT_GROUP;
-	KviConfigGroup * p_group = m_pDict->find(m_szGroup);
+	KviConfigGroup * p_group = m_pDict->value(m_szGroup);
 	if(!p_group)
 	{
 		//create the group
-		p_group = new KviConfigGroup(17,false);
-		p_group->setAutoDelete(true);
+		p_group = new KviConfigGroup;
 		m_pDict->insert(m_szGroup,p_group);
 	}
 	return p_group;
@@ -577,8 +579,7 @@ void KviConfig::writeEntry(const QString & szKey,const QString & szValue)
 {
 	m_bDirty = true;
 	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data=new QString(szValue);
-	p_group->replace(szKey,p_data);
+	p_group->insert(szKey,szValue);
 }
 
 // FIXME: #warning "We have probs here ?"
@@ -586,12 +587,11 @@ void KviConfig::writeEntry(const QString & szKey,const QString & szValue)
 QString KviConfig::readEntry(const QString & szKey,const QString & szDefault)
 {
 	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)
+	if(p_group->contains(szKey))
 	{
-		m_szStrBuffer = szDefault;
+		m_szStrBuffer = p_group->value(szKey);
 	} else {
-		m_szStrBuffer = *p_str;
+		m_szStrBuffer = szDefault;
 	}
 	return m_szStrBuffer;
 }
@@ -621,381 +621,87 @@ void KviConfig::writeEntry(const char *szKey,const QString &szValue)
 
 static QString g_szConfigStringListSeparator(",\\[ITEM],");
 
-QStringList KviConfig::readStringListEntry(const QString & szKey,const QStringList &list)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)return list;
-
-	return p_str->split(g_szConfigStringListSeparator);
+#define WRITE_FUNCTION(TYPE) void KviConfig::writeEntry(const QString & szKey,TYPE value) {\
+	m_bDirty = true;\
+	KviConfigGroup * p_group = getCurrentGroup();\
+	QString data;\
+	KviStringConversion::toString(value,data);\
+	p_group->insert(szKey,data);\
 }
 
-void KviConfig::writeEntry(const QString & szKey,const QStringList &list)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data=new QString(list.join(g_szConfigStringListSeparator));
-	p_group->replace(szKey,p_data);
+#define READ_FUNCTION(__name,INPUT_TYPE,RETURN_TYPE) \
+RETURN_TYPE KviConfig::read##__name(const QString & szKey,INPUT_TYPE value) {\
+	KviConfigGroup * p_group = getCurrentGroup();\
+	if(p_group->contains(szKey))\
+	{\
+		RETURN_TYPE ret;\
+		return KviStringConversion::fromString(p_group->value(szKey),ret) ? ret : value;\
+	} else {\
+		return value;\
+	}\
 }
+
+WRITE_FUNCTION(const QStringList &)
+READ_FUNCTION(StringListEntry,const QStringList &,QStringList)
 
 ////////////////////////////////// KviValueList<int>
 
-KviValueList<int> KviConfig::readIntListEntry(const QString & szKey,const KviValueList<int> &list)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)
-	{
-		//debug("Returning default list for group %s and key %s",m_szGroup.latin1(),szKey.latin1());
-		return list;
-	}
-
-	QStringList sl = p_str->split(",");
-
-	KviValueList<int> ret;
-
-	//debug("Got option list for group %s and key %s: %s",m_szGroup.latin1(),szKey.latin1(),p_str->latin1());
-
-	for(QStringList::Iterator it = sl.begin();it != sl.end();++it)
-	{
-		bool bOk;
-		int iTmp = (*it).toInt(&bOk);
-		if(bOk)ret.append(iTmp);
-	}
-
-	return ret;
-}
-
-
-void KviConfig::writeEntry(const QString & szKey,const KviValueList<int> &list)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	KviStr szData;
-	for(KviValueList<int>::ConstIterator it = list.begin();it != list.end();++it)
-	{
-		if(szData.hasData())szData.append(',');
-		szData.append(KviStr::Format,"%d",*it);
-	}
-	//debug("Writing option list for group %s and key %s: %s",m_szGroup.latin1(),szKey.latin1(),szData.ptr());
-
-	p_group->replace(szKey,new QString(szData.ptr()));
-}
 
 ////////////////////////////////// KviPixmap
 
 // FIXME: #warning "Spaces in image names ?"
 
-void KviConfig::writeEntry(const QString & szKey,const KviPixmap &pixmap)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data=new QString();
-	KviStringConversion::toString(pixmap,*p_data);
-	p_group->replace(szKey,p_data);
-}
-
-KviPixmap KviConfig::readPixmapEntry(const QString & szKey,const KviPixmap &pixDef)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(p_str)
-	{
-		KviPixmap ret("");
-		return KviStringConversion::fromString(*p_str,ret) ? ret : pixDef;
-	} else {
-		return pixDef;
-	}
-}
+WRITE_FUNCTION(const KviPixmap &)
+READ_FUNCTION(PixmapEntry,const KviPixmap &,KviPixmap)
 
 ////////////////////////////////// KviMsgType
 
-void KviConfig::writeEntry(const QString & szKey,const KviMsgType &msg)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString szData;
-	KviStringConversion::toString(msg,szData);
-	p_group->replace(szKey,new QString(szData));
-}
-
-KviMsgType KviConfig::readMsgTypeEntry(const QString & szKey,const KviMsgType &msgDef)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)return msgDef;
-	KviMsgType ret = msgDef;
-	KviStringConversion::fromString(*p_str,ret);
-	return ret;
-}
+WRITE_FUNCTION(const KviMsgType &)
+READ_FUNCTION(MsgTypeEntry,const KviMsgType &,KviMsgType)
 
 ////////////////////////////////// QColor
 
-void KviConfig::writeEntry(const QString & szKey,const QColor &clr)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	KviStr szData(KviStr::Format,"%d,%d,%d",clr.red(),clr.green(),clr.blue());
-	p_group->replace(szKey,new QString(szData.ptr()));
-}
-
-QColor KviConfig::readColorEntry(const QString & szKey,const QColor &clr)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QColor color(clr);
-	QString * pointer_that_IS_initialized = p_group->find(szKey);
-
-
-	if(pointer_that_IS_initialized)
-	{
-
-		KviStr str(*pointer_that_IS_initialized);
-		str.stripLeftWhiteSpace();
-
-		KviStr red,green,blue;
-
-		str.getToken(red,',');
-		str.getToken(green,',');
-		str.getToken(blue,',');
-
-		if((red.isUnsignedNum())&&(green.isUnsignedNum())&&(blue.isUnsignedNum())){
-			bool bOk;
-			int r = red.toInt(&bOk) % 256;
-			int g = green.toInt(&bOk) % 256;
-			int b = blue.toInt(&bOk) % 256;
-			if(r < 0)r = -r;
-			if(g < 0)g = -g;
-			if(b < 0)b = -b;
-			color.setRgb(r,g,b);
-		}
-	}
-	return color;
-}
+WRITE_FUNCTION(const QColor &)
+READ_FUNCTION(ColorEntry,const QColor &,QColor)
 
 ////////////////////////////////// QFont
 
-void KviConfig::getFontProperties(KviStr & buffer,QFont *fnt)
-{
-	QString tmp;
-	KviStringConversion::toString(*fnt,tmp);
-	buffer = tmp;
-}
-
-void KviConfig::writeEntry(const QString & szKey,QFont &fnt)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data = new QString();
-	KviStringConversion::toString(fnt,*p_data);
-	p_group->replace(szKey,p_data);
-}
-
-
-void KviConfig::setFontProperties(KviStr & str,QFont *fnt)
-{
-	KviStringConversion::fromString(str.ptr(),*fnt);
-}
-
-QFont KviConfig::readFontEntry(const QString & szKey,const QFont &fnt)
-{
-	QFont font(fnt);
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str       = p_group->find(szKey);
-	if(p_str)
-	{
-		//FontEntry=Arial,12,9,0,100,italic,underline,strikeout,
-		KviStr str(*p_str);
-		str.stripLeftWhiteSpace();
-		setFontProperties(str,&font);
-	}
-	return font;
-}
+WRITE_FUNCTION(QFont &)
+READ_FUNCTION(FontEntry,const QFont &,QFont)
 
 ////////////////////////////////// bool
 
-void KviConfig::writeEntry(const QString & szKey,bool bTrue)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data = new QString(bTrue ? "true" : "false");
-	p_group->replace(szKey,p_data);
-}
-
-bool KviConfig::readBoolEntry(const QString & szKey,bool bTrue)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)return bTrue;
-	static QString szTrue = "true";
-	return (KviQString::toLower(*p_str) == szTrue);
-}
+WRITE_FUNCTION(bool)
+READ_FUNCTION(BoolEntry,bool,bool)
 
 ////////////////////////////////// QRect
-
-void KviConfig::writeEntry(const QString & szKey,const QRect &rct)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString szBuf;
-	KviStringConversion::toString(rct,szBuf);
-	p_group->replace(szKey,new QString(szBuf));
-}
-
-QRect KviConfig::readRectEntry(const QString & szKey,const QRect &rct)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * str = p_group->find(szKey);
-	if(!str)return rct;
-	QRect ret;
-	return KviStringConversion::fromString(*str,ret) ? ret : rct;
-}
+WRITE_FUNCTION(const QRect &)
+READ_FUNCTION(RectEntry,const QRect &,QRect)
 
 ////////////////////////////////// unsigned short
 
-void KviConfig::writeEntry(const QString & szKey,unsigned short usValue)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data = new QString();
-	p_data->setNum(usValue);
-	p_group->replace(szKey,p_data);
-}
-
-unsigned short int KviConfig::readUShortEntry(const QString & szKey,unsigned short int usDefault)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)return usDefault;
-	bool bOk;
-	unsigned short int usVal=p_str->toUShort(&bOk);
-	return bOk ? usVal : usDefault;
-}
-
-/*
-////////////////////////////////// unsigned long
-
-Unused code
-void KviConfig::writeEntry(const char *szKey,unsigned long lValue)
-{
-	m_bDirty = true;
-	KviStrDict * p_group = getCurrentGroup();
-	KviStr *p_data = new KviStr();
-	p_data->setNum(lValue);
-	p_group->replace(szKey,p_data);
-}
-
-unsigned long KviConfig::readULongEntry(const char *szKey,unsigned long lDefault)
-{
-	KviStrDict * p_group = getCurrentGroup();
-	KviStr * p_str = p_group->find(szKey);
-	if(!p_str)return lDefault;
-	bool bOk;
-	unsigned long lVal=p_str->toULong(&bOk);
-	return bOk ? lVal : lDefault;
-}
-*/
+WRITE_FUNCTION(unsigned short)
+READ_FUNCTION(UShortEntry,unsigned short int,unsigned short int)
 
 ////////////////////////////////// int
 
-void KviConfig::writeEntry(const QString & szKey,int iValue)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data = new QString();
-	p_data->setNum(iValue);
-	p_group->replace(szKey,p_data);
-}
+WRITE_FUNCTION(int)
+READ_FUNCTION(IntEntry,int,int)
 
-int KviConfig::readIntEntry(const QString & szKey,int iDefault)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)return iDefault;
-	bool bOk;
-	int iVal=p_str->toInt(&bOk);
-	return bOk ? iVal : iDefault;
-}
 
 ////////////////////////////////// unsigned int
 
-void KviConfig::writeEntry(const QString & szKey,unsigned int iValue)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data = new QString();
-	p_data->setNum(iValue);
-	p_group->replace(szKey,p_data);
-}
+WRITE_FUNCTION(unsigned int)
+READ_FUNCTION(UIntEntry,unsigned int,unsigned int)
 
-unsigned int KviConfig::readUIntEntry(const QString & szKey,unsigned int iDefault)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)return iDefault;
-	bool bOk;
-	unsigned int iVal=p_str->toUInt(&bOk);
-	return bOk ? iVal : iDefault;
-}
+////////////////////////////////// QList<int>
 
-////////////////////////////////// char
+WRITE_FUNCTION(const QList<int>  &)
+READ_FUNCTION(IntListEntry,const QList<int>  &,QList<int> )
 
-void KviConfig::writeEntry(const QString & szKey,char iValue)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_data = new QString();
-	p_data->setNum(iValue);
-	p_group->replace(szKey,p_data);
-}
+WRITE_FUNCTION(const QTextCharFormat&)
+READ_FUNCTION(TextCharFormatEntry,const QTextCharFormat&,QTextCharFormat)
 
-char KviConfig::readCharEntry(const QString & szKey,char iDefault)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)return iDefault;
-	bool bOk;
-	char iVal=(char)p_str->toInt(&bOk);
-	return bOk ? iVal : iDefault;
-}
-
-////////////////////////////////// unsigned char
-
-void KviConfig::writeEntry(const QString & szKey,unsigned char iValue)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data = new QString();
-	p_data->setNum(iValue);
-	p_group->replace(szKey,p_data);
-}
-
-unsigned char KviConfig::readUCharEntry(const QString & szKey,unsigned char iDefault)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)return iDefault;
-	bool bOk;
-	unsigned char iVal=(unsigned char)p_str->toUInt(&bOk);
-	return bOk ? iVal : iDefault;
-}
-
-QTextCharFormat KviConfig::readTextCharFormatEntry(const QString & szKey,const QTextCharFormat& def)
-{
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString * p_str = p_group->find(szKey);
-	if(!p_str)return def;
-	QTextCharFormat buff;
-	KviStringConversion::fromString(*p_str,buff);
-	return buff;
-}
-void KviConfig::writeEntry(const QString & szKey,const QTextCharFormat& value)
-{
-	m_bDirty = true;
-	KviConfigGroup * p_group = getCurrentGroup();
-	QString *p_data = new QString();
-	KviStringConversion::toString(value,*p_data);
-	p_group->replace(szKey,p_data);
-}
 
 
 #ifdef COMPILE_ON_WINDOWS

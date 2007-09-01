@@ -33,22 +33,23 @@ KviCustomToolBarManager * KviCustomToolBarManager::m_pInstance = 0;
 
 KviCustomToolBarManager::KviCustomToolBarManager()
 {
-	m_pDescriptors = new KviDict<KviCustomToolBarDescriptor>(17,false);
-	m_pDescriptors->setAutoDelete(true);
+	m_pDescriptors = new QHash<QString,KviCustomToolBarDescriptor*>;
 }
 
 KviCustomToolBarManager::~KviCustomToolBarManager()
 {
+	foreach(KviCustomToolBarDescriptor*i,*m_pDescriptors)
+	{
+		delete i;
+	}
 	delete m_pDescriptors;
 }
 
 KviCustomToolBar * KviCustomToolBarManager::firstExistingToolBar()
 {
-	KviDictIterator<KviCustomToolBarDescriptor> it(*m_pDescriptors);
-	while(KviCustomToolBarDescriptor * d = it.current())
+	foreach(KviCustomToolBarDescriptor * d,*m_pDescriptors)
 	{
 		if(d->toolBar())return d->toolBar();
-		++it;
 	}
 	return 0;
 }
@@ -86,7 +87,7 @@ QString KviCustomToolBarManager::idForNewToolBar(const QString &szTemplate)
 			tmp.setNum(idx);
 			s += tmp;
 		}
-		if(!m_pDescriptors->find(s))return s;
+		if(!m_pDescriptors->value(s))return s;
 		idx++;
 	}
 	return s;
@@ -94,57 +95,55 @@ QString KviCustomToolBarManager::idForNewToolBar(const QString &szTemplate)
 
 KviCustomToolBarDescriptor * KviCustomToolBarManager::findDescriptorByInternalId(int id)
 {
-	KviDictIterator<KviCustomToolBarDescriptor> it(*m_pDescriptors);
-	while(KviCustomToolBarDescriptor * d = it.current())
+	foreach(KviCustomToolBarDescriptor * d,*m_pDescriptors)
 	{
 		if(d->internalId() == id)return d;
-		++it;
 	}
 	return 0;
 }
 
 bool KviCustomToolBarManager::renameDescriptor(const QString &szId,const QString &szNewId,const QString &szNewLabelCode)
 {
-	KviCustomToolBarDescriptor * d = m_pDescriptors->find(szId);
+	KviCustomToolBarDescriptor * d = m_pDescriptors->value(szId);
 	if(!d)return false;
 	d->rename(szNewLabelCode);
 	if(szId == szNewId)return true; // already done
-	m_pDescriptors->setAutoDelete(false);
 	m_pDescriptors->remove(szId);
-	m_pDescriptors->replace(szNewId,d);
-	m_pDescriptors->setAutoDelete(true);
+	m_pDescriptors->insert(szNewId,d);
 	return true;
 }
 
 bool KviCustomToolBarManager::destroyDescriptor(const QString &szId)
 {
-	KviCustomToolBarDescriptor * d = m_pDescriptors->find(szId);
+	KviCustomToolBarDescriptor * d = m_pDescriptors->value(szId);
 	if(!d)return false;
-	m_pDescriptors->remove(szId); // will delete it too!
+	delete m_pDescriptors->take(szId); // will delete it too!
 	return true;
 }
 
 void KviCustomToolBarManager::clear()
 {
+	foreach(KviCustomToolBarDescriptor*i,*m_pDescriptors)
+	{
+		delete i;
+	}
 	m_pDescriptors->clear(); // bye!
 }
 
 KviCustomToolBarDescriptor * KviCustomToolBarManager::create(const QString &szId,const QString &szLabelCode)
 {
-	KviCustomToolBarDescriptor * d = m_pDescriptors->find(szId);
+	KviCustomToolBarDescriptor * d = m_pDescriptors->value(szId);
 	if(d)return d;
 	d = new KviCustomToolBarDescriptor(szId,szLabelCode);
-	m_pDescriptors->replace(szId,d);
+	m_pDescriptors->insert(szId,d);
 	return d;
 }
 
 void KviCustomToolBarManager::storeVisibilityState()
 {
-	KviDictIterator<KviCustomToolBarDescriptor> it(*m_pDescriptors);
-	while(KviCustomToolBarDescriptor * d = it.current())
+	foreach(KviCustomToolBarDescriptor * d,*m_pDescriptors)
 	{
 		d->m_bVisibleAtStartup = d->toolBar() != 0;
-		++it;
 	}
 
 }
@@ -152,33 +151,27 @@ void KviCustomToolBarManager::storeVisibilityState()
 int KviCustomToolBarManager::visibleToolBarCount()
 {
 	int cnt = 0;
-	KviDictIterator<KviCustomToolBarDescriptor> it(*m_pDescriptors);
-	while(KviCustomToolBarDescriptor * d = it.current())
+	foreach(KviCustomToolBarDescriptor * d,*m_pDescriptors)
 	{
 		if(d->toolBar() != 0)cnt++;
-		++it;
 	}
 	return cnt;
 }
 
 void KviCustomToolBarManager::createToolBarsVisibleAtStartup()
 {
-	KviDictIterator<KviCustomToolBarDescriptor> it(*m_pDescriptors);
-	while(KviCustomToolBarDescriptor * d = it.current())
+	foreach(KviCustomToolBarDescriptor * d,*m_pDescriptors)
 	{
 		if(d->m_bVisibleAtStartup && (!d->toolBar()))
 			d->createToolBar();
-		++it;
 	}
 }
 
 void KviCustomToolBarManager::updateVisibleToolBars()
 {
-	KviDictIterator<KviCustomToolBarDescriptor> it(*m_pDescriptors);
-	while(KviCustomToolBarDescriptor * d = it.current())
+	foreach(KviCustomToolBarDescriptor * d,*m_pDescriptors)
 	{
 		if(d->toolBar())d->updateToolBar();
-		++it;
 	}
 }
 
@@ -186,14 +179,14 @@ void KviCustomToolBarManager::load(const QString &szFileName)
 {
 	KviConfig cfg(szFileName,KviConfig::Read);
 
-	KviConfigIterator it(*(cfg.dict()));
-	while(it.current())
+	KviConfigIterator it(cfg.dict()->begin());
+	while(it != cfg.dict()->end())
 	{
-		cfg.setGroup(it.currentKey());
-		KviCustomToolBarDescriptor * d = new KviCustomToolBarDescriptor(it.currentKey(),QString::null);
+		cfg.setGroup(it.key());
+		KviCustomToolBarDescriptor * d = new KviCustomToolBarDescriptor(it.key(),QString::null);
 		d->m_bVisibleAtStartup = (cfg.readIntEntry("Visible",0) > 0);
 		if(!d->load(&cfg))delete d;
-		else m_pDescriptors->replace(it.currentKey(),d);
+		else m_pDescriptors->insert(it.key(),d);
 		++it;
 	}
 }
@@ -201,13 +194,11 @@ void KviCustomToolBarManager::load(const QString &szFileName)
 void KviCustomToolBarManager::save(const QString &szFileName)
 {
 	KviConfig cfg(szFileName,KviConfig::Write);
-	KviDictIterator<KviCustomToolBarDescriptor> it(*m_pDescriptors);
-	while(KviCustomToolBarDescriptor * d = it.current())
+	foreach(KviCustomToolBarDescriptor * d,*m_pDescriptors)
 	{
 		cfg.setGroup(d->id());
 		cfg.writeEntry("Visible",d->m_bVisibleAtStartup ? 1 : 0);
 		d->save(&cfg);
-		++it;
 	}
 }
 
@@ -228,7 +219,7 @@ void KviCustomToolBarManager::loadScripttoolbarsCompat(const QString &szFileName
 		tmp.sprintf("%d",i);
 		KviCustomToolBarDescriptor * d = new KviCustomToolBarDescriptor(QString::null,QString::null);
 		if(!d->loadScripttoolbarCompat(tmp.ptr(),&cfg))delete d;
-		else m_pDescriptors->replace(d->id(),d);
+		else m_pDescriptors->insert(d->id(),d);
 	}
 
 	// get rid of the file now...

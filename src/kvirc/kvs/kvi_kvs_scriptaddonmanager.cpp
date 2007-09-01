@@ -243,12 +243,12 @@ KviKvsScriptAddonManager::KviKvsScriptAddonManager()
 {
 	m_pInstance = this;
 	m_bLoaded = false;
-	m_pAddonDict = new KviDict<KviKvsScriptAddon>(17,false);
-	m_pAddonDict->setAutoDelete(true);
+	m_pAddonDict = new QHash<QString,KviKvsScriptAddon*>;
 }
 
 KviKvsScriptAddonManager::~KviKvsScriptAddonManager()
 {
+	foreach(KviKvsScriptAddon*a,*m_pAddonDict){delete a;};
 	delete m_pAddonDict;
 }
 
@@ -294,13 +294,11 @@ void KviKvsScriptAddonManager::save(const QString &szFileName)
 
 	cfg.clear();
 
-	KviDictIterator<KviKvsScriptAddon> it(*m_pAddonDict);
 	
-	while(KviKvsScriptAddon * a = it.current())
+	foreach(KviKvsScriptAddon * a,*m_pAddonDict)
 	{
 		cfg.setGroup(a->name());
 		a->save(&cfg);
-		++it;
 	}
 }
 
@@ -315,23 +313,23 @@ void KviKvsScriptAddonManager::delayedLoad()
 
 	KviConfig cfg(m_szFileName,KviConfig::Read);
 
-	KviDict<KviConfigGroup> * d = cfg.dict();
+	QHash<QString,KviConfigGroup*> * d = cfg.dict();
 	if(!d)return;
 	
-	KviDictIterator<KviConfigGroup> it(*d);
-	while(it.current())
+	KviConfigIterator it(d->begin());
+	while(it != d->end())
 	{
-		QString szName = it.currentKey();
+		QString szName = it.key();
 		KviKvsScriptAddon * a = new KviKvsScriptAddon();
 		if(a->load(&cfg,szName))
-			m_pAddonDict->replace(szName,a);
+			m_pAddonDict->insert(szName,a);
 		else
 			delete a;
 		++it;
 	}
 }
 
-KviDict<KviKvsScriptAddon> * KviKvsScriptAddonManager::addonDict()
+QHash<QString,KviKvsScriptAddon*> * KviKvsScriptAddonManager::addonDict()
 {
 	if(!m_bLoaded)delayedLoad();
 	return m_pAddonDict;
@@ -351,14 +349,14 @@ bool KviKvsScriptAddonManager::registerAddon(KviKvsScriptAddonRegistrationData *
 			d->szDescriptionScript,
 			d->szUninstallCallbackScript,
 			d->szIconId);
-	m_pAddonDict->replace(d->szName,a);
+	m_pAddonDict->insert(d->szName,a);
 	return true;
 }
 
 KviKvsScriptAddon * KviKvsScriptAddonManager::findAddon(const QString &szName)
 {
 	if(!m_bLoaded)delayedLoad();
-	return m_pAddonDict->find(szName);
+	return m_pAddonDict->value(szName);
 }
 
 bool KviKvsScriptAddonManager::unregisterAddon(const QString &szName,KviWindow * pWnd,bool bExecuteUninstallCallback)
@@ -368,9 +366,7 @@ bool KviKvsScriptAddonManager::unregisterAddon(const QString &szName,KviWindow *
 
 	// remove the addon before executing the uninstall callback
 	// so the user effectively can't call addon.unregister on itself in the uninstall callback code :D
-	m_pAddonDict->setAutoDelete(false);
 	m_pAddonDict->remove(szName);
-	m_pAddonDict->setAutoDelete(true);
 
 	if(bExecuteUninstallCallback)
 		a->executeUninstallCallback(pWnd);

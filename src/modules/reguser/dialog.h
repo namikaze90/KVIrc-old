@@ -111,7 +111,7 @@ public:
 	QPushButton * m_pImportButton;
 	QPushButton * m_pExportButton;
 	QPushButton * m_pAddGroupButton;
-	Q3IntDict<KviRegisteredUserGroup> m_TmpDict;
+	QHash<int,KviRegisteredUserGroup*> m_TmpDict;
 
 	protected slots:
 	void itemPressed(KviTalListViewItem *it,const QPoint &pnt,int c);

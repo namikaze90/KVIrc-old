@@ -73,12 +73,13 @@ KviTextIconWindow::~KviTextIconWindow()
 void KviTextIconWindow::fill()
 {
 	clear();
-	KviDict<KviTextIcon> * d = g_pTextIconManager->textIconDict();
-	KviDictIterator<KviTextIcon> it(*d);
-	while(KviTextIcon * i = it.current())
+	QHash<QString,KviTextIcon*> * d = g_pTextIconManager->textIconDict();
+	QHash<QString,KviTextIcon*>::iterator it(d->begin());
+	while(it != d->end())
 	{
+		KviTextIcon * i = it.value();
 		QPixmap *pix = i->pixmap();
-		if(pix)insertItem(new KviTalIconViewItem(this,it.currentKey(),*pix));
+		if(pix)insertItem(new KviTalIconViewItem(this,it.key(),*pix));
 		++it;
 	}
 	sort();

@@ -183,7 +183,7 @@ public:
 	void setMuted(bool muted) {KVI_OPTION_BOOL(KviOption_boolMuteAllSounds)=muted;};
 protected:
 	KviPtrList<KviSoundThread> * m_pThreadList;
-	KviDict<SoundSystemRoutine> * m_pSoundSystemDict;
+	QHash<QString,SoundSystemRoutine*> * m_pSoundSystemDict;
 protected:
 	void registerSoundThread(KviSoundThread * t);
 	void unregisterSoundThread(KviSoundThread * t);

@@ -188,40 +188,43 @@
 
 	KviCryptEngineManager::KviCryptEngineManager()
 	{
-		m_pEngineDict = new KviDict<KviCryptEngineDescription>;
-		m_pEngineDict->setAutoDelete(true);
+		m_pEngineDict = new QHash<QString,KviCryptEngineDescription*>;
 	}
 
 	KviCryptEngineManager::~KviCryptEngineManager()
 	{
+		foreach(KviCryptEngineDescription* d,*m_pEngineDict)
+		{
+			delete d;
+		}
 		delete m_pEngineDict;
 	}
 
 	void KviCryptEngineManager::registerEngine(KviCryptEngineDescription * d)
 	{
-		m_pEngineDict->replace(d->szName,d);
+		m_pEngineDict->insert(d->szName,d);
 	}
 
 	void KviCryptEngineManager::unregisterEngine(const QString &szName)
 	{
-		m_pEngineDict->remove(szName);
+		if(m_pEngineDict->contains(szName))
+			delete m_pEngineDict->take(szName);
 	}
 
 	void KviCryptEngineManager::unregisterEngines(void * providerHandle)
 	{
-		KviDictIterator<KviCryptEngineDescription> it(*m_pEngineDict);
-		while(it.current())
+		foreach(KviCryptEngineDescription* d,*m_pEngineDict)
 		{
-			if(it.current()->providerHandle == providerHandle)
-				m_pEngineDict->remove(it.currentKey());
-			else
-				++it;
+			if(d->providerHandle == providerHandle)
+			{
+				delete m_pEngineDict->take(d->szName);
+			}
 		}
 	}
 
 	KviCryptEngine * KviCryptEngineManager::allocateEngine(const QString &szName)
 	{
-		KviCryptEngineDescription * d =  m_pEngineDict->find(szName);
+		KviCryptEngineDescription * d =  m_pEngineDict->value(szName);
 		if(!d)return 0;
 		KviCryptEngine * e = d->allocFunc();
 		if(!e)return 0;

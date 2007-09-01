@@ -86,8 +86,7 @@ KviStatusBar::KviStatusBar(KviFrame * pFrame)
 	
 	m_pClickedApplet = 0;
 
-	m_pAppletDescriptors = new KviDict<KviStatusBarAppletDescriptor>;
-	m_pAppletDescriptors->setAutoDelete(true);
+	m_pAppletDescriptors = new QHash<QString,KviStatusBarAppletDescriptor*>;
 
 	KviStatusBarClock::selfRegister(this);
 	KviStatusBarAwayIndicator::selfRegister(this);
@@ -137,6 +136,10 @@ KviStatusBar::~KviStatusBar()
 
 	if(m_pMessageTimer)delete m_pMessageTimer;
 	delete m_pMessageQueue;
+	foreach(KviStatusBarAppletDescriptor* d,*m_pAppletDescriptors)
+	{
+		delete d;
+	}
 	delete m_pAppletDescriptors;
 	delete m_pAppletList;
 }
@@ -380,23 +383,20 @@ void KviStatusBar::appletsPopupAboutToShow()
 	// FIXME: could we cache the module results in some way ?
 	g_pModuleManager->loadModulesByCaps("statusbarapplet");
 	
-	KviDictIterator<KviStatusBarAppletDescriptor> it(*m_pAppletDescriptors);
-	while(KviStatusBarAppletDescriptor * d = it.current())
+	foreach(KviStatusBarAppletDescriptor * d,*m_pAppletDescriptors)
 	{
 		int id;
 		QPixmap * pix = d->icon();
 		if(pix)id = m_pAppletsPopup->insertItem(*pix,d->visibleName());
 		else id = m_pAppletsPopup->insertItem(d->visibleName());
 		m_pAppletsPopup->setItemParameter(id,d->id());
-		++it;
 	}
 }
 
 KviStatusBarApplet * KviStatusBar::createApplet(const QString &szInternalName)
 {
-	KviStatusBarAppletDescriptor * d = m_pAppletDescriptors->find(szInternalName);
-	if(!d)return 0;
-	return d->create(this);
+	if(!m_pAppletDescriptors->contains(szInternalName))return 0;
+	return m_pAppletDescriptors->value(szInternalName)->create(this);
 }
 
 void KviStatusBar::showLayoutHelp()
@@ -412,8 +412,7 @@ void KviStatusBar::appletsPopupActivated(int id)
 
 	if(!m_pAppletsPopup)return;
 	int par = m_pAppletsPopup->itemParameter(id);
-	KviDictIterator<KviStatusBarAppletDescriptor> it(*m_pAppletDescriptors);
-	while(KviStatusBarAppletDescriptor * d = it.current())
+	foreach(KviStatusBarAppletDescriptor * d,*m_pAppletDescriptors)
 	{
 		if(par == d->id())
 		{
@@ -438,13 +437,12 @@ void KviStatusBar::appletsPopupActivated(int id)
 			showLayoutHelp();
 			return;
 		}
-		++it;
 	}
 }
 
 void KviStatusBar::registerAppletDescriptor(KviStatusBarAppletDescriptor * d)
 {
-	m_pAppletDescriptors->replace(d->internalName(),d);
+	m_pAppletDescriptors->insert(d->internalName(),d);
 }
 
 void KviStatusBar::registerApplet(KviStatusBarApplet * a)

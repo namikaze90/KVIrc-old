@@ -111,10 +111,8 @@
 KviPackageIOEngine::KviPackageIOEngine()
 {
 	m_pProgressDialog = 0;
-	m_pStringInfoFields = new KviDict<QString>();
-	m_pStringInfoFields->setAutoDelete(true);
-	m_pBinaryInfoFields = new KviDict<QByteArray>();
-	m_pBinaryInfoFields->setAutoDelete(true);
+	m_pStringInfoFields = new QHash<QString,QString>;
+	m_pBinaryInfoFields = new QHash<QString,QByteArray>;
 }
 
 KviPackageIOEngine::~KviPackageIOEngine()
@@ -188,12 +186,12 @@ KviPackageWriter::~KviPackageWriter()
 
 void KviPackageWriter::addInfoField(const QString &szName,const QString &szValue)
 {
-	m_pStringInfoFields->replace(szName,new QString(szValue));
+	m_pStringInfoFields->insert(szName,szValue);
 }
 
-void KviPackageWriter::addInfoField(const QString &szName,QByteArray * pValue)
+void KviPackageWriter::addInfoField(const QString &szName,const QByteArray & pValue)
 {
-	m_pBinaryInfoFields->replace(szName,pValue);
+	m_pBinaryInfoFields->insert(szName,pValue);
 }
 
 bool KviPackageWriter::addFile(const QString &szLocalFileName,const QString &szTargetFileName,kvi_u32_t uAddFileFlags)
@@ -531,24 +529,24 @@ bool KviPackageWriter::packInternal(const QString &szFileName,kvi_u32_t uPackFla
 		return false; // aborted
 	
 	// InfoFields (string)
-	KviDictIterator<QString> it(*m_pStringInfoFields);
-	while(QString * s = it.current())
+	QHash<QString,QString>::iterator it(m_pStringInfoFields->begin());
+	while(it != m_pStringInfoFields->end())
 	{
-		if(!f.save(it.currentKey()))return writeError();
+		if(!f.save(it.key()))return writeError();
 		kvi_u32_t uType = KVI_PACKAGE_INFOFIELD_TYPE_STRING;
 		if(!f.save(uType))return writeError();
-		if(!f.save(*s))return writeError();
+		if(!f.save(it.value()))return writeError();
 		++it;
 	}
 	
 	// InfoFields (binary)
-	KviDictIterator<QByteArray> it2(*m_pBinaryInfoFields);
-	while(QByteArray * b = it2.current())
+	QHash<QString,QByteArray>::iterator it2(m_pBinaryInfoFields->begin());
+	while(it2 != m_pBinaryInfoFields->end())
 	{
-		if(!f.save(it2.currentKey()))return writeError();
+		if(!f.save(it2.key()))return writeError();
 		kvi_u32_t uType = KVI_PACKAGE_INFOFIELD_TYPE_BINARYBUFFER;
 		if(!f.save(uType))return writeError();
-		if(!f.save(*b))return writeError();
+		if(!f.save(it.value()))return writeError();
 		++it2;
 	}
 
@@ -655,18 +653,17 @@ bool KviPackageReader::readHeaderInternal(KviFile * pFile,const QString &szLocal
 			{
 				QString szValue;
 				if(!pFile->load(szValue))return readError();
-				m_pStringInfoFields->replace(szKey,new QString(szValue));
+				m_pStringInfoFields->insert(szKey,szValue);
 			}
 			break;
 			case KVI_PACKAGE_INFOFIELD_TYPE_BINARYBUFFER:
 			{
-				QByteArray * pbValue = new QByteArray();
-				if(!pFile->load(*pbValue))
+				QByteArray pbValue;
+				if(!pFile->load(pbValue))
 				{
-					delete pbValue;
 					return readError();
 				}
-				m_pBinaryInfoFields->replace(szKey,pbValue);
+				m_pBinaryInfoFields->insert(szKey,pbValue);
 			}
 			break;
 			default:
@@ -919,9 +916,8 @@ bool KviPackageReader::unpackFile(KviFile * pFile,const QString &szUnpackPath)
 
 bool KviPackageReader::getStringInfoField(const QString &szName,QString &szBuffer)
 {
-	QString * pVal = m_pStringInfoFields->find(szName);
-	if(!pVal)return false;
-	szBuffer = *pVal;
+	if(!m_pStringInfoFields->contains(szName))return false;
+	szBuffer = m_pStringInfoFields->value(szName);
 	return true;
 }
 

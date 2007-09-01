@@ -36,7 +36,7 @@
 #include "kvi_tal_tooltip.h"
 #include <qwidget.h>
 #include "kvi_list.h"
-#include "kvi_dict.h"
+#include <QHash>
 #include "kvi_toolwindows_container.h"
 
 class QLabel;
@@ -130,7 +130,7 @@ public:
 	KviUserListView(QWidget * parent,KviWindowToolPageButton* button,KviIrcUserDataBase * db,KviWindow * pWnd,int dictSize = 5,const QString &label_text = QString::null,const char * name = 0);
 	~KviUserListView();
 protected:
-	KviDict<KviUserListEntry>         * m_pEntryDict;
+	QHash<QString,KviUserListEntry*>         * m_pEntryDict;
 	KviUserListEntry                * m_pTopItem;
 	KviUserListEntry                * m_pHeadItem;
 	KviUserListEntry                * m_pTailItem;
@@ -166,7 +166,7 @@ public:
 	void updateArea();
 	void select(const QString&);
 	void applyOptions();
-	KviDict<KviUserListEntry> * entryDict(){ return m_pEntryDict; };
+	QHash<QString,KviUserListEntry*> * entryDict(){ return m_pEntryDict; };
 	KviUserListEntry * firstItem(){ return m_pHeadItem; };
 	KviUserListEntry * itemAt(const QPoint &pnt,QRect * rct = 0);
 	bool itemVisible(KviUserListEntry * e);
@@ -181,7 +181,7 @@ public:
 	int halfOpCount(){ return m_iHalfOpCount; };
 	int userOpCount(){ return m_iUserOpCount; };
 
-	KviUserListEntry * findEntry(const QString &nick){ return nick.isEmpty() ? 0 : m_pEntryDict->find(nick); };
+	KviUserListEntry * findEntry(const QString &nick){ return nick.isEmpty() ? 0 : m_pEntryDict->value(nick); };
 	void appendSelectedNicknames(QString &buffer);
 	QString * firstSelectedNickname();
 	QString * nextSelectedNickname();
@@ -192,7 +192,7 @@ public:
 	kvi_time_t getUserJoinTime(const QString &nick);
 	kvi_time_t getUserLastActionTime(const QString &nick);
 	char getUserFlag(KviUserListEntry * e);
-	char getUserFlag(const QString &nick){ return getUserFlag(m_pEntryDict->find(nick)); };
+	char getUserFlag(const QString &nick){ return getUserFlag(m_pEntryDict->value(nick)); };
 	bool part(const QString &nick){ return partInternal(nick,true); };
 	bool op(const QString &nick,bool bOp);
 	void prependUserFlag(const QString &nick,QString &buffer);

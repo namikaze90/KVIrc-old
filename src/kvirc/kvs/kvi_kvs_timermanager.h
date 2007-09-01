@@ -92,8 +92,8 @@ protected: // it only can be created and destroyed by KviKvsTimerManager::init()
 	KviKvsTimerManager();
 	~KviKvsTimerManager();
 private:
-	KviIntDict<KviKvsTimer>     * m_pTimerDictById;      // stored by id
-	KviDict<KviKvsTimer>        * m_pTimerDictByName;    // stored by name
+	QHash<int,KviKvsTimer*>     * m_pTimerDictById;      // stored by id
+	QHash<QString,KviKvsTimer*>        * m_pTimerDictByName;    // stored by name
 	static KviKvsTimerManager * m_pInstance;           // the one and only timer manager instance
 	KviPtrList<KviKvsTimer>   * m_pKilledTimerList;    // list of timers for that killing has been scheduled
 	int                         m_iAssassinTimer;      // assassin timer id
@@ -111,7 +111,7 @@ public:
 	// the current timer will be unique
 	bool deleteCurrentTimer();
 	void deleteAllTimers();
-	bool timerExists(const QString &szName){ return m_pTimerDictByName->find(szName); };
+	bool timerExists(const QString &szName){ return m_pTimerDictByName->value(szName); };
 protected:
 	void scheduleKill(KviKvsTimer * t);
 	virtual void timerEvent(QTimerEvent *e);

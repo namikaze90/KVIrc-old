@@ -121,12 +121,15 @@ KviUserIdentityManager * KviUserIdentityManager::m_pInstance = 0;
 KviUserIdentityManager::KviUserIdentityManager()
 : KviHeapObject()
 {
-	m_pIdentityDict = new KviDict<KviUserIdentity>();
-	m_pIdentityDict->setAutoDelete(true);
+	m_pIdentityDict = new QHash<QString,KviUserIdentity*>;
 }
 
 KviUserIdentityManager::~KviUserIdentityManager()
 {
+	foreach(KviUserIdentity* i,*m_pIdentityDict)
+	{
+		delete i;
+	}
 	delete m_pIdentityDict;
 }
 
@@ -148,14 +151,13 @@ const KviUserIdentity * KviUserIdentityManager::defaultIdentity()
 	KviUserIdentity * ret;
 	if(!m_szDefaultIdentity.isEmpty())
 	{
-		ret = m_pIdentityDict->find(m_szDefaultIdentity);
+		ret = m_pIdentityDict->value(m_szDefaultIdentity);
 		if(ret)return ret;
 	}
 
 	// the default identity is borken :/
 	// grab the first one
-	KviDictIterator<KviUserIdentity> it(*m_pIdentityDict);
-	ret = it.current();
+	ret = m_pIdentityDict->begin().value();
 	if(ret)
 	{
 		m_szDefaultIdentity = ret->id();
@@ -174,7 +176,7 @@ const KviUserIdentity * KviUserIdentityManager::defaultIdentity()
 	ret->setPartMessage(KVI_DEFAULT_PART_MESSAGE);
 	ret->setQuitMessage(KVI_DEFAULT_QUIT_MESSAGE);
 	
-	m_pIdentityDict->replace(ret->id(),ret);
+	m_pIdentityDict->insert(ret->id(),ret);
 	
 	return ret;
 }
@@ -189,16 +191,17 @@ void KviUserIdentityManager::load(const QString &szFileName)
 	
 	m_szDefaultIdentity = cfg.readQStringEntry("DefaultIdentity","");
 
-	KviConfigIterator it(*(cfg.dict()));
-	while(KviConfigGroup * grp = it.current())
+	KviConfigIterator it(cfg.dict()->begin());
+	while(it != cfg.dict()->end())
 	{
-		if(!KviQString::equalCI(it.currentKey(),"KVIrc"))
+		KviConfigGroup * grp = it.value();
+		if(!KviQString::equalCI(it.key(),"KVIrc"))
 		{
-			cfg.setGroup(it.currentKey());
+			cfg.setGroup(it.key());
 
 			KviUserIdentity * id = new KviUserIdentity();
 			if(id->load(cfg))
-				m_pIdentityDict->replace(id->id(),id);
+				m_pIdentityDict->insert(id->id(),id);
 			else
 				delete id;
 		}
@@ -215,25 +218,25 @@ void KviUserIdentityManager::save(const QString &szFileName)
 
 	cfg.writeEntry("DefaultIdentity",m_szDefaultIdentity);
 	
-	KviDictIterator<KviUserIdentity> it(*m_pIdentityDict);
-	while(KviUserIdentity * id = it.current())
+	foreach(KviUserIdentity * id,*m_pIdentityDict)
 	{
 		id->save(cfg);
-		++it;
 	}
 }
 
 void KviUserIdentityManager::copyFrom(KviUserIdentityManager * pWorkingCopy)
 {
 	m_pIdentityDict->clear();
+	foreach(KviUserIdentity * id,*m_pIdentityDict)
+	{
+		delete id;
+	}
 	m_szDefaultIdentity = pWorkingCopy->m_szDefaultIdentity;
-	KviDictIterator<KviUserIdentity> it(*(pWorkingCopy->m_pIdentityDict));
-	while(KviUserIdentity * id = it.current())
+	foreach(KviUserIdentity * id,*(pWorkingCopy->m_pIdentityDict))
 	{
 		KviUserIdentity * pNew = new KviUserIdentity();
 		pNew->copyFrom(*id);
-		m_pIdentityDict->replace(pNew->id(),pNew);
-		++it;
+		m_pIdentityDict->insert(pNew->id(),pNew);
 	}
 }
 

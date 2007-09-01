@@ -66,11 +66,10 @@ static bool logview_kvs_cmd_open(KviKvsModuleCommandCall * c)
 	KviModuleExtensionDescriptor * d = c->module()->findExtensionDescriptor("tool",LOGVIEW_MODULE_EXTENSION_NAME);
 	if(d)
 	{
-		KviDict<QVariant> dict(17,true);
-		dict.setAutoDelete(true);
+		QHash<QString,QVariant> dict;
 		QString dummy;
-		dict.replace("bCreateMinimized",new QVariant(c->hasSwitch('m',dummy)));
-		dict.replace("bNoRaise",new QVariant(c->hasSwitch('n',dummy)));
+		dict.insert("bCreateMinimized",QVariant(c->hasSwitch('m',dummy)));
+		dict.insert("bNoRaise",QVariant(c->hasSwitch('n',dummy)));
 
 		d->allocate(c->window(),&dict,0);
 	} else {
@@ -88,13 +87,14 @@ static KviModuleExtension * logview_extension_alloc(KviModuleExtensionAllocStruc
 	{
 		if(s->pParams)
 		{
-			if(QVariant * v = s->pParams->find("bCreateMinimized"))
+			if(s->pParams->contains("bCreateMinimized"))
 			{
-				if(v->isValid())
+				QVariant v = s->pParams->value("bCreateMinimized");
+				if(v.isValid())
 				{
-					if(v->type() == QVariant::Bool)
+					if(v.type() == QVariant::Bool)
 					{
-						bCreateMinimized = v->toBool();
+						bCreateMinimized = v.toBool();
 					}
 				}
 			}
@@ -108,13 +108,11 @@ static KviModuleExtension * logview_extension_alloc(KviModuleExtensionAllocStruc
 
 	if(s->pParams)
 	{
-		if(QVariant * v = s->pParams->find("bNoRaise"))
+		if(s->pParams->contains("bNoRaise"))
 		{
-			if(v)
-			{
-				if(v->isValid() && v->type() == QVariant::Bool)
-					bNoRaise = v->toBool();
-			}
+			QVariant v = s->pParams->value("bNoRaise");
+				if(v.isValid() && v.type() == QVariant::Bool)
+					bNoRaise = v.toBool();
 		}
 	}
 

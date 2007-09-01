@@ -49,8 +49,7 @@ KviKvsObjectClass::KviKvsObjectClass(
 	m_szName        = szName;
 	m_bBuiltin      = bBuiltin;
 	m_bDirty        = !bBuiltin;
-	m_pFunctionHandlers = new KviDict<KviKvsObjectFunctionHandler>(17,false);
-	m_pFunctionHandlers->setAutoDelete(true);
+	m_pFunctionHandlers = new QHash<QString,KviKvsObjectFunctionHandler*>;
 	m_pChildClasses = new KviPtrList<KviKvsObjectClass>;
 	m_pChildClasses->setAutoDelete(false);
 	m_allocProc     = pProc ? pProc : pParent->m_allocProc;
@@ -58,10 +57,10 @@ KviKvsObjectClass::KviKvsObjectClass(
 	// inherit everything from the class above
 	if(pParent)
 	{
-		KviDictIterator<KviKvsObjectFunctionHandler> it(*(pParent->functionHandlers()));
-		while(KviKvsObjectFunctionHandler * fh = it.current())
+		QHash<QString,KviKvsObjectFunctionHandler*>::iterator it(pParent->functionHandlers()->begin());
+		while(it != pParent->functionHandlers()->end())
 		{
-			m_pFunctionHandlers->insert(it.currentKey(),fh->clone());
+			m_pFunctionHandlers->insert(it.key(),it.value()->clone());
 			++it;
 		}
 	}
@@ -75,6 +74,7 @@ KviKvsObjectClass::~KviKvsObjectClass()
 	KviKvsKernel::instance()->objectController()->killAllObjectsWithClass(this);
 	if(m_pParentClass)m_pParentClass->unregisterChildClass(this);
 	KviKvsKernel::instance()->objectController()->unregisterClass(this);
+	foreach(KviKvsObjectFunctionHandler*i,*m_pFunctionHandlers){delete i;};
 	delete m_pFunctionHandlers;
 	while(m_pChildClasses->first())delete m_pChildClasses->first();
 	delete m_pChildClasses;
@@ -82,7 +82,7 @@ KviKvsObjectClass::~KviKvsObjectClass()
 
 void KviKvsObjectClass::registerFunctionHandler(const QString & szFunctionName,KviKvsObjectFunctionHandlerProc pProc,unsigned int uFlags)
 {
-	m_pFunctionHandlers->replace(szFunctionName,new KviKvsObjectCoreCallFunctionHandler(pProc,uFlags));
+	m_pFunctionHandlers->insert(szFunctionName,new KviKvsObjectCoreCallFunctionHandler(pProc,uFlags));
 }
 
 void KviKvsObjectClass::registerFunctionHandler(const QString & szFunctionName,const QString &szBuffer,unsigned int uFlags)
@@ -90,22 +90,22 @@ void KviKvsObjectClass::registerFunctionHandler(const QString & szFunctionName,c
 	QString szContext = m_szName;
 	szContext += "::";
 	szContext += szFunctionName;
-	m_pFunctionHandlers->replace(szFunctionName,new KviKvsObjectScriptFunctionHandler(szContext,szBuffer,uFlags));
+	m_pFunctionHandlers->insert(szFunctionName,new KviKvsObjectScriptFunctionHandler(szContext,szBuffer,uFlags));
 }
 
 void KviKvsObjectClass::registerStandardNothingReturnFunctionHandler(const QString &szFunctionName)
 {
-	m_pFunctionHandlers->replace(szFunctionName,new KviKvsObjectStandardNothingReturnFunctionHandler());
+	m_pFunctionHandlers->insert(szFunctionName,new KviKvsObjectStandardNothingReturnFunctionHandler());
 }
 
 void KviKvsObjectClass::registerStandardTrueReturnFunctionHandler(const QString &szFunctionName)
 {
-	m_pFunctionHandlers->replace(szFunctionName,new KviKvsObjectStandardTrueReturnFunctionHandler());
+	m_pFunctionHandlers->insert(szFunctionName,new KviKvsObjectStandardTrueReturnFunctionHandler());
 }
 
 void KviKvsObjectClass::registerStandardFalseReturnFunctionHandler(const QString &szFunctionName)
 {
-	m_pFunctionHandlers->replace(szFunctionName,new KviKvsObjectStandardFalseReturnFunctionHandler());
+	m_pFunctionHandlers->insert(szFunctionName,new KviKvsObjectStandardFalseReturnFunctionHandler());
 }
 
 
@@ -185,17 +185,18 @@ bool KviKvsObjectClass::save(const QString &szFileName)
 					"{\n",
 					&m_szName,&szParentName);
 		
-	KviDictIterator<KviKvsObjectFunctionHandler> it(*m_pFunctionHandlers);
+	QHash<QString,KviKvsObjectFunctionHandler*>::iterator it(m_pFunctionHandlers->begin());
 	
-	while(KviKvsObjectFunctionHandler * h = it.current())
+	while(it != m_pFunctionHandlers->end())
 	{
+		KviKvsObjectFunctionHandler * h = it.value();
 		if(h->isScriptHandler())
 		{
 			szBuffer += "	";
 			if(h->flags() & KviKvsObjectFunctionHandler::Internal)
 			szBuffer += "internal ";
 			szBuffer += "function ";
-			szBuffer += it.currentKey();
+			szBuffer += it.key();
 			szBuffer += "()\n";
 			QString szCode = h->scriptHandlerCode();
 			KviCommandFormatter::blockFromBuffer(szCode);

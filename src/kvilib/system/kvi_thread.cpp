@@ -175,8 +175,7 @@ KviThreadManager::KviThreadManager()
 
 
 	m_pMutex = new KviMutex();
-	m_pThreadList = new KviPtrList<KviThread>;
-	m_pThreadList->setAutoDelete(false);
+	m_pThreadList = new QList<KviThread*>;
 
 	m_iWaitingThreads = 0;
 
@@ -294,7 +293,7 @@ void KviThreadManager::registerSlaveThread(KviThread *t)
 void KviThreadManager::unregisterSlaveThread(KviThread *t)
 {
 	m_pMutex->lock();
-	m_pThreadList->removeRef(t);
+	m_pThreadList->removeAll(t);
 	m_pMutex->unlock();
 }
 
@@ -586,8 +585,7 @@ KviSensitiveThread::KviSensitiveThread()
 : KviThread()
 {
 	m_pLocalEventQueueMutex = new KviMutex();
-	m_pLocalEventQueue = new KviPtrList<KviThreadEvent>;
-	m_pLocalEventQueue->setAutoDelete(false);
+	m_pLocalEventQueue = new QList<KviThreadEvent*>;
 }
 
 KviSensitiveThread::~KviSensitiveThread()
@@ -596,7 +594,10 @@ KviSensitiveThread::~KviSensitiveThread()
 	terminate();
 //	debug("KviSensitiveThread::~KviSensitiveThread : terminate called (This=%d)",this);
 	m_pLocalEventQueueMutex->lock();
-	m_pLocalEventQueue->setAutoDelete(true);
+	foreach(KviThreadEvent *t,*m_pLocalEventQueue)
+	{
+		delete t;
+	}
 	delete m_pLocalEventQueue;
 	m_pLocalEventQueue = 0;
 	m_pLocalEventQueueMutex->unlock();

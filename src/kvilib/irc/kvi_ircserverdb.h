@@ -28,7 +28,8 @@
 #include "kvi_qstring.h"
 #include "kvi_ircserver.h"
 
-#include "kvi_dict.h"
+#include <QHash>
+#include <QSet>
 
 typedef struct _KviIrcServerDefinition
 {
@@ -75,7 +76,7 @@ public:
 	KviIrcServerDataBase();
 	~KviIrcServerDataBase();
 private:
-	KviDict<KviIrcServerDataBaseRecord> * m_pRecords;
+	QHash<QString,KviIrcServerDataBaseRecord*> * m_pRecords;
 	QString                             m_szCurrentNetwork;
 	// This list is computed when the data are loaded from disk
 	// during the startup and is used by KviApp to
@@ -85,13 +86,13 @@ private:
 	// because it contains shallow pointers to the servers
 	// really contained in the server/network list
 	// and it is never updated later
-	KviPtrList<KviIrcServer>                * m_pAutoConnectOnStartupServers;
-	KviPtrList<KviIrcServerDataBaseRecord>  * m_pAutoConnectOnStartupNetworks;
+	QSet<KviIrcServer*>*                m_pAutoConnectOnStartupServers;
+	QSet<KviIrcServerDataBaseRecord*>*  m_pAutoConnectOnStartupNetworks;
 public:
 	void clear();
-	KviDict<KviIrcServerDataBaseRecord> * recordDict(){ return m_pRecords; };
-	KviPtrList<KviIrcServer> * autoConnectOnStartupServers(){ return m_pAutoConnectOnStartupServers; };
-	KviPtrList<KviIrcServerDataBaseRecord> * autoConnectOnStartupNetworks(){ return m_pAutoConnectOnStartupNetworks; };
+	QHash<QString,KviIrcServerDataBaseRecord*> * recordDict(){ return m_pRecords; };
+	QSet<KviIrcServer*>  * autoConnectOnStartupServers(){ return m_pAutoConnectOnStartupServers; };
+	QSet<KviIrcServerDataBaseRecord*> * autoConnectOnStartupNetworks(){ return m_pAutoConnectOnStartupNetworks; };
 	void clearAutoConnectOnStartupServers();
 	void clearAutoConnectOnStartupNetworks();
 	void setCurrentNetwork(const QString &szNetName){ m_szCurrentNetwork = szNetName; };

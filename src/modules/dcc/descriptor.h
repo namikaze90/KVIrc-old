@@ -71,7 +71,7 @@ public:
 	unsigned int id() const { return m_uId; };
 	const QString & idString() const { return m_szId; };
 	static KviDccDescriptor * find(unsigned int uId);
-	static KviIntDict<KviDccDescriptor> * descriptorDict();
+	static QHash<int,KviDccDescriptor*> * descriptorDict();
 
 	void triggerCreationEvent(); // this MUST be called by the creator of the descriptor!
 //private:

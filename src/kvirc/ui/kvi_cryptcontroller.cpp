@@ -184,15 +184,13 @@
 
 	void KviCryptController::fillEngineList()
 	{
-		const KviDict<KviCryptEngineDescription> * a = g_pCryptEngineManager->engineDict();
+		const QHash<QString,KviCryptEngineDescription*> * a = g_pCryptEngineManager->engineDict();
 		if(a)
 		{
-			KviDictIterator<KviCryptEngineDescription> it(*a);
-			while(it.current())
+			foreach(KviCryptEngineDescription* engine,*a)
 			{
-				KviStr modName = it.current()->providerHandle ? ((KviModule *)(it.current()->providerHandle))->name() : "";
-				(void)(new KviEngineListBoxItem(m_pListBox,it.current(),modName.ptr()));
-				++it;
+				QString modName = engine->providerHandle ? ((KviModule *)(engine->providerHandle))->name() : "";
+				(void)(new KviEngineListBoxItem(m_pListBox,engine,modName));
 			}
 			if(m_pListBox->count() != 0)return;
 		}

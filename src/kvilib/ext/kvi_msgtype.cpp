@@ -28,6 +28,11 @@
 #include "kvi_debug.h"
 #include "kvi_msgtype.h"
 
+KviMsgType::KviMsgType()
+{
+	
+}
+
 KviMsgType::KviMsgType(const char * type,int pixId,unsigned char fore,unsigned char back,bool bLog,int iLevel)
 {
 	m_szType = type;

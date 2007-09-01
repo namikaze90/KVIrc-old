@@ -44,8 +44,7 @@ KviKvsObjectController::KviKvsObjectController()
 	m_pTopLevelObjectList->setAutoDelete(false);
 	m_pObjectDict = new KviPtrDict<KviKvsObject>(101);
 	m_pObjectDict->setAutoDelete(false);
-	m_pClassDict = new KviDict<KviKvsObjectClass>(31,false);
-	m_pClassDict->setAutoDelete(false);
+	m_pClassDict = new QHash<QString,KviKvsObjectClass*>;
 }
 
 KviKvsObjectController::~KviKvsObjectController()
@@ -56,6 +55,7 @@ KviKvsObjectController::~KviKvsObjectController()
 	delete m_pObjectDict; // empty dict
 	m_pObjectDict = 0;
 	delete m_pObjectClass; // delete the class tree
+	foreach(KviKvsObjectClass* c,*m_pClassDict){delete c;};
 	delete m_pClassDict;  // empty dict
 }
 
@@ -104,14 +104,14 @@ void KviKvsObjectController::killAllObjectsWithClass(KviKvsObjectClass * pClass)
 void KviKvsObjectController::clearUserClasses()
 {
 	flushUserClasses();
-	KviDictIterator<KviKvsObjectClass> it(*m_pClassDict);
+	QHash<QString,KviKvsObjectClass*>::iterator it(m_pClassDict->begin());
 	KviPtrList<KviKvsObjectClass> l;
 	l.setAutoDelete(true);
-	while(it.current())
+	while(it != m_pClassDict->end())
 	{
-		if(!(it.current()->isBuiltin()))
+		if(!(it.value()->isBuiltin()))
 		{
-			l.append(it.current());
+			l.append(it.value());
 		}
 		++it;
 	}
@@ -156,8 +156,7 @@ void KviKvsObjectController::unregisterObject(KviKvsObject *pObject)
 
 void KviKvsObjectController::flushUserClasses()
 {
-	KviDictIterator<KviKvsObjectClass> it(*m_pClassDict);
-	while(KviKvsObjectClass * c = it.current())
+	foreach(KviKvsObjectClass * c,*m_pClassDict)
 	{
 		if(!c->isBuiltin())
 		{
@@ -174,13 +173,12 @@ void KviKvsObjectController::flushUserClasses()
 					debug("Oops.. failed to save the object class %s",c->name().latin1());
 			}
 		}
-		++it;
 	}
 }
 
 KviKvsObjectClass * KviKvsObjectController::lookupClass(const QString &szClass,bool bBuiltinOnly)
 {
-	KviKvsObjectClass * pC = m_pClassDict->find(szClass);
+	KviKvsObjectClass * pC = m_pClassDict->value(szClass);
 	if(!pC)
 	{
 		// maybe we need to load the object library ?
@@ -189,7 +187,7 @@ KviKvsObjectClass * KviKvsObjectController::lookupClass(const QString &szClass,b
 		{
 			debug("ops...something wrong with the libkviobjects module!");
 			return 0;
-		} else pC = m_pClassDict->find(szClass);
+		} else pC = m_pClassDict->value(szClass);
 		if(!pC)
 		{
 			if(bBuiltinOnly)return 0;
@@ -203,7 +201,7 @@ KviKvsObjectClass * KviKvsObjectController::lookupClass(const QString &szClass,b
 				g_pApp->getGlobalKvircDirectory(szPath,KviApp::Classes,szFileName);
 			if(!KviFileUtils::fileExists(szPath))return 0;
 			if(!KviKvsObjectClass::load(szPath))return 0;
-			pC = m_pClassDict->find(szClass);
+			pC = m_pClassDict->value(szClass);
 			if(pC)pC->clearDirtyFlag(); // just loaded from disk: no need to sync it
 		}
 	} else {

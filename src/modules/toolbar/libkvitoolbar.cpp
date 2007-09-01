@@ -359,15 +359,12 @@ static bool toolbar_kvs_fnc_list(KviKvsModuleFunctionCall * c)
 { 
 	KviKvsArray * a = new KviKvsArray();
 
-	KviDictIterator<KviCustomToolBarDescriptor> it(*(KviCustomToolBarManager::instance()->descriptors()));
-
 	kvs_uint_t id = 0;
 
-	while(KviCustomToolBarDescriptor * d = it.current())
+	foreach(KviCustomToolBarDescriptor * d,*(KviCustomToolBarManager::instance()->descriptors()))
 	{
 		a->set(id,new KviKvsVariant(d->id()));
 		id++;
-		++it;
 	}
 
 	c->returnValue()->setArray(a);
@@ -550,7 +547,7 @@ static bool toolbar_kvs_fnc_items(KviKvsModuleFunctionCall * c)
 
 	KviKvsArray * a = new KviKvsArray();
 
-	KviDictIterator<KviCustomToolBarDescriptor> it(*(KviCustomToolBarManager::instance()->descriptors()));
+//	KviDictIterator<KviCustomToolBarDescriptor> it(*(KviCustomToolBarManager::instance()->descriptors()));
 
 	kvs_uint_t id = 0;
 
@@ -558,7 +555,7 @@ static bool toolbar_kvs_fnc_items(KviKvsModuleFunctionCall * c)
 	{
 		a->set(id,new KviKvsVariant(*s));
 		id++;
-		++it;
+//		++it;
 	}
 
 	c->returnValue()->setArray(a);

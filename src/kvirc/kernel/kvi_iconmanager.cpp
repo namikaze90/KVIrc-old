@@ -473,8 +473,7 @@ KviIconManager::KviIconManager()
 
 	//loadSmallIcons();
 
-	m_pCachedImages = new KviDict<KviCachedPixmap>(21,true);
-	m_pCachedImages->setAutoDelete(true);
+	m_pCachedImages = new QHash<QString,KviCachedPixmap*>;
 
 	m_uCacheTotalSize = 0;
 	m_uCacheMaxSize = 1024 * 1024; // 1 MB
@@ -525,6 +524,7 @@ KviIconManager::~KviIconManager()
 	{
 		if(m_smallIcons[i])delete m_smallIcons[i];
 	}
+	foreach(KviCachedPixmap*i,*m_pCachedImages){delete i;}
 	delete m_pCachedImages;
 	if(m_pIconNames)delete m_pIconNames;
 }
@@ -538,19 +538,14 @@ int KviIconManager::getSmallIconIdFromName(const QString &szName)
 {
 	if(!m_pIconNames)
 	{
-		m_pIconNames = new KviDict<int>(257,false);
-		m_pIconNames->setAutoDelete(true);
+		m_pIconNames = new QHash<QString,int>;
 		
 		for(int i=0;i<KVI_NUM_SMALL_ICONS;i++)
 		{
-			int * pInt = new int;
-			*pInt = i;
-			m_pIconNames->replace(QString(g_szIconNames[i]),pInt);
+			m_pIconNames->insert(QString(g_szIconNames[i]),i);
 		}
 	}
-	int * pInt = m_pIconNames->find(szName);
-	if(!pInt)return 0;
-	return *pInt;
+	return m_pIconNames->value(szName);
 }
 
 
@@ -608,7 +603,7 @@ KviCachedPixmap * KviIconManager::getPixmapWithCache(const QString &szName)
 {
 	if(szName.isEmpty())return 0;
 
-	KviCachedPixmap * p = m_pCachedImages->find(szName);
+	KviCachedPixmap * p = m_pCachedImages->value(szName);
 
 	if(p)
 	{
@@ -643,7 +638,7 @@ KviCachedPixmap * KviIconManager::getPixmapWithCacheScaleOnLoad(const QString &s
 {
 	if(szName.isEmpty())return 0;
 
-	KviCachedPixmap * p = m_pCachedImages->find(szName);
+	KviCachedPixmap * p = m_pCachedImages->value(szName);
 
 	if(p)
 	{
@@ -885,9 +880,9 @@ QPixmap * KviIconManager::loadSmallIcon(int idx)
 
 void KviIconManager::cacheCleanup()
 {
-	QStringList l;
+//	QStringList l;
 
-	KviDictIterator<KviCachedPixmap> it(*m_pCachedImages);
+//	KviDictIterator<KviCachedPixmap> it(*m_pCachedImages);
 
 
 //#warning "IMPLEMENT CLEANUP"

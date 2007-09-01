@@ -75,29 +75,36 @@ QPixmap * KviTextIcon::pixmap()
 KviTextIconManager::KviTextIconManager()
 : QObject()
 {
-	m_pTextIconDict = new KviDict<KviTextIcon>(47,false);
-	m_pTextIconDict->setAutoDelete(true);
+	m_pTextIconDict = new QHash<QString,KviTextIcon*>;
 }
 
 KviTextIconManager::~KviTextIconManager()
 {
+	foreach(KviTextIcon* i,*m_pTextIconDict)
+	{
+		delete i;
+	}
 	delete m_pTextIconDict;
 }
 
 void KviTextIconManager::clear()
 {
+	foreach(KviTextIcon* i,*m_pTextIconDict)
+	{
+		delete i;
+	}
 	m_pTextIconDict->clear();
 }
 
 void KviTextIconManager::insert(const QString &name,int id)
 {
-	m_pTextIconDict->replace(name,new KviTextIcon(id));
+	m_pTextIconDict->insert(name,new KviTextIcon(id));
 	emit changed();
 }
 
 void KviTextIconManager::insert(const QString &name,KviTextIcon& icon)
 {
-	m_pTextIconDict->replace(name,new KviTextIcon(&icon));
+	m_pTextIconDict->insert(name,new KviTextIcon(&icon));
 	emit changed();
 }
 
@@ -129,7 +136,7 @@ void KviTextIconManager::checkDefaultAssociations()
 {
 	for(int i=0;default_associations[i].name;i++)
 	{
-		if(!m_pTextIconDict->find(default_associations[i].name))
+		if(!m_pTextIconDict->contains(default_associations[i].name))
 			insert(QString::fromUtf8(default_associations[i].name),default_associations[i].iVal);
 	}
     emit changed();
@@ -172,17 +179,17 @@ int KviTextIconManager::load(const QString &filename,bool bMerge)
 	cfg.setGroup("Manager");
 	int upd = cfg.readIntEntry("ConfigUpdate",0);
 
-	KviConfigGroup * dict = cfg.dict()->find("TextIcons");
+	KviConfigGroup * dict = cfg.dict()->value("TextIcons");
 	if(dict)
 	{
-		KviConfigGroupIterator it(*dict);
+		KviConfigGroup::iterator it(dict->begin());
 	
 		KviPtrList<QString> names;
 		names.setAutoDelete(true);
 	
-		while(it.current())
+		while(it != dict->end())
 		{
-			names.append(new QString(it.currentKey()));
+			names.append(new QString(it.key()));
 			++it;
 		}
 	
@@ -209,16 +216,16 @@ int KviTextIconManager::load(const QString &filename,bool bMerge)
 			{
 				if(bMerge)
 				{
-					if(!m_pTextIconDict->find(*s))
+					if(!m_pTextIconDict->value(*s))
 						if(id!=-1)
-							m_pTextIconDict->replace(*s,new KviTextIcon(id));
+							m_pTextIconDict->insert(*s,new KviTextIcon(id));
 						else
-							m_pTextIconDict->replace(*s,new KviTextIcon(szTmp));
+							m_pTextIconDict->insert(*s,new KviTextIcon(szTmp));
 				} else {
 					if(id!=-1)
-						m_pTextIconDict->replace(*s,new KviTextIcon(id));
+						m_pTextIconDict->insert(*s,new KviTextIcon(id));
 					else
-						m_pTextIconDict->replace(*s,new KviTextIcon(szTmp));
+						m_pTextIconDict->insert(*s,new KviTextIcon(szTmp));
 				}
 			}
 		}
@@ -240,13 +247,13 @@ void KviTextIconManager::save(const QString &filename)
 
 	cfg.setGroup("TextIcons");
 
-	KviDictIterator<KviTextIcon> it(*m_pTextIconDict);
-	while(KviTextIcon * i = it.current())
+	QHash<QString,KviTextIcon*>::iterator it(m_pTextIconDict->begin());
+	while(it!=m_pTextIconDict->end())
 	{
-		if(i->id()!=-1)
-			cfg.writeEntry(it.currentKey(),i->id());
+		if(it.value()->id()!=-1)
+			cfg.writeEntry(it.key(),it.value()->id());
 		else
-			cfg.writeEntry(it.currentKey(),i->filename());
+			cfg.writeEntry(it.key(),it.value()->filename());
 		++it;
 	}
 }

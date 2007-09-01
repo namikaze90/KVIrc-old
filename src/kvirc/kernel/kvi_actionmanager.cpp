@@ -52,15 +52,14 @@ extern void register_core_actions(KviActionManager *);
 KviActionManager::KviActionManager()
 : QObject()
 {
-	m_pActions = new KviDict<KviAction>(101);
-	m_pActions->setAutoDelete(false);
+	m_pActions = new QHash<QString,KviAction*>;
 
-	m_pCategories = new KviDict<KviActionCategory>(17,false);
-	m_pCategories->setAutoDelete(true);
+	m_pCategories = new QHash<QString,KviActionCategory*>;
+
 
 #define CATEGORY(__var,__name,__vname,__descr) \
 	__var = new KviActionCategory(__name,__vname,__descr); \
-	m_pCategories->replace(__name,__var)
+	m_pCategories->insert(__name,__var)
 
 	CATEGORY(m_pCategoryIrc,"irc",__tr2qs("IRC"),__tr2qs("IRC Context related actions"));
 	CATEGORY(m_pCategoryGeneric,"generic",__tr2qs("Generic"),__tr2qs("Generic actions"));
@@ -82,11 +81,9 @@ KviActionManager::~KviActionManager()
 	// killed all the modules at this point...
 	//KviActionDialog::cleanup();
 
-	KviDictIterator<KviAction> it(*m_pActions);
-	while(KviAction * a = it.current())
+	foreach(KviAction * a,*m_pActions)
 	{
 		disconnect(a,SIGNAL(destroyed()),this,SLOT(actionDestroyed()));
-		++it;
 	}
 	delete m_pActions;
 	
@@ -97,10 +94,10 @@ void KviActionManager::load(const QString &szFileName)
 {
 	KviConfig cfg(szFileName,KviConfig::Read);
 	
-	KviConfigIterator it(*(cfg.dict()));
-	while(it.current())
+	KviConfigIterator it(cfg.dict()->begin());
+	while(it != cfg.dict()->end())
 	{
-		cfg.setGroup(it.currentKey());
+		cfg.setGroup(it.key());
 		KviKvsUserAction * a = new KviKvsUserAction(this);
 		if(a->load(&cfg))registerAction(a);
 		else delete a;
@@ -113,15 +110,13 @@ void KviActionManager::save(const QString &szFileName)
 	KviConfig cfg(szFileName,KviConfig::Write);
 	cfg.clear();
 	
-	KviDictIterator<KviAction> it(*m_pActions);
-	while(KviAction * a = it.current())
+	foreach(KviAction * a,*m_pActions)
 	{
 		if(a->isKviUserActionNeverOverrideThis())
 		{
 			cfg.setGroup(a->name());
 			((KviKvsUserAction *)a)->save(&cfg);
 		}
-		++it;
 	}
 }
 
@@ -130,14 +125,12 @@ void KviActionManager::killAllKvsUserActions()
 	KviPtrList<KviKvsUserAction> dying;
 	dying.setAutoDelete(true);
 
-	KviDictIterator<KviAction> it(*m_pActions);
-	while(KviAction * a = it.current())
+	foreach(KviAction * a,*m_pActions)
 	{
 		if(a->isKviUserActionNeverOverrideThis())
 		{
 			dying.append(((KviKvsUserAction *)a));
 		}
-		++it;
 	}
 	
 	dying.clear(); // bye :)
@@ -146,7 +139,7 @@ void KviActionManager::killAllKvsUserActions()
 
 bool KviActionManager::coreActionExists(const QString &szName)
 {
-	KviAction *a = m_pActions->find(szName);
+	KviAction *a = m_pActions->value(szName);
 	if(a)return (!a->isKviUserActionNeverOverrideThis());
 	return false;
 }
@@ -159,7 +152,7 @@ QString KviActionManager::nameForAutomaticAction(const QString &szTemplate)
 	do {
 		KviQString::sprintf(ret,"%Q%d",&szTemplate,i);
 		i++;
-	} while(m_pActions->find(ret));
+	} while(m_pActions->contains(ret));
 
 	return ret;
 }
@@ -173,7 +166,7 @@ KviActionCategory * KviActionManager::category(const QString &szName)
 {
 	if(!szName.isEmpty())
 	{
-		KviActionCategory * c = m_pCategories->find(szName);
+		KviActionCategory * c = m_pCategories->value(szName);
 		if(c)return c;
 	}
 	return m_pCategoryGeneric;
@@ -238,17 +231,15 @@ void KviActionManager::done()
 
 void KviActionManager::delayedRegisterAccelerators()
 {
-	KviDictIterator<KviAction> it(*m_pActions);
-	while(KviAction * a = it.current())
+	foreach(KviAction * a,*m_pActions)
 	{
 		a->registerAccelerator();
-		++it;
 	}
 }
 
 bool KviActionManager::registerAction(KviAction * a)
 {
-	if(m_pActions->find(a->name()))return false;
+	if(m_pActions->contains(a->name()))return false;
 	connect(a,SIGNAL(destroyed()),this,SLOT(actionDestroyed()));
 	m_pActions->insert(a->name(),a);
 	if(g_pFrame)a->registerAccelerator(); // otherwise it is delayed!
@@ -263,7 +254,7 @@ void KviActionManager::actionDestroyed()
 
 bool KviActionManager::unregisterAction(const QString &szName)
 {
-	KviAction * a = m_pActions->find(szName);
+	KviAction * a = m_pActions->value(szName);
 	if(!a)return false;
 	disconnect(a,SIGNAL(destroyed()),this,SLOT(actionDestroyed()));
 	a->unregisterAccelerator();
@@ -272,16 +263,10 @@ bool KviActionManager::unregisterAction(const QString &szName)
 
 KviAction * KviActionManager::getAction(const QString &szName)
 {
-	KviAction * a = m_pActions->find(szName);
+	KviAction * a = m_pActions->value(szName);
 	if(a)return a;
 	int idx = szName.find('.');
-	if(idx < 0)
-	{
-		// backward compatibility: try to lookup the name with the kvirc. prefix
-		QString s = "kvirc.";
-		s += szName;
-		return m_pActions->find(s);
-	}
+
 	if((idx == 5) && (!m_bCoreActionsRegistered))
 	{
 		// the core actions are all like kvirc.name
@@ -293,14 +278,14 @@ KviAction * KviActionManager::getAction(const QString &szName)
 		{
 			register_core_actions(this);
 			m_bCoreActionsRegistered = true;
-			a = m_pActions->find(szName);
+			a = m_pActions->value(szName);
 			return a;
 		}
 	}
 	// try to preload the module that might register this action...
 	QString szModule = szName.left(idx);
 	if(!g_pModuleManager->getModule(szModule))return 0;
-	return m_pActions->find(szName);
+	return m_pActions->value(szName);
 }
 
 void KviActionManager::listActionsByCategory(const QString &szCatName,KviPtrList<KviAction> * pBuffer)
@@ -310,12 +295,10 @@ void KviActionManager::listActionsByCategory(const QString &szCatName,KviPtrList
 	pBuffer->setAutoDelete(false);
 	pBuffer->clear();
 	if(!pCat)return;
-	KviDictIterator<KviAction> it(*m_pActions);
-	while(KviAction * a = it.current())
+	foreach(KviAction * a,*m_pActions)
 	{
 		if(a->category() == pCat)
 			pBuffer->append(a);
-		++it;
 	}
 }
 

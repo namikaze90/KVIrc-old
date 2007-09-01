@@ -102,13 +102,16 @@ KviIrcUserDataBase::KviIrcUserDataBase()
 	// the performance increase since kvirc versions < 3.0.0
 	// is really big anyway (there was a linear list instead of a hash!!!)
 
-	m_pDict = new KviDict<KviIrcUserEntry>(4001,false);
-	m_pDict->setAutoDelete(true);
+	m_pDict = new QHash<QString,KviIrcUserEntry*>;
 	setupConnectionWithReguserDb();
 }
 
 KviIrcUserDataBase::~KviIrcUserDataBase()
 {
+	foreach(KviIrcUserEntry* e,*m_pDict)
+	{
+		delete e;
+	}
 	delete m_pDict;
 }
 
@@ -196,14 +199,16 @@ KviRegisteredUser* KviIrcUserDataBase::registeredUser(const QString & nick)
 
 void KviIrcUserDataBase::clear()
 {
-	delete m_pDict;
-	m_pDict = new KviDict<KviIrcUserEntry>(4001,false);
-	m_pDict->setAutoDelete(true);
+	foreach(KviIrcUserEntry* e,*m_pDict)
+	{
+		delete e;
+	}
+	m_pDict->clear();
 }
 
 KviIrcUserEntry * KviIrcUserDataBase::insertUser(const QString &nick,const QString &user,const QString &hostname)
 {
-	KviIrcUserEntry * e = m_pDict->find(nick);
+	KviIrcUserEntry * e = m_pDict->value(nick);
 	if(e)
 	{
 		e->m_nRefs++;
@@ -237,13 +242,12 @@ void KviIrcUserDataBase::setupConnectionWithReguserDb()
 
 void KviIrcUserDataBase::registeredUserRemoved(const QString& user)
 {
-	KviDictIterator<KviIrcUserEntry> it( *m_pDict );
-    for( ; it.current(); ++it )
+    foreach(KviIrcUserEntry *e, *m_pDict )
 	{
-		if(it.current()->m_szRegisteredUserName==user)
+		if(e->m_szRegisteredUserName==user)
 		{
-			it.current()->m_szRegisteredUserName="";
-			it.current()->m_bNotFoundRegUserLoockup=false;
+			e->m_szRegisteredUserName="";
+			e->m_bNotFoundRegUserLoockup=false;
 		}
 	}
 }
@@ -251,35 +255,32 @@ void KviIrcUserDataBase::registeredUserRemoved(const QString& user)
 void KviIrcUserDataBase::registeredUserChanged(const QString& user)
 {
 	//the same as above
-	KviDictIterator<KviIrcUserEntry> it( *m_pDict );
-    for( ; it.current(); ++it )
+	foreach(KviIrcUserEntry *e, *m_pDict )
 	{
-		if(it.current()->m_szRegisteredUserName==user)
+		if(e->m_szRegisteredUserName==user)
 		{
-			it.current()->m_szRegisteredUserName="";
-			it.current()->m_bNotFoundRegUserLoockup=false;
+			e->m_szRegisteredUserName="";
+			e->m_bNotFoundRegUserLoockup=false;
 		}
 	}
 }
 
 void KviIrcUserDataBase::registeredUserAdded(const QString& user)
 {
-	KviDictIterator<KviIrcUserEntry> it( *m_pDict );
-    for( ; it.current(); ++it )
+	foreach(KviIrcUserEntry *e, *m_pDict )
 	{
-		if(it.current()->m_szRegisteredUserName.isEmpty())
+		if(e->m_szRegisteredUserName.isEmpty())
 		{
-			it.current()->m_bNotFoundRegUserLoockup=false;
+			e->m_bNotFoundRegUserLoockup=false;
 		}
 	}
 }
 
 void KviIrcUserDataBase::registeredDatabaseCleared()
 {
-	KviDictIterator<KviIrcUserEntry> it( *m_pDict );
-    for( ; it.current(); ++it )
+	foreach(KviIrcUserEntry *e, *m_pDict )
 	{
-		it.current()->m_szRegisteredUserName="";
-		it.current()->m_bNotFoundRegUserLoockup=false;
+		e->m_szRegisteredUserName="";
+		e->m_bNotFoundRegUserLoockup=false;
 	}
 }

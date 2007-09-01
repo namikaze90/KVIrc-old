@@ -872,15 +872,9 @@ void KviInputEditor::mousePressEvent(QMouseEvent *e)
 		g_pInputPopup->insertSeparator();
 		m_pIconMenu->clear();
 		
-		KviDict<KviTextIcon> * d = g_pTextIconManager->textIconDict();
-		KviDictIterator<KviTextIcon> it(*d);
-		QStringList strList;
-		while(KviTextIcon * i = it.current())
-		{
-			strList.append(it.currentKey());
-			++it;
-		}
-		strList.sort();
+		//already sorted
+		QStringList strList = g_pTextIconManager->textIconDict()->uniqueKeys();
+
 		KviTextIcon * icon;
 		QPixmap *pix;
 		

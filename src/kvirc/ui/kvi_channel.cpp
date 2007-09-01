@@ -1298,8 +1298,7 @@ void KviChannel::getChannelActivityStats(KviChannelActivityStats * s)
 	tTwoMinsAgo-= 120;
 	tNow -= 60;
 
-	KviDict<int> userDict;
-	userDict.setAutoDelete(false);
+	QHash<QString,int> userDict;
 
 	int fake;
 	s->lTalkingUsers.clear();
@@ -1316,13 +1315,13 @@ void KviChannel::getChannelActivityStats(KviChannelActivityStats * s)
 			(a->uActionType == KVI_USERACTION_NOTICE) ||
 			(a->uActionType == KVI_USERACTION_ACTION))
 		{
-			if(!userDict.find(a->szNick))
+			if(!userDict.contains(a->szNick))
 			{
-				if(isOn(a->szNick.ascii()))
+				if(isOn(a->szNick))
 				{
 					if(a->tTime >= tTwoMinsAgo)s->lTalkingUsers.append(a->szNick);
 					else s->lWereTalkingUsers.append(a->szNick);
-					userDict.insert(a->szNick,&fake);
+					userDict.insert(a->szNick,fake);
 				}
 			}
 		}

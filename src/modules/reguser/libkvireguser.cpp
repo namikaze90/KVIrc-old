@@ -754,18 +754,14 @@ static bool reguser_kvs_fnc_list(KviKvsModuleFunctionCall * c)
 	
 	int cnt = 0;
 
-	KviDict<KviRegisteredUser> * d = g_pRegisteredUserDataBase->userDict();
-	KviDictIterator<KviRegisteredUser> it(*d);
-
-	while(KviRegisteredUser * u = it.current())
+	foreach(KviRegisteredUser * u,*(g_pRegisteredUserDataBase->userDict()))
 	{
-		KviPtrList<KviIrcMask> * ml = u->maskList();
+		QSet<KviIrcMask*> * ml = u->maskList();
 		if(u->matches(mask) || (ml->count() == 0))
 		{
 			pArray->set(aid,new KviKvsVariant(u->name()));
 			aid++;
 		}
-		++it;
 	}
 	c->returnValue()->setArray(pArray);
 	return true;
@@ -810,11 +806,9 @@ static bool reguser_kvs_cmd_showlist(KviKvsModuleCommandCall * c)
 
 	int count = 0;
 
-	KviDict<KviRegisteredUser> * d = g_pRegisteredUserDataBase->userDict();
-	KviDictIterator<KviRegisteredUser> it(*d);
-	while(KviRegisteredUser * u = it.current())
+	foreach(KviRegisteredUser * u,*(g_pRegisteredUserDataBase->userDict()))
 	{
-		KviPtrList<KviIrcMask> * ml = u->maskList();
+		QSet<KviIrcMask*> * ml = u->maskList();
 		if(u->matches(mask) || (ml->count() == 0))
 		{
 			c->window()->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs(" User: %c%Q"),KVI_TEXT_BOLD,&(u->name()));
@@ -823,29 +817,28 @@ static bool reguser_kvs_cmd_showlist(KviKvsModuleCommandCall * c)
 			{
 				c->window()->output(KVI_OUT_SYSTEMWARNING,__tr2qs("    Warning: this user has no registration masks"));
 			} else {
-				for(KviIrcMask * m = ml->first();m;m = ml->next())
+				foreach(KviIrcMask * m,*ml)
 				{
 					c->window()->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("    Mask: %Q!%Q@%Q"),&(m->nick()),&(m->user()),&(m->host()));
 				}
 			}
 
-			KviDict<QString> * pd = u->propertyDict();
+			QHash<QString,QString> * pd = u->propertyDict();
 			if(pd)
 			{
-				KviDictIterator<QString> pdit(*pd);
-				while(pdit.current())
+				QHash<QString,QString>::iterator pdit(pd->begin());
+				while(pdit != pd->end())
 				{
-					QString key = pdit.currentKey();
-					c->window()->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("    Property: %Q=%Q"),&(key),pdit.current());
+					QString key = pdit.key();
+					c->window()->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("    Property: %Q=%Q"),&(key),&(pdit.value()));
 					++pdit;
 				}
 			} else c->window()->outputNoFmt(KVI_OUT_SYSTEMMESSAGE,__tr2qs("    No properties"));
 			count++;
 		}
-		++it;
 	}
 
-	c->window()->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Total: %d matching users (of %d in the database)"),count,d->count());
+	c->window()->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Total: %d matching users (of %d in the database)"),count,g_pRegisteredUserDataBase->userDict()->count());
 	return true;
 }
 
@@ -1017,7 +1010,7 @@ static bool reguser_kvs_fnc_mask(KviKvsModuleFunctionCall * c)
 	QString szN;
 	KVSM_PARAMETERS_BEGIN(c)
 		KVSM_PARAMETER("name",KVS_PT_STRING,0,szName)
-		KVSM_PARAMETER("N",KVS_PT_STRING,KVS_PF_OPTIONAL,szN)
+	//	KVSM_PARAMETER("N",KVS_PT_STRING,KVS_PF_OPTIONAL,szN)
 	KVSM_PARAMETERS_END(c)
 	
 	KviKvsArray* pArray = new KviKvsArray();
@@ -1025,20 +1018,13 @@ static bool reguser_kvs_fnc_mask(KviKvsModuleFunctionCall * c)
 	KviRegisteredUser * u = g_pRegisteredUserDataBase->findUserByName(szName);
 	if(u)
 	{
-		KviStr n = szName;
-		if(n.hasData() && n.isUnsignedNum())
+		int id=0;
+		foreach(KviIrcMask * m ,*(u->maskList()))
 		{
-			KviIrcMask * m = u->maskList()->at(n.toInt());
-			if(m) c->returnValue()->setString(m->nick()+"!"+m->user()+"@"+m->host());
-		} else {
-			int id=0;
-			for(KviIrcMask * m = u->maskList()->first();m;m = u->maskList()->next())
-			{
-				pArray->set(aid,new KviKvsVariant(QString(m->nick()+"!"+m->user()+"@"+m->host())));
-				aid++;
-			}
-			c->returnValue()->setArray(pArray);
+			pArray->set(aid,new KviKvsVariant(QString(m->nick()+"!"+m->user()+"@"+m->host())));
+			aid++;
 		}
+		c->returnValue()->setArray(pArray);
 	}
 	return true;
 }

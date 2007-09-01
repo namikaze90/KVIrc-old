@@ -42,8 +42,8 @@ public:
 	KviKvsTreeNodeSwitchList(const QChar * pLocation);
 	~KviKvsTreeNodeSwitchList();
 public:
-	KviIntDict<KviKvsTreeNodeData> * m_pShortSwitchDict;
-	KviDict<KviKvsTreeNodeData> *m_pLongSwitchDict;
+	QHash<int,KviKvsTreeNodeData*> * m_pShortSwitchDict;
+	QHash<QString,KviKvsTreeNodeData*> *m_pLongSwitchDict;
 public:
 	void addShort(int iShortKey,KviKvsTreeNodeData * p);
 	void addLong(const QString &szLongKey,KviKvsTreeNodeData * p);

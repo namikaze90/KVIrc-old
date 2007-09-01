@@ -37,8 +37,8 @@ public:
 	KviKvsSwitchList();
 	~KviKvsSwitchList();
 protected:
-	KviIntDict<KviKvsVariant> * m_pShortSwitchDict;
-	KviDict<KviKvsVariant>    * m_pLongSwitchDict;
+	QHash<long,KviKvsVariant*>       * m_pShortSwitchDict;
+	QHash<QString,KviKvsVariant*>    * m_pLongSwitchDict;
 public:
 	void clear();
 	void addShort(unsigned short uShortKey,KviKvsVariant * pVariant);
@@ -48,17 +48,17 @@ public:
 
 	KviKvsVariant * find(const QChar &c)
 	{
-		return m_pShortSwitchDict ? m_pShortSwitchDict->find(c.unicode()) : 0;
+		return m_pShortSwitchDict ? m_pShortSwitchDict->value(c.unicode()) : 0;
 	};
 
 	KviKvsVariant * find(unsigned short uShortKey)
 	{
-		return m_pShortSwitchDict ? m_pShortSwitchDict->find((int)uShortKey) : 0;
+		return m_pShortSwitchDict ? m_pShortSwitchDict->value(uShortKey) : 0;
 	};
 	
 	KviKvsVariant * find(const QString &szLongKey)
 	{
-		return m_pLongSwitchDict ? m_pLongSwitchDict->find(szLongKey) : 0;
+		return m_pLongSwitchDict ? m_pLongSwitchDict->value(szLongKey) : 0;
 	};
 
 	KviKvsVariant * find(unsigned short uShortKey,const QString &szLongKey)
@@ -66,10 +66,10 @@ public:
 		if(m_pLongSwitchDict)
 		{
 			KviKvsVariant * t;
-			t = m_pLongSwitchDict->find(szLongKey);
+			t = m_pLongSwitchDict->value(szLongKey);
 			if(t)return t;
 		}
-		return m_pShortSwitchDict ? m_pShortSwitchDict->find((int)uShortKey) : 0;
+		return m_pShortSwitchDict ? m_pShortSwitchDict->value(uShortKey) : 0;
 	};
 	
 	bool getAsStringIfExisting(unsigned short uShortKey,const QString &szLongKey,QString &szBuffer)

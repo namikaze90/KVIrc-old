@@ -388,20 +388,20 @@ bool KviPackThemeDialog::packTheme()
 
 	QString szTmp = QDateTime::currentDateTime().toString();
 
-	f.addInfoField("PackageType","ThemePack");
-	f.addInfoField("ThemePackVersion","1");
+	f.addInfoField("PackageType",QString("ThemePack"));
+	f.addInfoField("ThemePackVersion",QString("1"));
 	f.addInfoField("Name",szPackageName);
 	f.addInfoField("Version",szPackageVersion);
 	f.addInfoField("Author",szPackageAuthor);
 	f.addInfoField("Description",szPackageDescription);
 	f.addInfoField("Date",szTmp);
-	f.addInfoField("Application","KVIrc " KVI_VERSION "." KVI_SOURCES_DATE);
+	f.addInfoField("Application",QString("KVIrc " KVI_VERSION "." KVI_SOURCES_DATE));
 
 	if(!out.isNull())
 	{
-		QByteArray * pba = new QByteArray();
+		QByteArray pba;
 
-		QBuffer buffer(pba,0);
+		QBuffer buffer(&pba,0);
 
 		buffer.open(IO_WriteOnly);
 		out.save(&buffer,"PNG");
@@ -435,8 +435,8 @@ bool KviPackThemeDialog::packTheme()
 		if(!pixScreenshot.isNull())
 		{
 			KviQString::sprintf(szTmp,"Theme%dScreenshot",iIdx);
-			QByteArray * pba = new QByteArray();
-			QBuffer bufferz(pba,0);
+			QByteArray pba;
+			QBuffer bufferz(&pba,0);
 
 			bufferz.open(IO_WriteOnly);
 			pixScreenshot.save(&bufferz,"PNG");

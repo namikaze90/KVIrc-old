@@ -31,7 +31,7 @@
 #include <qsocketnotifier.h>
 #include "kvi_list.h"
 #include <qevent.h>
-
+#include <QList>
 
 //
 // Simple thread implementation
@@ -177,11 +177,11 @@ public:
 	KviThread();
 	virtual ~KviThread();
 private:
-	kvi_thread_t    m_thread;
-	bool            m_bRunning;
-	bool            m_bStartingUp;
-	KviMutex      * m_pRunningMutex;
-	KviPtrList<QEvent> * m_pLocalEventQueue;
+	kvi_thread_t     m_thread;
+	bool             m_bRunning;
+	bool             m_bStartingUp;
+	KviMutex       * m_pRunningMutex;
+	QList<QEvent*> * m_pLocalEventQueue;
 public:
 	// public KviThread interface
 	// HANDLE WITH CARE
@@ -306,8 +306,8 @@ public:
 	KviSensitiveThread();
 	virtual ~KviSensitiveThread();
 protected:
-	KviMutex              * m_pLocalEventQueueMutex;
-	KviPtrList<KviThreadEvent> * m_pLocalEventQueue;
+	KviMutex               * m_pLocalEventQueueMutex;
+	QList<KviThreadEvent*> * m_pLocalEventQueue;
 public:
 	// enqueues an event directed to THIS thread
 	// the event must be allocated with NEW and
@@ -350,7 +350,7 @@ private:
 	QSocketNotifier * m_pSn;
 #endif
 	KviMutex * m_pMutex; // This class performs only atomic operations
-	KviPtrList<KviThread> * m_pThreadList;
+	QList<KviThread*> * m_pThreadList;
 	int m_iWaitingThreads;
 #ifndef COMPILE_ON_WINDOWS
 	KviPtrList<KviThreadPendingEvent> * m_pEventQueue;

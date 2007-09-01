@@ -322,12 +322,9 @@ KviSingleActionEditor::KviSingleActionEditor(QWidget * par,KviActionEditor * ed)
 	g->setRowStretch(2,1);
 	g->setColStretch(1,1);
 
-
-	KviDictIterator<KviActionCategory> it(*(KviActionManager::instance()->categories()));
-	while(KviActionCategory * ac = it.current())
+	foreach(KviActionCategory * ac,*(KviActionManager::instance()->categories()))
 	{
 		m_pCategoryCombo->insertItem(ac->visibleName() + " (" + ac->name() + ")");
-		++it;
 	}
 }
 
@@ -685,8 +682,7 @@ KviActionEditor::KviActionEditor(QWidget * par)
 	KviActionEditorListViewItem * last = 0;
 	KviActionEditorListViewItem * first = 0;
 
-	KviDictIterator<KviAction> it(*(KviActionManager::instance()->actions()));
-	while(KviAction * a = it.current())
+	foreach(KviAction * a,*(KviActionManager::instance()->actions()))
 	{
 		if(a->isKviUserActionNeverOverrideThis())
 		{
@@ -707,7 +703,6 @@ KviActionEditor::KviActionEditor(QWidget * par)
 			if(!first)
 				first = lvi;
 		}
-		++it;
 	}
 
 	if(!last)last = first; // try to sleect the first one then

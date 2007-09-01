@@ -971,16 +971,17 @@ void KviConsole::resetAvatarForMatchingUsers(KviRegisteredUser * u)
 	QString szAvatar;
 	if(!u->getProperty("avatar",szAvatar))return;
 
-	KviDictIterator<KviIrcUserEntry> it(*(connection()->userDataBase()->dict()));
-	while(KviIrcUserEntry * e = it.current())
+	QHash<QString,KviIrcUserEntry*>::iterator it(connection()->userDataBase()->dict()->begin());
+	while(it!=connection()->userDataBase()->dict()->end())
 	{
+		KviIrcUserEntry * e = it.value();
 		if(e->hasHost())
 		{
-			if(u->matchesFixed(it.currentKey(),e->user(),e->host()))
+			if(u->matchesFixed(it.key(),e->user(),e->host()))
 			{
 				KviAvatar * a = g_pIconManager->getAvatar(QString::null,szAvatar);
 				e->setAvatar(a);
-				avatarChangedUpdateWindows(it.currentKey(),QString::null);
+				avatarChangedUpdateWindows(it.key(),QString::null);
 			}
 		}
 		++it;

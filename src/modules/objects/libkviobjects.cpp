@@ -440,15 +440,16 @@ static bool objects_kvs_fnc_classAllHandlers(KviKvsModuleFunctionCall * c)
 		return true;
 	}
 
-	KviDictIterator<KviKvsObjectFunctionHandler>  it(* pClass->getHandlers());
+	QHash<QString,KviKvsObjectFunctionHandler*>::iterator  it(pClass->getHandlers()->begin());
 	KviKvsHash* pHash = new KviKvsHash();
 	c->returnValue()->setHash(pHash);
-	while(KviKvsObjectFunctionHandler * t = it.current())
+	while(it!=pClass->getHandlers()->end())
 	{
+		KviKvsObjectFunctionHandler * t = it.value();
 		QString szCode;
-		KviKvsObjectFunctionHandler *handler=pClass->lookupFunctionHandler(it.currentKey());
+		KviKvsObjectFunctionHandler *handler=pClass->lookupFunctionHandler(it.key());
 		pClass->getFunctionCode(szCode,*handler);
-		pHash->set(it.currentKey(),new KviKvsVariant(szCode));
+		pHash->set(it.key(),new KviKvsVariant(szCode));
 		++it;
 	}
 
@@ -476,13 +477,13 @@ static bool objects_kvs_fnc_classes(KviKvsModuleFunctionCall * c)
 	KviKvsArray * pArry = new KviKvsArray();
 	c->returnValue()->setArray(pArry);
 	int uIdx=0;
-	KviDictIterator<KviKvsObjectClass> it(*KviKvsKernel::instance()->objectController()->classDict());
-	KviDict<bool> *classdict=new KviDict<bool>;
-	classdict->setAutoDelete(false);
+	QHash<QString,KviKvsObjectClass*>::iterator it(KviKvsKernel::instance()->objectController()->classDict()->begin());
+	QHash<QString,bool> *classdict=new QHash<QString,bool>;
 	bool bFake=true;
-	while(KviKvsObjectClass * pClass=it.current())
+	while(it!=KviKvsKernel::instance()->objectController()->classDict()->end())
 	{
-		if (!pClass->isBuiltin())classdict->insert(it.currentKey(),&bFake);
+		KviKvsObjectClass * pClass=it.value();
+		if (!pClass->isBuiltin())classdict->insert(it.key(),bFake);
 		++it;
 	}
 	QString szPath;
@@ -499,10 +500,10 @@ static bool objects_kvs_fnc_classes(KviKvsModuleFunctionCall * c)
 	KviKvsArray* pArray = new KviKvsArray();
 	c->returnValue()->setArray(pArray);
 	int idx=0;
-	KviDictIterator<bool>  strIt(*classdict);
-	while(strIt.current())
+	QHash<QString,bool>::iterator  strIt(classdict->begin());
+	while(strIt != classdict->end())
 	{
-		pArray->set(idx,new KviKvsVariant(strIt.currentKey()));
+		pArray->set(idx,new KviKvsVariant(strIt.key()));
 		idx++;
 		++strIt;
 	}

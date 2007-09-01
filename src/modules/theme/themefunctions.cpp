@@ -52,11 +52,10 @@ namespace KviThemeFunctions
 
 	bool installThemePackage(const QString &szThemePackageFileName,QString &szError,QWidget * pDialogParent)
 	{
-		KviDict<QString> * pInfoFields;
-		QString * pValue;
+		QHash<QString,QString> * pInfoFields;
+		QString value;
 		bool bInstall;
 		QPixmap pix;
-		QByteArray * pByteArray;
 		KviHtmlDialogData hd;
 
 		const char * check_fields[] = { "Name", "Version", "Author", "Description", "Date", "Application" };
@@ -72,33 +71,31 @@ namespace KviThemeFunctions
 	
 		pInfoFields = r.stringInfoFields();
 	
-		pValue = pInfoFields->find("PackageType");
-		if(!pValue)return notAValidThemePackage(szError);
-		if(!KviQString::equalCI(*pValue,"ThemePack"))return notAValidThemePackage(szError);
-		pValue = pInfoFields->find("ThemePackVersion");
-		if(!pValue)return notAValidThemePackage(szError);
-		if(!KviQString::equalCI(*pValue,"1"))return notAValidThemePackage(szError);
+		value = pInfoFields->value("PackageType");
+		if(value.isNull())return notAValidThemePackage(szError);
+		if(!KviQString::equalCI(value,"ThemePack"))return notAValidThemePackage(szError);
+		value = pInfoFields->value("ThemePackVersion");
+		if(!value.isNull())return notAValidThemePackage(szError);
+		if(!KviQString::equalCI(value,"1"))return notAValidThemePackage(szError);
 		
 		// make sure the default fields exist
 		for(int i=0;i<6;i++)
 		{
-			pValue = pInfoFields->find(check_fields[i]);
-			if(!pValue)return notAValidThemePackage(szError);
+			if(!pInfoFields->contains(check_fields[i]))return notAValidThemePackage(szError);
 		}
 	
-		pValue = pInfoFields->find("ThemeCount");
-		if(!pValue)return notAValidThemePackage(szError);
+		value = pInfoFields->value("ThemeCount");
+		if(value.isNull())return notAValidThemePackage(szError);
 		bool bOk;
-		int iThemeCount = pValue->toInt(&bOk);
+		int iThemeCount = value.toInt(&bOk);
 		if(!bOk)return notAValidThemePackage(szError);
 		if(iThemeCount < 1)return notAValidThemePackage(szError);
 	
 		// ok.. it should be really valid at this point
 		
 		// load its picture
-		pByteArray = r.binaryInfoFields()->find("Image");
-		if(pByteArray)
-			pix.loadFromData(*pByteArray,0,0);
+		if(r.binaryInfoFields()->contains("Image"))
+			pix.loadFromData(r.binaryInfoFields()->value("Image"),0,0);
 		
 		if(pix.isNull())
 		{
@@ -163,9 +160,8 @@ namespace KviThemeFunctions
 			r.getStringInfoField(szTmp,szThemeThemeEngineVersion);
 			KviQString::sprintf(szTmp,"Theme%dScreenshot",iIdx);
 			QPixmap pixScreenshot;
-			pByteArray = r.binaryInfoFields()->find(szTmp);
-			if(pByteArray)
-				pixScreenshot.loadFromData(*pByteArray,0,0);
+			if(r.binaryInfoFields()->contains(szTmp))
+				pixScreenshot.loadFromData(r.binaryInfoFields()->value(szTmp),0,0);
 
 			if(szThemeName.isEmpty() || szThemeVersion.isEmpty() || szThemeSubdirectory.isEmpty() || szThemeThemeEngineVersion.isEmpty())
 				bValid = false;

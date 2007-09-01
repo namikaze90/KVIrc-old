@@ -33,7 +33,7 @@ protected: // can only be created by init/done
 	KviKvsPopupManager();
 	~KviKvsPopupManager();
 protected:
-	KviDict<KviKvsPopupMenu>    * m_pPopupDict;
+	QHash<QString,KviKvsPopupMenu*>    * m_pPopupDict;
 	static KviKvsPopupManager * m_pInstance;
 public:
 	static KviKvsPopupManager * instance(){ return m_pInstance; };
@@ -41,13 +41,13 @@ public:
 	static void done();
 	int popupCount(){ return m_pPopupDict->count(); };
 
-	KviDict<KviKvsPopupMenu> * popupDict(){ return m_pPopupDict; };
+	QHash<QString,KviKvsPopupMenu*> * popupDict(){ return m_pPopupDict; };
 
-	KviKvsPopupMenu * lookup(const QString &szPopupName){ return m_pPopupDict->find(szPopupName); };
+	KviKvsPopupMenu * lookup(const QString &szPopupName){ return m_pPopupDict->value(szPopupName); };
 	KviKvsPopupMenu * get(const QString &szPopupName);
-	void add(const QString &szPopupName,KviKvsPopupMenu * pPopup){ m_pPopupDict->replace(szPopupName,pPopup); };
-	void remove(const QString &szPopupName){ m_pPopupDict->remove(szPopupName); };
-	void clear(){ m_pPopupDict->clear(); };
+	void add(const QString &szPopupName,KviKvsPopupMenu * pPopup){ m_pPopupDict->insert(szPopupName,pPopup); };
+	void remove(const QString &szPopupName){ delete m_pPopupDict->take(szPopupName); };
+	void clear();
 
 	void save(const QString & filename);
 	void load(const QString & filename);

@@ -98,9 +98,7 @@ QDataStream &operator<<( QDataStream &s, const Document &l )
 
 
 Index::Index( const QString &dp, const QString &hp )
-
-    : QObject( 0, 0 ), dict( 8999 ), docPath( dp )
-
+    : QObject( 0, 0 )
 {
 
     alreadyHaveDocList = FALSE;
@@ -117,7 +115,7 @@ Index::Index( const QString &dp, const QString &hp )
 
 Index::Index( const QStringList &dl, const QString &hp )
 
-    : QObject( 0, 0 ), dict( 8999 )
+    : QObject( 0, 0 )
 
 {
 
@@ -318,30 +316,18 @@ void Index::writeDict()
 
 {
 
-    KviDictIterator<Entry> it( dict );
-
+    QHash<QString,Entry*>::iterator it( dict.begin() );
     KviFile f( dictFile );
-
     if ( !f.openForWriting() )
-
 	return;
-
     QDataStream s( &f );
-
-    for( ; it.current(); ++it ) {
-
-        Entry *e = it.current();
-
-	s << it.currentKey();
-
-	s << e->documents;
-
+    for( ; it != dict.end(); ++it ) {
+        Entry *e = it.value();
+        s << it.key();
+        s << e->documents;
     }
-
     f.close();
-
     writeDocumentList();
-
 }
 
 
@@ -578,40 +564,24 @@ QStringList Index::getWildcardTerms( const QString &term )
 	QStringList::Iterator iter;
 
 
-    KviDictIterator<Entry> it( dict );
+    QHash<QString,Entry*>::iterator it( dict.begin() );
 
-    for( ; it.current(); ++it ) {
-
+    for( ; it != dict.end(); ++it ) {
 	int index = 0;
-
 	bool found = FALSE;
-
-	QString text( it.currentKey() );
-
+	QString text( it.key() );
 	for ( iter = terms.begin(); iter != terms.end(); ++iter ) {
-
 	    if ( *iter == "*" ) {
-
 		found = TRUE;
-
 		continue;
-
 	    }
-
 	    if ( iter == terms.begin() && (*iter)[0] != text[0] ) {
-
 		found = FALSE;
-
 		break;
-
 	    }
-
 	    index = text.find( *iter, index );
-
 	    if ( *iter == terms.last() && index != (int)text.length()-1 ) {
-
 		index = text.findRev( *iter );
-
 		if ( index != (int)text.length() - (int)(*iter).length() ) {
 
 		    found = FALSE;

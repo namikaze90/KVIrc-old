@@ -46,7 +46,7 @@ public:
 protected:
 	KviPtrList<KviKvsObject>      * m_pTopLevelObjectList;
 	KviPtrDict<KviKvsObject>        * m_pObjectDict;
-	KviDict<KviKvsObjectClass>      * m_pClassDict;
+	QHash<QString,KviKvsObjectClass*>      * m_pClassDict;
 	KviKvsObjectClass             * m_pObjectClass; //base class
 protected:
 	// the classes and the objects register themselves with the controller
@@ -64,7 +64,7 @@ public:
 	KviKvsObjectClass * lookupClass(const QString &szClass,bool bBuiltinOnly = false);
 	KviKvsObject * lookupObject(kvs_hobject_t hObject){ return m_pObjectDict->find(hObject); };
 	KviPtrDict<KviKvsObject> * objectDict(){ return m_pObjectDict; };
-	KviDict<KviKvsObjectClass> * classDict(){ return m_pClassDict; };
+	QHash<QString,KviKvsObjectClass*> * classDict(){ return m_pClassDict; };
 };
 
 #endif //!_KVI_KVS_OBJECT_CONTROLLER_H_

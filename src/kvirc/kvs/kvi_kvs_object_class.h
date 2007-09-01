@@ -63,14 +63,14 @@ protected:
 	KviKvsObjectClass                           * m_pParentClass;      // the parent (base) class
 	QString                                       m_szName;            // the class name
 	bool                                          m_bBuiltin;          // is this a builtin or script based class ?
-	KviDict<KviKvsObjectFunctionHandler>          * m_pFunctionHandlers; // all our function handlers
+	QHash<QString,KviKvsObjectFunctionHandler*>          * m_pFunctionHandlers; // all our function handlers
 	KviPtrList<KviKvsObjectClass>               * m_pChildClasses;     // 
 	KviKvsObjectAllocateInstanceProc              m_allocProc;
 	bool                                          m_bDirty;            // not yet flushed to disk (only for not builtin classes)
 protected:
 	void registerChildClass(KviKvsObjectClass *pClass);
 	void unregisterChildClass(KviKvsObjectClass *pClass);
-	KviDict<KviKvsObjectFunctionHandler> * functionHandlers(){ return m_pFunctionHandlers; };
+	QHash<QString,KviKvsObjectFunctionHandler*> * functionHandlers(){ return m_pFunctionHandlers; };
 public:
 	void clearDirtyFlag(){ m_bDirty = false; };
 	bool isDirty(){ return m_bDirty; };
@@ -88,13 +88,13 @@ public:
 	// retisters an empty handler that returns $false
 	void registerStandardFalseReturnFunctionHandler(const QString & szFunc);
 
-	KviKvsObjectFunctionHandler * lookupFunctionHandler(const QString & szFunc){ return m_pFunctionHandlers->find(szFunc); };
+	KviKvsObjectFunctionHandler * lookupFunctionHandler(const QString & szFunc){ return m_pFunctionHandlers->value(szFunc); };
 	KviKvsObject * allocateInstance(KviKvsObject * pParent,const QString &szName,KviKvsRunTimeContext * pContext,KviKvsVariantList * pParams);
 
 	bool save(const QString &szFileName);
 	static bool load(const QString &szFileName);
 	void getFunctionCode(QString &szCode,KviKvsObjectFunctionHandler &h);
-	KviDict<KviKvsObjectFunctionHandler> * getHandlers(){return m_pFunctionHandlers;};
+	QHash<QString,KviKvsObjectFunctionHandler*> * getHandlers(){return m_pFunctionHandlers;};
 
 };
 

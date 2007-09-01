@@ -47,14 +47,10 @@ KviKvsKernel::KviKvsKernel()
 {
 	m_pKvsKernel = this;
 
-	m_pSpecialCommandParsingRoutineDict = new KviDict<KviKvsSpecialCommandParsingRoutine>(17,false);
-	m_pSpecialCommandParsingRoutineDict->setAutoDelete(true);
-	m_pCoreSimpleCommandExecRoutineDict = new KviDict<KviKvsCoreSimpleCommandExecRoutine>(51,false);
-	m_pCoreSimpleCommandExecRoutineDict->setAutoDelete(true);
-	m_pCoreFunctionExecRoutineDict = new KviDict<KviKvsCoreFunctionExecRoutine>(51,false);
-	m_pCoreFunctionExecRoutineDict->setAutoDelete(true);
-	m_pCoreCallbackCommandExecRoutineDict = new KviDict<KviKvsCoreCallbackCommandExecRoutine>(17,false);
-	m_pCoreCallbackCommandExecRoutineDict->setAutoDelete(true);
+	m_pSpecialCommandParsingRoutineDict = new QHash<QString,KviKvsSpecialCommandParsingRoutine*>;
+	m_pCoreSimpleCommandExecRoutineDict = new QHash<QString,KviKvsCoreSimpleCommandExecRoutine*>;
+	m_pCoreFunctionExecRoutineDict = new QHash<QString,KviKvsCoreFunctionExecRoutine*>;
+	m_pCoreCallbackCommandExecRoutineDict = new QHash<QString,KviKvsCoreCallbackCommandExecRoutine*>;
 
 	m_pGlobalVariables = new KviKvsHash();
 	m_pEmptyParameterList = new KviKvsVariantList();
@@ -76,6 +72,11 @@ KviKvsKernel::~KviKvsKernel()
 	delete m_pEmptyParameterList;
 	delete m_pGlobalVariables;
 
+	foreach(KviKvsSpecialCommandParsingRoutine* i,*m_pSpecialCommandParsingRoutineDict) { delete i; };
+	foreach(KviKvsCoreSimpleCommandExecRoutine* i,*m_pCoreSimpleCommandExecRoutineDict) { delete i; };
+	foreach(KviKvsCoreFunctionExecRoutine* i,*m_pCoreFunctionExecRoutineDict) { delete i; };
+	foreach(KviKvsCoreCallbackCommandExecRoutine* i,*m_pCoreCallbackCommandExecRoutineDict) { delete i; };
+	
 	delete m_pSpecialCommandParsingRoutineDict;
 	delete m_pCoreSimpleCommandExecRoutineDict;
 	delete m_pCoreFunctionExecRoutineDict;
@@ -101,12 +102,12 @@ void KviKvsKernel::done()
 
 #define COMPLETE_COMMAND_BY_DICT(__type,__dict) \
 	{ \
-		KviDictIterator<__type> it(*__dict); \
+		QHash<QString,__type *>::iterator it(__dict->begin()); \
 		int l = szCommandBegin.length(); \
-		while(it.current()) \
+		while(it != __dict->end()) \
 		{ \
-			if(KviQString::equalCIN(szCommandBegin,it.currentKey(),l)) \
-				pMatches->append(new QString(it.currentKey())); \
+			if(KviQString::equalCIN(szCommandBegin,it.key(),l)) \
+				pMatches->append(new QString(it.key())); \
 			++it; \
 		} \
 	}
@@ -162,13 +163,13 @@ void KviKvsKernel::completeFunction(const QString &szFunctionBegin,KviPtrList<QS
 	{
 		// no module name inside
 
-		KviDictIterator<KviKvsCoreFunctionExecRoutine> it(*m_pCoreFunctionExecRoutineDict);
+		QHash<QString,KviKvsCoreFunctionExecRoutine*>::iterator it(m_pCoreFunctionExecRoutineDict->begin());
 		int l = szFunctionBegin.length();
-		while(it.current())
+		while(it != m_pCoreFunctionExecRoutineDict->end())
 		{
-			if(KviQString::equalCIN(szFunctionBegin,it.currentKey(),l))
+			if(KviQString::equalCIN(szFunctionBegin,it.key(),l))
 			{
-				QString * pMatch = new QString(it.currentKey());
+				QString * pMatch = new QString(it.key());
 				//pMatch->prepend("$");
 				pMatches->append(pMatch);
 			}

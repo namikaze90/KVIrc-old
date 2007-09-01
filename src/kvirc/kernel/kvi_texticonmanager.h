@@ -60,16 +60,16 @@ public:
 	KviTextIconManager();
 	~KviTextIconManager();
 private:
-	KviDict<KviTextIcon> * m_pTextIconDict;
+	QHash<QString,KviTextIcon*> * m_pTextIconDict;
 signals:
 	void changed();
 public:
-	KviDict<KviTextIcon> * textIconDict(){ return m_pTextIconDict; };
+	QHash<QString,KviTextIcon*> * textIconDict(){ return m_pTextIconDict; };
 	void checkDefaultAssociations();
 	void clear();
 	void insert(const QString &name,int id);
 	void insert(const QString &name,KviTextIcon& icon);
-	KviTextIcon * lookupTextIcon(const QString &name){ return m_pTextIconDict->find(name); };
+	KviTextIcon * lookupTextIcon(const QString &name){ return m_pTextIconDict->value(name); };
 	void load();
 	void save();
 protected:

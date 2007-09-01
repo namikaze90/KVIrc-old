@@ -48,15 +48,15 @@ public:
 	virtual ~KviPackageIOEngine();
 protected:
 	QString m_szLastError;
-	KviDict<QString> * m_pStringInfoFields;
-	KviDict<QByteArray> * m_pBinaryInfoFields;
+	QHash<QString,QString> * m_pStringInfoFields;
+	QHash<QString,QByteArray> * m_pBinaryInfoFields;
 	QProgressDialog * m_pProgressDialog;
 	QLabel * m_pProgressDialogLabel;
 public:
 	const QString & lastError(){ return m_szLastError; };
 	void setLastError(const QString &szLastError){ m_szLastError = szLastError; };
-	KviDict<QString> * stringInfoFields(){ return m_pStringInfoFields; };
-	KviDict<QByteArray> * binaryInfoFields(){ return m_pBinaryInfoFields; };
+	QHash<QString,QString> * stringInfoFields(){ return m_pStringInfoFields; };
+	QHash<QString,QByteArray> * binaryInfoFields(){ return m_pBinaryInfoFields; };
 protected:
 	void showProgressDialog(const QString &szCaption,int iTotalSteps);
 	void hideProgressDialog();
@@ -105,7 +105,7 @@ public:
 	bool addDirectory(const QString &szLocalDirectoryName,const QString &szTargetDirectoryPrefix,kvi_u32_t uAddFileFlags = 0);
 	// Adds an info field as a name=value pair
 	void addInfoField(const QString &szName,const QString &szValue);
-	void addInfoField(const QString &szName,QByteArray * pArray);
+	void addInfoField(const QString &szName,const QByteArray & pArray);
 	// Attempts to pack everything and store it as the specified file.
 	// There is no mandatory extension but you *should* use KVI_FILEEXTENSION_THEMEPACKAGE for themes
 	// and KVI_FILEEXTENSION_ADDONPACKAGE for addons. See kvi_fileextension.h

@@ -135,17 +135,14 @@ static bool addon_kvs_fnc_version(KviKvsModuleFunctionCall * c)
 
 static bool addon_kvs_cmd_list(KviKvsModuleCommandCall * c)
 {
-	KviDict<KviKvsScriptAddon> * da = KviKvsScriptAddonManager::instance()->addonDict();
 
 	int cnt = 0;
-	KviDictIterator<KviKvsScriptAddon> it(*da);
-	while(KviKvsScriptAddon * a = it.current())
+	foreach(KviKvsScriptAddon * a,*(KviKvsScriptAddonManager::instance()->addonDict()))
 	{
 		c->window()->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("%cAddon id %Q, version %Q%c"),KVI_TEXT_BOLD,&(a->name()),&(a->version()),KVI_TEXT_BOLD);
 		c->window()->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Name: %Q"),&(a->visibleName()));
 		c->window()->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Description: %Q"),&(a->description()));
-	
-		++it;
+
 		cnt++;
 	}
 

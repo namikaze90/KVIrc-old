@@ -66,12 +66,15 @@ void KviAvatarCache::done()
 
 KviAvatarCache::KviAvatarCache()
 {
-	m_pAvatarDict = new KviDict<KviAvatarCacheEntry>(CACHE_DICT_SIZE,false);
-	m_pAvatarDict->setAutoDelete(true);
+	m_pAvatarDict = new QHash<QString,KviAvatarCacheEntry*>;
 }
 
 KviAvatarCache::~KviAvatarCache()
 {
+	foreach(KviAvatarCacheEntry* e,*m_pAvatarDict)
+	{
+		delete e;
+	}
 	delete m_pAvatarDict;
 }
 
@@ -88,7 +91,7 @@ void KviAvatarCache::replace(const QString &szIdString,const KviIrcMask &mask,co
 	e->szIdString = szIdString;
 	e->tLastAccess = kvi_unixTime();
 	
-	m_pAvatarDict->replace(szKey,e);
+	m_pAvatarDict->insert(szKey,e);
 	
 	if(m_pAvatarDict->count() > MAX_AVATARS_IN_CACHE)
 	{
@@ -104,7 +107,10 @@ void KviAvatarCache::remove(const KviIrcMask &mask,const QString &szNetwork)
 	szKey.append(QChar('+'));
 	szKey.append(szNetwork);
 	
-	m_pAvatarDict->remove(szKey);
+	if(m_pAvatarDict->contains(szKey))
+	{
+		delete m_pAvatarDict->take(szKey);
+	}
 }
 
 
@@ -117,7 +123,7 @@ const QString & KviAvatarCache::lookup(const KviIrcMask &mask,const QString &szN
 	szKey.append(QChar('+'));
 	szKey.append(szNetwork);
 
-	KviAvatarCacheEntry * e = m_pAvatarDict->find(szKey);
+	KviAvatarCacheEntry * e = m_pAvatarDict->value(szKey);
 	if(!e)return KviQString::empty;
 	e->tLastAccess = kvi_unixTime();
 	return e->szIdString;
@@ -125,19 +131,23 @@ const QString & KviAvatarCache::lookup(const KviIrcMask &mask,const QString &szN
 
 void KviAvatarCache::load(const QString &szFileName)
 {
+	foreach(KviAvatarCacheEntry *e,*m_pAvatarDict)
+	{
+		delete e;
+	}
 	m_pAvatarDict->clear();
 
 	KviConfig cfg(szFileName,KviConfig::Read);
 
 	kvi_time_t tNow = kvi_unixTime();
 
-	KviConfigIterator it(*(cfg.dict()));
+	KviConfigIterator it(cfg.dict()->begin());
 	
 	int cnt = 0;
 	
-	while(it.current())
+	while(it != cfg.dict()->end())
 	{
-		cfg.setGroup(it.currentKey());
+		cfg.setGroup(it.key());
 
 		kvi_time_t tLastAccess = cfg.readUIntEntry("LastAccess",0);
 		if((tNow - tLastAccess) < MAX_UNACCESSED_TIME)
@@ -149,7 +159,7 @@ void KviAvatarCache::load(const QString &szFileName)
 				KviAvatarCacheEntry * e = new KviAvatarCacheEntry;
 				e->tLastAccess = tLastAccess;
 				e->szIdString = szIdString;
-				m_pAvatarDict->replace(it.currentKey(),e);
+				m_pAvatarDict->insert(it.key(),e);
 				cnt++;
 				if(cnt >= MAX_AVATARS_IN_CACHE)return; // done
 			}
@@ -163,13 +173,14 @@ void KviAvatarCache::save(const QString &szFileName)
 	KviConfig cfg(szFileName,KviConfig::Write);
 //	cfg.clear(); // not needed with KviConfig::Write
 
-	KviDictIterator<KviAvatarCacheEntry> it(*m_pAvatarDict);
+	QHash<QString,KviAvatarCacheEntry*>::iterator it(m_pAvatarDict->begin());
 
-	while(KviAvatarCacheEntry * e = it.current())
+	while(it != m_pAvatarDict->end())
 	{
+		KviAvatarCacheEntry * e = it.value();
 		if(e->tLastAccess)
 		{
-			cfg.setGroup(it.currentKey());
+			cfg.setGroup(it.key());
 			cfg.writeEntry("Avatar",e->szIdString);
 			cfg.writeEntry("LastAccess",((unsigned int)(e->tLastAccess)));
 		}
@@ -180,71 +191,46 @@ void KviAvatarCache::save(const QString &szFileName)
 void KviAvatarCache::cleanup()
 {
 	// first do a quick run deleting the avatars really too old
-	KviDictIterator<KviAvatarCacheEntry> it(*m_pAvatarDict);
-	
+	QHash<QString,KviAvatarCacheEntry*>::iterator it(m_pAvatarDict->begin());	
 	kvi_time_t tNow = kvi_unixTime();
 
-	KviPtrList<QString> l;
-	l.setAutoDelete(false);
-
-	KviAvatarCacheEntry * e;
-
-	while((e = it.current()))
+	while(it != m_pAvatarDict->end())
 	{
+		KviAvatarCacheEntry * e = it.value();
 		if((tNow - e->tLastAccess) > MAX_UNACCESSED_TIME)
 		{
-			l.append(new QString(it.currentKey()));
+			delete e;
+			it = m_pAvatarDict->erase(it);
+		} else {
+			++it;
 		}
-		++it;
 	}
-	
-	for(QString *s = l.first();s;s = l.next())m_pAvatarDict->remove(*s);
 
 	if(m_pAvatarDict->count() < CACHE_GUARD_LEVEL)return;
 	
 	// not done.. need to kill the last accessed :/
-
-	it.toFirst();
 	
-	KviPtrList<KviAvatarCacheEntry> ll;
-	ll.setAutoDelete(true);
-
+	QMap<kvi_time_t,QString> times;
+	
+	
 	// here we use the cache entries in another way
 	// szAvatar is the KEY instead of the avatar name
 	
-	while((e = it.current()))
+	while(it != m_pAvatarDict->end())
 	{
-		KviAvatarCacheEntry * current = ll.first();
-		unsigned int idx = 0;
-		while(current)
-		{
-			// if the current is newer than the inserted one
-			// then stop searching and insert it just before
-			if(current->tLastAccess > e->tLastAccess)break;
-			// otherwise the current is older and the inserted
-			// one goes after
-			current = ll.next();
-			idx++;
-		}
-
-		KviAvatarCacheEntry * xx = new KviAvatarCacheEntry;
-		xx->szIdString = it.currentKey();
-		xx->tLastAccess = e->tLastAccess;
-
-		if(current)ll.insert(idx,xx);
-		else ll.append(xx);
-		++it;
+		times[it.value()->tLastAccess]=it.key();
 	}
 	
 	// the oldest keys are at the beginning
-	int uRemove = ll.count() - CACHE_GUARD_LEVEL;
+	int uRemove = times.count() - CACHE_GUARD_LEVEL;
 	if(uRemove < 1)return; // huh ?
 
 	// remember that szAvatar contains the key!
-	for(e = ll.first();e && (uRemove > 0);e = ll.next())
-	{
-		m_pAvatarDict->remove(e->szIdString);
-		uRemove--;
+	QMapIterator<kvi_time_t,QString> i(times);
+	while (i.hasNext()) {
+		 i.next();
+		 uRemove--;
+	     delete m_pAvatarDict->take(i.value());
 	}
 	// now we should be ok
 }

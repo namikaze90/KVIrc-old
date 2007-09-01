@@ -83,8 +83,7 @@ KviSoundPlayer::KviSoundPlayer()
 	m_pThreadList = new KviPtrList<KviSoundThread>;
 	m_pThreadList->setAutoDelete(true);
 
-	m_pSoundSystemDict = new KviDict<SoundSystemRoutine>(17,false);
-	m_pSoundSystemDict->setAutoDelete(true);
+	m_pSoundSystemDict = new QHash<QString,SoundSystemRoutine*>;
 
 #ifdef COMPILE_ON_WINDOWS
 	m_pSoundSystemDict->insert("winmm",new SoundSystemRoutine(KVI_PTR2MEMBER(KviSoundPlayer::playWinmm)));
@@ -121,6 +120,7 @@ KviSoundPlayer::~KviSoundPlayer()
 	while(KviSoundThread * t = m_pThreadList->first())delete t;
 	delete m_pThreadList;
 	KviThreadManager::killPendingEvents(this);
+	foreach(SoundSystemRoutine* i,*m_pSoundSystemDict) { delete i; }
 	delete m_pSoundSystemDict;
 
 #ifndef COMPILE_ON_WINDOWS
@@ -134,12 +134,7 @@ KviSoundPlayer::~KviSoundPlayer()
 
 void KviSoundPlayer::getAvailableSoundSystems(QStringList *l)
 {
-	KviDictIterator<SoundSystemRoutine> it(*m_pSoundSystemDict);
-	while(it.current())
-	{
-		l->append(it.currentKey());
-		++it;
-	}
+	*l = m_pSoundSystemDict->keys();
 }
 
 
@@ -299,14 +294,14 @@ bool KviSoundPlayer::playNull(const QString &szFileName)
 bool KviSoundPlayer::play(const QString &szFileName)
 {
 	if(isMuted()) return true;
-	SoundSystemRoutine * r = m_pSoundSystemDict->find(KVI_OPTION_STRING(KviOption_stringSoundSystem));
+	SoundSystemRoutine * r = m_pSoundSystemDict->value(KVI_OPTION_STRING(KviOption_stringSoundSystem));
 
 	if(!r)
 	{
 		if(KviQString::equalCI(KVI_OPTION_STRING(KviOption_stringSoundSystem),"unknown"))
 		{
 			detectSoundSystem();
-			r = m_pSoundSystemDict->find(KVI_OPTION_STRING(KviOption_stringSoundSystem));
+			r = m_pSoundSystemDict->value(KVI_OPTION_STRING(KviOption_stringSoundSystem));
 			if(!r)return false;
 		} else {
 			return false;

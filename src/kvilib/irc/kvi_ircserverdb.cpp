@@ -90,14 +90,17 @@ KviIrcServer * KviIrcServerDataBaseRecord::currentServer()
 
 KviIrcServerDataBase::KviIrcServerDataBase()
 {
-	m_pRecords = new KviDict<KviIrcServerDataBaseRecord>(17,false);
-	m_pRecords->setAutoDelete(true);
+	m_pRecords = new QHash<QString,KviIrcServerDataBaseRecord*>;
 	m_pAutoConnectOnStartupServers = 0;
 	m_pAutoConnectOnStartupNetworks = 0;
 }
 
 KviIrcServerDataBase::~KviIrcServerDataBase()
 {
+	foreach(KviIrcServerDataBaseRecord *r, *m_pRecords)
+	{
+		delete r;
+	}
 	delete m_pRecords;
 	if(m_pAutoConnectOnStartupServers)delete m_pAutoConnectOnStartupServers;
 	if(m_pAutoConnectOnStartupNetworks)delete m_pAutoConnectOnStartupNetworks;
@@ -119,6 +122,10 @@ void KviIrcServerDataBase::clearAutoConnectOnStartupNetworks()
 
 void KviIrcServerDataBase::clear()
 {
+	foreach(KviIrcServerDataBaseRecord *r, *m_pRecords)
+	{
+		delete r;
+	}
 	m_pRecords->clear();
 	m_szCurrentNetwork = "";
 }
@@ -126,19 +133,19 @@ void KviIrcServerDataBase::clear()
 KviIrcServerDataBaseRecord * KviIrcServerDataBase::insertNetwork(KviIrcNetwork *n)
 {
 	KviIrcServerDataBaseRecord * r = new KviIrcServerDataBaseRecord(n);
-	m_pRecords->replace(n->name(),r);
+	m_pRecords->insert(n->name(),r);
 	return r;
 }
 
 KviIrcServerDataBaseRecord * KviIrcServerDataBase::findRecord(const QString &szNetName)
 {
-	return m_pRecords->find(szNetName);
+	return m_pRecords->value(szNetName);
 }
 
 
 KviIrcNetwork * KviIrcServerDataBase::findNetwork(const QString &szName)
 {
-	KviIrcServerDataBaseRecord * r = m_pRecords->find(szName);
+	KviIrcServerDataBaseRecord * r = m_pRecords->value(szName);
 	if(!r)return 0;
 	return r->network();
 }
@@ -146,11 +153,10 @@ KviIrcNetwork * KviIrcServerDataBase::findNetwork(const QString &szName)
 KviIrcServerDataBaseRecord * KviIrcServerDataBase::currentRecord()
 {
 	KviIrcServerDataBaseRecord * r = 0;
-	if(!m_szCurrentNetwork.isEmpty())r = m_pRecords->find(m_szCurrentNetwork);
+	if(!m_szCurrentNetwork.isEmpty())r = m_pRecords->value(m_szCurrentNetwork);
 	if(r)return r;
 
-	KviDictIterator<KviIrcServerDataBaseRecord> it(*m_pRecords);
-	r = it.current();
+	r = m_pRecords->begin().value();
 	if(!r)return 0;
 	m_szCurrentNetwork = r->network()->name();
 	return r;
@@ -158,8 +164,7 @@ KviIrcServerDataBaseRecord * KviIrcServerDataBase::currentRecord()
 
 void KviIrcServerDataBase::updateServerIp(KviIrcServer * pServer,const QString & ip)
 {
-	KviDictIterator<KviIrcServerDataBaseRecord> it(*m_pRecords);
-	while(KviIrcServerDataBaseRecord * r = it.current())
+	foreach(KviIrcServerDataBaseRecord * r,*m_pRecords)
 	{
 		KviIrcServer * srv = r->findServer(pServer);
 		if(srv)
@@ -167,7 +172,6 @@ void KviIrcServerDataBase::updateServerIp(KviIrcServer * pServer,const QString &
 			srv->m_szIp = ip;
 			return;
 		}
-		++it;
 	}
 }
 
@@ -220,7 +224,6 @@ bool KviIrcServerDataBase::makeCurrentServer(KviIrcServerDefinition * d,QString 
 {
 	KviIrcServer * pServer = 0;
 
-	KviDictIterator<KviIrcServerDataBaseRecord> it(*m_pRecords);
 	KviIrcServerDataBaseRecord * r = 0;
 	KviIrcServer * srv;
 
@@ -229,7 +232,7 @@ bool KviIrcServerDataBase::makeCurrentServer(KviIrcServerDefinition * d,QString 
 		// net:networkname form
 		QString szNet = d->szServer;
 		szNet.remove(0,4);
-		KviIrcServerDataBaseRecord * r = m_pRecords->find(szNet);
+		KviIrcServerDataBaseRecord * r = m_pRecords->value(szNet);
 		if(r)return makeCurrentBestServerInNetwork(szNet,r,szError);
 		szError = __tr2qs("The server specification seems to be in the net:<string> but the network couln't be found in the database");
 		return false;
@@ -241,7 +244,7 @@ bool KviIrcServerDataBase::makeCurrentServer(KviIrcServerDefinition * d,QString 
 		QString szId = d->szServer;
 		szId.remove(0,3);
 
-		while((r = it.current()))
+		foreach(r,*m_pRecords)
 		{
 			for(srv = r->serverList()->first();srv && (!pServer);srv = r->serverList()->next())
 			{
@@ -251,15 +254,12 @@ bool KviIrcServerDataBase::makeCurrentServer(KviIrcServerDefinition * d,QString 
 					goto search_finished;
 				}
 			}
-			++it;
 		}
 		szError = __tr2qs("The server specification seems to be in the id:<string> form but the identifier coulnd't be found in the database");
 		return false;
 	}
 	
-	it.toFirst();
-	
-	while((r = it.current()))
+	foreach(r,*m_pRecords)
 	{
 		for(srv = r->serverList()->first();srv && (!pServer);srv = r->serverList()->next())
 		{
@@ -311,7 +311,6 @@ bool KviIrcServerDataBase::makeCurrentServer(KviIrcServerDefinition * d,QString 
 				}
 			}
 		}
-		++it;
 	}
 
 search_finished:
@@ -341,7 +340,7 @@ search_finished:
 		if(!d->szServer.contains('.'))
 		{
 			// assume it is a network name!
-			KviIrcServerDataBaseRecord * r = m_pRecords->find(d->szServer);
+			KviIrcServerDataBaseRecord * r = m_pRecords->value(d->szServer);
 			if(r)return makeCurrentBestServerInNetwork(d->szServer,r,szError);
 			// else probably not a network name
 		}
@@ -349,11 +348,11 @@ search_finished:
 
 	// a valid hostname or ip address , not found in list : add it and make it current
 
-	r = m_pRecords->find(__tr2qs("Standalone Servers"));
+	r = m_pRecords->value(__tr2qs("Standalone Servers"));
 	if(!r)
 	{
 		r = new KviIrcServerDataBaseRecord(new KviIrcNetwork(__tr2qs("Standalone Servers")));
-		m_pRecords->replace(r->network()->name(),r);
+		m_pRecords->insert(r->network()->name(),r);
 	}
 
 	KviIrcServer * s = new KviIrcServer();
@@ -516,17 +515,17 @@ void KviIrcServerDataBase::load(const QString & filename)
 	clear();
 	KviConfig cfg(filename,KviConfig::Read);
 
-	KviConfigIterator it(*(cfg.dict()));
+	KviConfigIterator it(cfg.dict()->begin());
 
 	QString tmp;
 
-	while(it.current())
+	while(it != cfg.dict()->end())
 	{
-		if(it.current()->count() > 0)
+		if(it.value()->count() > 0)
 		{
-			KviIrcNetwork * n = new KviIrcNetwork(it.currentKey());
+			KviIrcNetwork * n = new KviIrcNetwork(it.key());
 			KviIrcServerDataBaseRecord * r = insertNetwork(n);
-			cfg.setGroup(it.currentKey());
+			cfg.setGroup(it.key());
 			n->m_szEncoding = cfg.readQStringEntry("Encoding");
 			n->m_szDescription = cfg.readQStringEntry("Description");
 			n->m_szNickName = cfg.readQStringEntry("NickName");
@@ -541,15 +540,14 @@ void KviIrcServerDataBase::load(const QString & filename)
 			{
 				if(!m_pAutoConnectOnStartupNetworks)
 				{
-					m_pAutoConnectOnStartupNetworks = new KviPtrList<KviIrcServerDataBaseRecord>;
-					m_pAutoConnectOnStartupNetworks->setAutoDelete(false);
+					m_pAutoConnectOnStartupNetworks = new QSet<KviIrcServerDataBaseRecord*>;
 				}
-				m_pAutoConnectOnStartupNetworks->append(r);
+				m_pAutoConnectOnStartupNetworks->insert(r);
 			}
 			QStringList l = cfg.readStringListEntry("AutoJoinChannels",QStringList());
 			if(l.count() > 0)n->setAutoJoinChannelList(new QStringList(l));
 
-			if(cfg.readBoolEntry("Current",false))m_szCurrentNetwork = it.currentKey();
+			if(cfg.readBoolEntry("Current",false))m_szCurrentNetwork = it.key();
 
 			int nServers = cfg.readIntEntry("NServers",0);
 			for(int i=0;i < nServers;i++)
@@ -565,10 +563,9 @@ void KviIrcServerDataBase::load(const QString & filename)
 					{
 						if(!m_pAutoConnectOnStartupServers)
 						{
-							m_pAutoConnectOnStartupServers = new KviPtrList<KviIrcServer>;
-							m_pAutoConnectOnStartupServers->setAutoDelete(false);
+							m_pAutoConnectOnStartupServers = new QSet<KviIrcServer*>;
 						}
-						m_pAutoConnectOnStartupServers->append(s);
+						m_pAutoConnectOnStartupServers->insert(s);
 					}
 				} else delete s;
 			}
@@ -584,11 +581,9 @@ void KviIrcServerDataBase::save(const QString &filename)
 
 	cfg.clear(); // clear any old entry
 
-	KviDictIterator<KviIrcServerDataBaseRecord> it(*m_pRecords);
-
 	QString tmp;
 
-	while(KviIrcServerDataBaseRecord * r = it.current())
+	foreach(KviIrcServerDataBaseRecord * r,*m_pRecords)
 	{
 		KviIrcNetwork * n = r->network();
 		cfg.setGroup(n->m_szName);
@@ -629,7 +624,6 @@ void KviIrcServerDataBase::save(const QString &filename)
 
 			i++;
 		}
-		++it;
 	}
 }
 

@@ -141,7 +141,7 @@ KviTextIconsOptionsWidget::KviTextIconsOptionsWidget(QWidget * parent)
 {
 	createLayout(2,2);
 
-	KviDictIterator<KviTextIcon> it(*(g_pTextIconManager->textIconDict()));
+	QHash<QString,KviTextIcon*>::iterator it(g_pTextIconManager->textIconDict()->begin());
 
 	m_pTable = new KviTalTable(g_pTextIconManager->textIconDict()->count(),2,this);
 
@@ -152,10 +152,10 @@ KviTextIconsOptionsWidget::KviTextIconsOptionsWidget(QWidget * parent)
 #endif
 
 	int idx = 0;
-	while(KviTextIcon * i = it.current())
+	while(it != g_pTextIconManager->textIconDict()->begin())
 	{
-		m_pTable->setText(idx,0,it.currentKey());
-		m_pTable->setItem(idx,1,new KviTextIconTableItem(m_pTable,new KviTextIcon(i)));
+		m_pTable->setText(idx,0,it.key());
+		m_pTable->setItem(idx,1,new KviTextIconTableItem(m_pTable,new KviTextIcon(it.value())));
 		++idx;
 		++it;
 	}

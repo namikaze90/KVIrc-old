@@ -33,12 +33,15 @@ KviKvsPopupManager * KviKvsPopupManager::m_pInstance = 0;
 KviKvsPopupManager::KviKvsPopupManager()
 {
 	m_pInstance = this;
-	m_pPopupDict = new KviDict<KviKvsPopupMenu>(17,false);
-	m_pPopupDict->setAutoDelete(true);
+	m_pPopupDict = new QHash<QString,KviKvsPopupMenu*>;
 }
 
 KviKvsPopupManager::~KviKvsPopupManager()
 {
+	foreach(KviKvsPopupMenu* m,*m_pPopupDict)
+	{
+		delete m;
+	}
 	delete m_pPopupDict;
 }
 
@@ -50,6 +53,15 @@ void KviKvsPopupManager::init()
 		return;
 	}
 	(void)new KviKvsPopupManager();
+}
+
+void KviKvsPopupManager::clear()
+{
+	foreach(KviKvsPopupMenu* m,*m_pPopupDict)
+	{
+		delete m;
+	}
+	m_pPopupDict->clear();
 }
 
 void KviKvsPopupManager::done()
@@ -78,24 +90,14 @@ void KviKvsPopupManager::load(const QString &szFileName)
 	m_pPopupDict->clear();
 	KviConfig cfg(szFileName,KviConfig::Read);
 
-	KviConfigIterator it(*(cfg.dict()));
+	QStringList l = cfg.dict()->keys();
 
-	KviPtrList<QString> l;
-	l.setAutoDelete(true);
-
-	while(it.current())
+	foreach(QString s,l)
 	{
-		l.append(new QString(it.currentKey()));
-		++it;
-	}
-
-	for(QString * s = l.first();s;s = l.next())
-	{
-		cfg.setGroup(*s);
-		KviKvsPopupMenu * m = new KviKvsPopupMenu(*s);
+		cfg.setGroup(s);
+		KviKvsPopupMenu * m = new KviKvsPopupMenu(s);
 		m->load("",&cfg);
-		m_pPopupDict->insert(*s,m);
-		//++it;
+		m_pPopupDict->insert(s,m);
 	}
 }
 
@@ -104,12 +106,10 @@ void KviKvsPopupManager::save(const QString &szFileName)
 	KviConfig cfg(szFileName,KviConfig::Write);
 	cfg.clear();
 
-	KviDictIterator<KviKvsPopupMenu> it(*m_pPopupDict);
-	while(it.current())
+	foreach(KviKvsPopupMenu* m,*m_pPopupDict)
 	{
-		cfg.setGroup(it.current()->popupName());
-		it.current()->save("",&cfg);
-		++it;
+		cfg.setGroup(m->popupName());
+		m->save("",&cfg);
 	}
 }
 

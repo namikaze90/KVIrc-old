@@ -342,7 +342,7 @@ void KviRegisteredUsersDialog::itemPressed(KviTalListViewItem *it,const QPoint &
 				// try to find the nicknames to be notified
 				QString szMask;
 	
-				for(KviIrcMask * m = i->user()->maskList()->first();m;m = i->user()->maskList()->next())
+				foreach(KviIrcMask * m,*(i->user()->maskList()))
 				{
 					QString tmp = m->nick();
 					if((tmp.find('*') == -1) && (tmp.find('?') == -1) && (!tmp.isEmpty()))
@@ -398,20 +398,14 @@ void KviRegisteredUsersDialog::editGroup(KviRegisteredUserGroup* group)
 		group->name(), &ok, this );
 	if ( ok && !text.isEmpty() ) {
 		QString szOldGroup=group->name();
-		g_pLocalRegisteredUserDataBase->groupDict()->setAutoDelete(0);
 		g_pLocalRegisteredUserDataBase->groupDict()->remove(szOldGroup);
-		g_pLocalRegisteredUserDataBase->groupDict()->setAutoDelete(1);
 		group->setName(text);
 		g_pLocalRegisteredUserDataBase->groupDict()->insert(text,group);
 		
-		KviDict<KviRegisteredUser> * d = g_pLocalRegisteredUserDataBase->userDict();
-		KviDictIterator<KviRegisteredUser> it(*d);
-	
-		while(KviRegisteredUser * u = it.current())
+		foreach(KviRegisteredUser * u,*(g_pLocalRegisteredUserDataBase->userDict()))
 		{
 			if(u->group()==szOldGroup)
 				u->setGroup(text);
-			++it;
 		}
 		
 		
@@ -428,13 +422,13 @@ void KviRegisteredUsersDialog::listViewRightButtonClicked ( KviTalListViewItem *
 		{
 			KviTalPopupMenu *groups = new KviTalPopupMenu;
 			
-			KviDict<KviRegisteredUserGroup> * pGroups = g_pLocalRegisteredUserDataBase->groupDict();
-			KviDictIterator<KviRegisteredUserGroup> git(*pGroups);
+			QHash<QString,KviRegisteredUserGroup*> * pGroups = g_pLocalRegisteredUserDataBase->groupDict();
+			QHash<QString,KviRegisteredUserGroup*>::iterator git(pGroups->begin());
 			m_TmpDict.clear();
-			while(KviRegisteredUserGroup * g = git.current())
+			while(git!=pGroups->end())
 			{
-				int id=groups->insertItem(git.currentKey());
-				m_TmpDict.replace(id,g);
+				int id=groups->insertItem(git.key());
+				m_TmpDict.insert(id,git.value());
 				++git;
 			}
 			
@@ -449,7 +443,7 @@ void KviRegisteredUsersDialog::listViewRightButtonClicked ( KviTalListViewItem *
 
 void KviRegisteredUsersDialog::moveToGroupMenuClicked(int id)
 {
-	QString szGroup=m_TmpDict.find(id)->name();
+	QString szGroup=m_TmpDict.value(id)->name();
 	KviTalListViewItemIterator it( m_pListView,  KviTalListViewItemIterator::Selected );
 	while ( it.current() ) {
 		KviRegisteredUsersDialogItemBase* b=(KviRegisteredUsersDialogItemBase*)(it.current());
@@ -465,37 +459,34 @@ void KviRegisteredUsersDialog::moveToGroupMenuClicked(int id)
 void KviRegisteredUsersDialog::fillList()
 {
 	m_pListView->clear();
-	KviDict<KviRegisteredUsersGroupItem> groupItems(5,false);
+	QHash<QString,KviRegisteredUsersGroupItem*> groupItems;
 	
-	KviDict<KviRegisteredUserGroup> * pGroups = g_pLocalRegisteredUserDataBase->groupDict();
-	KviDictIterator<KviRegisteredUserGroup> git(*pGroups);
-	while(KviRegisteredUserGroup * g = git.current())
+	QHash<QString,KviRegisteredUserGroup*> * pGroups = g_pLocalRegisteredUserDataBase->groupDict();
+	QHash<QString,KviRegisteredUserGroup*>::iterator git(pGroups->begin());
+	while(git != pGroups->end())
 	{
-		KviRegisteredUsersGroupItem* pCur = new KviRegisteredUsersGroupItem(m_pListView,g);
-		groupItems.insert(g->name(),pCur);
+		KviRegisteredUsersGroupItem* pCur = new KviRegisteredUsersGroupItem(m_pListView,git.value());
+		groupItems.insert(git.value()->name(),pCur);
 		pCur->setOpen(TRUE);
 		++git;
 	}
 	
-	KviDict<KviRegisteredUser> * d = g_pLocalRegisteredUserDataBase->userDict();
-	KviDictIterator<KviRegisteredUser> it(*d);
 	KviRegisteredUsersDialogItem * item;
 
-	while(KviRegisteredUser * u = it.current())
+	foreach(KviRegisteredUser * u,*(g_pLocalRegisteredUserDataBase->userDict()))
 	{
 		if(u->group().isEmpty())
 			u->setGroup(__tr("Default"));
-		if(groupItems.find(u->group()))
-			item = new KviRegisteredUsersDialogItem(groupItems.find(u->group()),u);
-		else if(groupItems.find(__tr("Default")))
-			item = new KviRegisteredUsersDialogItem(groupItems.find(__tr("Default")),u);
+		if(groupItems.value(u->group()))
+			item = new KviRegisteredUsersDialogItem(groupItems.value(u->group()),u);
+		else if(groupItems.value(__tr("Default")))
+			item = new KviRegisteredUsersDialogItem(groupItems.value(__tr("Default")),u);
 		else { //should never be called
 			KviRegisteredUserGroup* pGroup = g_pLocalRegisteredUserDataBase->addGroup(__tr("Default"));
 			KviRegisteredUsersGroupItem* pCur = new KviRegisteredUsersGroupItem(m_pListView,pGroup);
 			groupItems.insert(__tr("Default"),pCur);
 			item = new KviRegisteredUsersDialogItem(pCur,u);
 		}
-		++it;
 	}
 	if(m_pListView->firstChild())
 	{
@@ -708,27 +699,27 @@ void KviRegisteredUsersDialog::exportClicked()
 		if(u)
 		{
 			if(!f.save(szName))goto write_error;
-			KviDict<QString> * pd = u->propertyDict();
+			QHash<QString,QString> * pd = u->propertyDict();
 			if(pd)
 			{
 				if(!f.save(pd->count()))goto write_error;
-				KviDictIterator<QString> it(*pd);
-				while(it.current())
+				QHash<QString,QString>::iterator it(pd->begin());
+				while(it != pd->end())
 				{
-					QString key = it.currentKey();
+					QString key = it.key();
 					if(!f.save(key))goto write_error;
-					if(!f.save(*(it.current())))goto write_error;
+					if(!f.save(it.value()))goto write_error;
 					++it;
 				}
 			} else {
 				if(!f.save(0))goto write_error;
 			}
 
-			KviPtrList<KviIrcMask> * ml = u->maskList();
+			QSet<KviIrcMask*> * ml = u->maskList();
 			if(ml)
 			{
 				if(!f.save(ml->count()))goto write_error;
-				for(KviIrcMask * m = ml->first();m;m = ml->next())
+				foreach(KviIrcMask * m,*ml)
 				{
 					QString fullMask;
 					m->mask(fullMask,KviIrcMask::NickUserHost);

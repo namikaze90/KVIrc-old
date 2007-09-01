@@ -1061,20 +1061,15 @@ void KviPopupEditor::oneTimeSetup()
 	if(m_bOneTimeSetupDone)return;
 	m_bOneTimeSetupDone = true;
 
-	const KviDict<KviKvsPopupMenu> * a = KviKvsPopupManager::instance()->popupDict();
-	if(!a)return;
-
-	KviDictIterator<KviKvsPopupMenu> it(*a);
+	if(!KviKvsPopupManager::instance()->popupDict())return;
 
 	KviMenuListViewItem * item;
 
-	while(it.current())
+	foreach(KviKvsPopupMenu * popup,*(KviKvsPopupManager::instance()->popupDict()))
 	{
-		KviKvsPopupMenu * popup = it.current();
 		KviKvsPopupMenu * copy = new KviKvsPopupMenu(popup->popupName());
 		copy->copyFrom(popup);
 		item = new KviMenuListViewItem(m_pListView,copy);
-		++it;
 	}
 
 	connect(m_pListView,SIGNAL(currentChanged(KviTalListViewItem *)),this,SLOT(currentItemChanged(KviTalListViewItem *)));
@@ -1249,8 +1244,7 @@ void KviPopupEditor::commit()
 	KviMenuListViewItem * it = (KviMenuListViewItem *)m_pListView->firstChild();
 
 	// Copy the original popup dict
-	KviDict<KviKvsPopupMenu> copy(*(KviKvsPopupManager::instance()->popupDict()));
-	copy.setAutoDelete(false);
+	QHash<QString,KviKvsPopupMenu*> copy(*(KviKvsPopupManager::instance()->popupDict()));
 
 	while(it)
 	{
@@ -1264,11 +1258,11 @@ void KviPopupEditor::commit()
 
 	// the remaining elements in the copy need to be removed from
 	// the "new" dictionary (they are no longer used)
-	KviDictIterator<KviKvsPopupMenu> iter(copy);
+	QHash<QString,KviKvsPopupMenu*>::iterator iter(copy.begin());
 
-	while(iter.current())
+	while(iter != copy.end())
 	{
-		KviKvsPopupManager::instance()->remove(iter.currentKey());
+		KviKvsPopupManager::instance()->remove(iter.key());
 		++iter;
 	}
 	

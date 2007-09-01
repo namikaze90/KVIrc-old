@@ -35,6 +35,7 @@
 
 #include <qfile.h>
 #include <time.h>
+#include <QList>
 
 
 #define kvi_file_offset_t qlonglong
@@ -95,8 +96,8 @@ public:
 	bool skipFirst(char t,unsigned int maxdist = 0xffffffff);
 	bool skipFirst(const KviStr &t,unsigned int maxdist = 0xffffffff);
 
-	bool save(KviPtrList<KviStr> * pData);
-	bool load(KviPtrList<KviStr> * pData);
+	bool save(QList<KviStr*> * pData);
+	bool load(QList<KviStr*> * pData);
 };
 
 

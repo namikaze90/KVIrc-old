@@ -88,10 +88,9 @@ void KviFileTransferManager::invokeTransferWindow(KviWindow * pWnd,bool bCreateM
 {
 	if(!m_pTransferWindow)
 	{
-		KviDict<QVariant> d(7,false);
-		d.setAutoDelete(true);
-		d.replace("bCreateMinimized",new QVariant(bCreateMinimized,0));
-		d.replace("bNoRaise",new QVariant(bNoRaise,0));
+		QHash<QString,QVariant> d;
+		d.insert("bCreateMinimized",QVariant(bCreateMinimized,0));
+		d.insert("bNoRaise",QVariant(bNoRaise,0));
 
 		KviModuleExtensionManager::instance()->allocateExtension(
 				"tool",

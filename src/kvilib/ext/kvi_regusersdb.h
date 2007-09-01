@@ -36,9 +36,9 @@
 #include "kvi_ircmask.h"
 #include "kvi_debug.h"
 
-#include "kvi_list.h"
-#include "kvi_dict.h"
 #include <qobject.h>
+#include <QHash>
+#include <QSet>
 
 class KviRegisteredUserDataBase;
 
@@ -70,9 +70,9 @@ private:
 	int                        m_iIgnoreFlags;
 	bool                       m_bIgnoreEnabled;
 	QString                    m_szName;
-	QString					   m_szGroup;
-	KviDict<QString>           * m_pPropertyDict;   // owned properties
-	KviPtrList<KviIrcMask>     * m_pMaskList;       // owned masks
+	QString					     m_szGroup;
+	QHash<QString,QString>           * m_pPropertyDict;   // owned properties
+	QSet<KviIrcMask*>     * m_pMaskList;       // owned masks
 protected:
 	// mask ownership is transferred! (always!) returns false if the mask was already there
 	bool addMask(KviIrcMask * mask);
@@ -100,9 +100,9 @@ public:
 	bool getProperty(const QString &name,QString &value); // returns false if the property is not there
 	bool getBoolProperty(const QString &name,bool def=FALSE);           // returns true if the property is there and is true
 	// the propertyDict may be 0!
-	KviDict<QString> * propertyDict(){ return m_pPropertyDict; };
+	QHash<QString,QString> * propertyDict(){ return m_pPropertyDict; };
 	// this is never zero (but may contain no masks)
-	KviPtrList<KviIrcMask> * maskList(){ return m_pMaskList; };
+	QSet<KviIrcMask*> * maskList(){ return m_pMaskList; };
 };
 
 //============================================================================================================
@@ -142,7 +142,6 @@ public:
 	KviIrcMask        * mask(){ return m_pMask; };
 };
 
-typedef KviPtrList<KviRegisteredMask> KviRegisteredMaskList;
 
 //=================================================================================================
 //
@@ -153,6 +152,7 @@ typedef KviPtrList<KviRegisteredMask> KviRegisteredMaskList;
 //    m_pMaskDict contains lists of non wild-nick KviRegisteredMask that point to users
 //    m_pWildMaskList is a list of wild-nick KviRegisteredMask that point to users
 //
+typedef QSet<KviRegisteredMask*> KviRegisteredMaskList;
 
 class KVILIB_API KviRegisteredUserDataBase : public QObject
 {
@@ -161,17 +161,17 @@ public:
 	KviRegisteredUserDataBase();
 	~KviRegisteredUserDataBase();
 private:
-	KviDict<KviRegisteredUser>     * m_pUserDict; // unique namespace, owns the objects, does not copy keys
-	KviDict<KviRegisteredMaskList> * m_pMaskDict; // owns the objects, copies the keys
-	KviRegisteredMaskList          * m_pWildMaskList; // owns the objects
-	KviDict<KviRegisteredUserGroup>* m_pGroupDict;
+	QHash<QString,KviRegisteredUser*>     * m_pUserDict; // unique namespace, owns the objects, does not copy keys
+	QHash<QString,KviRegisteredMaskList*>        * m_pMaskDict; // owns the objects, copies the keys
+	QSet<KviRegisteredMask*>              * m_pWildMaskList; // owns the objects
+	QHash<QString,KviRegisteredUserGroup*>*        m_pGroupDict;
 public:
 	void copyFrom(KviRegisteredUserDataBase * db);
 	KviRegisteredUser * addUser(const QString &name); // returns 0 if already there
 	KviRegisteredUser * getUser(const QString &name); // returns existing or adds
 	bool removeUser(const QString &name);
 	bool removeGroup(const QString &name);
-	KviRegisteredUser * findUserByName(const QString &name){ return m_pUserDict->find(name); };
+	KviRegisteredUser * findUserByName(const QString &name){ return m_pUserDict->value(name); };
 	// mask must be allocated on the heap and the ownership is transferred!
 	// returns non zero if there is already an user with this mask (returns the pointer to it!)
 	KviRegisteredUser * addMask(KviRegisteredUser * u,KviIrcMask * mask);
@@ -186,8 +186,8 @@ public:
 	void load(const QString &filename);
 	void save(const QString &filename);
 
-	KviDict<KviRegisteredUser> * userDict(){ return m_pUserDict; };
-	KviDict<KviRegisteredUserGroup>* groupDict() { return m_pGroupDict; };
+	QHash<QString,KviRegisteredUser*> * userDict(){ return m_pUserDict; };
+	QHash<QString,KviRegisteredUserGroup*>* groupDict() { return m_pGroupDict; };
 	
 	KviRegisteredUserGroup* addGroup(const QString &name);
 signals:

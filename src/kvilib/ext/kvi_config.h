@@ -36,15 +36,15 @@
 #include <qrect.h>
 #include <qstringlist.h>
 #include <QTextCharFormat>
+#include <QHash>
 
 #define KVI_CONFIG_DEFAULT_GROUP "KVIrc"
 
 class KviPixmap;
 class KviMsgType;
 
-typedef KviDict<QString> KviConfigGroup;
-typedef KviDictIterator<QString> KviConfigGroupIterator;
-typedef KviDictIterator<KviConfigGroup> KviConfigIterator;
+typedef QHash<QString,QString> KviConfigGroup;
+typedef QHash<QString,KviConfigGroup*>::iterator KviConfigIterator;
 
 class KVILIB_API KviConfig : public KviHeapObject
 {
@@ -56,7 +56,7 @@ public:
 	~KviConfig();
 private:
 	bool                         m_bLocal8Bit;
-	KviDict<KviConfigGroup>      * m_pDict;
+	QHash<QString,KviConfigGroup*>      * m_pDict;
 	QString                      m_szFileName;
 	bool                         m_bDirty;
 	QString                      m_szStrBuffer;
@@ -90,7 +90,7 @@ public:
 	// as default configuration, alter its settings and save it to the
 	// user local configuration directory
 	void setSavePath(const QString & savePath){ m_szFileName = savePath; };
-	KviDict<KviConfigGroup> *dict(){ return m_pDict; };
+	QHash<QString,KviConfigGroup*> *dict(){ return m_pDict; };
 
 	void clearDirtyFlag(){ m_bDirty = false; };
 	void clear();
@@ -126,8 +126,8 @@ public:
 	void writeEntry(const QString & szKey,const QRect &rct);
 	QStringList readStringListEntry(const QString & szKey,const QStringList &list);
 	void writeEntry(const QString & szKey,const QStringList &list);
-	KviValueList<int> readIntListEntry(const QString & ,const KviValueList<int> &list);
-	void writeEntry(const QString & szKey,const KviValueList<int> &list);
+	QList<int> readIntListEntry(const QString & ,const QList<int> &list);
+	void writeEntry(const QString & szKey,const QList<int> &list);
 	QString readQStringEntry(const QString & szKey,const QString &szDefault = QString::null)
 		{ return readEntry(szKey,szDefault); };
 	//void writeEntry(const QString & szKey,const QString &szValue);
@@ -141,16 +141,9 @@ public:
 	unsigned short int readUShortEntry(const QString & szKey,unsigned short int usDefault);
 	void writeEntry(const QString & szKey,unsigned int iValue);
 	unsigned int readUIntEntry(const QString & szKey,unsigned int iDefault);
-	void writeEntry(const QString & szKey,char iValue);
-	char readCharEntry(const QString & szKey,char iDefault);
-	void writeEntry(const QString & szKey,unsigned char iValue);
-	unsigned char readUCharEntry(const QString & szKey,unsigned char iDefault);
 	
 	QTextCharFormat readTextCharFormatEntry(const QString & szKey,const QTextCharFormat& def);
 	void writeEntry(const QString & szKey,const QTextCharFormat& value);
-
-	static void getFontProperties(KviStr & buffer,QFont *fnt);
-	static void setFontProperties(KviStr & str,QFont *fnt);
 
 #ifdef COMPILE_ON_WINDOWS
 	// On windows we need to override new and delete operators

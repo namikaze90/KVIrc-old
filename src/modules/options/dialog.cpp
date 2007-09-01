@@ -53,7 +53,7 @@
 #include <qevent.h>
 
 //extern KviModule * g_pOptionsModule;
-extern KviDict<KviOptionsDialog> * g_pOptionsDialogDict;
+extern QHash<QString,KviOptionsDialog*> * g_pOptionsDialogDict;
 
 extern KVIRC_API KviApp * g_pApp;
 extern KviOptionsInstanceManager * g_pOptionsInstanceManager;

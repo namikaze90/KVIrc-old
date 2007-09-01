@@ -31,7 +31,7 @@
 
 #include "kvi_dict.h"
 
-static KviDict<KviConfig> * g_pConfigDict = 0;
+static QHash<QString,KviConfig*> * g_pConfigDict = 0;
 static int g_iNextConfigId = 0;
 
 /*
@@ -107,15 +107,15 @@ static bool config_kvs_fnc_open(KviKvsModuleFunctionCall * c)
 	if(KviFileUtils::isAbsolutePath(szFile))szAbsFile = szFile;
 	else g_pApp->getLocalKvircDirectory(szAbsFile,KviApp::ConfigScripts,szFile,true);
 
-	KviDictIterator<KviConfig> it(*g_pConfigDict);
-	while(it.current())
+	QHash<QString,KviConfig*>::iterator it(g_pConfigDict->begin());
+	while(it != g_pConfigDict->begin())
 	{
-		if(KviQString::equalCI(it.current()->fileName(),szAbsFile))
+		if(KviQString::equalCI(it.value()->fileName(),szAbsFile))
 		{
-			c->returnValue()->setString(it.currentKey());
-			if(it.current()->readOnly() && (fileMode & KviConfig::Write))
+			c->returnValue()->setString(it.key());
+			if(it.value()->readOnly() && (fileMode & KviConfig::Write))
 			{
-				it.current()->setReadOnly(false);
+				it.value()->setReadOnly(false);
 			}
 			return true;
 		}
@@ -163,12 +163,12 @@ static bool config_kvs_fnc_id(KviKvsModuleFunctionCall * c)
 	if(KviFileUtils::isAbsolutePath(szFile))szAbsFile = szFile;
 	else g_pApp->getLocalKvircDirectory(szAbsFile,KviApp::ConfigScripts,szFile,true);
 
-	KviDictIterator<KviConfig> it(*g_pConfigDict);
-	while(it.current())
+	QHash<QString,KviConfig*>::iterator it(g_pConfigDict->begin());
+	while(it != g_pConfigDict->begin())
 	{
-		if(KviQString::equalCI(it.current()->fileName(),szAbsFile))
+		if(KviQString::equalCI(it.value()->fileName(),szAbsFile))
 		{
-			c->returnValue()->setString(it.currentKey());
+			c->returnValue()->setString(it.key());
 			return true;
 		}
 		++it;
@@ -211,7 +211,7 @@ static bool config_kvs_fnc_read(KviKvsModuleFunctionCall * c)
 		KVSM_PARAMETER("default",KVS_PT_STRING,KVS_PF_OPTIONAL,szDefault)
 	KVSM_PARAMETERS_END(c)
 	
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -247,7 +247,7 @@ static bool config_kvs_fnc_section(KviKvsModuleFunctionCall * c)
 		KVSM_PARAMETER("id",KVS_PT_STRING,0,szId)
 	KVSM_PARAMETERS_END(c)
 	
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -285,7 +285,7 @@ static bool config_kvs_fnc_readonly(KviKvsModuleFunctionCall * c)
 		KVSM_PARAMETER("id",KVS_PT_STRING,0,szId)
 	KVSM_PARAMETERS_END(c)
 	
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -323,7 +323,7 @@ static bool config_kvs_fnc_filename(KviKvsModuleFunctionCall * c)
 		KVSM_PARAMETER("id",KVS_PT_STRING,0,szId)
 	KVSM_PARAMETERS_END(c)
 	
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -360,7 +360,7 @@ static bool config_kvs_fnc_hassection(KviKvsModuleFunctionCall * c)
 		KVSM_PARAMETER("id",KVS_PT_STRING,0,szSect)
 	KVSM_PARAMETERS_END(c)
 	
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -396,16 +396,16 @@ static bool config_kvs_fnc_sectionlist(KviKvsModuleFunctionCall * c)
 		KVSM_PARAMETER("id",KVS_PT_STRING,0,szId)
 	KVSM_PARAMETERS_END(c)
 	
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
-		KviConfigIterator it(*(cfg->dict()));
+		KviConfigIterator it(cfg->dict()->begin());
 		KviKvsArray* pArray = new KviKvsArray();
 		int id=0;
-		while(it.current())
+		while(it != cfg->dict()->end())
 		{
-			pArray->set(id++, new KviKvsVariant(it.currentKey()));
+			pArray->set(id++, new KviKvsVariant(it.key()));
 			++it;
 		}
 		c->returnValue()->setArray(pArray);
@@ -440,21 +440,21 @@ static bool config_kvs_fnc_keylist(KviKvsModuleFunctionCall * c)
 		KVSM_PARAMETER("id",KVS_PT_STRING,0,szId)
 	KVSM_PARAMETERS_END(c)
 	
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
-		KviConfigGroup * d = cfg->dict()->find(cfg->group());
+		KviConfigGroup * d = cfg->dict()->value(cfg->group());
 		if(!d)return true;
 
-		KviConfigGroupIterator it(*d);
+		KviConfigGroup::iterator it(d->begin());
 
 		KviKvsArray* pArray = new KviKvsArray();
 		int id=0;
 		
-		while(it.current())
+		while(it != d->end())
 		{
-			pArray->set(id++, new KviKvsVariant(it.currentKey()));
+			pArray->set(id++, new KviKvsVariant(it.key()));
 			++it;
 		}
 		c->returnValue()->setArray(pArray);
@@ -489,10 +489,10 @@ static bool config_kvs_fnc_filelist(KviKvsModuleFunctionCall * c)
 	KviKvsArray* pArray = new KviKvsArray();
 	int id=0;
 	
-	KviDictIterator<KviConfig> it(*g_pConfigDict);
-	while(it.current())
+	QHash<QString,KviConfig*>::iterator it(g_pConfigDict->begin());
+	while(it != g_pConfigDict->begin())
 	{
-		pArray->set(id++, new KviKvsVariant(it.currentKey()));
+		pArray->set(id++, new KviKvsVariant(it.key()));
 		++it;
 	}
 	c->returnValue()->setArray(pArray);
@@ -529,7 +529,7 @@ static bool config_kvs_cmd_close(KviKvsModuleCommandCall * c)
 		KVSM_PARAMETER("id",KVS_PT_STRING,0,szId) 
 	KVSM_PARAMETERS_END(c) 
 
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -576,7 +576,7 @@ static bool config_kvs_cmd_flush(KviKvsModuleCommandCall * c)
 		KVSM_PARAMETER("id",KVS_PT_STRING,0,szId) 
 	KVSM_PARAMETERS_END(c) 
 
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -620,7 +620,7 @@ static bool config_kvs_cmd_clear(KviKvsModuleCommandCall * c)
 		KVSM_PARAMETER("id",KVS_PT_STRING,0,szId) 
 	KVSM_PARAMETERS_END(c) 
 
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -664,7 +664,7 @@ static bool config_kvs_cmd_clearsection(KviKvsModuleCommandCall * c)
 		KVSM_PARAMETER("section",KVS_PT_STRING,0,szSect)
 	KVSM_PARAMETERS_END(c) 
 
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -714,7 +714,7 @@ static bool config_kvs_cmd_write(KviKvsModuleCommandCall * c)
 		KVSM_PARAMETER("value",KVS_PT_STRING,0,szVal)
 	KVSM_PARAMETERS_END(c) 
 
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -757,7 +757,7 @@ static bool config_kvs_cmd_setsection(KviKvsModuleCommandCall * c)
 		KVSM_PARAMETER("section",KVS_PT_STRING,0,szSect)
 	KVSM_PARAMETERS_END(c) 
 
-	KviConfig * cfg = g_pConfigDict->find(szId);
+	KviConfig * cfg = g_pConfigDict->value(szId);
 	
 	if(cfg)
 	{
@@ -830,8 +830,7 @@ static bool config_kvs_cmd_setsection(KviKvsModuleCommandCall * c)
 
 static bool config_module_init(KviModule * m)
 {
-	g_pConfigDict = new KviDict<KviConfig>;
-	g_pConfigDict->setAutoDelete(true);
+	g_pConfigDict = new QHash<QString,KviConfig*>;
 
 	KVSM_REGISTER_FUNCTION(m,"open",config_kvs_fnc_open);
 	KVSM_REGISTER_FUNCTION(m,"id",config_kvs_fnc_id);
@@ -856,6 +855,7 @@ static bool config_module_init(KviModule * m)
 
 static bool config_module_cleanup(KviModule *m)
 {
+	foreach(KviConfig* i,*g_pConfigDict) { delete i;}
 	delete g_pConfigDict;
     g_pConfigDict = 0;
 	return true;

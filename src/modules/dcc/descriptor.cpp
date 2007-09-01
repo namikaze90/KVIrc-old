@@ -35,9 +35,9 @@
 
 
 static unsigned int g_uNextDescriptorId = 1; // we use 0 as an invalid descriptor id
-static KviIntDict<KviDccDescriptor> * g_pDescriptorDict = 0;
+static QHash<int,KviDccDescriptor*> * g_pDescriptorDict = 0;
 
-KviIntDict<KviDccDescriptor> * KviDccDescriptor::descriptorDict()
+QHash<int,KviDccDescriptor*> * KviDccDescriptor::descriptorDict()
 {
 	return g_pDescriptorDict;
 }
@@ -62,10 +62,9 @@ KviDccDescriptor::KviDccDescriptor(KviConsole * pConsole)
 	
 	if(!g_pDescriptorDict)
 	{
-		g_pDescriptorDict = new KviIntDict<KviDccDescriptor>;
-		g_pDescriptorDict->setAutoDelete(false);
+		g_pDescriptorDict = new QHash<int,KviDccDescriptor*>;
 	}
-	g_pDescriptorDict->replace((long)m_uId,this);
+	g_pDescriptorDict->insert((long)m_uId,this);
 
 	szNick       = __tr_ctx("unknown","dcc");
 	szUser       = szNick;
@@ -151,7 +150,7 @@ void KviDccDescriptor::triggerCreationEvent()
 KviDccDescriptor * KviDccDescriptor::find(unsigned int uId)
 {
 	if(!g_pDescriptorDict)return 0;
-	return g_pDescriptorDict->find((long)uId);
+	return g_pDescriptorDict->value((long)uId);
 }
 
 /*

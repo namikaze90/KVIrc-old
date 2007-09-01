@@ -77,7 +77,7 @@ KviRegisteredUserDataBase * g_pLocalRegisteredUserDataBase; // local copy!
 
 
 
-KviReguserPropertiesDialog::KviReguserPropertiesDialog(QWidget * p,KviDict<QString> * dict)
+KviReguserPropertiesDialog::KviReguserPropertiesDialog(QWidget * p,QHash<QString,QString> * dict)
 : QDialog(p,"property_editor",true)
 {
 	m_pPropertyDict = dict;
@@ -144,12 +144,12 @@ void KviReguserPropertiesDialog::closeEvent(QCloseEvent *e)
 void KviReguserPropertiesDialog::fillData()
 {
 	m_pTable->setNumRows(m_pPropertyDict->count());
-	KviDictIterator<QString> it(*m_pPropertyDict);
+	QHash<QString,QString>::iterator it(m_pPropertyDict->begin());
 	int row = 0;
-	while(it.current())
+	while(it != m_pPropertyDict->end())
 	{
-		m_pTable->setItem(row,0,new Kvi_Tal_TableItem(m_pTable,Kvi_Tal_TableItem::OnTyping,it.currentKey()));
-		m_pTable->setItem(row,1,new Kvi_Tal_TableItem(m_pTable,Kvi_Tal_TableItem::OnTyping,*(it.current())));
+		m_pTable->setItem(row,0,new Kvi_Tal_TableItem(m_pTable,Kvi_Tal_TableItem::OnTyping,it.key()));
+		m_pTable->setItem(row,1,new Kvi_Tal_TableItem(m_pTable,Kvi_Tal_TableItem::OnTyping,it.value()));
 		++row;
 		++it;
 	}
@@ -167,7 +167,7 @@ void KviReguserPropertiesDialog::okClicked()
 		QString szValue = m_pTable->text(i,1);
 		if((!szName.isEmpty()) && (!szValue.isEmpty()))
 		{
-			m_pPropertyDict->replace(szName,new QString(szValue));
+			m_pPropertyDict->insert(szName,szValue);
 		}
 	}
 
@@ -320,8 +320,7 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 		KviStringConversion::fromString(col,(*m_pCustomColor));
 	}
 	
-	m_pPropertyDict = new KviDict<QString>(17,false);
-	m_pPropertyDict->setAutoDelete(true);
+	m_pPropertyDict = new QHash<QString,QString>;
 
 	//setMinimumSize(400,450);
 
@@ -487,7 +486,7 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 	{
 		m_pNameEdit->setText(r->name());
 		m_pCommentEdit->setText(r->getProperty("comment"));
-		for(KviIrcMask * m = r->maskList()->first();m;m = r->maskList()->next())
+		foreach(KviIrcMask * m ,*(r->maskList()))
 		{
 			QString mk = m->nick();
 			mk += QChar('!');
@@ -507,12 +506,7 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 		
 		if(r->propertyDict())
 		{
-			KviDictIterator<QString> it(*(r->propertyDict()));
-			while(QString *s = it.current())
-			{
-				m_pPropertyDict->insert(it.currentKey(),new QString(*s));
-				++it;
-			}
+			*m_pPropertyDict = *(r->propertyDict());
 		}
 
 		m_pIgnoreEnabled->setChecked(r->ignoreEnagled());
@@ -629,12 +623,7 @@ void KviRegisteredUserEntryDialog::okClicked()
 	m_pPropertyDict->remove("notify");
 	m_pPropertyDict->remove("avatar");
 
-	KviDictIterator<QString> it(*m_pPropertyDict);
-	while(QString *s = it.current())
-	{
-		u->setProperty(it.currentKey(),*s);
-		++it;
-	}
+	*(u->propertyDict()) = *m_pPropertyDict;
 
 	u->setProperty("useCustomColor",m_pCustomColorCheck->isChecked());
 	
@@ -716,9 +705,9 @@ void KviRegisteredUserEntryDialog::editAllPropertiesClicked()
 	{
 		m_pPropertyDict->remove("avatar");
 	} else {
-		KviStr szPath = m_pAvatar->path();
+		QString szPath = m_pAvatar->path();
 		if(szPath.isEmpty())m_pPropertyDict->remove("avatar");
-		else m_pPropertyDict->replace("avatar",new QString(szPath));
+		else m_pPropertyDict->insert("avatar",szPath);
 	}
 
 	if(m_pNotifyCheck->isChecked())
@@ -727,7 +716,7 @@ void KviRegisteredUserEntryDialog::editAllPropertiesClicked()
 	
 		if(!szNicks.isEmpty())
 		{
-			m_pPropertyDict->replace("notify",new QString(szNicks));
+			m_pPropertyDict->insert("notify",szNicks);
 		} else {
 			m_pPropertyDict->remove("notify");
 		}
@@ -744,27 +733,23 @@ void KviRegisteredUserEntryDialog::editAllPropertiesClicked()
 	}
 	delete dlg;
 
-	QString * notify = m_pPropertyDict->find("notify");
+	QString notify = m_pPropertyDict->value("notify");
 	bool bGotIt = false;
-	if(notify)
+	if(!notify.isEmpty())
 	{
-		if(!notify->isEmpty())
-		{
-			bGotIt = true;
-			m_pNotifyNick->setText(*notify);
-		}
+		bGotIt = true;
+		m_pNotifyNick->setText(notify);
 	}
+	
 	m_pNotifyCheck->setChecked(bGotIt);
 	m_pNotifyNick->setEnabled(bGotIt);
 	if(!bGotIt)m_pNotifyNick->setText("");
 
-	QString * avatar = m_pPropertyDict->find("avatar");
+	QString avatar = m_pPropertyDict->value("avatar");
 	bGotIt = false;
-	if(avatar)
-	{
-		if(!avatar->isEmpty())
-			m_pAvatarSelector->setImagePath(*avatar);
-	}
+
+	if(!avatar.isEmpty())
+		m_pAvatarSelector->setImagePath(avatar);
 
 }
 

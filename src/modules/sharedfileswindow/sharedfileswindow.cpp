@@ -286,17 +286,14 @@ void KviSharedFilesWindow::editClicked()
 void KviSharedFilesWindow::fillFileView()
 {
 	m_pListView->clear();
-	KviDictIterator<KviSharedFileList> it(*(g_pSharedFilesManager->sharedFileListDict()));
-
 	KviSharedFilesListViewItem * itm;
 
-	while(KviSharedFileList * l = it.current())
+	foreach(KviSharedFileList * l,*(g_pSharedFilesManager->sharedFileListDict()))
 	{
-		for(KviSharedFile * o = l->first();o;o = l->next())
+		foreach(KviSharedFile * o,*l)
 		{
 			itm = new KviSharedFilesListViewItem(m_pListView,o);
 		}
-		++it;
 	}
 	enableButtons();
 }

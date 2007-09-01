@@ -66,9 +66,9 @@ protected:
 
 	KviPtrList<KviKvsObject>                   * m_pChildList;
 
-	KviDict<KviKvsObjectFunctionHandler>         * m_pFunctionHandlers;  // our function handlers
+	QHash<QString,KviKvsObjectFunctionHandler*>         * m_pFunctionHandlers;  // our function handlers
 
-	KviDict<KviKvsObjectConnectionList>          * m_pSignalDict;        // our signals connected to other object functions
+	QHash<QString,KviKvsObjectConnectionList*>  * m_pSignalDict;        // our signals connected to other object functions
 
 	KviKvsObjectConnectionList                 * m_pConnectionList;    // signals connected to this object functions
 	
@@ -110,7 +110,7 @@ public:
 	kvs_hobject_t signalSender(){ return m_hSignalSender; };
 	void setSignalName(const QString &szSigName){ m_szSignalName = szSigName; };
 
-	KviDict<KviKvsObjectFunctionHandler> * functionHandlers(){ return m_pFunctionHandlers; };
+	QHash<QString,KviKvsObjectFunctionHandler*> * functionHandlers(){ return m_pFunctionHandlers; };
 
 	KviKvsHash * dataContainer(){ return m_pDataContainer; };
 

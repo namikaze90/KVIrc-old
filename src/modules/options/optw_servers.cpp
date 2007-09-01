@@ -1289,9 +1289,8 @@ void KviServerOptionsWidget::fillServerList()
 	KviServerOptionsListViewItem * srv;
 	KviServerOptionsListViewItem * cur = 0;
 
-	KviDictIterator<KviIrcServerDataBaseRecord> it(*(g_pIrcServerDataBase->recordDict()));
 
-	while(KviIrcServerDataBaseRecord * r = it.current())
+	foreach(KviIrcServerDataBaseRecord * r, *(g_pIrcServerDataBase->recordDict()))
 	{
 		net = new KviServerOptionsListViewItem(m_pListView,*(g_pIconManager->getSmallIcon(KVI_SMALLICON_WORLD)),r->network());
 		KviPtrList<KviIrcServer> * sl = r->serverList();
@@ -1307,7 +1306,6 @@ void KviServerOptionsWidget::fillServerList()
 				cur = srv;
 			}
 		}
-		++it;
 	}
 	if(cur)m_pListView->ensureItemVisible(cur);
 }

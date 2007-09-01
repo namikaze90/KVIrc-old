@@ -27,6 +27,7 @@
 
 #include "kvi_settings.h"
 
+//#ifndef __KVILIB__
 // TODO: Qt4
 #include <q3ptrlist.h>
 #define KviPtrList Q3PtrList
@@ -39,4 +40,5 @@
 	template class KVILIB_API KviPtrList<KviStr>;
 #endif
 
+//#endif
 #endif //_KVI_LIST_H_

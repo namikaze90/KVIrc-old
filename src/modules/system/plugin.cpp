@@ -212,8 +212,7 @@ void KviPlugin::setName(const QString& Name)
 
 KviPluginManager::KviPluginManager()
 {
-	m_pPluginDict = new KviDict<KviPlugin>(5,false);
-	m_pPluginDict->setAutoDelete(false);
+	m_pPluginDict = new QHash<QString,KviPlugin*>;
 	
 	m_bCanUnload = true;
 }
@@ -339,20 +338,21 @@ bool KviPluginManager::checkUnload()
 	Always called when system module should be unloaded
 	Checking here if all small "modules" can be unloaded	
 	*/
-	KviDictIterator<KviPlugin> it(*m_pPluginDict);
+	QHash<QString,KviPlugin*>::iterator it(m_pPluginDict->begin());
 	
 	m_bCanUnload = true;
 	
-	while(it.current())
+	while(it != m_pPluginDict->end())
 	{
-		if(it.current()->canunload())
+		if(it.value()->canunload())
 		{
-			it.current()->unload();
-			m_pPluginDict->remove(it.currentKey());
+			it.value()->unload();
+			it = m_pPluginDict->erase(it);
 		} else {
-			m_pPluginDict++;
 			m_bCanUnload = false;
+			++it;
 		}
+		
 	}
 	
 	return m_bCanUnload;
@@ -360,12 +360,12 @@ bool KviPluginManager::checkUnload()
 
 void KviPluginManager::unloadAll()
 {
-	KviDictIterator<KviPlugin> it(*m_pPluginDict);
+	QHash<QString,KviPlugin*>::iterator it(m_pPluginDict->begin());
 	
-	while(it.current())
+	while(it != m_pPluginDict->end())
 	{
-			it.current()->unload();
-			m_pPluginDict->remove(it.currentKey());
+			it.value()->unload();
+			it = m_pPluginDict->erase(it);
 	}
 }
 
@@ -397,7 +397,7 @@ bool KviPluginManager::findPlugin(QString& szPath)
 
 bool KviPluginManager::isPluginLoaded(const QString& pSingleName)
 {
-	KviPlugin * p = m_pPluginDict->find(pSingleName);
+	KviPlugin * p = m_pPluginDict->value(pSingleName);
 	if (!p)
 		return false;
 	else
@@ -422,6 +422,6 @@ bool KviPluginManager::loadPlugin(const QString& szPluginPath)
 
 KviPlugin * KviPluginManager::getPlugin(const QString& szPluginPath)
 {
-	KviPlugin * p = m_pPluginDict->find(szPluginPath);
+	KviPlugin * p = m_pPluginDict->value(szPluginPath);
 	return p;
 }

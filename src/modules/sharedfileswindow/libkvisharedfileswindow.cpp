@@ -47,13 +47,14 @@ static KviModuleExtension * sharedfileswindow_extension_alloc(KviModuleExtension
 	{
 		if(s->pParams)
 		{
-			if(QVariant * v = s->pParams->find("bCreateMinimized"))
+			if(s->pParams->contains("bNoRaise"))
 			{
-				if(v->isValid())
+				QVariant v = s->pParams->value("bNoRaise");
+				if(v.isValid())
 				{
-					if(v->type() == QVariant::Bool)
+					if(v.type() == QVariant::Bool)
 					{
-						bCreateMinimized = v->toBool();
+						bCreateMinimized = v.toBool();
 					}
 				}
 			}
@@ -67,13 +68,11 @@ static KviModuleExtension * sharedfileswindow_extension_alloc(KviModuleExtension
 
 	if(s->pParams)
 	{
-		if(QVariant * v = s->pParams->find("bNoRaise"))
+		if(s->pParams->contains("bNoRaise"))
 		{
-			if(v)
-			{
-				if(v->isValid() && v->type() == QVariant::Bool)
-					bNoRaise = v->toBool();
-			}
+			QVariant v = s->pParams->value("bNoRaise");
+			if(v.isValid() && v.type() == QVariant::Bool)
+				bNoRaise = v.toBool();
 		}
 	}
 
@@ -106,10 +105,9 @@ static bool sharedfileswindow_kvs_cmd_open(KviKvsModuleCommandCall * c)
 	KviModuleExtensionDescriptor * d = c->module()->findExtensionDescriptor("tool",KVI_SHARED_FILES_WINDOW_EXTENSION_NAME);
 	if(d)
 	{
-		KviDict<QVariant> dict(17,true);
-		dict.setAutoDelete(true);
-		dict.replace("bCreateMinimized",new QVariant(c->hasSwitch('m',"minimized")));
-		dict.replace("bNoRaise",new QVariant(c->hasSwitch('n',"noraise")));
+		QHash<QString,QVariant> dict;
+		dict.insert("bCreateMinimized",QVariant(c->hasSwitch('m',"minimized")));
+		dict.insert("bNoRaise",QVariant(c->hasSwitch('n',"noraise")));
 
 		d->allocate(c->window(),&dict,0);
 	} else {

@@ -28,7 +28,7 @@
 #include "kvi_action.h"
 
 #include <qobject.h>
-#include "kvi_dict.h"
+#include <QHash>
 
 class KviActionDrawer;
 class KviCustomToolBar;
@@ -45,8 +45,8 @@ public:
 	~KviActionManager();
 protected:
 	static KviActionManager * m_pInstance;
-	KviDict<KviAction> * m_pActions;
-	KviDict<KviActionCategory> * m_pCategories;
+	QHash<QString,KviAction*> * m_pActions;
+	QHash<QString,KviActionCategory*> * m_pCategories;
 	static bool m_bCustomizingToolBars;
 	
 	// action categories
@@ -74,9 +74,9 @@ public:
 	static KviActionCategory * categoryChannel(){ return m_pCategoryChannel; };
 	static KviActionCategory * categoryTools(){ return m_pCategoryTools; };
 	
-	KviDict<KviAction> * actions(){ return m_pActions; };
+	QHash<QString,KviAction*> * actions(){ return m_pActions; };
 	KviActionCategory * category(const QString &szName);
-	KviDict<KviActionCategory> * categories(){ return m_pCategories; };
+	QHash<QString,KviActionCategory*> * categories(){ return m_pCategories; };
 	
 	void killAllKvsUserActions();
 
@@ -95,7 +95,7 @@ public:
 	void emitRemoveActionsHintRequest();
 protected:
 	void setCurrentToolBar(KviCustomToolBar * t);
-	KviAction * findAction(const QString &szName){ return m_pActions->find(szName); };
+	KviAction * findAction(const QString &szName){ return m_pActions->value(szName); };
 	void customizeToolBarsDialogCreated();
 	void customizeToolBarsDialogDestroyed();
 	void tryFindCurrentToolBar();

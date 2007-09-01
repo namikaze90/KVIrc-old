@@ -2601,27 +2601,25 @@ static bool dcc_kvs_fnc_sessionList(KviKvsModuleFunctionCall * c)
 	KviKvsArray * a = new KviKvsArray();
 	c->returnValue()->setArray(a);
 
-	KviIntDict<KviDccDescriptor> * dict = KviDccDescriptor::descriptorDict();
+	QHash<int,KviDccDescriptor*> * dict = KviDccDescriptor::descriptorDict();
 	if(!dict)return true;
 
-	KviIntDictIterator<KviDccDescriptor> it(*dict);
-
+	
 	int idx = 0;
 	
 	if(szFlags.isEmpty())
 	{
 		// all
-		while(KviDccDescriptor * dcc = it.current())
+		foreach(KviDccDescriptor * dcc,*dict)
 		{
 			a->set(idx++,new KviKvsVariant((kvs_int_t)(dcc->id())));
-			++it;
 		}
 	} else {
 		bool bWantFileUploads = szFlags.find('u',false) != -1;
 		bool bWantFileDownloads = szFlags.contains('d',false) != -1;
 		bool bWantChats = szFlags.contains('c',false) != -1;
 
-		while(KviDccDescriptor * dcc = it.current())
+		foreach(KviDccDescriptor * dcc,*dict)
 		{
 			if((dcc->isFileUpload() && bWantFileUploads) ||
 				(dcc->isFileDownload() && bWantFileDownloads) ||
@@ -2629,7 +2627,6 @@ static bool dcc_kvs_fnc_sessionList(KviKvsModuleFunctionCall * c)
 			{
 				a->set(idx++,new KviKvsVariant((kvs_int_t)(dcc->id())));
 			}
-			++it;
 		}
 	}
 

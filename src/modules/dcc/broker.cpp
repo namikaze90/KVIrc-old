@@ -60,12 +60,12 @@ KviDccBroker::KviDccBroker()
 	m_pDccWindowList = new KviPtrList<KviWindow>;
 	m_pDccWindowList->setAutoDelete(false);
 
-	m_pZeroPortTags = new KviDict<KviDccZeroPortTag>(17);
-	m_pZeroPortTags->setAutoDelete(true);
+	m_pZeroPortTags = new QHash<QString,KviDccZeroPortTag*>;
 }
 
 KviDccBroker::~KviDccBroker()
 {
+	foreach(KviDccZeroPortTag* i,*m_pZeroPortTags){ delete i;}
 	delete m_pZeroPortTags;
 	while(m_pBoxList->first())delete m_pBoxList->first();
 	delete m_pBoxList;
@@ -92,7 +92,7 @@ KviDccZeroPortTag * KviDccBroker::addZeroPortTag()
 
 KviDccZeroPortTag * KviDccBroker::findZeroPortTag(const QString &szTag)
 {
-	KviDccZeroPortTag * t = m_pZeroPortTags->find(szTag);
+	KviDccZeroPortTag * t = m_pZeroPortTags->value(szTag);
 	if(!t)return 0;
 	if(t->m_tTimestamp.secsTo(QDateTime::currentDateTime()) > 180)
 	{
@@ -105,7 +105,7 @@ KviDccZeroPortTag * KviDccBroker::findZeroPortTag(const QString &szTag)
 
 void KviDccBroker::removeZeroPortTag(const QString &szTag)
 {
-	m_pZeroPortTags->remove(szTag);
+	delete m_pZeroPortTags->take(szTag);
 }
 
 unsigned int KviDccBroker::dccBoxCount()

@@ -53,12 +53,12 @@ class KviReguserPropertiesDialog : public QDialog
 {
 	Q_OBJECT
 public:
-	KviReguserPropertiesDialog(QWidget *p,KviDict<QString> * dict);
+	KviReguserPropertiesDialog(QWidget *p,QHash<QString,QString> * dict);
 	~KviReguserPropertiesDialog();
 protected:
 	Q3Table *m_pTable;
 
-	KviDict<QString>     * m_pPropertyDict;
+	QHash<QString,QString>     * m_pPropertyDict;
 	QPushButton        * m_pDelButton;
 	QPushButton        * m_pAddButton;
 protected:
@@ -114,7 +114,7 @@ protected:
 	KviPixmap          * m_pAvatar;
 	KviPixmapSelector  * m_pAvatarSelector;
 
-	KviDict<QString>     * m_pPropertyDict;
+	QHash<QString,QString>     * m_pPropertyDict;
 	
 	QCheckBox          * m_pCustomColorCheck;
 	QColor		   * m_pCustomColor;

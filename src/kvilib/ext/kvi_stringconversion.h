@@ -36,6 +36,7 @@
 #include <qstringlist.h>
 #include <qstring.h>
 #include <QTextCharFormat>
+#include <QList>
 
 
 namespace KviStringConversion 
@@ -59,7 +60,11 @@ namespace KviStringConversion
 	// uint <-> QString
 	extern KVILIB_API void toString(const unsigned int uValue,QString &buffer);
 	extern KVILIB_API bool fromString(const QString &szValue,unsigned int &buffer);
-
+	
+	// ushort <-> QString
+	extern KVILIB_API void toString(const unsigned short uValue,QString &buffer);
+	extern KVILIB_API bool fromString(const QString &szValue,unsigned short &buffer);
+	
 	// QRect <-> QString
 	extern KVILIB_API void toString(const QRect &rValue,QString &buffer);
 	extern KVILIB_API bool fromString(const QString &szValue,QRect &buffer);
@@ -91,6 +96,10 @@ namespace KviStringConversion
 	// QTextCharFormat <-> QString
 	extern KVILIB_API void toString(const QTextCharFormat &fValue,QString &buffer);
 	extern KVILIB_API bool fromString(const QString &szValue,QTextCharFormat &buffer);
+	
+	// QList<int> <-> QString
+	extern KVILIB_API void toString(const QList<int> &fValue,QString &buffer);
+	extern KVILIB_API bool fromString(const QString &szValue,QList<int> &buffer);
 };
 
 #endif //!_KVI_STRINGCONVERSION_H_

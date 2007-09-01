@@ -381,13 +381,13 @@ void KviListWindow::importList()
 		m_pItemList->clear();
 
 		KviConfig cfg(szFile,KviConfig::Read);
-		KviConfigIterator it(*cfg.dict());
-		while(it.current())
+		KviConfigIterator it(cfg.dict()->begin());
+		while(it != cfg.dict()->end())
 		{
-			cfg.setGroup(it.currentKey());
+			cfg.setGroup(it.key());
 			m_pItemList->append( 
 					new KviChannelListViewItemData(
-						it.currentKey(),
+						it.key(),
 						cfg.readQStringEntry("users","0"),
 						cfg.readQStringEntry("topic","")
 					)

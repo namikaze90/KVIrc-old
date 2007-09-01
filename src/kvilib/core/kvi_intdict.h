@@ -27,9 +27,7 @@
 #include "kvi_settings.h"
 
 // TODO: Qt4
-#include <q3intdict.h>
-#define KviIntDict Q3IntDict
-#define KviIntDictIterator Q3IntDictIterator
+
 
 
 #endif //_KVI_INTDICT_H_

@@ -260,10 +260,9 @@ KviKvsTreeNodeCommand * KviKvsParser::parseSpecialCommandGlobal()
 
 		if(!m_pGlobals)
 		{
-			m_pGlobals = new KviDict<QString>(17,false);
-			m_pGlobals->setAutoDelete(true);
+			m_pGlobals = new QHash<QString,QString>;
 		}
-		m_pGlobals->replace(szIdentifier,new QString());
+		m_pGlobals->insert(szIdentifier,QString::null);
 		
 		skipSpaces();
 		

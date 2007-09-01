@@ -38,7 +38,7 @@ protected: // it only can be created and destroyed by KviKvsAliasManager::init()
 	KviKvsAliasManager();
 	~KviKvsAliasManager();
 protected:
-	KviDict<KviKvsScript>        * m_pAliasDict;
+	QHash<QString,KviKvsScript*>        * m_pAliasDict;
 	static KviKvsAliasManager  * m_pAliasManager;
 public:
 	static KviKvsAliasManager * instance()
@@ -46,15 +46,14 @@ public:
 	static void init(); // called by KviKvs::init()
 	static void done(); // called by KviKvs::done()
 
-	KviDict<KviKvsScript> * aliasDict(){ return m_pAliasDict; };
+	QHash<QString,KviKvsScript*> * aliasDict(){ return m_pAliasDict; };
 	const KviKvsScript * lookup(const QString & szName)
-		{ return m_pAliasDict->find(szName); };
+		{ return m_pAliasDict->value(szName); };
 	void add(const QString &szName,KviKvsScript * pAlias)
-		{ m_pAliasDict->replace(szName,pAlias); };
+		{ m_pAliasDict->insert(szName,pAlias); };
 	bool remove(const QString & szName)
-		{ return m_pAliasDict->remove(szName); };
-	void clear()
-		{ m_pAliasDict->clear(); };
+		{ return m_pAliasDict->value(szName); };
+	void clear();
 
 	void save(const QString & filename);
 	void load(const QString & filename);

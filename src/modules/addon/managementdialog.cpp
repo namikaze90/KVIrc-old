@@ -254,14 +254,11 @@ KviScriptManagementDialog::~KviScriptManagementDialog()
 void KviScriptManagementDialog::fillListView()
 {
 	m_pListView->clear();
-	KviDict<KviKvsScriptAddon> * d = KviKvsScriptAddonManager::instance()->addonDict();
-	if(!d)return;
-	KviDictIterator<KviKvsScriptAddon> it(*d);
+	if(!KviKvsScriptAddonManager::instance()->addonDict())return;
 	KviScriptAddonListViewItem * item;
-	while(KviKvsScriptAddon * a = it.current())
+	foreach(KviKvsScriptAddon * a,*(KviKvsScriptAddonManager::instance()->addonDict()))
 	{
 		item = new KviScriptAddonListViewItem(m_pListView,a);
-		++it;
 	}
 }
 

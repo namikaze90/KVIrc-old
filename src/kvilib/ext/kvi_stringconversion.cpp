@@ -30,7 +30,7 @@
 
 #include "kvi_qstring.h"
 #include <stdio.h>
-#include <QVariant>
+#include <QStringList>
 
 QString g_szGlobalDir;
 QString g_szLocalDir;
@@ -142,6 +142,18 @@ namespace KviStringConversion
 		return bOk;
 	}
 	
+	void toString(const unsigned short uValue,QString &buffer)
+	{
+		buffer.setNum(uValue);
+	}
+	
+	bool fromString(const QString & szValue,unsigned short &buffer)
+	{
+		bool bOk;
+		buffer= szValue.toUShort(&bOk);
+		return bOk;
+	}
+	
 	void toString(const QRect &rValue,QString &buffer)
 	{
 		buffer.sprintf("%d,%d,%d,%d",rValue.x(),rValue.y(),rValue.width(),rValue.height());
@@ -211,7 +223,15 @@ namespace KviStringConversion
 	
 	bool fromString(const QString & szValue,QColor &buffer)
 	{
-		buffer.setNamedColor(szValue); return true;
+		if(szValue[0]=='#') {
+			buffer.setNamedColor(szValue);
+		} else {
+			//compatability with kvirc3 configs
+			buffer.setRed(szValue.section(',',0,0).toInt());
+			buffer.setGreen(szValue.section(',',1,1).toInt());
+			buffer.setBlue(szValue.section(',',2,2).toInt());
+		}
+		return true;
 	}
 	
 	void toString(const QFont &fValue,QString &buffer)
@@ -304,6 +324,32 @@ namespace KviStringConversion
 		debug(szValue.section('/',1,1).section(',',1,1));
 		fromString(szValue.section('/',1,1).section(',',1,1),color);
 		buffer.setBackground(QBrush(color));
+		return true;
+	}
+	
+	void toString(const QList<int> &szValue,QString &buffer)
+	{
+		buffer.clear();
+		foreach(int i,szValue)
+		{
+			if(!buffer.isEmpty())
+			{
+				buffer.append(',');
+			}
+			KviQString::appendFormatted(buffer,"%d",i);
+		}
+	}
+		
+	bool fromString(const QString & szValue,QList<int> &buffer)
+	{
+		QStringList nums = szValue.split(',');
+		buffer.clear();
+		foreach(QString s,nums)
+		{
+			bool bOk;
+			buffer.append(s.toInt(&bOk));
+			if(!bOk) return false;
+		}
 		return true;
 	}
 

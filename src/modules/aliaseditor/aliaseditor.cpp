@@ -367,18 +367,13 @@ KviAliasNamespaceListViewItem * KviAliasEditor::createFullNamespaceItem(const QS
 
 void KviAliasEditor::oneTimeSetup()
 {
-	KviDict<KviKvsScript> * a = KviKvsAliasManager::instance()->aliasDict();
-	if(!a)return;
-
-	KviDictIterator<KviKvsScript> it(*a);
+	if(!KviKvsAliasManager::instance()->aliasDict())return;
 
 	KviAliasListViewItem * item;
-	while(it.current())
+	foreach(KviKvsScript * alias,*(KviKvsAliasManager::instance()->aliasDict()))
 	{
-		KviKvsScript * alias = it.current();
 		item = createFullAliasItem(alias->name());
 		item->setBuffer(alias->code());
-		++it;
 	}
 		
 	connect(m_pListView,SIGNAL(currentChanged(KviTalListViewItem *)),this,SLOT(currentItemChanged(KviTalListViewItem *)));

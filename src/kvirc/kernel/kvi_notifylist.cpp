@@ -166,11 +166,10 @@ void KviNotifyListManager::notifyOnLine(const QString &nick,const QString &user,
 	else
 		KviQString::sprintf(szWho,"\r!n\r%Q\r",&nick);
 	
-	KviDict<KviRegisteredUser> * d = g_pRegisteredUserDataBase->userDict();
-	KviDictIterator<KviRegisteredUser> it(*d);
+	QHash<QString,KviRegisteredUser*> * d = g_pRegisteredUserDataBase->userDict();
 	QString szNotify;
 	
-	while(KviRegisteredUser * u = it.current())
+	foreach(KviRegisteredUser * u,*d)
 	{
 		if(QStringList::split(",",u->getProperty("notify")).findIndex(nick)!=-1)
 		{
@@ -181,7 +180,6 @@ void KviNotifyListManager::notifyOnLine(const QString &nick,const QString &user,
 				KviQString::sprintf(szMsg,"%Q, Group \"%Q\" is on IRC as (%Q)",&(u->name()),&(u->group()),&szWho);
 			break;
 		}
-		++it;
 	}
 	QString szFmt = __tr2qs("%Q is on IRC");
 	
@@ -226,11 +224,10 @@ void KviNotifyListManager::notifyOffLine(const QString &nick,const QString &user
 	
 		QString szMsg;
 		
-		KviDict<KviRegisteredUser> * d = g_pRegisteredUserDataBase->userDict();
-		KviDictIterator<KviRegisteredUser> it(*d);
+		QHash<QString,KviRegisteredUser*> * d = g_pRegisteredUserDataBase->userDict();
 		QString szNotify;
 		
-		while(KviRegisteredUser * u = it.current())
+		foreach(KviRegisteredUser * u,*d)
 		{
 			if(QStringList::split(",",u->getProperty("notify")).findIndex(nick)!=-1)
 			{
@@ -241,7 +238,6 @@ void KviNotifyListManager::notifyOffLine(const QString &nick,const QString &user
 					KviQString::sprintf(szMsg,"%Q, Group \"%Q\" has left IRC as (%Q)",&(u->name()),&(u->group()),&szWho);
 				break;
 			}
-			++it;
 		}
 		
 		if(szMsg.isEmpty())
@@ -319,8 +315,7 @@ void KviNotifyListManager::notifyOffLine(const QString &nick,const QString &user
 KviIsOnNotifyListManager::KviIsOnNotifyListManager(KviIrcConnection * pConnection)
 : KviNotifyListManager(pConnection)
 {
-	m_pRegUserDict = new KviDict<QString>(17,false); // case insensitive , copy keys
-	m_pRegUserDict->setAutoDelete(true);
+	m_pRegUserDict = new QHash<QString,QString>; // case insensitive , copy keys
 	m_pNotifyList  = new KviPtrList<QString>;
 	m_pNotifyList->setAutoDelete(true);
 	m_pIsOnList = new KviPtrList<QString>;
@@ -376,9 +371,7 @@ void KviIsOnNotifyListManager::buildRegUserDict()
 {
 	m_pRegUserDict->clear();
 
-	const KviDict<KviRegisteredUser> * d = g_pRegisteredUserDataBase->userDict();
-	KviDictIterator<KviRegisteredUser> it(*d);
-	while(KviRegisteredUser * u = it.current())
+	foreach(KviRegisteredUser * u,*(g_pRegisteredUserDataBase->userDict()))
 	{
 		QString notify;
 		if(u->getProperty("notify",notify))
@@ -390,15 +383,14 @@ void KviIsOnNotifyListManager::buildRegUserDict()
 				if(idx > 0)
 				{
 					QString single = notify.left(idx);
-					m_pRegUserDict->replace(single,new QString(u->name()));
+					m_pRegUserDict->insert(single,u->name());
 					notify.remove(0,idx+1);
 				} else {
-					m_pRegUserDict->replace(notify,new QString(u->name()));
+					m_pRegUserDict->insert(notify,u->name());
 					notify = "";
 				}
 			}
 		}
-		++it;
 	}	
 }
 
@@ -435,10 +427,10 @@ void KviIsOnNotifyListManager::newNotifySession()
 void KviIsOnNotifyListManager::buildNotifyList()
 {
 	m_pNotifyList->clear();
-	KviDictIterator<QString> it(*m_pRegUserDict);
-	while(it.current())
+	QHash<QString,QString>::iterator it(m_pRegUserDict->begin());
+	while(it != m_pRegUserDict->end())
 	{
-		m_pNotifyList->append(new QString(it.currentKey()));
+		m_pNotifyList->append(new QString(it.key()));
 		++it;
 	}
 }
@@ -658,11 +650,12 @@ bool KviIsOnNotifyListManager::handleIsOn(KviIrcMessage *msg)
 
 bool KviIsOnNotifyListManager::doMatchUser(const QString &notifyString,const KviIrcMask & mask)
 {
-	QString * nam = m_pRegUserDict->find(notifyString);
-	if(nam)
+	
+	if(m_pRegUserDict->contains(notifyString))
 	{
+		QString nam = m_pRegUserDict->value(notifyString);
 		// ok...find the user
-		if(KviRegisteredUser * u = g_pRegisteredUserDataBase->findUserByName(*nam))
+		if(KviRegisteredUser * u = g_pRegisteredUserDataBase->findUserByName(nam))
 		{
 			// ok ... match the user
 			if(u->matchesFixed(mask))
@@ -1050,17 +1043,14 @@ void KviStupidNotifyListManager::stop()
 
 void KviStupidNotifyListManager::buildNickList()
 {
-	const KviDict<KviRegisteredUser> * d = g_pRegisteredUserDataBase->userDict();
-	KviDictIterator<KviRegisteredUser> it(*d);
 	m_pNickList->clear();
-	while(it.current())
+	foreach(KviRegisteredUser* u, *(g_pRegisteredUserDataBase->userDict()))
 	{
 		QString notify;
-		if(it.current()->getProperty("notify",notify))
+		if(u->getProperty("notify",notify))
 		{
 			m_pNickList->append(new QString(notify));
-		}
-		++it;
+		};
 	}
 }
 
@@ -1073,8 +1063,7 @@ void KviStupidNotifyListManager::buildNickList()
 KviWatchNotifyListManager::KviWatchNotifyListManager(KviIrcConnection * pConnection)
 : KviNotifyListManager(pConnection)
 {
-	m_pRegUserDict = new KviDict<QString>(17,false);
-	m_pRegUserDict->setAutoDelete(true);
+	m_pRegUserDict = new QHash<QString,QString>;
 }
 
 KviWatchNotifyListManager::~KviWatchNotifyListManager()
@@ -1086,9 +1075,8 @@ void KviWatchNotifyListManager::buildRegUserDict()
 {
 	m_pRegUserDict->clear();
 
-	const KviDict<KviRegisteredUser> * d = g_pRegisteredUserDataBase->userDict();
-	KviDictIterator<KviRegisteredUser> it(*d);
-	while(KviRegisteredUser * u = it.current())
+
+	foreach(KviRegisteredUser * u ,*(g_pRegisteredUserDataBase->userDict()))
 	{
 		QString notify;
 		if(u->getProperty("notify",notify))
@@ -1097,10 +1085,9 @@ void KviWatchNotifyListManager::buildRegUserDict()
 			QStringList sl = QStringList::split(' ',notify);
 			for(QStringList::Iterator it = sl.begin();it != sl.end();++it)
 			{
-				m_pRegUserDict->replace(*it,new QString(u->name()));
+				m_pRegUserDict->insert(*it,u->name());
 			}
 		}
-		++it;
 	}	
 }
 
@@ -1112,10 +1099,10 @@ void KviWatchNotifyListManager::start()
 
 	QString watchStr;
 
-	KviDictIterator<QString> it(*m_pRegUserDict);
-	while(it.current())
+	QHash<QString,QString>::iterator it(m_pRegUserDict->begin());
+	while(it != m_pRegUserDict->end())
 	{
-		QString nk = it.currentKey();
+		QString nk = it.key();
 		if(nk.find('*') == -1)
 		{
 			if((watchStr.length() + nk.length() + 2) > 501)
@@ -1148,12 +1135,11 @@ void KviWatchNotifyListManager::stop()
 
 bool KviWatchNotifyListManager::doMatchUser(KviIrcMessage * msg,const QString &notifyString,const KviIrcMask & mask)
 {
-	QString * nam = m_pRegUserDict->find(notifyString);
-
-	if(nam)
+	if(m_pRegUserDict->contains(notifyString))
 	{
+		QString nam = m_pRegUserDict->value(notifyString);
 		// ok...find the user
-		if(KviRegisteredUser * u = g_pRegisteredUserDataBase->findUserByName(*nam))
+		if(KviRegisteredUser * u = g_pRegisteredUserDataBase->findUserByName(nam))
 		{
 			// ok ... match the user
 			if(u->matchesFixed(mask))
@@ -1247,7 +1233,8 @@ bool KviWatchNotifyListManager::handleWatchReply(KviIrcMessage *msg)
 			if(_OUTPUT_VERBOSE)
 				m_pConsole->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Notify list: Stopped watching for \r!n\r%Q\r"),&dnk);
 		}
-		if(m_pRegUserDict->find(dnk))m_pRegUserDict->remove(dnk); // kill that
+		if(m_pRegUserDict->contains(dnk))
+			m_pRegUserDict->remove(dnk); // kill that
 
 		return true;
 
