@@ -213,11 +213,8 @@ void KviUserIdentityManager::save(const QString &szFileName)
 {
 	KviConfig cfg(szFileName,KviConfig::Write);
 	cfg.clear();
-	
 	cfg.setGroup("KVIrc");
-
 	cfg.writeEntry("DefaultIdentity",m_szDefaultIdentity);
-	
 	foreach(KviUserIdentity * id,*m_pIdentityDict)
 	{
 		id->save(cfg);

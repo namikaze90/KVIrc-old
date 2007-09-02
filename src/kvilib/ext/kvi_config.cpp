@@ -73,8 +73,7 @@ void KviConfig::clear()
 	{
 		delete g;
 	}
-	delete m_pDict;
-	m_pDict      = 0;
+	m_pDict->clear();
 	m_bDirty     = false;
 	m_szGroup    = KVI_CONFIG_DEFAULT_GROUP;
 }
