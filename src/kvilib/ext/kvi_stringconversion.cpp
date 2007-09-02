@@ -288,12 +288,12 @@ namespace KviStringConversion
 	
 	void toString(const QStringList &sValue,QString &buffer)
 	{
-		buffer = sValue.join(",");
+		buffer = sValue.join(",\\[ITEM],");
 	}
 	
 	bool fromString(const QString & szValue,QStringList &buffer)
 	{
-		buffer = szValue.split(",");
+		buffer = szValue.split(",\\[ITEM],");
 		return true;
 	}
 	

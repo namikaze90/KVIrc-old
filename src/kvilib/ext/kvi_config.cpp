@@ -32,7 +32,6 @@
 #include "kvi_malloc.h"
 #include "kvi_file.h"
 
-
 KviConfig::KviConfig(const QString &filename,FileMode f,bool bLocal8Bit)
 {
 	m_bLocal8Bit           = bLocal8Bit;
@@ -60,11 +59,11 @@ KviConfig::KviConfig(const char* filename,FileMode f,bool bLocal8Bit)
 
 KviConfig::~KviConfig()
 {
+	if(m_bDirty)save();
 	foreach(KviConfigGroup* g,*m_pDict)
 	{
 		delete g;
 	}
-	if(m_bDirty)save();
 	delete m_pDict;
 }
 
@@ -75,7 +74,7 @@ void KviConfig::clear()
 		delete g;
 	}
 	delete m_pDict;
-	m_pDict->clear();
+	m_pDict      = 0;
 	m_bDirty     = false;
 	m_szGroup    = KVI_CONFIG_DEFAULT_GROUP;
 }
@@ -498,8 +497,8 @@ bool KviConfig::save()
 	if(!f.openForWriting())return false;
 	if(f.writeBlock("# KVIrc configuration file\n",27) != 27)return false;
 
-	QHash<QString,KviConfigGroup*>::iterator it(m_pDict->begin());
-	while (it != m_pDict->end())
+	QHash<QString,KviConfigGroup*>::const_iterator it(m_pDict->constBegin());
+	while (it != m_pDict->constEnd())
 	{
 		if((it.value()->count() != 0) || (m_bPreserveEmptyGroups))
 		{
@@ -511,13 +510,15 @@ bool KviConfig::save()
 			if(f.writeBlock("]\n",2) < 2)return false;
 
 			KviConfigGroup * dict = it.value();
-			KviConfigGroup::iterator it2(dict->begin());
+			KviConfigGroup::const_iterator it2(dict->constBegin());
 
 			KviStr szName,szValue;
-			while(it2!=dict->end())
+			while(it2!=dict->constEnd())
 			{
-				QString str = it2.value();
-				szName = m_bLocal8Bit ? KviQString::toLocal8Bit(it2.key()) : KviQString::toUtf8(it2.key());
+				
+				QString str = it2.key();
+				szName = m_bLocal8Bit ? KviQString::toLocal8Bit(str) : KviQString::toUtf8(str);
+				str = it2.value();
 				szValue = m_bLocal8Bit ? KviQString::toLocal8Bit(str) : KviQString::toUtf8(str);
 				szName.hexEncodeWithTable(encode_table);
 				szValue.hexEncodeWhiteSpace();
