@@ -212,7 +212,7 @@ KviThreadManager::~KviThreadManager()
 {
 	m_pMutex->lock();
 	// Terminate all the slaves
-	while(KviThread *t = m_pThreadList->first())
+	foreach(KviThread *t,*m_pThreadList)
 	{
 		m_pMutex->unlock();
 		delete t;
