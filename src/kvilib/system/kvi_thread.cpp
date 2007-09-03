@@ -585,7 +585,7 @@ KviSensitiveThread::KviSensitiveThread()
 : KviThread()
 {
 	m_pLocalEventQueueMutex = new KviMutex();
-	m_pLocalEventQueue = new QList<KviThreadEvent*>;
+	m_pLocalEventQueue = new QQueue<KviThreadEvent*>;
 }
 
 KviSensitiveThread::~KviSensitiveThread()
@@ -617,7 +617,7 @@ void KviSensitiveThread::enqueueEvent(KviThreadEvent *e)
 		m_pLocalEventQueueMutex->unlock();
 		return;
 	}
-	m_pLocalEventQueue->append(e);
+	m_pLocalEventQueue->enqueue(e);
 	m_pLocalEventQueueMutex->unlock();
 //	debug("<<< KviSensitiveThread::enqueueEvent() (this=%d)",this);
 }
@@ -625,10 +625,9 @@ void KviSensitiveThread::enqueueEvent(KviThreadEvent *e)
 KviThreadEvent * KviSensitiveThread::dequeueEvent()
 {
 //	debug(">>> KviSensitiveThread::dequeueEvent() (this=%d)",this);
-	KviThreadEvent * ret;
+	KviThreadEvent * ret = 0;
 	m_pLocalEventQueueMutex->lock();
-	ret = m_pLocalEventQueue->first();
-	if(ret)m_pLocalEventQueue->removeFirst();
+	if(!m_pLocalEventQueue->isEmpty()) ret = m_pLocalEventQueue->dequeue();
 	m_pLocalEventQueueMutex->unlock();
 //	debug("<<< KviSensitiveThread::dequeueEvent() (this=%d)",this);
 	return ret;

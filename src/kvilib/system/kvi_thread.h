@@ -32,6 +32,7 @@
 #include "kvi_list.h"
 #include <qevent.h>
 #include <QList>
+#include <QQueue>
 
 //
 // Simple thread implementation
@@ -307,7 +308,7 @@ public:
 	virtual ~KviSensitiveThread();
 protected:
 	KviMutex               * m_pLocalEventQueueMutex;
-	QList<KviThreadEvent*> * m_pLocalEventQueue;
+	QQueue<KviThreadEvent*> * m_pLocalEventQueue;
 public:
 	// enqueues an event directed to THIS thread
 	// the event must be allocated with NEW and
