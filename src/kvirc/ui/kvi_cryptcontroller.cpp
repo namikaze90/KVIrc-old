@@ -41,7 +41,7 @@
 	#include "kvi_toolwindows_container.h"
 	
 	#include <qlayout.h>
-	#include "kvi_asciidict.h"
+	
 
 	// kvi_app.cpp
 	extern KVIRC_API KviCryptEngineManager * g_pCryptEngineManager;

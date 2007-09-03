@@ -29,8 +29,8 @@
 #include "kvi_qstring.h"
 
 #include <qobject.h>
-#include "kvi_intdict.h"
-#include "kvi_dict.h"
+
+
 #include "kvi_list.h"
 
 class KviKvsTimerManager;

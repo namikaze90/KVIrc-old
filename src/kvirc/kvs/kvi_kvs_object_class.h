@@ -28,8 +28,6 @@
 #include "kvi_qstring.h"
 #include "kvi_list.h"
 
-#include "kvi_dict.h"
-
 #include "kvi_kvs_object_functionhandler.h"
 
 class KviKvsObject;

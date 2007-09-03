@@ -25,7 +25,7 @@
 #define __KVILIB__
 #include "kvi_tal_listview.h"
 
-#include "kvi_ptrdict.h"
+
 
 
 #include <qpainter.h>

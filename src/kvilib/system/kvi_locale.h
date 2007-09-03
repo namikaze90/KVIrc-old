@@ -29,7 +29,7 @@
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
 #include "kvi_string.h"
-#include "kvi_asciidict.h"
+
 
 #include <qapplication.h>
 

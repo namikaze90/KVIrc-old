@@ -33,7 +33,7 @@
 #include "kvi_inttypes.h"
 
 #include <qobject.h>
-#include "kvi_asciidict.h"
+
 #include "kvi_file.h"
 #include <qstringlist.h>
 #include <QUrl>

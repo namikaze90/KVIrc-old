@@ -32,7 +32,7 @@
 #include <qpushbutton.h>
 #include "kvi_tal_listview.h"
 #include "kvi_tal_listbox.h"
-#include "kvi_dict.h"
+
 #include "kvi_tal_popupmenu.h"
 
 // TODO: Qt4

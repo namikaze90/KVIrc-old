@@ -35,10 +35,10 @@
 #include "kvi_userlistview.h"
 #include "kvi_time.h"
 #include "kvi_modew.h"
-#include "kvi_valuelist.h"
+
 
 #include <qdatetime.h>
-#include "kvi_asciidict.h"
+
 #include <qstringlist.h>
 #include <QHash>
 
@@ -145,7 +145,7 @@ protected:
 	unsigned int                          m_uActionHistoryHotActionCount;
 	KviPtrList<KviChannelAction>        * m_pActionHistory;
 	kvi_time_t                            m_tLastReceivedWhoReply;
-	KviValueList<int>                     m_VertSplitterSizesList;
+	QList<int>                     m_VertSplitterSizesList;
 	KviTalHBox                          * m_pButtonContainer;
 protected:
 	bool eventFilter(QObject *, QEvent *);

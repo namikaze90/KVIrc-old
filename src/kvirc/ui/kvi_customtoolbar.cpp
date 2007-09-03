@@ -136,16 +136,16 @@ void KviCustomToolBar::paintEvent(QPaintEvent * e)
 void KviCustomToolBar::filteredChildDestroyed()
 {
 	if(!m_pFilteredChildren)return;
-	const QObject * o = sender();
-	m_pFilteredChildren->remove((void *)o);
+	QObject * o = sender();
+	m_pFilteredChildren->remove(o);
 }
 
 void KviCustomToolBar::filterChild(QObject * o)
 {
-	bool * b = new bool(((QWidget *)o)->isEnabled());
+	bool b = ((QWidget *)o)->isEnabled();
 	if(m_pFilteredChildren)
 		m_pFilteredChildren->insert(o,b);
-	if(!*b)((QWidget *)o)->setEnabled(true);
+	if(!b)((QWidget *)o)->setEnabled(true);
 	o->installEventFilter(this);
 	connect(o,SIGNAL(destroyed()),this,SLOT(filteredChildDestroyed()));
 }
@@ -154,10 +154,9 @@ void KviCustomToolBar::unfilterChild(QObject * o)
 {
 	if(m_pFilteredChildren)
 	{
-		bool * b = m_pFilteredChildren->find(o);
-		if(b)
+		if(m_pFilteredChildren->contains(o))
 		{
-			if(!*b)((QWidget *)o)->setEnabled(false);
+			if(!m_pFilteredChildren->value(o))((QWidget *)o)->setEnabled(false);
 			o->removeEventFilter(this);
 			disconnect(o,SIGNAL(destroyed()),this,SLOT(filteredChildDestroyed()));
 		}
@@ -167,8 +166,7 @@ void KviCustomToolBar::unfilterChild(QObject * o)
 void KviCustomToolBar::beginCustomize()
 {
 	if(m_pFilteredChildren)delete m_pFilteredChildren;
-	m_pFilteredChildren = new KviPtrDict<bool>;
-	m_pFilteredChildren->setAutoDelete(true);
+	m_pFilteredChildren = new QHash<QObject*,bool>;
 	// filter the events for all the children
 #ifdef COMPILE_USE_QT4
 	QList<QObject*> l = children();

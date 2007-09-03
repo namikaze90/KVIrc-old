@@ -42,8 +42,7 @@ KviKvsObjectController::KviKvsObjectController()
 {
 	m_pTopLevelObjectList = new KviPtrList<KviKvsObject>;
 	m_pTopLevelObjectList->setAutoDelete(false);
-	m_pObjectDict = new KviPtrDict<KviKvsObject>(101);
-	m_pObjectDict->setAutoDelete(false);
+	m_pObjectDict = new QHash<kvs_hobject_t,KviKvsObject*>;
 	m_pClassDict = new QHash<QString,KviKvsObjectClass*>;
 }
 
@@ -52,6 +51,10 @@ KviKvsObjectController::~KviKvsObjectController()
 	flushUserClasses();
 	while(m_pTopLevelObjectList->first())delete m_pTopLevelObjectList->first();
 	delete m_pTopLevelObjectList; // empty list
+	foreach(KviKvsObject*o,*m_pObjectDict)
+	{
+		delete o;
+	}
 	delete m_pObjectDict; // empty dict
 	m_pObjectDict = 0;
 	delete m_pObjectClass; // delete the class tree
@@ -121,11 +124,13 @@ void KviKvsObjectController::clearInstances()
 {
 	while(m_pTopLevelObjectList->first())delete m_pTopLevelObjectList->first();
 	delete m_pTopLevelObjectList; // empty list
-	delete m_pObjectDict; // empty dict
+	foreach(KviKvsObject*o,*m_pObjectDict)
+	{
+		delete o;
+	}
+	m_pObjectDict->clear(); // empty dict
 	m_pTopLevelObjectList = new KviPtrList<KviKvsObject>;
 	m_pTopLevelObjectList->setAutoDelete(false);
-	m_pObjectDict = new KviPtrDict<KviKvsObject>(101);
-	m_pObjectDict->setAutoDelete(false);
 }
 
 void KviKvsObjectController::registerClass(KviKvsObjectClass *pClass)

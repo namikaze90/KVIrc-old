@@ -29,7 +29,7 @@
 #include "kvi_string.h"
 #include "kvi_list.h"
 
-#include "kvi_asciidict.h"
+
 #include <QHash>
 
 class KVILIB_API KviRegisteredChannel : public KviHeapObject

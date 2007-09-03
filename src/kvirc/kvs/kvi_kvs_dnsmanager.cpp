@@ -71,7 +71,14 @@ KviKvsDnsManager::KviKvsDnsManager()
 
 KviKvsDnsManager::~KviKvsDnsManager()
 {
-	if(m_pDnsObjects)delete m_pDnsObjects;
+	if(m_pDnsObjects)
+	{
+		foreach(KviKvsDnsObject*o, *m_pDnsObjects)
+		{
+			delete o;
+		}
+		delete m_pDnsObjects;
+	}
 }
 
 void KviKvsDnsManager::init()
@@ -99,16 +106,15 @@ void KviKvsDnsManager::addDns(KviKvsDnsObject * pObject)
 {
 	if(!m_pDnsObjects)
 	{
-		m_pDnsObjects = new KviPtrDict<KviKvsDnsObject>;
-		m_pDnsObjects->setAutoDelete(true);
+		m_pDnsObjects = new QHash<KviDns*,KviKvsDnsObject*>;
 	}
-	m_pDnsObjects->replace(pObject->dns(),pObject);
+	m_pDnsObjects->insert(pObject->dns(),pObject);
 	connect(pObject->dns(),SIGNAL(lookupDone(KviDns *)),this,SLOT(dnsLookupTerminated(KviDns *)));
 }
 
 void KviKvsDnsManager::dnsLookupTerminated(KviDns * pDns)
 {
-	KviKvsDnsObject * o = m_pDnsObjects->find(pDns);
+	KviKvsDnsObject * o = m_pDnsObjects->value(pDns);
 	if(!o)
 	{
 		debug("KviKvsDnsManager::dnsLookupTerminated(): can't find the KviKvsDnsObject structure");
@@ -122,7 +128,7 @@ void KviKvsDnsManager::dnsLookupTerminated(KviDns * pDns)
 			o->setWindow(g_pActiveWindow);
 		} else {
 			// just kill it
-			m_pDnsObjects->remove(pDns);
+			delete m_pDnsObjects->take(pDns);
 			return;
 		}
 	}
@@ -176,5 +182,5 @@ void KviKvsDnsManager::dnsLookupTerminated(KviDns * pDns)
 		}
 	}
 
-	m_pDnsObjects->remove(pDns);
+	delete m_pDnsObjects->take(pDns);
 }

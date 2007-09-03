@@ -31,7 +31,7 @@
 #include "kvi_iconmanager.h"
 #include "kvi_module.h"
 #include "kvi_styled_controls.h"
-#include "kvi_ptrdict.h"
+
 #include <qlayout.h>
 #include "kvi_accel.h"
 #include <qlabel.h>
@@ -314,8 +314,7 @@ bool KviOptionsDialog::recursiveSearch(KviOptionsListViewItem * pItem,const QStr
 	}
 
 	bool bFoundSomethingHere = false;
-	KviPtrDict<bool> lOptionWidgetsToMark;
-	lOptionWidgetsToMark.setAutoDelete(true);
+	QHash<QObject*,bool> lOptionWidgetsToMark;
 	QTabWidget * pTabWidgetToMark = 0;
 	
 	QObject * o;
@@ -377,14 +376,7 @@ bool KviOptionsDialog::recursiveSearch(KviOptionsListViewItem * pItem,const QStr
 						{
 							if(pParent->inherits("KviOptionsWidget"))
 							{
-								bool * pExistingBool = lOptionWidgetsToMark.find(pParent);
-								if(pExistingBool)
-								{
-									if(bOk)
-										*pExistingBool = true;
-								} else {
-									lOptionWidgetsToMark.insert(pParent,new bool(bOk));
-								}
+								lOptionWidgetsToMark.insert(pParent,bOk);
 								break;
 							}
 							pParent = pParent->parent();
@@ -397,17 +389,17 @@ bool KviOptionsDialog::recursiveSearch(KviOptionsListViewItem * pItem,const QStr
 
 	if(pTabWidgetToMark)
 	{
-		KviPtrDictIterator<bool> it(lOptionWidgetsToMark);
-		while(bool * pBool = it.current())
+		QHash<QObject*,bool>::const_iterator it(lOptionWidgetsToMark.constBegin());
+		while(it!=lOptionWidgetsToMark.constEnd())
 		{
-			KviOptionsWidget * pOptionsWidget = (KviOptionsWidget *)it.currentKey();
+			KviOptionsWidget * pOptionsWidget = (KviOptionsWidget *)it.key();
 			QString szTxt = pTabWidgetToMark->tabLabel(pOptionsWidget);
 			if(KviQString::equalCIN(szTxt,">>> ",4))
 			{
 				szTxt.replace(">>> ","");
 				szTxt.replace(" <<<","");
 			}
-			if(*pBool)
+			if(it.value())
 			{
 				szTxt.insert(0,">>> ");
 				szTxt += QString(" <<<");

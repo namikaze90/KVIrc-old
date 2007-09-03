@@ -27,7 +27,7 @@
 #include "kvi_settings.h"
 #include "kvi_heapobject.h"
 #include "kvi_qstring.h"
-#include "kvi_dict.h"
+
 
 
 class KviConfig;

@@ -28,8 +28,8 @@
 #include "kvi_qstring.h"
 #include "kvi_kvs_variant.h"
 
-#include "kvi_intdict.h"
-#include "kvi_dict.h"
+
+
 
 class KVIRC_API KviKvsSwitchList
 {

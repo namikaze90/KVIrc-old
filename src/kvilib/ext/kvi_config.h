@@ -28,8 +28,8 @@
 #include "kvi_string.h"
 #include "kvi_settings.h"
 #include "kvi_heapobject.h"
-#include "kvi_dict.h"
-#include "kvi_valuelist.h"
+
+
 
 #include <qcolor.h>
 #include <qfont.h>

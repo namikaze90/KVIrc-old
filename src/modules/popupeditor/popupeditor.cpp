@@ -46,7 +46,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qtooltip.h>
-#include "kvi_asciidict.h"
+
 #include <qpushbutton.h>
 #include "kvi_tal_vbox.h"
 

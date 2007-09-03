@@ -36,7 +36,7 @@
 
 
 #include <time.h>
-#include "kvi_asciidict.h"
+
 
 extern KVIRC_API KviSharedFilesManager * g_pSharedFilesManager;
 

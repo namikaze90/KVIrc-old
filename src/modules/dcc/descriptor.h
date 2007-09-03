@@ -27,7 +27,7 @@
 #include "kvi_string.h"
 #include "kvi_console.h"
 
-#include "kvi_intdict.h"
+
 
 
 class KviDccWindow;

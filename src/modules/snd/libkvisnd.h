@@ -31,7 +31,7 @@
 #include "kvi_string.h"
 
 #include "kvi_list.h"
-#include "kvi_dict.h"
+
 #include "kvi_options.h"
 
 //class KviWavSoundFileReader

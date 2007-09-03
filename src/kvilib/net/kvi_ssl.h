@@ -29,7 +29,7 @@
 #include "kvi_string.h"
 #include "kvi_sockettype.h"
 
-#include "kvi_asciidict.h"
+
 
 #include <openssl/ssl.h>
 #include <QHash>

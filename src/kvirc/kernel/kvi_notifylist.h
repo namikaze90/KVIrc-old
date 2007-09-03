@@ -30,7 +30,7 @@
 
 #include <qobject.h>
 #include "kvi_list.h"
-#include "kvi_dict.h"
+
 #include <qtimer.h>
 
 #include "kvi_qstring.h"

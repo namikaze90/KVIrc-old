@@ -49,7 +49,7 @@
 #include <QImageWriter>
 #include <QImageReader>
 
-#include "kvi_asciidict.h"
+
 #include <qimage.h>
 #include <qstring.h>
 #include <qcombobox.h>

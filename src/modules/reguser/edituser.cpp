@@ -50,7 +50,7 @@
 #include <q3header.h>
 #include <q3vbox.h>
 
-#include "kvi_asciidict.h"
+
 #include <qimage.h>
 #include <qstring.h>
 #include <qcombobox.h>

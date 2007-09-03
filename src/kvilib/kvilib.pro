@@ -102,23 +102,18 @@ HEADERS += tal/kvi_tal_application_kde.h \
     ext/kvi_sharedfiles.h \
     ext/kvi_stringconversion.h \
     ext/kvi_xlib.h \
-    core/kvi_asciidict.h \
     core/kvi_bswap.h \
-    core/kvi_dict.h \
     core/kvi_error.h \
     core/kvi_heapobject.h \
-    core/kvi_intdict.h \
     core/kvi_inttypes.h \
     core/kvi_list.h \
     core/kvi_malloc.h \
     core/kvi_memmove.h \
-    core/kvi_ptrdict.h \
     core/kvi_qcstring.h \
     core/kvi_qstring.h \
     core/kvi_strasm.h \
     core/kvi_string.h \
     core/kvi_stringarray.h \
-    core/kvi_valuelist.h \
     config/kvi_confignames.h \
     config/kvi_debug.h \
     config/kvi_defaults.h \
@@ -209,10 +204,12 @@ mac:LIBS += -lpthread \
     -lssl \
     -lcrypto \
     -lz
-
-unix:LIBS += -lpthread -lssl -lcrypto -lz
-unix:DEFINES += COMPILE_THREADS_USE_POSIX COMPILE_USE_QT4
-
+unix:LIBS += -lpthread \
+    -lssl \
+    -lcrypto \
+    -lz
+unix:DEFINES += COMPILE_THREADS_USE_POSIX \
+    COMPILE_USE_QT4
 include( using_kvilib.pri )
 target.path = ../../bin/image/
 INSTALLS += target

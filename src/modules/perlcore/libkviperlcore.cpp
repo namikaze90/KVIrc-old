@@ -33,7 +33,7 @@
 #include "kvi_kvs_variant.h"
 #include "kvi_userinput.h"
 #include "kvi_qcstring.h"
-#include "kvi_dict.h"
+
 
 #ifdef DEBUG
 	#undef DEBUG

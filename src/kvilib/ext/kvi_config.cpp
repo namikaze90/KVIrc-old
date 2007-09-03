@@ -644,7 +644,7 @@ RETURN_TYPE KviConfig::read##__name(const QString & szKey,INPUT_TYPE value) {\
 WRITE_FUNCTION(const QStringList &)
 READ_FUNCTION(StringListEntry,const QStringList &,QStringList)
 
-////////////////////////////////// KviValueList<int>
+////////////////////////////////// QList<int>
 
 
 ////////////////////////////////// KviPixmap

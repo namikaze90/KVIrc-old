@@ -26,7 +26,7 @@
 
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
-#include "kvi_dict.h"
+
 #include "kvi_qcstring.h" // QByteArray anyway
 #include <qobject.h>
 #include "kvi_list.h"

@@ -117,7 +117,7 @@ KviImageDialog::KviImageDialog(QWidget * par,
 
 	g->addMultiCellWidget(m_pTypeComboBox,0,0,0,2);
 
-	m_pTypeList = new KviValueList<int>;
+	m_pTypeList = new QList<int>;
 
 	QString bi = __tr2qs("Builtin images");
 
@@ -186,9 +186,9 @@ void KviImageDialog::jobTypeSelected(int index)
 	if(index < 0)return;
 	if(index >= (int)(m_pTypeList->count()))index = (int)m_pTypeList->count();
 	if(m_szInitialPath.isEmpty())
-		startJob(*(m_pTypeList->at(index)),KVI_OPTION_STRING(KviOption_stringLastImageDialogPath));
+		startJob(m_pTypeList->at(index),KVI_OPTION_STRING(KviOption_stringLastImageDialogPath));
 	else {
-		startJob(*(m_pTypeList->at(index)),m_szInitialPath);
+		startJob(m_pTypeList->at(index),m_szInitialPath);
 		m_szInitialPath = ""; // clear it so we will use the last path 
 	}
 }

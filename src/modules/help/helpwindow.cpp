@@ -38,7 +38,7 @@
 #include <qmessagebox.h>
 #include <qregexp.h>
 #include <qtooltip.h>
-#include "kvi_valuelist.h"
+
 
 extern Index        * g_pDocIndex;
 extern KviPtrList<KviHelpWindow> * g_pHelpWindowList;
@@ -111,7 +111,7 @@ KviHelpWindow::KviHelpWindow(KviFrame * lpFrm,const char * name)
 	m_pResultBox = new KviTalListBox(m_pSearchTab);
 	connect(m_pResultBox,SIGNAL(selected(int)),this,SLOT(searchSelected ( int )));
 	
-	KviValueList<int> li;
+	QList<int> li;
 	li.append(width()-80);
 	li.append(80);
 	m_pSplitter->setSizes(li);
@@ -131,7 +131,7 @@ void KviHelpWindow::saveProperties(KviConfig *cfg)
 
 void KviHelpWindow::loadProperties(KviConfig *cfg)
 {
-	KviValueList<int> def;
+	QList<int> def;
 	int w = width();
 	def.append((w * 82) / 100);
 	def.append((w * 18) / 100);

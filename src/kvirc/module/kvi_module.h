@@ -34,7 +34,7 @@
 #include "kvi_moduleextension.h"
 #include "kvi_kvs_moduleinterface.h"
 
-#include "kvi_asciidict.h"
+
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	#include "kvi_crypt.h"

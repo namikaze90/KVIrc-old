@@ -60,7 +60,7 @@
 
 #include <qstringlist.h>
 
-#include "kvi_dict.h"
+
 
 #include <qapplication.h>
 
@@ -361,7 +361,7 @@ void Index::readDict()
     dict.clear();
     QDataStream s( &f );
     QString key;
-    KviValueList<Document> docs;
+    QList<Document> docs;
     while ( !s.atEnd() ) {
 	s >> key;
 	s >> docs;
@@ -409,7 +409,7 @@ QStringList Index::query( const QStringList &terms, const QStringList &termSeq, 
 
 	if ( (*it).contains( '*' ) ) {
 
-	    KviValueList<Document> wcts = setupDummyTerm( getWildcardTerms( *it ) );
+	    QList<Document> wcts = setupDummyTerm( getWildcardTerms( *it ) );
 
 	    termList.append( new Term( "dummy", wcts.count(), wcts ) );
 
@@ -441,17 +441,17 @@ QStringList Index::query( const QStringList &terms, const QStringList &termSeq, 
 
 
 
-    KviValueList<Document> minDocs = minTerm->documents;
+    QList<Document> minDocs = minTerm->documents;
 
-    KviValueList<Document>::iterator C;
+    QList<Document>::iterator C;
 
-    KviValueList<Document>::ConstIterator It;
+    QList<Document>::ConstIterator It;
 
     Term *t = termList.first();
 
     for ( ; t; t = termList.next() ) {
 
-	KviValueList<Document> docs = t->documents;
+	QList<Document> docs = t->documents;
 
 	C = minDocs.begin();
 
@@ -668,7 +668,7 @@ QStringList Index::split( const QString &str )
 
 
 
-KviValueList<Document> Index::setupDummyTerm( const QStringList &terms )
+QList<Document> Index::setupDummyTerm( const QStringList &terms )
 
 {
 
@@ -694,7 +694,7 @@ KviValueList<Document> Index::setupDummyTerm( const QStringList &terms )
 
 
 
-    KviValueList<Document> maxList;
+    QList<Document> maxList;
 
 
 
@@ -708,13 +708,13 @@ KviValueList<Document> Index::setupDummyTerm( const QStringList &terms )
 
 
 
-    KviValueList<Document>::iterator docIt;
+    QList<Document>::iterator docIt;
 
     Term *t = termList.first();
 
     while ( t ) {
 
-	KviValueList<Document> docs = t->documents;
+	QList<Document> docs = t->documents;
 
 	for ( docIt = docs.begin(); docIt != docs.end(); ++docIt ) {
 
@@ -860,9 +860,9 @@ bool Index::searchForPattern( const QStringList &patterns, const QStringList &wo
 
     QStringList wordLst;
 
-    KviValueList<uint> a, b;
+    QList<uint> a, b;
 
-    KviValueList<uint>::iterator aIt;
+    QList<uint>::iterator aIt;
 
     for ( ; patIt != patterns.end(); ++patIt ) {
 

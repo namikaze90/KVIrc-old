@@ -88,7 +88,7 @@
 #include "kvi_tal_popupmenu.h"
 #include <qsplitter.h>
 #include <qstringlist.h>
-#include "kvi_asciidict.h"
+
 #include <qmime.h>
 
 // TODO: Qt4

@@ -36,7 +36,7 @@
 // TODO: Qt4
 #include <q3progressdialog.h>
 
-#include "kvi_valuelist.h"
+
 #include "kvi_accel.h"
 #include <qpixmap.h>
 #include <qsplitter.h>
@@ -153,7 +153,7 @@ KviLogViewMDIWindow::KviLogViewMDIWindow(KviModuleExtensionDescriptor * d,KviFra
 
 	m_pIrcView->setFocusPolicy(Qt::ClickFocus);
 
-	KviValueList<int> li;
+	QList<int> li;
 	li.append(110);
 	li.append(width()-110);
 	m_pSplitter->setSizes(li);

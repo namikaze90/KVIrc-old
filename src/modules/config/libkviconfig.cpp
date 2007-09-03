@@ -29,7 +29,7 @@
 #include "kvi_app.h"
 #include "kvi_locale.h"
 
-#include "kvi_dict.h"
+
 
 static QHash<QString,KviConfig*> * g_pConfigDict = 0;
 static int g_iNextConfigId = 0;

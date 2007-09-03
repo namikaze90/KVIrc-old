@@ -39,7 +39,7 @@
 #include "kvi_filedialog.h"
 #include "kvi_cmdformatter.h"
 #include "kvi_module.h"
-#include "kvi_valuelist.h"
+
 
 #include <qsplitter.h>
 #include <qlayout.h>
@@ -695,7 +695,7 @@ void KviAliasEditor::saveProperties(KviConfig *cfg)
 
 void KviAliasEditor::loadProperties(KviConfig *cfg)
 {
-	KviValueList<int> def;
+	QList<int> def;
 	def.append(20);
 	def.append(80);
 	m_pSplitter->setSizes(cfg->readIntListEntry("Sizes",def));

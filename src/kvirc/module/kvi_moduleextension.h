@@ -27,10 +27,10 @@
 #include "kvi_list.h"
 #include "kvi_heapobject.h"
 
-#include "kvi_asciidict.h"
+
 #include <qpixmap.h>
 #include <qvariant.h>
-#include "kvi_dict.h"
+
 
 class KviWindow;
 class KviModule;

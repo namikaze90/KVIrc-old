@@ -345,30 +345,28 @@ static bool objects_kvs_fnc_instances(KviKvsModuleFunctionCall * c)
 			c->warning(__tr2qs("The class '%Q' does not exist"),&szClassName);
 		return true;
 	}
-	KviPtrDict<KviKvsObject> * od = KviKvsKernel::instance()->objectController()->objectDict();
+	QHash<kvs_hobject_t,KviKvsObject*> * od = KviKvsKernel::instance()->objectController()->objectDict();
 
-	KviPtrDictIterator<KviKvsObject> it(*od);
-	kvs_uint_t uIdx = 0;
+	int uIdx = 0;
+	
 	if(szFlags.contains(QChar('s')))
 	{
-		while(KviKvsObject * ob = it.current())
+		foreach(KviKvsObject * ob,*od)
 		{
 			if(ob->getExactClass() == pClass)
 			{
 				pArry->set(uIdx,new KviKvsVariant(ob->handle()));
 				uIdx++;
 			}
-			++it;
 		}
 	} else {
-		while(KviKvsObject * ob = it.current())
+		foreach(KviKvsObject * ob,*od)
 		{
 			if(ob->inheritsClass(pClass))
 			{
 				pArry->set(uIdx,new KviKvsVariant(ob->handle()));
 				uIdx++;
 			}
-			++it;
 		}
 	}
 	return true;

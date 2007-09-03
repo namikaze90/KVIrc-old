@@ -28,7 +28,7 @@
 #include "kvi_qstring.h"
 #include "kvi_list.h"
 
-#include "kvi_dict.h"
+
 
 class KviKvsTreeNode;
 

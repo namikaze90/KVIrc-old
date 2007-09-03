@@ -59,7 +59,7 @@
 #include "kvi_tal_tooltip.h"
 #include <qvalidator.h>
 #include <qmessagebox.h>
-#include "kvi_asciidict.h"
+
 #include <qcombobox.h>
 #include <qbuttongroup.h>
 #include <qmessagebox.h>

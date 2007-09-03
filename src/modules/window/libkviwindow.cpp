@@ -41,7 +41,7 @@
 #include "kvi_channel.h"
 #include "userwindow.h"
 
-#include "kvi_asciidict.h"
+
 #include <qtimer.h>
 
 

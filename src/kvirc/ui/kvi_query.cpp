@@ -60,7 +60,7 @@
 #include "kvi_tal_hbox.h"
 #include <qtoolbutton.h>
 #include "kvi_draganddrop.h"
-#include "kvi_valuelist.h"
+
 
 KviQuery::KviQuery(KviFrame * lpFrm,KviConsole * lpConsole,const QString &nick)
 : KviWindow(KVI_WINDOW_TYPE_QUERY,lpFrm,nick,lpConsole)
@@ -304,7 +304,7 @@ void KviQuery::loadProperties(KviConfig *cfg)
 {
 	int w = width();
 	KviWindow::loadProperties(cfg);
-	KviValueList<int> def;
+	QList<int> def;
 	def.append((w * 80) / 100);
 	def.append((w * 20) / 100);
 	m_pSplitter->setSizes(cfg->readIntListEntry("Splitter",def));

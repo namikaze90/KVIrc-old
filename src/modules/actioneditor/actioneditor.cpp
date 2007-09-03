@@ -60,7 +60,7 @@
 
 #include <qtabwidget.h>
 #include <kvi_tal_groupbox.h>
-#include "kvi_valuelist.h"
+
 #include <qlabel.h>
 
 extern KviActionEditorWindow * g_pActionEditorWindow;
@@ -989,7 +989,7 @@ void KviActionEditorWindow::loadProperties(KviConfig *cfg)
 {
 	int w = width();
 	KviWindow::loadProperties(cfg);
-	KviValueList<int> def;
+	QList<int> def;
 	def.append((w * 25) / 100);
 	def.append((w * 75) / 100);
 	m_pEditor->m_pSplitter->setSizes(cfg->readIntListEntry("Splitter",def));

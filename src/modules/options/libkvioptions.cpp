@@ -38,7 +38,7 @@
 #include "dialog.h"
 
 #include <qsplitter.h>
-#include "kvi_dict.h"
+
 
 
 QHash<QString,KviOptionsDialog*> * g_pOptionsDialogDict = 0;
