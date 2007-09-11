@@ -41,8 +41,7 @@ KviModuleExtensionDescriptor::KviModuleExtensionDescriptor(KviModule * m,const Q
 	m_szName = szName;
 	m_szVisibleName = szVisibleName;
 	m_allocRoutine = r;
-	m_pObjectList = new KviPtrList<KviModuleExtension>;
-	m_pObjectList->setAutoDelete(false);
+	m_pObjectList = new QList<KviModuleExtension*>;
 	if(pix.isNull())m_pIcon = 0;
 	else m_pIcon = new QPixmap(pix);
 }
@@ -79,7 +78,7 @@ void KviModuleExtensionDescriptor::registerObject(KviModuleExtension * e)
 
 void KviModuleExtensionDescriptor::unregisterObject(KviModuleExtension * e)
 {
-	m_pObjectList->removeRef(e);
+	m_pObjectList->removeAll(e);
 }
 
 
@@ -116,7 +115,6 @@ KviModuleExtensionDescriptor * KviModuleExtensionManager::registerExtension(KviM
 	if(!l)
 	{
 		l = new KviModuleExtensionDescriptorList();
-		l->setAutoDelete(false);
 		m_pExtensionDict->insert(szType,l);
 	}
 	l->append(d);
@@ -126,30 +124,27 @@ KviModuleExtensionDescriptor * KviModuleExtensionManager::registerExtension(KviM
 void KviModuleExtensionManager::unregisterExtensionsByModule(KviModule * m)
 {
 	QHash<QString,KviModuleExtensionDescriptorList*>::iterator it(m_pExtensionDict->begin());
-	KviPtrList<KviStr> dying;
-	dying.setAutoDelete(true);
 	while(it != m_pExtensionDict->end())
 	{
 		KviModuleExtensionDescriptorList * l = it.value();
-		KviPtrList<KviModuleExtensionDescriptor> dying2;
-		dying2.setAutoDelete(true);
-
-		for(KviModuleExtensionDescriptor * d = l->first();d;d = l->next())
+		KviModuleExtensionDescriptorList::iterator it2(l->begin());
+		while(it2 != l->end())
 		{
-			if(d->module() == m)dying2.append(d);
+			if((*it2)->module() == m)
+			{
+				it2 = l->erase(it2);
+			} else {
+				++it2;
+			}
 		}
 
-		for(KviModuleExtensionDescriptor * de = dying2.first();de;de = dying2.next())
+		if(l->isEmpty())
 		{
-			l->removeRef(de);
+			delete it.value();
+			it = m_pExtensionDict->erase(it);
+		} else {
+			++it;
 		}
-
-		if(l->isEmpty())dying.append(new KviStr(it.key()));
-		++it;
-	}
-	for(KviStr * li = dying.first();li;li = dying.next())
-	{
-		m_pExtensionDict->remove(li->ptr());
 	}
 }
 
@@ -177,7 +172,7 @@ KviModuleExtensionDescriptor * KviModuleExtensionManager::findExtensionDescripto
 	KviModuleExtensionDescriptorList * l = m_pExtensionDict->value(szType);
 	if(!l)return 0;
 
-	for(KviModuleExtensionDescriptor * d = l->first();d;d = l->next())
+	foreach(KviModuleExtensionDescriptor * d,*l)
 	{
 		if(KviQString::equalCI(d->name(),szName))return d;
 	}
@@ -192,7 +187,7 @@ KviModuleExtension * KviModuleExtensionManager::allocateExtension(const QString 
 
 	KviModuleExtensionDescriptor * d;
 
-	for(d = l->first();d;d = l->next())
+	foreach(d,*l)
 	{
 		if(KviQString::equalCI(d->name(),szName))return d->allocate(pWnd,pParams,pSpecial);
 	}
@@ -201,7 +196,7 @@ KviModuleExtension * KviModuleExtensionManager::allocateExtension(const QString 
 	g_pModuleManager->loadModulesByCaps(szType);
 	// try again after loading the modules
 	// l = m_pExtensionDict->find(szType.ptr()); <--- this shouldn't change!
-	for(d = l->first();d;d = l->next())
+	foreach(d,*l)
 	{
 		if(KviQString::equalCI(d->name(),szName))return d->allocate(pWnd,pParams,pSpecial);
 	}
@@ -218,7 +213,7 @@ KviModuleExtension * KviModuleExtensionManager::allocateExtension(const QString 
 	if(!l)return 0;
 
 	KviModuleExtensionDescriptor * d;
-	for(d = l->first();d;d = l->next())
+	foreach(d,*l)
 	{
 		if(d->id() == id)return d->allocate(pWnd,pParams,pSpecial);
 	}
@@ -227,7 +222,7 @@ KviModuleExtension * KviModuleExtensionManager::allocateExtension(const QString 
 	g_pModuleManager->loadModulesByCaps(szType);
 	// try again after loading the modules
 	// l = m_pExtensionDict->find(szType.ptr()); <--- this shouldn't change!
-	for(d = l->first();d;d = l->next())
+	foreach(d,*l)
 	{
 		if(d->id() == id)return d->allocate(pWnd,pParams,pSpecial);
 	}

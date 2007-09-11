@@ -551,11 +551,10 @@ static bool toolbar_kvs_fnc_items(KviKvsModuleFunctionCall * c)
 
 	kvs_uint_t id = 0;
 
-	for(QString * s = d->actions()->first();s;s = d->actions()->next())
+	foreach(QString s,*(d->actions()))
 	{
-		a->set(id,new KviKvsVariant(*s));
+		a->set(id,new KviKvsVariant(s));
 		id++;
-//		++it;
 	}
 
 	c->returnValue()->setArray(a);

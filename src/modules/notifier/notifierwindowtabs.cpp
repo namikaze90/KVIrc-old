@@ -49,14 +49,13 @@ KviNotifierWindowTab::KviNotifierWindowTab(KviWindow * pWnd, QString label)
 {
 	m_pWnd = pWnd;
 	m_label = label;
-	m_pMessageList = new KviPtrList<KviNotifierMessage>;
-	m_pMessageList->setAutoDelete(true);
+	m_pMessageList = new QList<KviNotifierMessage*>;
 	m_bFocused = false;
 	m_pCurrentMessage = 0;
 	
-	KviStr buffer;
+	QString buffer;
 	g_pApp->getReadOnlyConfigPath(buffer,"libkvinotifier.kvc",KviApp::ConfigPlugins,true);
-	KviConfig cfg(buffer.ptr(),KviConfig::Read);
+	KviConfig cfg(buffer,KviConfig::Read);
 	cfg.setGroup("NotifierSkin");
 		m_clrHighlightedLabel = cfg.readColorEntry("HighlightedTabLablerColor",QColor(200,0,0));
 		m_clrNormalLabel = cfg.readColorEntry("NormalTabLablerColor",QColor(0,0,0));
@@ -77,16 +76,20 @@ KviNotifierWindowTab::~KviNotifierWindowTab()
 void KviNotifierWindowTab::setNextMessageAsCurrent()
 {
 	if(!m_pCurrentMessage)return;
-	m_pMessageList->findRef(m_pCurrentMessage);
-	m_pCurrentMessage = m_pMessageList->next();
+	int iId = m_pMessageList->indexOf(m_pCurrentMessage);
+	if(iId == m_pMessageList->count()-1) return;
+	iId++;
+	m_pCurrentMessage = m_pMessageList->at(iId);
 	if(!m_pCurrentMessage)m_pCurrentMessage = m_pMessageList->last();
 }
 
 void KviNotifierWindowTab::setPrevMessageAsCurrent()
 {
 	if(!m_pCurrentMessage)return;
-	m_pMessageList->findRef(m_pCurrentMessage);
-	m_pCurrentMessage = m_pMessageList->prev();
+	int iId = m_pMessageList->indexOf(m_pCurrentMessage);
+	if(!iId) return;
+	iId--;
+	m_pCurrentMessage = m_pMessageList->at(iId);
 	if(!m_pCurrentMessage)m_pCurrentMessage = m_pMessageList->first();
 }
 
@@ -206,10 +209,10 @@ KviNotifierWindowTabs::~KviNotifierWindowTabs()
 
 void KviNotifierWindowTabs::initConfig()
 {
-	KviStr buffer;
+	QString buffer;
 	g_pApp->getReadOnlyConfigPath(buffer,"libkvinotifier.kvc",KviApp::ConfigPlugins,true);
 
-	KviConfig cfg(buffer.ptr(),KviConfig::Read);
+	KviConfig cfg(buffer,KviConfig::Read);
 
 	cfg.setGroup("NotifierSkin");
 	

@@ -24,7 +24,7 @@
 #include "wizard.h"
 
 #include "kvi_locale.h"
-#include "kvi_list.h"
+
 #include "kvi_app.h"
 #include "kvi_ircmask.h"
 #include "kvi_selectors.h"
@@ -45,7 +45,7 @@
 
 
 extern KVIRC_API KviRegisteredUserDataBase * g_pRegisteredUserDataBase;
-extern KviPtrList<KviRegistrationWizard> * g_pRegistrationWizardList;
+extern QList<KviRegistrationWizard*> * g_pRegistrationWizardList;
 
 KviRegistrationWizard::KviRegistrationWizard(const char * startMask,KviRegisteredUserDataBase * db,QWidget * par,bool bModal)
 : KviTalWizard(par,"regusers_wizard",bModal)
@@ -264,9 +264,7 @@ KviRegistrationWizard::KviRegistrationWizard(const char * startMask,KviRegistere
 KviRegistrationWizard::~KviRegistrationWizard()
 {
 	delete m_pAvatar;
-	g_pRegistrationWizardList->setAutoDelete(false);
-	g_pRegistrationWizardList->removeRef(this);
-	g_pRegistrationWizardList->setAutoDelete(true);
+	g_pRegistrationWizardList->removeAll(this);
 }
 
 void KviRegistrationWizard::reject()

@@ -28,7 +28,7 @@
 
 #include "kvi_toolbar.h"
 
-#include "kvi_list.h"
+
 #include <qframe.h>
 #include "kvi_tal_tooltip.h"
 #include "kvi_tal_listview.h"
@@ -147,7 +147,7 @@ public:
 	KviClassicTaskBar();
 	~KviClassicTaskBar();
 protected:
-	KviPtrList<KviTaskBarButton> * m_pButtonList;
+	QList<KviTaskBarButton*> * m_pButtonList;
 	int                       m_iButtonHeight;
 	QWidget                 * m_pBase;
 protected:
@@ -163,9 +163,6 @@ public:
 	virtual void setActiveItem(KviTaskBarItem *);
 	virtual KviTaskBarItem * firstItem();
 	virtual KviTaskBarItem * lastItem(void);
-	virtual KviTaskBarItem * nextItem();
-	virtual KviTaskBarItem * prevItem(void);
-	virtual bool setIterationPointer(KviTaskBarItem * it);
 	virtual void updateActivityMeter();
 	virtual void applyOptions();
 protected slots:

@@ -107,13 +107,13 @@ void KviKvsKernel::done()
 		while(it != __dict->end()) \
 		{ \
 			if(KviQString::equalCIN(szCommandBegin,it.key(),l)) \
-				pMatches->append(new QString(it.key())); \
+				pMatches.append(it.key()); \
 			++it; \
 		} \
 	}
 
 
-void KviKvsKernel::completeCommand(const QString &szCommandBegin,KviPtrList<QString> * pMatches)
+void KviKvsKernel::completeCommand(const QString &szCommandBegin,QStringList& pMatches)
 {
 	int idx = szCommandBegin.find(QChar('.'));
 	if(idx == -1)
@@ -123,12 +123,11 @@ void KviKvsKernel::completeCommand(const QString &szCommandBegin,KviPtrList<QStr
 		COMPLETE_COMMAND_BY_DICT(KviKvsSpecialCommandParsingRoutine,m_pSpecialCommandParsingRoutineDict)
 		COMPLETE_COMMAND_BY_DICT(KviKvsCoreCallbackCommandExecRoutine,m_pCoreCallbackCommandExecRoutineDict)
 
-		KviPtrList<QString> lModules;
-		lModules.setAutoDelete(true);
-		g_pModuleManager->completeModuleNames(szCommandBegin,&lModules);
+		QStringList lModules;
+		g_pModuleManager->completeModuleNames(szCommandBegin,lModules);
 		QString szEmpty = "";
-		for(QString * pszModuleName = lModules.first();pszModuleName;pszModuleName = lModules.next())
-			completeModuleCommand(*pszModuleName,szEmpty,pMatches);
+		foreach(QString szModuleName,lModules)
+			completeModuleCommand(szModuleName,szEmpty,pMatches);
 
 		KviKvsAliasManager::instance()->completeCommand(szCommandBegin,pMatches);
 	} else {
@@ -139,24 +138,23 @@ void KviKvsKernel::completeCommand(const QString &szCommandBegin,KviPtrList<QStr
 	}
 }
 
-void KviKvsKernel::completeModuleCommand(const QString &szModuleName,const QString &szCommandBegin,KviPtrList<QString> * pMatches)
+void KviKvsKernel::completeModuleCommand(const QString &szModuleName,const QString &szCommandBegin,QStringList& pMatches)
 {
-	KviModule * pModule = g_pModuleManager->getModule(szModuleName.latin1());
+	KviModule * pModule = g_pModuleManager->getModule(szModuleName);
 	if(!pModule)return;
 
-	KviPtrList<QString> lModuleMatches;
-	lModuleMatches.setAutoDelete(true);
-	pModule->completeCommand(szCommandBegin,&lModuleMatches);
-	for(QString * pszModuleMatch = lModuleMatches.first();pszModuleMatch;pszModuleMatch = lModuleMatches.next())
+	QStringList lModuleMatches;
+	pModule->completeCommand(szCommandBegin,lModuleMatches);
+	foreach(QString szModuleMatch,lModuleMatches)
 	{
-		QString * pszMatch = new QString(*pszModuleMatch);
-		pszMatch->prepend(".");
-		pszMatch->prepend(szModuleName);
-		pMatches->append(pszMatch);
+		QString szMatch = szModuleMatch;
+		szMatch.prepend(".");
+		szMatch.prepend(szModuleName);
+		pMatches.append(szMatch);
 	}
 }
 
-void KviKvsKernel::completeFunction(const QString &szFunctionBegin,KviPtrList<QString> * pMatches)
+void KviKvsKernel::completeFunction(const QString &szFunctionBegin,QStringList& pMatches)
 {
 	int idx = szFunctionBegin.find(QChar('.'));
 	if(idx == -1)
@@ -169,29 +167,24 @@ void KviKvsKernel::completeFunction(const QString &szFunctionBegin,KviPtrList<QS
 		{
 			if(KviQString::equalCIN(szFunctionBegin,it.key(),l))
 			{
-				QString * pMatch = new QString(it.key());
 				//pMatch->prepend("$");
-				pMatches->append(pMatch);
+				pMatches.append(it.key());
 			}
 			++it;
 		}
 
-		KviPtrList<QString> lModules;
-		lModules.setAutoDelete(true);
-		g_pModuleManager->completeModuleNames(szFunctionBegin,&lModules);
+		QStringList lModules;
+		g_pModuleManager->completeModuleNames(szFunctionBegin,lModules);
 		QString szEmpty = "";
-		for(QString * pszModuleName = lModules.first();pszModuleName;pszModuleName = lModules.next())
-			completeModuleFunction(*pszModuleName,szEmpty,pMatches);
+		foreach(QString szModuleName,lModules)
+			completeModuleFunction(szModuleName,szEmpty,pMatches);
 
-		KviPtrList<QString> lAliases;
-		lAliases.setAutoDelete(true);
+		QStringList lAliases;
 
-		KviKvsAliasManager::instance()->completeCommand(szFunctionBegin,&lAliases);
-		for(QString * pszAlias = lAliases.first();pszAlias;pszAlias = lAliases.next())
+		KviKvsAliasManager::instance()->completeCommand(szFunctionBegin,lAliases);
+		foreach(QString szAlias,lAliases)
 		{
-			QString * pszAliasMatch = new QString(*pszAlias);
-			//pszAliasMatch->prepend("$");
-			pMatches->append(pszAliasMatch);
+			pMatches.append(szAlias);
 		}
 	} else {
 		// contains a module name
@@ -203,20 +196,19 @@ void KviKvsKernel::completeFunction(const QString &szFunctionBegin,KviPtrList<QS
 	
 }
 
-void KviKvsKernel::completeModuleFunction(const QString &szModuleName,const QString &szCommandBegin,KviPtrList<QString> * pMatches)
+void KviKvsKernel::completeModuleFunction(const QString &szModuleName,const QString &szCommandBegin,QStringList& pMatches)
 {
 	KviModule * pModule = g_pModuleManager->getModule(szModuleName.latin1());
 	if(!pModule)return;
 
-	KviPtrList<QString> lModuleMatches;
-	lModuleMatches.setAutoDelete(true);
-	pModule->completeFunction(szCommandBegin,&lModuleMatches);
-	for(QString * pszModuleMatch = lModuleMatches.first();pszModuleMatch;pszModuleMatch = lModuleMatches.next())
+	QStringList lModuleMatches;
+	pModule->completeFunction(szCommandBegin,lModuleMatches);
+	foreach(QString szModuleMatch,lModuleMatches)
 	{
-		QString * pszMatch = new QString(*pszModuleMatch);
-		pszMatch->prepend(".");
-		pszMatch->prepend(szModuleName);
+		QString szMatch = szModuleMatch;
+		szMatch.prepend(".");
+		szMatch.prepend(szModuleName);
 		//pszMatch->prepend("$");
-		pMatches->append(pszMatch);
+		pMatches.append(szMatch);
 	}
 }

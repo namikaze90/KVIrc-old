@@ -25,7 +25,7 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-#include "kvi_list.h"
+
 #include "kvi_heapobject.h"
 #include "kvi_statusbar.h"
 
@@ -59,7 +59,7 @@ protected:
 	CreateAppletCallback             m_pProc;               // creation callback
 	QPixmap                        * m_pIcon;
 	int                              m_iId;
-	KviPtrList<KviStatusBarApplet> * m_pAppletList;
+	QList<KviStatusBarApplet*>     * m_pAppletList;
 public:
 	KviStatusBarAppletDescriptor(const QString &szVisibleName,
 					const QString &szInternalName,

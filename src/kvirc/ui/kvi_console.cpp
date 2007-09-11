@@ -45,7 +45,6 @@
 #include "kvi_ircuserdb.h"
 #include "kvi_channel.h"
 #include "kvi_query.h"
-#include "kvi_parameterlist.h"
 #include "kvi_regusersdb.h"
 #include "kvi_userlistview.h"
 #include "kvi_out.h"
@@ -255,13 +254,11 @@ void KviConsole::fillContextPopup(KviTalPopupMenu * p)
 	// FIXME: add items to close dead queries and channels ?
 	if(connection())
 	{
-		cc = channelCount();
-		qc = queryCount();
 		p->insertSeparator();
 		id = p->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Part All Channels"),connection(),SLOT(partAllChannels()));
-		if(!cc)p->setItemEnabled(id,false);
+		if(!connection()->channelList()->isEmpty())p->setItemEnabled(id,false);
 		id = p->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUERY)),__tr2qs("Close All Queries"),connection(),SLOT(closeAllQueries()));
-		if(!qc)p->setItemEnabled(id,false);
+		if(!connection()->queryList()->isEmpty())p->setItemEnabled(id,false);
 	}
 
 	p->insertSeparator();
@@ -275,7 +272,7 @@ void KviConsole::fillContextPopup(KviTalPopupMenu * p)
 	}
 }
 
-void KviConsole::completeChannel(const QString &word,KviPtrList<QString> * matches)
+void KviConsole::completeChannel(const QString &word,QStringList& matches)
 {
 	// FIXME: first look in our context ?
 	/*
@@ -290,12 +287,13 @@ void KviConsole::completeChannel(const QString &word,KviPtrList<QString> * match
 	{
 		for(QStringList::Iterator it = pList->begin(); it != pList->end(); ++it)
 		{
-			if(KviQString::equalCIN((*it),word,word.length()))matches->append(new QString(*it));
+			if(KviQString::equalCIN((*it),word,word.length()))
+				matches.append(*it);
 		}
 	}
 }
 
-void KviConsole::completeServer(const QString &word, KviPtrList<QString> * matches)
+void KviConsole::completeServer(const QString &word, QStringList& matches)
 {
 	for(QStringList::Iterator it = KVI_OPTION_STRINGLIST(KviOption_stringlistRecentServers).begin(); it != KVI_OPTION_STRINGLIST(KviOption_stringlistRecentServers).end(); ++it)
 	{
@@ -307,7 +305,7 @@ void KviConsole::completeServer(const QString &word, KviPtrList<QString> * match
 		//We should have a full server name here, without the irc:// and without the port
 		if(KviQString::equalCIN(srv,word,word.length()))
 		{
-			matches->append(new QString(srv));
+			matches.append(srv);
 		}
 
 	}
@@ -502,15 +500,15 @@ void KviConsole::updateUri()
 		if(server)
 		{
 			KviIrcUrl::join(uri,server);
-			KviChannel * last =connection()->channelList()->getLast();
-			for(KviChannel * c = connection()->channelList()->first();c;c = connection()->channelList()->next())
+			foreach(KviChannel * c,*(connection()->channelList()))
 			{
+				if(!uri.isEmpty())
+					uri += ',';
 				uri.append(c->name());
 				if(c->hasChannelKey()) {
 					uri.append("?");
 					uri.append(c->channelKey());
 				}
-				if(c!=last) uri.append(",");
 			}
 		}
 	}
@@ -873,14 +871,14 @@ void KviConsole::avatarChangedUpdateWindows(const QString &nick,const QString &t
 	// in quiet mode avoid bugging the user about avatar changes
 	bool bOut = ((!textLine.isEmpty()) && (!(_OUTPUT_QUIET)));
 
-	for(KviChannel * c = connection()->channelList()->first();c;c = connection()->channelList()->next())
+	foreach(KviChannel * c,*(connection()->channelList()))
 	{
 		if(c->avatarChanged(nick))
 		{
 			if(bOut)c->outputNoFmt(KVI_OUT_AVATAR,textLine);
 		}
 	}
-	for(KviQuery * q = connection()->queryList()->first();q;q = connection()->queryList()->next())
+	foreach(KviQuery * q,*(connection()->queryList()))
 	{
 		if(q->avatarChanged(nick))
 		{

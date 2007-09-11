@@ -29,7 +29,7 @@
 #include "kvi_settings.h"
 
 #include <qobject.h>
-#include "kvi_list.h"
+
 
 #include <qtimer.h>
 
@@ -76,11 +76,11 @@ protected:
 	~KviIsOnNotifyListManager();
 private:
 	QHash<QString,QString>      * m_pRegUserDict;            // dict notifystring->reguser name
-	KviPtrList<QString>   * m_pNotifyList;                  // list of notifystring (total)
-	KviPtrList<QString>   * m_pIsOnList;                    // list of notifystring (one session)
+	QStringList           m_lNotifyList;                  // list of notifystring (total)
+	QStringList           m_lIsOnList;                    // list of notifystring (one session)
 	QString               m_szIsOnString;                 // m_pIsOnList in form of a string
-	KviPtrList<QString> * m_pOnlineList;                  //
-	KviPtrList<QString> * m_pUserhostList;
+	QStringList           m_lOnlineList;                  //
+	QStringList           m_lUserhostList;
 	QString               m_szUserhostString;
 	bool                  m_bExpectingIsOn;
 	bool                  m_bExpectingUserhost;
@@ -123,7 +123,7 @@ protected:
 	KviStupidNotifyListManager(KviIrcConnection * pConnection);
 	~KviStupidNotifyListManager();
 protected:
-	KviPtrList<QString> * m_pNickList;
+	QStringList  m_lNickList;
 	QString m_szLastIsOnMsg;
 	int m_iNextNickToCheck;
 	int m_iRestartTimer;

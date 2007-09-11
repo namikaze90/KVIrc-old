@@ -27,10 +27,8 @@
 
 #include "kvi_settings.h"
 #include "kvi_string.h"
-//#include "kvi_command.h"
-#include "kvi_parameterlist.h"
 #include "kvi_library.h"
-#include "kvi_list.h"
+
 #include "kvi_moduleextension.h"
 #include "kvi_kvs_moduleinterface.h"
 
@@ -183,7 +181,6 @@ public:
 	void          * getSymbol(const char * symname);
 	bool            ctrl(const char * operation,void * param);
 
-	void getDefaultConfigFileName(KviStr &buffer);
 	void getDefaultConfigFileName(QString &szBuffer);
 
 	static void unregisterMetaObject(const char * metaObjName);

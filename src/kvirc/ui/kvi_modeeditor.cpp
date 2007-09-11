@@ -109,8 +109,7 @@ KviModeEditor::KviModeEditor(QWidget * par,KviWindowToolPageButton* button,const
 	int i = 1;
 	QString tmp;
 
-	m_pCheckBoxes = new KviPtrList<KviStyledCheckBox>;
-	m_pCheckBoxes->setAutoDelete(false);
+	m_pCheckBoxes = new QList<KviStyledCheckBox*>;
 
 	
 	// first che basic checkable modes pstnmi
@@ -308,7 +307,7 @@ void KviModeEditor::commit()
 	}
 
 
-	for(KviStyledCheckBox * cb = m_pCheckBoxes->first();cb;cb = m_pCheckBoxes->next())
+	foreach(KviStyledCheckBox * cb,*m_pCheckBoxes)
 	{
 		QString sz = cb->text();
 		sz.replace("&","");

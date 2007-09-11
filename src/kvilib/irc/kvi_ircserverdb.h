@@ -29,7 +29,7 @@
 #include "kvi_ircserver.h"
 
 #include <QHash>
-#include <QSet>
+#include <QList>
 
 typedef struct _KviIrcServerDefinition
 {
@@ -54,12 +54,12 @@ public:
 	~KviIrcServerDataBaseRecord();
 protected:
 	KviIrcNetwork            * m_pNetwork;
-	KviPtrList<KviIrcServer> * m_pServerList;
+	QList<KviIrcServer*>     * m_pServerList;
 
 	KviIrcServer             * m_pCurrentServer;
 public:
 	KviIrcNetwork * network(){ return m_pNetwork; };
-	KviPtrList<KviIrcServer> * serverList(){ return m_pServerList; };
+	QList<KviIrcServer*> * serverList(){ return m_pServerList; };
 	KviIrcServer * currentServer();
 	void insertServer(KviIrcServer *srv);
 	KviIrcServer * findServer(const KviIrcServer * pServer);

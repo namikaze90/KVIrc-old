@@ -31,7 +31,7 @@
 #include <qsplitter.h>
 //#include "kvi_module.h"
 
-extern KviPtrList<KviSocketSpyWindow> * g_pSocketSpyWindowList;
+extern QList<KviSocketSpyWindow*> * g_pSocketSpyWindowList;
 
 KviSocketSpyWindow::KviSocketSpyWindow(KviFrame * lpFrm,KviConsole * lpConsole)
 : KviWindow(KVI_WINDOW_TYPE_SOCKETSPY,lpFrm,"socket_spy",lpConsole) , KviIrcDataStreamMonitor(lpConsole->context())
@@ -47,7 +47,7 @@ KviSocketSpyWindow::KviSocketSpyWindow(KviFrame * lpFrm,KviConsole * lpConsole)
 
 KviSocketSpyWindow::~KviSocketSpyWindow()
 {
-	g_pSocketSpyWindowList->removeRef(this);
+	g_pSocketSpyWindowList->removeAll(this);
 }
 
 void KviSocketSpyWindow::die()

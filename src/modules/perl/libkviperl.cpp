@@ -448,7 +448,7 @@ static bool perl_kvs_cmd_begin(KviKvsModuleCommandCall * c)
 	ex.pKvsContext = c->context();
 	ex.szContext = szContext;
 	ex.szCode = szCode;
-	for(KviKvsVariant * v = vList.first();v;v = vList.next())
+	foreach(KviKvsVariant * v,*(vList.list()))
 	{
 		QString tmp;
 		v->asString(tmp);

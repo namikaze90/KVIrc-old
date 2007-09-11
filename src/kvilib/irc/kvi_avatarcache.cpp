@@ -25,7 +25,7 @@
 
 
 #include "kvi_avatarcache.h"
-#include "kvi_list.h"
+
 #include "kvi_config.h"
 
 // this level triggers a cleanup

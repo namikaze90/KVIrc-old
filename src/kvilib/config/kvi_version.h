@@ -28,7 +28,7 @@
 #define VERSION "3.9.99"
 #define VERSION_BRANCH "3.9"
 #define PACKAGE "kvirc"
-#define RELEASE_NAME "Anomalies"
+#define RELEASE_NAME "ex-Anomalies"
 
 #endif //!_KVI_VERSION_H_
 

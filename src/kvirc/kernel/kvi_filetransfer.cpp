@@ -72,15 +72,14 @@ void KviFileTransferManager::killTerminatedTransfers()
 {
 	if(!m_pTransferList)return;
 
-	KviPtrList<KviFileTransfer> l;
-	l.setAutoDelete(false);
+	QList<KviFileTransfer*> l;
 
-	for(KviFileTransfer * f = m_pTransferList->first();f;f = m_pTransferList->next())
+	foreach(KviFileTransfer * f,*m_pTransferList)
 	{
 		if(f->terminated())l.append(f);
 	}
 
-	for(KviFileTransfer * d = l.first();d;d = l.next())
+	foreach(KviFileTransfer * d,l)
 		d->die();
 }
 
@@ -104,8 +103,7 @@ void KviFileTransferManager::registerTransfer(KviFileTransfer * t)
 {
 	if(!m_pTransferList)
 	{
-		m_pTransferList = new KviPtrList<KviFileTransfer>;
-		m_pTransferList->setAutoDelete(false);
+		m_pTransferList = new QList<KviFileTransfer*>;
 	}
 
 	m_pTransferList->append(t);
@@ -123,7 +121,7 @@ void KviFileTransferManager::unregisterTransfer(KviFileTransfer * t)
 
 	emit transferUnregistering(t);
 
-	m_pTransferList->removeRef(t);
+	m_pTransferList->removeAll(t);
 	if(m_pTransferList->isEmpty())
 	{
 		delete m_pTransferList;

@@ -39,7 +39,7 @@
 #include "kvi_ircconnection.h"
 #include "dialog.h"
 
-#include "kvi_list.h"
+
 #include <qsplitter.h> // FIXME: REmove this!
 
 //#warning "$reguser.matches..."
@@ -52,7 +52,7 @@
 
 extern KVIRC_API KviRegisteredUserDataBase * g_pRegisteredUserDataBase;
 
-KviPtrList<KviRegistrationWizard> * g_pRegistrationWizardList = 0;
+QList<KviRegistrationWizard*> * g_pRegistrationWizardList = 0;
 
 KviRegisteredUsersDialog * g_pRegisteredUsersDialog = 0;
 
@@ -1170,8 +1170,7 @@ static bool reguser_kvs_cmd_wizard(KviKvsModuleCommandCall * c)
 static bool reguser_module_init(KviModule * m)
 {
 	g_pLocalRegisteredUserDataBase = 0;
-	g_pRegistrationWizardList = new KviPtrList<KviRegistrationWizard>;
-	g_pRegistrationWizardList->setAutoDelete(true);
+	g_pRegistrationWizardList = new QList<KviRegistrationWizard*>;
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"add",reguser_kvs_cmd_add);
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"remove",reguser_kvs_cmd_remove);
@@ -1201,7 +1200,7 @@ static bool reguser_module_cleanup(KviModule *m)
 	if(g_pRegisteredUsersDialog)delete g_pRegisteredUsersDialog;
     g_pRegisteredUsersDialog = 0;
 
-	while(KviRegistrationWizard * w = g_pRegistrationWizardList->first())delete w;
+	qDeleteAll(*g_pRegistrationWizardList);
 	delete g_pRegistrationWizardList;
     g_pRegistrationWizardList = 0;
 

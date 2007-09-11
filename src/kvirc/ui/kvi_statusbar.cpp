@@ -94,11 +94,9 @@ KviStatusBar::KviStatusBar(KviFrame * pFrame)
 	KviStatusBarConnectionTimer::selfRegister(this);
 	KviStatusBarSeparator::selfRegister(this);
 
-	m_pAppletList = new KviPtrList<KviStatusBarApplet>;
-	m_pAppletList->setAutoDelete(false);
+	m_pAppletList = new QList<KviStatusBarApplet*>;
 
-	m_pMessageQueue = new KviPtrList<KviStatusBarMessage>;
-	m_pMessageQueue->setAutoDelete(true);
+	m_pMessageQueue = new QList<KviStatusBarMessage*>;
 
 	m_pMessageTimer = 0;
 
@@ -135,6 +133,10 @@ KviStatusBar::~KviStatusBar()
 	m_bStopLayoutOnAddRemove = true;
 
 	if(m_pMessageTimer)delete m_pMessageTimer;
+	foreach(KviStatusBarMessage* d,*m_pMessageQueue)
+	{
+		delete d;
+	}
 	delete m_pMessageQueue;
 	foreach(KviStatusBarAppletDescriptor* d,*m_pAppletDescriptors)
 	{
@@ -146,10 +148,10 @@ KviStatusBar::~KviStatusBar()
 
 void KviStatusBar::load()
 {
-	KviStr szBuf;
+	QString szBuf;
 	if(!g_pApp->getReadOnlyConfigPath(szBuf,"statusbar.kvc"))return; // no config file at all
 
-	KviConfig cfg(szBuf.ptr(),KviConfig::Read);
+	KviConfig cfg(szBuf,KviConfig::Read);
 	cfg.setGroup("Applets");
 	
 	int nApplets = cfg.readIntEntry("Count",0);
@@ -178,16 +180,16 @@ void KviStatusBar::load()
 void KviStatusBar::save()
 {
 	// FIXME: This will preserve the settings of the last saved KviFrame's statusbar only :/
-	KviStr szBuf;
+	QString szBuf;
 	g_pApp->getLocalKvircDirectory(szBuf,KviApp::Config,"statusbar.kvc");
 
-	KviConfig cfg(szBuf.ptr(),KviConfig::Write);
+	KviConfig cfg(szBuf,KviConfig::Write);
 	cfg.setGroup("Applets");
 	
 	cfg.writeEntry("Count",m_pAppletList->count());
 	
 	int i = 0;
-	for(KviStatusBarApplet * a = m_pAppletList->first();a;a = m_pAppletList->next())
+	foreach(KviStatusBarApplet * a,*m_pAppletList)
 	{
 		KviStr prefix(KviStr::Format,"Applet%d",i);
 		KviStr tmp(KviStr::Format,"%s_InternalName",prefix.ptr());
@@ -211,7 +213,7 @@ void KviStatusBar::layoutChildren()
 {
 	int x = width() - HMARGIN;
 	int h = height() - (VMARGIN * 2);
-	for(KviStatusBarApplet * a = m_pAppletList->last();a;a = m_pAppletList->prev())
+	foreach(KviStatusBarApplet * a,*m_pAppletList)
 	{
 		int w = a->sizeHint().width();
 		x -= w;
@@ -242,7 +244,7 @@ void KviStatusBar::recalcMinimumHeight()
 	int s = 18;
 	int h = m_pMessageLabel->sizeHint().height();
 	if(h > s)s = h;
-	for(KviStatusBarApplet * a = m_pAppletList->last();a;a = m_pAppletList->prev())
+	foreach(KviStatusBarApplet * a,*m_pAppletList)
 	{
 		h = a->sizeHint().height();
 		if(h > s)s = h;
@@ -262,7 +264,7 @@ void KviStatusBar::recalcMinimumHeight()
 
 bool KviStatusBar::appletExists(KviStatusBarApplet * pApplet)
 {
-	return (m_pAppletList->findRef(pApplet) != -1);
+	return m_pAppletList->contains(pApplet);
 }
 
 KviStatusBarApplet * KviStatusBar::appletAt(const QPoint &pnt,bool bBestMatch)
@@ -270,14 +272,14 @@ KviStatusBarApplet * KviStatusBar::appletAt(const QPoint &pnt,bool bBestMatch)
 	QPoint local = mapFromGlobal(pnt);
 	if(bBestMatch)
 	{
-		for(KviStatusBarApplet * a = m_pAppletList->first();a;a = m_pAppletList->next())
+		foreach(KviStatusBarApplet * a,*m_pAppletList)
 		{
 			if(local.x() <= (a->x() + a->width()))return a;
 		}
 		return m_pAppletList->last(); // last anyway
 	}
 	
-	for(KviStatusBarApplet * a = m_pAppletList->first();a;a = m_pAppletList->next())
+	foreach(KviStatusBarApplet * a,*m_pAppletList)
 	{
 		if((local.x() >= a->x()) && (local.y() >= a->y()))
 		{
@@ -418,14 +420,14 @@ void KviStatusBar::appletsPopupActivated(int id)
 		{
 			if(m_pClickedApplet)
 			{
-				int idx = m_pAppletList->findRef(m_pClickedApplet);
-				if(idx != -1)
+				if(m_pAppletList->contains(m_pClickedApplet))
 				{
 					// try to put the new applet just after the clicked one
 					bool bSave = m_bStopLayoutOnAddRemove;
 					m_bStopLayoutOnAddRemove = true;
 					KviStatusBarApplet * a = d->create(this);
-					m_pAppletList->removeRef(a);
+					int idx = m_pAppletList->indexOf(a); 
+					m_pAppletList->removeAll(a);
 					m_pAppletList->insert(idx + 1,a);
 					m_bStopLayoutOnAddRemove = bSave;
 					if(!m_bStopLayoutOnAddRemove)updateLayout();
@@ -455,7 +457,7 @@ void KviStatusBar::registerApplet(KviStatusBarApplet * a)
 void KviStatusBar::unregisterApplet(KviStatusBarApplet * a)
 {
 	if(!a)return;
-	m_pAppletList->removeRef(a);
+	m_pAppletList->removeAll(a);
 	if(a->isVisible())a->hide();
 	if(!m_bStopLayoutOnAddRemove)updateLayout();
 }
@@ -515,10 +517,10 @@ void KviStatusBar::mouseMoveEvent(QMouseEvent * e)
 		}
 	}
 	
-	m_pAppletList->removeRef(m_pClickedApplet);
-	int idx = m_pAppletList->findRef(a);
-	if(idx == -1)m_pAppletList->append(m_pClickedApplet); // uhg ?
+	m_pAppletList->removeAll(m_pClickedApplet);
+	if(!m_pAppletList->contains(a))m_pAppletList->append(m_pClickedApplet); // uhg ?
 	else {
+		int idx = m_pAppletList->indexOf(m_pClickedApplet);
 		QPoint p = a->mapFromGlobal(g);
 		if(p.x() > (a->width() / 2))idx++; // just after
 		m_pAppletList->insert(idx,m_pClickedApplet);

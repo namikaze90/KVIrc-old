@@ -37,7 +37,7 @@
 #include "kvi_locale.h"
 #include "kvi_out.h"
 
-static KviPtrList<KviMediaPlayerInterfaceDescriptor> * g_pDescriptorList = 0;
+static QList<KviMediaPlayerInterfaceDescriptor*> * g_pDescriptorList = 0;
 
 static KviMediaPlayerInterface * g_pMPInterface = 0;
 
@@ -47,7 +47,7 @@ static KviMediaPlayerInterface * auto_detect_player(KviWindow * pOut = 0)
 	KviMediaPlayerInterface * pBest = 0;
 	KviMediaPlayerInterfaceDescriptor * d;
 	KviMediaPlayerInterfaceDescriptor * pDBest = 0;
-	for(d = g_pDescriptorList->first();d;d = g_pDescriptorList->next())
+	foreach(d,*g_pDescriptorList)
 	{
 		KviMediaPlayerInterface * i = d->instance();
 		if(i)
@@ -73,7 +73,7 @@ static KviMediaPlayerInterface * auto_detect_player(KviWindow * pOut = 0)
 		if(pOut)
 			pOut->outputNoFmt(KVI_OUT_MULTIMEDIA,__tr2qs_ctx("Not sure about the results, trying a second, more agressive detection pass","mediaplayer"));
 		// no sure player found... try again with a destructive test
-		for(d = g_pDescriptorList->first();d;d = g_pDescriptorList->next())
+		foreach(d,*g_pDescriptorList)
 		{
 			KviMediaPlayerInterface * i = d->instance();
 			if(i)
@@ -427,7 +427,7 @@ MP_KVS_COMMAND(setPlayer)
 		KVSM_PARAMETER("player",KVS_PT_STRING,0,szPlayer)
 	KVSM_PARAMETERS_END(c)
 
-	for(KviMediaPlayerInterfaceDescriptor * d = g_pDescriptorList->first();d;d = g_pDescriptorList->next())
+	foreach(KviMediaPlayerInterfaceDescriptor * d,*g_pDescriptorList)
 	{
 		if(d->name() == szPlayer)
 		{
@@ -490,7 +490,7 @@ MP_KVS_FUNCTION(playerList)
 	KviKvsArray* pArray = new KviKvsArray();
 	int id=0;
 
-	for(KviMediaPlayerInterfaceDescriptor * d = g_pDescriptorList->first();d;d = g_pDescriptorList->next())
+	foreach(KviMediaPlayerInterfaceDescriptor * d,*g_pDescriptorList)
 	{
 		pArray->set(id++,new KviKvsVariant(d->name()));
 	}
@@ -1552,8 +1552,7 @@ MP_KVS_COMMAND(setShuffle)
 
 static bool mediaplayer_module_init( KviModule * m )
 {
-	g_pDescriptorList = new KviPtrList<KviMediaPlayerInterfaceDescriptor>;
-	g_pDescriptorList->setAutoDelete(true);
+	g_pDescriptorList = new QList<KviMediaPlayerInterfaceDescriptor*>;
 
 #ifndef COMPILE_ON_WINDOWS
 	g_pDescriptorList->append(MP_CREATE_DESCRIPTOR(KviXmmsInterface));
@@ -1576,7 +1575,7 @@ static bool mediaplayer_module_init( KviModule * m )
 	{
 		g_pMPInterface = auto_detect_player();
 	} else {
-		for(KviMediaPlayerInterfaceDescriptor * d = g_pDescriptorList->first();d;d = g_pDescriptorList->next())
+		foreach(KviMediaPlayerInterfaceDescriptor * d,*g_pDescriptorList)
 		{
 			if(d->name() == KVI_OPTION_STRING(KviOption_stringPreferredMediaPlayer))
 			{
@@ -1653,6 +1652,7 @@ static bool mediaplayer_module_init( KviModule * m )
 
 static bool mediaplayer_module_cleanup( KviModule * m )
 {
+	qDeleteAll(*g_pDescriptorList);
 	delete g_pDescriptorList;
 	return true;
 }
@@ -1668,7 +1668,7 @@ static bool mediaplayer_module_ctrl(KviModule * m,const char * operation,void * 
 	{
 		// we expect param to be a pointer to QStringList
 		QStringList * l = (QStringList *)param;
-		for(KviMediaPlayerInterfaceDescriptor * d = g_pDescriptorList->first();d;d = g_pDescriptorList->next())
+		foreach(KviMediaPlayerInterfaceDescriptor * d,*g_pDescriptorList)
 		{
 			l->append(d->name());
 		}

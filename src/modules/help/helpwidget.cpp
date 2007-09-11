@@ -39,8 +39,8 @@
 #include <qclipboard.h>
 
 extern Index        * g_pDocIndex;
-extern KviPtrList<KviHelpWindow> * g_pHelpWindowList;
-extern KviPtrList<KviHelpWidget> * g_pHelpWidgetList;
+extern QList<KviHelpWindow*> * g_pHelpWindowList;
+extern QList<KviHelpWidget*> * g_pHelpWidgetList;
 
 KviHelpWidget::KviHelpWidget(QWidget * par,KviFrame * lpFrm,bool bIsStandalone)
 : QWidget(par,"help_widget")
@@ -92,7 +92,7 @@ KviHelpWidget::KviHelpWidget(QWidget * par,KviFrame * lpFrm,bool bIsStandalone)
 
 KviHelpWidget::~KviHelpWidget()
 {
-	if(m_bIsStandalone)g_pHelpWidgetList->removeRef(this);
+	if(m_bIsStandalone)g_pHelpWidgetList->removeAll(this);
 }
 
 void KviHelpWidget::navigate( const QString& file)

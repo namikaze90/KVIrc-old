@@ -29,7 +29,7 @@
 #include "kvi_locale.h"
 
 #include <qlabel.h>
-#include "kvi_list.h"
+
 #include <qtooltip.h>
 #include <qtimer.h>
 

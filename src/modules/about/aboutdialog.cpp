@@ -75,10 +75,10 @@ KviAboutDialog::KviAboutDialog()
 	setCaption(__tr2qs_ctx("About KVIrc...","about"));
 	setOkButton(__tr2qs_ctx("Close","about"));
 
-	KviStr buffer;
+	QString buffer;
 	g_pApp->findImage(buffer,"kvi_splash.png");
 
-	QPixmap pix(buffer.ptr());
+	QPixmap pix(buffer);
 
 	QWidget * w = new QWidget(this);
 	QGridLayout * g = new QGridLayout(w,2,1,4,8);

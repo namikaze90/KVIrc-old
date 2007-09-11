@@ -29,7 +29,7 @@
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qsocketnotifier.h>
-#include "kvi_list.h"
+
 #include <qevent.h>
 #include <QList>
 #include <QQueue>

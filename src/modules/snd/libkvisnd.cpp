@@ -80,8 +80,7 @@ static KviSoundPlayer * g_pSoundPlayer = 0;
 KviSoundPlayer::KviSoundPlayer()
 : QObject()
 {
-	m_pThreadList = new KviPtrList<KviSoundThread>;
-	m_pThreadList->setAutoDelete(true);
+	m_pThreadList = new QList<KviSoundThread*>;
 
 	m_pSoundSystemDict = new QHash<QString,SoundSystemRoutine*>;
 
@@ -116,8 +115,7 @@ KviSoundPlayer::KviSoundPlayer()
 
 KviSoundPlayer::~KviSoundPlayer()
 {
-	m_pThreadList->setAutoDelete(false);
-	while(KviSoundThread * t = m_pThreadList->first())delete t;
+	qDeleteAll(*m_pThreadList);
 	delete m_pThreadList;
 	KviThreadManager::killPendingEvents(this);
 	foreach(SoundSystemRoutine* i,*m_pSoundSystemDict) { delete i; }
@@ -150,7 +148,8 @@ void KviSoundPlayer::registerSoundThread(KviSoundThread * t)
 
 void KviSoundPlayer::unregisterSoundThread(KviSoundThread * t)
 {
-	m_pThreadList->removeRef(t);
+	m_pThreadList->removeAll(t);
+	delete t;
 }
 
 bool KviSoundPlayer::event(QEvent * e)

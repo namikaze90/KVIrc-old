@@ -80,12 +80,13 @@ namespace KviKvsCoreFunctions
 
 	KVSCF(hash)
 	{
-#ifdef COMPILE_NEW_KVS
 		KviKvsHash * a = new KviKvsHash();
 
-		for(KviKvsVariant * key = KVSCF_pParams->first();key;key = KVSCF_pParams->next())
+		for (int i = 0; i < KVSCF_pParams->list()->size(); ++i)
 		{
-			KviKvsVariant * val = KVSCF_pParams->next();
+			KviKvsVariant * key = KVSCF_pParams->list()->at(i);
+			i++;
+			KviKvsVariant * val = KVSCF_pParams->list()->at(i);
 			if(!val)break;
 			QString sz;
 			key->asString(sz);
@@ -93,7 +94,7 @@ namespace KviKvsCoreFunctions
 		}
 
 		KVSCF_pRetBuffer->setHash(a);
-#endif
+
 		return true;
 	}
 

@@ -252,7 +252,7 @@ void KviLogViewMDIWindow::setupItemList()
 
 
 	int i=0;
-	for(pFile=m_logList.first();pFile;pFile=m_logList.next())
+	foreach(pFile,m_logList)
 	{
 		progress.setProgress( i );
 		i++;

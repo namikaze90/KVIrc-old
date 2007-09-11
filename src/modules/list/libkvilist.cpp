@@ -31,7 +31,7 @@
 
 #include <qsplitter.h>
 
-KviPtrList<KviListWindow> * g_pListWindowList = 0;
+QList<KviListWindow*> * g_pListWindowList = 0;
 
 
 /*
@@ -69,8 +69,7 @@ static bool list_kvs_cmd_open(KviKvsModuleCommandCall * c)
 
 static bool list_module_init(KviModule * m)
 {
-	g_pListWindowList = new KviPtrList<KviListWindow>;
-	g_pListWindowList->setAutoDelete(false);
+	g_pListWindowList = new QList<KviListWindow*>;
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"open",list_kvs_cmd_open);
 	return true;

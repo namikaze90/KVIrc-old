@@ -763,8 +763,7 @@ void KviActionEditor::exportActions()
 
 void KviActionEditor::deleteActions()
 {
-	KviPtrList<KviActionEditorListViewItem> l;
-	l.setAutoDelete(false);
+	QList<KviActionEditorListViewItem*> l;
 
 	KviActionEditorListViewItem * it = (KviActionEditorListViewItem *)m_pListView->firstChild();
 	while(it)
@@ -780,7 +779,7 @@ void KviActionEditor::deleteActions()
 	//if(QMessageBox::question(this,__tr2qsf("Confirm Deletion"),__tr2qsf("Do you really want to delete the selected actions ?"),__tr2qsf("Yes"),__tr2qsf("No")) != 0)
 	//	return;
 	
-	for(KviActionEditorListViewItem * i = l.first();i;i = l.next())
+	foreach(KviActionEditorListViewItem * i,l)
 	{
 		if(m_pSingleActionEditor->actionData() == i->actionData())
 			m_pSingleActionEditor->setActionData(0);

@@ -63,7 +63,7 @@
 #include <qpainter.h>
 #include <qclipboard.h>
 #include <qstringlist.h>
-#include "kvi_list.h"
+
 #include <qapplication.h>
 #include <qclipboard.h>
 #include <qmessagebox.h>
@@ -115,22 +115,21 @@ extern KviInputHistory * g_pInputHistory;
 
 KviInputHistory::KviInputHistory()
 {
-	m_pStringList = new KviPtrList<QString>;
-	m_pStringList->setAutoDelete(true);
+
 }
 
 KviInputHistory::~KviInputHistory()
 {
-	delete m_pStringList;
 }
 
-void KviInputHistory::add(QString * s)
+void KviInputHistory::add(const QString & s)
 {
-	m_pStringList->insert(0,s);
-	if(m_pStringList->count() > KVI_INPUT_MAX_GLOBAL_HISTORY_ENTRIES)m_pStringList->removeLast();
+	m_stringList.prepend(s);
+	if(m_stringList.count() > KVI_INPUT_MAX_GLOBAL_HISTORY_ENTRIES)
+		m_stringList.removeLast();
 }
 
-void KviInputHistory::load(const char * filename)
+void KviInputHistory::load(const QString & filename)
 {
 	KviConfig c(filename,KviConfig::Read);
 
@@ -144,26 +143,26 @@ void KviInputHistory::load(const char * filename)
 	{
 		tmp.sprintf("S%d",i);
 		QString entry = c.readQStringEntry(tmp.ptr(),"");
-		if(!entry.isEmpty())add(new QString(entry));
+		if(!entry.isEmpty())add(entry);
 	}
 }
 
-void KviInputHistory::save(const char * filename)
+void KviInputHistory::save(const QString & filename)
 {
 	KviConfig c(filename,KviConfig::Write);
 	c.clear();
 
-	c.writeEntry("Count",m_pStringList->count());
+	c.writeEntry("Count",m_stringList.count());
 
 	KviStr tmp;
 	int idx = 0;
 
-	for(QString * s = m_pStringList->first();s;s = m_pStringList->next())
+	foreach(QString s,m_stringList)
 	{
-		if(!s->isEmpty())
+		if(!s.isEmpty())
 		{
 			tmp.sprintf("S%d",idx);
-			c.writeEntry(tmp.ptr(),*s);
+			c.writeEntry(tmp.ptr(),s);
 			idx++;
 		}
 	}
@@ -201,8 +200,6 @@ KviInputEditor::KviInputEditor(QWidget * par,KviWindow *wnd,KviUserListView * vi
 	m_bUpdatesEnabled      = true;
 	m_pKviWindow           = wnd;
 	m_pUserListView        = view;
-	m_pHistory             = new KviPtrList<QString>;
-	m_pHistory->setAutoDelete(true);
 	m_bReadOnly = FALSE;
 	
 	setInputMethodEnabled(true);
@@ -233,7 +230,6 @@ KviInputEditor::~KviInputEditor()
 	if(g_pLastFontMetrics) delete g_pLastFontMetrics;
 	g_pLastFontMetrics = 0;
 	if(m_pIconMenu)delete m_pIconMenu;
-	delete m_pHistory;
 	if(m_iCursorTimer)killTimer(m_iCursorTimer);
 	killDragTimer();
 }
@@ -1197,13 +1193,13 @@ void KviInputEditor::returnPressed(bool bRepaint)
 	if (!m_szTextBuffer.isEmpty() /* && (!m_pHistory->current() || m_szTextBuffer.compare(*(m_pHistory->current())))*/)
 	{
 		if(m_pInputParent->inherits("KviInput"))
-			g_pInputHistory->add(new QString(m_szTextBuffer));
+			g_pInputHistory->add(m_szTextBuffer);
 
-		m_pHistory->insert(0,new QString(m_szTextBuffer));
+			m_historyList.prepend(m_szTextBuffer);
 	}
 
 	__range_valid(KVI_INPUT_MAX_LOCAL_HISTORY_ENTRIES > 1); //ABSOLUTELY NEEDED, if not, pHist will be destroyed...
-	if(m_pHistory->count() > KVI_INPUT_MAX_LOCAL_HISTORY_ENTRIES)m_pHistory->removeLast();
+	if(m_historyList.count() > KVI_INPUT_MAX_LOCAL_HISTORY_ENTRIES)m_historyList.removeLast();
 
 	m_iCurHistoryIdx = -1;
 
@@ -1525,12 +1521,12 @@ void KviInputEditor::keyPressEvent(QKeyEvent *e)
 					KviUserInput::parseNonCommand(szBuffer,m_pKviWindow);
 					if (!szBuffer.isEmpty())
 					{
-						g_pInputHistory->add(new QString(szBuffer));
-						m_pHistory->insert(0,new QString(szBuffer));
+						g_pInputHistory->add(szBuffer);
+						m_historyList.prepend(szBuffer);
 					}
 				
 					__range_valid(KVI_INPUT_MAX_LOCAL_HISTORY_ENTRIES > 1); //ABSOLUTELY NEEDED, if not, pHist will be destroyed...
-					if(m_pHistory->count() > KVI_INPUT_MAX_LOCAL_HISTORY_ENTRIES)m_pHistory->removeLast();
+					if(m_historyList.count() > KVI_INPUT_MAX_LOCAL_HISTORY_ENTRIES)m_historyList.removeLast();
 				
 					m_iCurHistoryIdx = -1;
 				}
@@ -1668,20 +1664,20 @@ void KviInputEditor::keyPressEvent(QKeyEvent *e)
 		case Qt::Key_Up:
 			if(!m_bReadOnly)
 			{
-				if(m_pHistory->count() > 0)
+				if(m_historyList.count() > 0)
 				{
 					if(m_iCurHistoryIdx < 0)
 					{
 						m_szSaveTextBuffer = m_szTextBuffer;
-						m_szTextBuffer = *(m_pHistory->at(0));
+						m_szTextBuffer = m_historyList.first();
 						m_iCurHistoryIdx = 0;
-					} else if(m_iCurHistoryIdx >= (int)(m_pHistory->count()-1))
+					} else if(m_iCurHistoryIdx >= (int)(m_historyList.count()-1))
 					{
 						m_szTextBuffer=m_szSaveTextBuffer;
 						m_iCurHistoryIdx = -1;
 					} else {
 						m_iCurHistoryIdx++;
-						m_szTextBuffer = *(m_pHistory->at(m_iCurHistoryIdx));
+						m_szTextBuffer = m_historyList.at(m_iCurHistoryIdx);
 					}
 					selectOneChar(-1);
 					if(KVI_OPTION_BOOL(KviOption_boolInputHistoryCursorAtEnd))end();
@@ -1692,20 +1688,20 @@ void KviInputEditor::keyPressEvent(QKeyEvent *e)
 		case Qt::Key_Down:
 			if(!m_bReadOnly)
 			{
-				if(m_pHistory->count() > 0)
+				if(m_historyList.count() > 0)
 				{
 					if(m_iCurHistoryIdx < 0)
 					{
 						m_szSaveTextBuffer = m_szTextBuffer;
-						m_szTextBuffer = *(m_pHistory->at(m_pHistory->count()-1));
-						m_iCurHistoryIdx =m_pHistory->count()-1;
+						m_szTextBuffer = m_historyList.last();
+						m_iCurHistoryIdx =m_historyList.count()-1;
 					} else if(m_iCurHistoryIdx == 0)
 					{
 						m_szTextBuffer=m_szSaveTextBuffer;
 						m_iCurHistoryIdx = -1;
 					} else {
 						m_iCurHistoryIdx--;
-						m_szTextBuffer = *(m_pHistory->at(m_iCurHistoryIdx));
+						m_szTextBuffer = m_historyList.at(m_iCurHistoryIdx);
 					}
 					selectOneChar(-1);
 					if(KVI_OPTION_BOOL(KviOption_boolInputHistoryCursorAtEnd))end();
@@ -1799,8 +1795,7 @@ void KviInputEditor::completion(bool bShift)
 			return;
 		}
 	}
-	KviPtrList<QString> tmp;
-	tmp.setAutoDelete(true);
+	QStringList tmp;
 
 	bool bIsCommand = false;
 	bool bIsDir = false;
@@ -1815,11 +1810,11 @@ void KviInputEditor::completion(bool bShift)
 			// command completion
 			word.remove(0,1);
 			if(word.isEmpty())return;
-			KviKvsKernel::instance()->completeCommand(word,&tmp);
+			KviKvsKernel::instance()->completeCommand(word,tmp);
 			bIsCommand = true;
 		} else {
 			// directory completion attempt
-			g_pApp->completeDirectory(word,&tmp);
+			g_pApp->completeDirectory(word,tmp);
 			bIsDir = true;
 		}
 	} else if(uc == '$')
@@ -1827,7 +1822,7 @@ void KviInputEditor::completion(bool bShift)
 		// function/identifer completion
 		word.remove(0,1);
 		if(word.isEmpty())return;
-		KviKvsKernel::instance()->completeFunction(word,&tmp);
+		KviKvsKernel::instance()->completeFunction(word,tmp);
 	} else if(uc == '#' || uc == '&' || uc == '!')
 	{
 		if(m_pKviWindow)
@@ -1841,7 +1836,7 @@ void KviInputEditor::completion(bool bShift)
 				return;
 			} else {
 				if(m_pKviWindow->console())
-					m_pKviWindow->console()->completeChannel(word,&tmp);
+					m_pKviWindow->console()->completeChannel(word,tmp);
 			}
 		}
 
@@ -1851,14 +1846,14 @@ void KviInputEditor::completion(bool bShift)
 		// irc server name
 		if(m_pKviWindow)
 			if(m_pKviWindow->console())
-				m_pKviWindow->console()->completeServer(word,&tmp);
+				m_pKviWindow->console()->completeServer(word,tmp);
 	} else {
 		// empty word will end up here
 		if(m_pUserListView)
 		{
 			if(KVI_OPTION_BOOL(KviOption_boolBashLikeNickCompletion))
 			{
-				m_pUserListView->completeNickBashLike(word,&tmp,bShift);
+				m_pUserListView->completeNickBashLike(word,tmp,bShift);
 				bIsNick = true;
 			} else {
 				standardNickCompletion(bShift,word,bFirstWordInLine);
@@ -1886,15 +1881,15 @@ void KviInputEditor::completion(bool bShift)
 			}
 		} else {
 			QString all;
-			QString * s = tmp.first();
-			match = *s;
+			QString s(tmp.first());
+			match = s;
 			int wLen = word.length();
-			for(;s;s = tmp.next())
+			foreach(s,tmp)
 			{
-				if(s->length() < match.length())
-					match.remove(s->length(),match.length() - s->length());
+				if(s.length() < match.length())
+					match.remove(s.length(),match.length() - s.length());
 				// All the matches here have length >= word.len()!!!
-				const QChar * b1 = KviQString::nullTerminatedArray(*s) + wLen;
+				const QChar * b1 = KviQString::nullTerminatedArray(s) + wLen;
 				const QChar * b2 = KviQString::nullTerminatedArray(match) + wLen;
 				const QChar * c1 = b1;
 				const QChar * c2 = b2;
@@ -1903,7 +1898,7 @@ void KviInputEditor::completion(bool bShift)
 				int len = wLen + (c1 - b1);
 				if(len < ((int)(match.length())))match.remove(len,match.length() - len);
 				if(!all.isEmpty())all.append(", ");
-				all.append(*s);
+				all.append(s);
 			}
 			if(m_pKviWindow)
 				m_pKviWindow->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("%d matches: %Q"),tmp.count(),&all);

@@ -159,8 +159,7 @@ bool KviKvsEventManager::addRawHandler(unsigned int uRawIdx,KviKvsEventHandler *
 	if(uRawIdx >= KVI_KVS_NUM_RAW_EVENTS)return false;
 	if(!m_rawEventTable[uRawIdx])
 	{
-		m_rawEventTable[uRawIdx] = new KviPtrList<KviKvsEventHandler>();
-		m_rawEventTable[uRawIdx]->setAutoDelete(true);
+		m_rawEventTable[uRawIdx] = new QList<KviKvsEventHandler*>;
 	}
 	m_rawEventTable[uRawIdx]->append(h);
 	return true;
@@ -171,7 +170,7 @@ bool KviKvsEventManager::removeScriptAppHandler(unsigned int uEvIdx,const QStrin
 	if(uEvIdx >= KVI_KVS_NUM_APP_EVENTS)return false;
 	KviKvsEventHandler * h;
 	if(!(m_appEventTable[uEvIdx].handlers()))return false;
-	for(h = m_appEventTable[uEvIdx].handlers()->first();h;h = m_appEventTable[uEvIdx].handlers()->next())
+	foreach(h,*(m_appEventTable[uEvIdx].handlers()))
 	{
 		if(h->type() == KviKvsEventHandler::Script)
 		{
@@ -190,7 +189,7 @@ KviKvsScriptEventHandler * KviKvsEventManager::findScriptRawHandler(unsigned int
 	if(uEvIdx >= KVI_KVS_NUM_RAW_EVENTS)return 0;
 	if(!m_rawEventTable[uEvIdx])return 0;
 	KviKvsEventHandler * h;
-	for(h = m_rawEventTable[uEvIdx]->first();h;h = m_rawEventTable[uEvIdx]->next())
+	foreach(h,*(m_rawEventTable[uEvIdx]))
 	{
 		if(h->type() == KviKvsEventHandler::Script)
 		{
@@ -208,7 +207,7 @@ KviKvsScriptEventHandler * KviKvsEventManager::findScriptAppHandler(unsigned int
 	if(uEvIdx >= KVI_KVS_NUM_APP_EVENTS)return 0;
 	KviKvsEventHandler * h;
 	if(!(m_appEventTable[uEvIdx].handlers()))return 0;
-	for(h = m_appEventTable[uEvIdx].handlers()->first();h;h = m_appEventTable[uEvIdx].handlers()->next())
+	foreach(h,*(m_appEventTable[uEvIdx].handlers()))
 	{
 		if(h->type() == KviKvsEventHandler::Script)
 		{
@@ -235,7 +234,7 @@ bool KviKvsEventManager::removeModuleAppHandler(unsigned int uEvIdx,KviKvsModule
 	if(uEvIdx >= KVI_KVS_NUM_APP_EVENTS)return false;
 	KviKvsEventHandler * h;
 	if(!(m_appEventTable[uEvIdx].handlers()))return false;
-	for(h = m_appEventTable[uEvIdx].handlers()->first();h;h = m_appEventTable[uEvIdx].handlers()->next())
+	foreach(h,*(m_appEventTable[uEvIdx].handlers()))
 	{
 		if(h->type() == KviKvsEventHandler::Module)
 		{
@@ -245,18 +244,6 @@ bool KviKvsEventManager::removeModuleAppHandler(unsigned int uEvIdx,KviKvsModule
 				return true;
 			}
 		}
-		// COMPAT
-		/*
-		} else if(h->type() == KviKvsEventHandler::OldModule)
-		{
-			if(((KviKvsOldModuleEventHandler *)h)->module() == i)
-			{
-				m_appEventTable[uEvIdx].removeHandler(h);
-				return true;
-			}
-		}
-		*/
-		// END COMPAT
 	}
 	return false;
 }
@@ -268,9 +255,8 @@ void KviKvsEventManager::removeAllModuleAppHandlers(KviKvsModuleInterface *pIfac
 	{
 		if(!m_appEventTable[i].handlers())continue;
 	
-		KviPtrList<KviKvsEventHandler> l;
-		l.setAutoDelete(false);
-		for(h = m_appEventTable[i].handlers()->first();h;h = m_appEventTable[i].handlers()->next())
+		QList<KviKvsEventHandler*> l;
+		foreach(KviKvsEventHandler* h,*(m_appEventTable[i].handlers()))
 		{
 			if(h->type() == KviKvsEventHandler::Module)
 			{
@@ -279,20 +265,13 @@ void KviKvsEventManager::removeAllModuleAppHandlers(KviKvsModuleInterface *pIfac
 					l.append(h);
 				}
 			}
-			// COMPAT
-			/*
-			} else if(h->type() == KviKvsEventHandler::OldModule)
-			{
-				if(((KviKvsOldModuleEventHandler *)h)->module() == pIface)
-				{
-					l.append(h);
-				}
-			}
-			*/
-			// END COMPAT
 	
 		}
-		for(h = l.first();h;h = l.next())m_appEventTable[i].removeHandler(h);
+		foreach(h,l)
+		{
+			m_appEventTable[i].removeHandler(h);
+			delete h;
+		}
 	}
 }
 
@@ -303,9 +282,8 @@ void KviKvsEventManager::removeAllModuleRawHandlers(KviKvsModuleInterface *pIfac
 	{
 		if(!m_rawEventTable[i])continue;
 
-		KviPtrList<KviKvsEventHandler> l;
-		l.setAutoDelete(false);
-		for(h = m_rawEventTable[i]->first();h;h = m_rawEventTable[i]->next())
+		QList<KviKvsEventHandler*> l;
+		foreach(KviKvsEventHandler*h,*(m_rawEventTable[i]))
 		{
 			if(h->type() == KviKvsEventHandler::Module)
 			{
@@ -314,20 +292,13 @@ void KviKvsEventManager::removeAllModuleRawHandlers(KviKvsModuleInterface *pIfac
 					l.append(h);
 				}
 			}
-			// COMPAT
-			/*
-			} else if(h->type() == KviKvsEventHandler::OldModule)
-			{
-				if(((KviKvsOldModuleEventHandler *)h)->module() == pIface)
-				{
-					l.append(h);
-				}
-			}
-			*/
-			// END COMPAT
 
 		}
-		for(h = l.first();h;h = l.next())m_rawEventTable[i]->removeRef(h);
+		foreach(h,l)
+		{
+			m_rawEventTable[i]->removeAll(h);
+			delete h;
+		}
 		if(m_rawEventTable[i]->isEmpty())
 		{
 			delete m_rawEventTable[i];
@@ -341,13 +312,14 @@ bool KviKvsEventManager::removeScriptRawHandler(unsigned int uEvIdx,const QStrin
 	if(uEvIdx >= KVI_KVS_NUM_RAW_EVENTS)return false;
 	if(!m_rawEventTable[uEvIdx])return false;
 	KviKvsEventHandler * h;
-	for(h = m_rawEventTable[uEvIdx]->first();h;h = m_rawEventTable[uEvIdx]->next())
+	foreach(h,*(m_rawEventTable[uEvIdx]))
 	{
 		if(h->type() == KviKvsEventHandler::Script)
 		{
 			if(KviQString::equalCI(((KviKvsScriptEventHandler *)h)->name(),szName))
 			{
-				m_rawEventTable[uEvIdx]->removeRef(h);
+				m_rawEventTable[uEvIdx]->removeAll(h);
+				delete h;
 				if(m_rawEventTable[uEvIdx]->isEmpty())
 				{
 					delete m_rawEventTable[uEvIdx];
@@ -375,13 +347,14 @@ bool KviKvsEventManager::removeModuleRawHandler(unsigned int uRawIdx,KviKvsModul
 	if(uRawIdx >= KVI_KVS_NUM_RAW_EVENTS)return false;
 	if(!m_rawEventTable[uRawIdx])return false;
 	KviKvsEventHandler * h;
-	for(h = m_rawEventTable[uRawIdx]->first();h;h = m_rawEventTable[uRawIdx]->next())
+	foreach(h,*(m_rawEventTable[uRawIdx]))
 	{
 		if(h->type() == KviKvsEventHandler::Module)
 		{
 			if(((KviKvsModuleEventHandler *)h)->moduleInterface() == i)
 			{
-				m_rawEventTable[uRawIdx]->removeRef(h);
+				m_rawEventTable[uRawIdx]->removeAll(h);
+				delete h;
 				if(m_rawEventTable[uRawIdx]->isEmpty())
 				{
 					delete m_rawEventTable[uRawIdx];
@@ -432,17 +405,17 @@ void KviKvsEventManager::removeAllScriptRawHandlers()
 	{
 		if(m_rawEventTable[i])
 		{
-			KviPtrList<KviKvsEventHandler> dl;
-			dl.setAutoDelete(false);
+			QList<KviKvsEventHandler*> dl;
 			KviKvsEventHandler * e;
-			for(e = m_rawEventTable[i]->first();e;e = m_rawEventTable[i]->next())
+			foreach(e,*(m_rawEventTable[i]))
 			{
 				if(e->type() == KviKvsEventHandler::Script)dl.append(e);
 			}
 			
-			for(e = dl.first();e;e = dl.next())
+			foreach(e,dl)
 			{
-				m_rawEventTable[i]->removeRef(e);
+				m_rawEventTable[i]->removeAll(e);
+				delete e;
 			}
 
 			if(m_rawEventTable[i]->isEmpty())
@@ -477,12 +450,12 @@ void KviKvsEventManager::clear()
 	clearAppEvents();
 }
 
-bool KviKvsEventManager::triggerHandlers(KviPtrList<KviKvsEventHandler> * pHandlers,KviWindow *pWnd,KviKvsVariantList *pParams)
+bool KviKvsEventManager::triggerHandlers(QList<KviKvsEventHandler*> * pHandlers,KviWindow *pWnd,KviKvsVariantList *pParams)
 {
 	if(!pHandlers)return false;
 
 	bool bGotHalt = false;
-	for(KviKvsEventHandler * h = pHandlers->first();h;h = pHandlers->next())
+	foreach(KviKvsEventHandler * h,*pHandlers)
 	{
 		switch(h->type())
 		{
@@ -539,8 +512,7 @@ void KviKvsEventManager::loadRawEvents(const QString &szFileName)
 			unsigned int nHandlers = cfg.readUIntEntry("NHandlers",0);
 			if(nHandlers)
 			{
-				m_rawEventTable[i] = new KviPtrList<KviKvsEventHandler>();
-				m_rawEventTable[i]->setAutoDelete(true);
+				m_rawEventTable[i] = new QList<KviKvsEventHandler*>;
 				for(unsigned int index = 0;index < nHandlers;index++)
 				{
 					KviQString::sprintf(tmp,"Name%u",index);
@@ -573,7 +545,7 @@ void KviKvsEventManager::saveRawEvents(const QString &szFileName)
 			cfg.setGroup(tmp);
 
 			int index = 0;
-			for(KviKvsEventHandler * s = m_rawEventTable[i]->first();s; s = m_rawEventTable[i]->next())
+			foreach(KviKvsEventHandler * s,*(m_rawEventTable[i]))
 			{
 				if(s->type() == KviKvsEventHandler::Script)
 				{
@@ -650,7 +622,7 @@ void KviKvsEventManager::saveAppEvents(const QString &szFileName)
 			}
 			cfg.setGroup(szEventName);
 			int index = 0;
-			for(KviKvsEventHandler* s = m_appEventTable[i].handlers()->first();s; s = m_appEventTable[i].handlers()->next())
+			foreach(KviKvsEventHandler* s,*(m_appEventTable[i].handlers()))
 			{
 				if(s->type() == KviKvsEventHandler::Script)
 				{

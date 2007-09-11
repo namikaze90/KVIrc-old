@@ -25,11 +25,11 @@
 #include "kvi_module.h"
 #include "kvi_locale.h"
 #include "kvi_frame.h"
-#include "kvi_list.h"
+
 
 #include "codetester.h"
 
-KviPtrList<KviCodeTesterWindow> * g_pCodeTesterWindowList = 0;
+QList<KviCodeTesterWindow*> * g_pCodeTesterWindowList = 0;
 
 
 /*
@@ -58,8 +58,7 @@ static bool codetester_module_init(KviModule * m)
 {
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"open",codetester_kvs_cmd_open);
 
-	g_pCodeTesterWindowList = new KviPtrList<KviCodeTesterWindow>();
-	g_pCodeTesterWindowList->setAutoDelete(false);
+	g_pCodeTesterWindowList = new QList<KviCodeTesterWindow*>();
 	return true;
 }
 

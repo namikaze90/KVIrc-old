@@ -96,10 +96,10 @@ KviNotifierWindow::KviNotifierWindow()
 
 	reloadImages();
 
-	KviStr buffer;
+	QString buffer;
 	g_pApp->getReadOnlyConfigPath(buffer,"libkvinotifier.kvc",KviApp::ConfigPlugins,true);
 
-	KviConfig cfg(buffer.ptr(),KviConfig::Read);
+	KviConfig cfg(buffer,KviConfig::Read);
 
 	cfg.setGroup("NotifierSkin");
 	
@@ -688,7 +688,7 @@ void KviNotifierWindow::redrawText()
 	if(!tab)return;
 	
 	// it's message list
-	KviPtrList<KviNotifierMessage> * l = tab->messageList();
+	QList<KviNotifierMessage*> * l = tab->messageList();
 	if(!l)return;
 	if(l->isEmpty())return;
 	
@@ -700,12 +700,12 @@ void KviNotifierWindow::redrawText()
 	KviNotifierMessage * last = l->last();
 
 	// make sure that we can loop
-	int iIdx = l->findRef(cur);
+	int iIdx = l->indexOf(cur);
 	if(iIdx == -1)
 	{
 		tab->setCurrentMessage(last);
 		cur = last;
-		iIdx = l->findRef(cur);
+		iIdx = l->indexOf(cur);
 	}
 
 	int y = m_pWndBody->textRect().y() + m_pWndBody->textRect().height();
@@ -743,8 +743,8 @@ void KviNotifierWindow::redrawText()
 			if(m->image())
 				p.drawPixmap(m_pWndBody->textRect().x() + 1,y + 1,*(m->image()),0,0,16,16);
 		}
-		m = l->prev();
 		idx--;
+		m = l->at(idx);
 	}
 
 	p.setPen(QPen(m_clrTitle));

@@ -28,29 +28,29 @@
 
 KviKvsVariantList::KviKvsVariantList()
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 }
 
 KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(v1);
 }
 
 KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(v1);
 	m_pList->append(v2);
 }
 
 KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKvsVariant * v3)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(v1);
 	m_pList->append(v2);
 	m_pList->append(v3);
@@ -58,8 +58,8 @@ KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKv
 
 KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKvsVariant * v3,KviKvsVariant * v4)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(v1);
 	m_pList->append(v2);
 	m_pList->append(v3);
@@ -68,8 +68,8 @@ KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKv
 
 KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKvsVariant * v3,KviKvsVariant * v4,KviKvsVariant * v5)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(v1);
 	m_pList->append(v2);
 	m_pList->append(v3);
@@ -79,8 +79,8 @@ KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKv
 
 KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKvsVariant * v3,KviKvsVariant * v4,KviKvsVariant * v5,KviKvsVariant * v6)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(v1);
 	m_pList->append(v2);
 	m_pList->append(v3);
@@ -91,8 +91,8 @@ KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKv
 
 KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKvsVariant * v3,KviKvsVariant * v4,KviKvsVariant * v5,KviKvsVariant * v6,KviKvsVariant * v7)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(v1);
 	m_pList->append(v2);
 	m_pList->append(v3);
@@ -104,23 +104,23 @@ KviKvsVariantList::KviKvsVariantList(KviKvsVariant * v1,KviKvsVariant * v2,KviKv
 
 KviKvsVariantList::KviKvsVariantList(QString * s1)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(new KviKvsVariant(s1));
 }
 
 KviKvsVariantList::KviKvsVariantList(QString * s1,QString * s2)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(new KviKvsVariant(s1));
 	m_pList->append(new KviKvsVariant(s2));
 }
 
 KviKvsVariantList::KviKvsVariantList(QString * s1,QString * s2,QString * s3)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(new KviKvsVariant(s1));
 	m_pList->append(new KviKvsVariant(s2));
 	m_pList->append(new KviKvsVariant(s3));
@@ -128,8 +128,8 @@ KviKvsVariantList::KviKvsVariantList(QString * s1,QString * s2,QString * s3)
 
 KviKvsVariantList::KviKvsVariantList(QString * s1,QString * s2,QString * s3,QString * s4)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(new KviKvsVariant(s1));
 	m_pList->append(new KviKvsVariant(s2));
 	m_pList->append(new KviKvsVariant(s3));
@@ -138,8 +138,8 @@ KviKvsVariantList::KviKvsVariantList(QString * s1,QString * s2,QString * s3,QStr
 
 KviKvsVariantList::KviKvsVariantList(QString * s1,QString * s2,QString * s3,QString * s4,QString * s5)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(new KviKvsVariant(s1));
 	m_pList->append(new KviKvsVariant(s2));
 	m_pList->append(new KviKvsVariant(s3));
@@ -149,8 +149,8 @@ KviKvsVariantList::KviKvsVariantList(QString * s1,QString * s2,QString * s3,QStr
 
 KviKvsVariantList::KviKvsVariantList(QString * s1,QString * s2,QString * s3,QString * s4,QString * s5,QString * s6)
 {
-	m_pList = new KviPtrList<KviKvsVariant>();
-	m_pList->setAutoDelete(true);
+	m_bAutoDelete = true;
+	m_pList = new QList<KviKvsVariant*>;
 	m_pList->append(new KviKvsVariant(s1));
 	m_pList->append(new KviKvsVariant(s2));
 	m_pList->append(new KviKvsVariant(s3));
@@ -161,20 +161,21 @@ KviKvsVariantList::KviKvsVariantList(QString * s1,QString * s2,QString * s3,QStr
 
 KviKvsVariantList::~KviKvsVariantList()
 {
+	if(m_bAutoDelete)qDeleteAll(*m_pList);
 	delete m_pList;
 }
 
 
 void KviKvsVariantList::setAutoDelete(bool bAutoDelete)
 {
-	m_pList->setAutoDelete(bAutoDelete);
+	m_bAutoDelete=bAutoDelete;
 }
 
 void KviKvsVariantList::allAsString(QString &szBuffer)
 {
 	szBuffer = QString::null;
 	bool bFirst = true;
-	for(KviKvsVariant * v = first();v;v = next())
+	foreach(KviKvsVariant * v,*m_pList)
 	{
 		if(bFirst)bFirst = false;
 		else szBuffer.append(' ');
@@ -190,10 +191,3 @@ bool KviKvsVariantList::firstAsString(QString &szBuffer)
 	return true;
 }
 
-bool KviKvsVariantList::nextAsString(QString &szBuffer)
-{
-	KviKvsVariant * v = next();
-	if(!v)return false;
-	v->asString(szBuffer);
-	return true;
-}

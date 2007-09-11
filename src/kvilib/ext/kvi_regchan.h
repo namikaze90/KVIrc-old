@@ -27,10 +27,11 @@
 #include "kvi_settings.h"
 #include "kvi_heapobject.h"
 #include "kvi_string.h"
-#include "kvi_list.h"
+
 
 
 #include <QHash>
+#include <QList>
 
 class KVILIB_API KviRegisteredChannel : public KviHeapObject
 {
@@ -52,7 +53,7 @@ public:
 	void removeProperty(const QString& name){ m_pPropertyDict->remove(name); };
 };
 
-typedef KVILIB_API KviPtrList<KviRegisteredChannel> KviRegisteredChannelList;
+typedef KVILIB_API QList<KviRegisteredChannel*> KviRegisteredChannelList;
 
 class KVILIB_API KviRegisteredChannelDataBase
 {

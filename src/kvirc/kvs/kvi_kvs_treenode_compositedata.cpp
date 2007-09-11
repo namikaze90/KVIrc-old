@@ -28,23 +28,18 @@
 
 #include "kvi_qstring.h"
 
-#define DEBUGME
-
-KviKvsTreeNodeCompositeData::KviKvsTreeNodeCompositeData(const QChar * pLocation,KviPtrList<KviKvsTreeNodeData> * pSubData)
+KviKvsTreeNodeCompositeData::KviKvsTreeNodeCompositeData(const QChar * pLocation,QList<KviKvsTreeNodeData*> * pSubData)
 : KviKvsTreeNodeData(pLocation)
 {
-#ifdef DEBUGME
-	if(pSubData->count() < 2)debug("KviKvsTreeNodeCompositeData constructor called with less than two children!");
-#endif
 	m_pSubData = pSubData;
-	m_pSubData->setAutoDelete(true);
-	for(KviKvsTreeNodeData * d = m_pSubData->first();d;d = m_pSubData->next())
+	foreach(KviKvsTreeNodeData * d,*m_pSubData)
 		d->setParent(this);
 }
 
 
 KviKvsTreeNodeCompositeData::~KviKvsTreeNodeCompositeData()
 {
+	qDeleteAll(*m_pSubData);
 	delete m_pSubData;
 }
 
@@ -57,13 +52,13 @@ bool KviKvsTreeNodeCompositeData::evaluateReadOnly(KviKvsRunTimeContext * c,KviK
 	KviKvsVariant res;
 
 	// we need to use an iterator to accomodate recursion
-	KviPtrListIterator<KviKvsTreeNodeData> it(*m_pSubData);
+	QListIterator<KviKvsTreeNodeData*> it(*m_pSubData);
 	
-	while(KviKvsTreeNodeData * d = it.current())
+	while(it.hasNext())
 	{
+		KviKvsTreeNodeData * d = it.next();
 		if(!d->evaluateReadOnly(c,&res))return false;
 		res.appendAsString(*pS);
-		++it;
 	}
 	return true;
 }
@@ -78,7 +73,7 @@ void KviKvsTreeNodeCompositeData::dump(const char * prefix)
 	debug("%s CompositeData",prefix);
 	QString tmp = prefix;
 	tmp.append("  ");
-	for(KviKvsTreeNodeData * p = m_pSubData->first();p;p = m_pSubData->next())
+	foreach(KviKvsTreeNodeData * p,*m_pSubData)
 	{
 		p->dump(tmp.utf8().data());
 	}

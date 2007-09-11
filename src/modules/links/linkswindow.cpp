@@ -38,7 +38,7 @@
 #include "kvi_tal_hbox.h"
 #include <qlabel.h>
 
-extern KviPtrList<KviLinksWindow> * g_pLinksWindowList;
+extern QList<KviLinksWindow*> * g_pLinksWindowList;
 
 KviLinksWindow::KviLinksWindow(KviFrame * lpFrm,KviConsole * lpConsole)
 : KviWindow(KVI_WINDOW_TYPE_LINKS,lpFrm,"links",lpConsole) , KviExternalServerDataParser()
@@ -77,8 +77,7 @@ KviLinksWindow::KviLinksWindow(KviFrame * lpFrm,KviConsole * lpConsole)
 
 	m_pIrcView = new KviIrcView(m_pVertSplitter,lpFrm,this);
 
-	m_pLinkList = new KviPtrList<KviLink>;
-	m_pLinkList->setAutoDelete(true);
+	m_pLinkList = new QList<KviLink*>;
 
 	m_pHostPopup = new KviTalPopupMenu();
 	connect(m_pHostPopup,SIGNAL(activated(int)),this,SLOT(hostPopupClicked(int)));
@@ -92,8 +91,9 @@ KviLinksWindow::KviLinksWindow(KviFrame * lpFrm,KviConsole * lpConsole)
 
 KviLinksWindow::~KviLinksWindow()
 {
-	g_pLinksWindowList->removeRef(this);
+	g_pLinksWindowList->removeAll(this);
 	m_pConsole->ircContext()->setLinksWindowPointer(0);
+	qDeleteAll(*m_pLinkList);
 	delete m_pLinkList;
 	delete m_pHostPopup;
 }
@@ -211,7 +211,7 @@ void KviLinksWindow::endOfLinks()
 	KviStr szMaxHop,szMaxLinks;
 
 	m_pListView->setUpdatesEnabled(false);
-	for(KviLink *l=m_pLinkList->first();l;l=m_pLinkList->next()){
+	foreach(KviLink *l,*m_pLinkList){
 		totalHosts++;
 		if(l->hops == 0)root = new KviTalListViewItem(m_pListView,QString(l->host.ptr()),"0",QString(l->description.ptr()));
 		else {
@@ -422,7 +422,7 @@ void KviLinksWindow::processData(KviIrcMessage *msg)
 	while(*tr && (*tr == ' '))tr++;
 	l->description = tr;
 	uint idx=0;
-	for(KviLink *m=m_pLinkList->first();m;m=m_pLinkList->next())
+	foreach(KviLink *m,*m_pLinkList)
 	{
 		if(m->hops >= l->hops)
 		{

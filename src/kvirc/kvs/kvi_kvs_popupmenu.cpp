@@ -531,12 +531,9 @@ KviKvsPopupMenu::KviKvsPopupMenu(const QString &szName)
 :KviTalPopupMenu(0,szName)
 {
 	m_szName = szName;
-	m_pItemList = new KviPtrList<KviKvsPopupMenuItem>;
-	m_pItemList->setAutoDelete(true);
-	m_pPrologues = new KviPtrList<KviKvsScript>;
-	m_pPrologues->setAutoDelete(true);
-	m_pEpilogues = new KviPtrList<KviKvsScript>;
-	m_pEpilogues->setAutoDelete(true);
+	m_pItemList = new QList<KviKvsPopupMenuItem*>;
+	m_pPrologues = new QList<KviKvsScript*>;
+	m_pEpilogues = new QList<KviKvsScript*>;
 	m_pParentPopup = 0;
 	m_pTopLevelData = 0;
 	m_pTempTopLevelData = 0;
@@ -549,8 +546,11 @@ KviKvsPopupMenu::KviKvsPopupMenu(const QString &szName)
 KviKvsPopupMenu::~KviKvsPopupMenu()
 {
 	clearMenuContents();
+	qDeleteAll(*m_pItemList);
 	delete m_pItemList;
+	qDeleteAll(*m_pPrologues);
 	delete m_pPrologues;
+	qDeleteAll(*m_pEpilogues);
 	delete m_pEpilogues;
 	if(m_pTopLevelData)delete m_pTopLevelData;
 	if(m_pTempTopLevelData)delete m_pTempTopLevelData;
@@ -561,18 +561,18 @@ void KviKvsPopupMenu::copyFrom(const KviKvsPopupMenu * src)
 {
 	doClear();
 
-	for(KviKvsScript * se = src->m_pEpilogues->first();se;se = src->m_pEpilogues->next())
+	foreach(KviKvsScript * se,*(src->m_pEpilogues))
 	{
 		m_pEpilogues->append(new KviKvsScript(*se));
 	}
 
-	for(KviKvsScript * sp = src->m_pPrologues->first();sp;sp = src->m_pPrologues->next())
+	foreach(KviKvsScript * sp,*(src->m_pPrologues))
 	{
 		m_pPrologues->append(new KviKvsScript(*sp));
 	}
 
 
-	for(const KviKvsPopupMenuItem * it = src->m_pItemList->first();it;it = src->m_pItemList->next())
+	foreach(KviKvsPopupMenuItem * it,*(src->m_pItemList))
 	{
 		addItemInternal(it->clone());
 	}
@@ -606,36 +606,39 @@ bool KviKvsPopupMenu::removeItemByName(const QString &szItemName,bool bRecursive
 {
 	KviKvsScript * se;
 	
-	for(se = m_pEpilogues->first();se;se = m_pEpilogues->next())
+	foreach(KviKvsScript * se,*(m_pEpilogues))
 	{
 		if(KviQString::equalCI(szItemName,se->name()))
 		{
-			m_pEpilogues->removeRef(se);
+			m_pEpilogues->removeAll(se);
+			delete se;
 			return true;
 		}
 	}
 
-	for(se = m_pPrologues->first();se;se = m_pPrologues->next())
+	foreach(KviKvsScript * se,*(m_pPrologues))
 	{
 		if(KviQString::equalCI(szItemName,se->name()))
 		{
-			m_pPrologues->removeRef(se);
+			m_pEpilogues->removeAll(se);
+			delete se;
 			return true;
 		}
 	}
 
-	for(KviKvsPopupMenuItem * it = m_pItemList->first();it;it = m_pItemList->next())
+	foreach(KviKvsPopupMenuItem * it,*(m_pItemList))
 	{
 		if(KviQString::equalCI(szItemName,it->name()))
 		{
-			m_pItemList->removeRef(it); // bye :)
+			m_pItemList->removeAll(it); // bye :)
+			delete it;
 			return true;
 		}
 	}
 
 	if(bRecursive)
 	{
-		for(KviKvsPopupMenuItem * ii = m_pItemList->first();ii;ii = m_pItemList->next())
+		foreach(KviKvsPopupMenuItem * ii,*m_pItemList)
 		{
 			if(ii->isMenu())
 			{
@@ -733,7 +736,7 @@ void KviKvsPopupMenu::clearMenuContents()
 
 	clear();
 
-	for(KviKvsPopupMenuItem * it = m_pItemList->first();it;it = m_pItemList->next())
+	foreach(KviKvsPopupMenuItem * it,*m_pItemList)
 	{
 		it->clear();
 	}
@@ -827,7 +830,7 @@ void KviKvsPopupMenu::setupMenuContents()
 
 	// Fill this menu contents
 	int idx = 0;
-	for(KviKvsPopupMenuItem * it = m_pItemList->first();it;it = m_pItemList->next())
+	foreach(KviKvsPopupMenuItem * it,*m_pItemList)
 	{
 		it->fill(this,d,idx);
 		++idx;
@@ -842,7 +845,7 @@ void KviKvsPopupMenu::setupMenuContents()
 
 void KviKvsPopupMenu::executePrologues(KviKvsPopupMenuTopLevelData * pData)
 {
-	for(KviKvsScript * s = m_pPrologues->first();s;s = m_pPrologues->next())
+	foreach(KviKvsScript * s,*m_pPrologues)
 	{
 		if(!s->run(pData->window(),
 			pData->parameters(),
@@ -857,7 +860,7 @@ void KviKvsPopupMenu::executePrologues(KviKvsPopupMenuTopLevelData * pData)
 
 void KviKvsPopupMenu::executeEpilogues(KviKvsPopupMenuTopLevelData * pData)
 {
-	for(KviKvsScript * s = m_pEpilogues->first();s;s = m_pEpilogues->next())
+	foreach(KviKvsScript * s,*m_pEpilogues)
 	{
 		if(!s->run(pData->window(),
 			pData->parameters(),
@@ -1055,7 +1058,7 @@ void KviKvsPopupMenu::save(const QString & prefix,KviConfig * cfg)
 	cfg->writeEntry(tmp,m_pPrologues->count());
 
 	idx = 0;
-	for(s = m_pPrologues->first();s;s = m_pPrologues->next())
+	foreach(s,*m_pPrologues)
 	{
 		KviQString::sprintf(tmp,"%Q_Prologue%d",&prefix,idx);
 		cfg->writeEntry(tmp,s->code());
@@ -1068,7 +1071,7 @@ void KviKvsPopupMenu::save(const QString & prefix,KviConfig * cfg)
 	cfg->writeEntry(tmp,m_pEpilogues->count());
 
 	idx = 0;
-	for(s = m_pEpilogues->first();s;s = m_pEpilogues->next())
+	foreach(s,*m_pEpilogues)
 	{
 		KviQString::sprintf(tmp,"%Q_Epilogue%d",&prefix,idx);
 		cfg->writeEntry(tmp,s->code());
@@ -1082,7 +1085,7 @@ void KviKvsPopupMenu::save(const QString & prefix,KviConfig * cfg)
 	idx = 0;
 
 
-	for(KviKvsPopupMenuItem * it = m_pItemList->first();it;it = m_pItemList->next())
+	foreach(KviKvsPopupMenuItem * it,*m_pItemList)
 	{
 		QString pre;
 		KviQString::sprintf(pre,"%Q_%d",&prefix,idx);
@@ -1152,7 +1155,7 @@ void KviKvsPopupMenu::generateDefPopupCore(QString &buffer)
 
 	KviKvsScript * s;
 	
-	for(s = m_pPrologues->first();s;s = m_pPrologues->next())
+	foreach(s,*m_pPrologues)
 	{
 		buffer.append("prologue\n");
 		tmp = s->code();
@@ -1162,7 +1165,7 @@ void KviKvsPopupMenu::generateDefPopupCore(QString &buffer)
 		buffer.append('\n');
 	}
 
-	for(KviKvsPopupMenuItem * it = m_pItemList->first();it;it = m_pItemList->next())
+	foreach(KviKvsPopupMenuItem * it,*m_pItemList)
 	{
 		switch(it->type())
 		{
@@ -1205,7 +1208,7 @@ void KviKvsPopupMenu::generateDefPopupCore(QString &buffer)
 		}
 	}
 
-	for(s = m_pEpilogues->first();s;s = m_pEpilogues->next())
+	foreach(s,*m_pEpilogues)
 	{
 		buffer.append("epilogue\n");
 		tmp = s->code();

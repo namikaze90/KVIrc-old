@@ -37,7 +37,6 @@
 #include "kvi_defaults.h"
 #include "kvi_mirccntrl.h"
 #include "kvi_frame.h"
-#include "kvi_parameterlist.h"
 #include "kvi_app.h"
 #include "kvi_notifylist.h"
 #include "kvi_numeric.h"
@@ -1730,7 +1729,7 @@ void KviServerParser::parseNumericStats(KviIrcMessage * msg)
 		{
 			KviStr szParms;
 			KviStr *p = msg->firstParam();
-			for(p = msg->nextParam();p;p = msg->nextParam())
+			foreach(p,*(msg->params()))
 			{
 				if(szParms.hasData())szParms.append(' ');
 				szParms.append(*p);

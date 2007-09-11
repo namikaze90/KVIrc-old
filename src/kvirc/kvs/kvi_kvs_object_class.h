@@ -26,7 +26,7 @@
 
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
-#include "kvi_list.h"
+
 
 #include "kvi_kvs_object_functionhandler.h"
 
@@ -62,7 +62,7 @@ protected:
 	QString                                       m_szName;            // the class name
 	bool                                          m_bBuiltin;          // is this a builtin or script based class ?
 	QHash<QString,KviKvsObjectFunctionHandler*>          * m_pFunctionHandlers; // all our function handlers
-	KviPtrList<KviKvsObjectClass>               * m_pChildClasses;     // 
+	QList<KviKvsObjectClass*>               * m_pChildClasses;     // 
 	KviKvsObjectAllocateInstanceProc              m_allocProc;
 	bool                                          m_bDirty;            // not yet flushed to disk (only for not builtin classes)
 protected:

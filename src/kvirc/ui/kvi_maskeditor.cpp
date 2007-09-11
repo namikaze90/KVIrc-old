@@ -123,7 +123,7 @@ void KviMaskInputDialog::accept()
 	QDialog::accept();
 }
 
-KviMaskEditor::KviMaskEditor(QWidget * par,KviWindowToolPageButton* button,KviPtrList<KviMaskEntry> * maskList,char flag,const char * nam)
+KviMaskEditor::KviMaskEditor(QWidget * par,KviWindowToolPageButton* button,QList<KviMaskEntry*> * maskList,char flag,const char * nam)
 : KviWindowToolWidget(par,button)
 {
 	bool isEnabled=1;
@@ -140,11 +140,7 @@ KviMaskEditor::KviMaskEditor(QWidget * par,KviWindowToolPageButton* button,KviPt
 	w = w->parent();
 	}
 
-#ifdef COMPILE_USE_QT4
 	setFocusPolicy(Qt::ClickFocus);
-#else
-	setFocusPolicy(QWidget::ClickFocus);
-#endif
 
 	QGridLayout *g = new QGridLayout(this,4,2,2,2);
 
@@ -233,7 +229,10 @@ KviMaskEditor::KviMaskEditor(QWidget * par,KviWindowToolPageButton* button,KviPt
 	
 	g->setColStretch(3,1);
 
-	for(KviMaskEntry * e = maskList->first();e;e = maskList->next()) addMask(e);
+	foreach(KviMaskEntry * e,*maskList)
+	{
+		addMask(e);
+	}
 	registerSelf();
 }
 
@@ -265,23 +264,25 @@ void KviMaskEditor::searchTextChanged ( const QString & text)
 
 void KviMaskEditor::removeClicked()
 {
-	KviPtrList<KviMaskEntry>  * l = new KviPtrList<KviMaskEntry>;
-	l->setAutoDelete(true);
-	KviMaskItem * it = (KviMaskItem *)(m_pMaskBox->firstChild());
-	while(it)
+	QList<KviMaskEntry*>  l;
+	Q3ListViewItemIterator it(m_pMaskBox);
+	while (KviMaskItem* en = ((KviMaskItem*)it.current()))
 	{
-		if(it->isSelected())
+		if(en->isSelected())
 		{
 			KviMaskEntry * e = new KviMaskEntry;
-			e->szMask  = it->mask()->szMask;
-			e->szSetBy = it->mask()->szSetBy;
-			e->uSetAt =  it->mask()->uSetAt;
-			l->append(e);
+			e->szMask  = en->mask()->szMask;
+			e->szSetBy = en->mask()->szSetBy;
+			e->uSetAt =  en->mask()->uSetAt;
+			l.append(e);
 		}
-		it = (KviMaskItem *)(it->nextSibling());
+		++it;
 	}
-	if(l->count() > 0)emit removeMasks(this,l);
-	delete l;
+	if(l.count() > 0)emit removeMasks(this,&l);
+	foreach(KviMaskEntry*e,l)
+	{
+		delete e;
+	}
 }
 
 void KviMaskEditor::addClicked()

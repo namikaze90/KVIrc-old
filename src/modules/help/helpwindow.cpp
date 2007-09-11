@@ -41,8 +41,8 @@
 
 
 extern Index        * g_pDocIndex;
-extern KviPtrList<KviHelpWindow> * g_pHelpWindowList;
-extern KviPtrList<KviHelpWidget> * g_pHelpWidgetList;
+extern QList<KviHelpWindow*> * g_pHelpWindowList;
+extern QList<KviHelpWidget*> * g_pHelpWidgetList;
 
 bool g_bIndexingDone = FALSE;
 KviHelpWindow::KviHelpWindow(KviFrame * lpFrm,const char * name)
@@ -120,7 +120,7 @@ KviHelpWindow::KviHelpWindow(KviFrame * lpFrm,const char * name)
 
 KviHelpWindow::~KviHelpWindow()
 {
-	g_pHelpWindowList->removeRef(this);
+	g_pHelpWindowList->removeAll(this);
 }
 
 void KviHelpWindow::saveProperties(KviConfig *cfg)

@@ -27,7 +27,6 @@
 #include "kvi_lagmeter.h"
 #include "kvi_options.h"
 #include "kvi_kvs_eventtriggers.h"
-#include "kvi_parameterlist.h"
 #include "kvi_ircconnection.h"
 #include "kvi_irccontext.h"
 #include "kvi_frame.h"
@@ -42,8 +41,7 @@ KviLagMeter::KviLagMeter(KviIrcConnection * c)
 : QObject()
 {
 	m_pConnection = c;
-	m_pCheckList = new KviPtrList<KviLagCheck>;
-	m_pCheckList->setAutoDelete(true);
+	m_pCheckList = new QList<KviLagCheck*>;
 	m_uLag = 0;
 	m_uLastEmittedLag = 0;
 	m_uLastReliability = 0;
@@ -69,6 +67,7 @@ KviLagMeter::~KviLagMeter()
 #ifndef COMPILE_USE_QT4
 	killTimers();
 #endif
+	qDeleteAll(*m_pCheckList);
 	delete m_pCheckList;
 }
 
@@ -208,7 +207,7 @@ bool KviLagMeter::lagCheckComplete(const char * key)
 {
 	// find this lag check
 	KviLagCheck * c;
-	for(c = m_pCheckList->first();c;c = m_pCheckList->next())
+	foreach(c,*m_pCheckList)
 	{
 		if(kvi_strEqualCS(c->szKey.ptr(),key))break;
 	}
@@ -251,14 +250,16 @@ bool KviLagMeter::lagCheckComplete(const char * key)
 
 void KviLagMeter::lagCheckAbort(const char * key)
 {
-	KviPtrList<KviLagCheck> l;
-	l.setAutoDelete(false);
+	QList<KviLagCheck*> l;
 	KviLagCheck * c;
 
 	if(_OUTPUT_PARANOIC)
 		m_pConnection->console()->output(KVI_OUT_VERBOSE,__tr2qs("Lag check aborted (%s)"),key);
 
-	for(c = m_pCheckList->first();c;c = m_pCheckList->next())
+	foreach(c,*m_pCheckList)
 		if(kvi_strEqualCS(c->szKey.ptr(),key))l.append(c);
-	for(c = l.first();c;c = l.next())m_pCheckList->removeRef(c);
+	foreach(c,l){
+		m_pCheckList->removeAll(c);
+		delete c;
+	}
 }

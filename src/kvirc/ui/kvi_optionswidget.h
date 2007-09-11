@@ -29,7 +29,7 @@
 
 #include <qframe.h>
 #include <qlayout.h>
-#include "kvi_list.h"
+
 #include <qlineedit.h>
 #include <kvi_tal_groupbox.h>
 #include <qtabwidget.h>
@@ -47,7 +47,7 @@ private:
 	QTabWidget                       * m_pTabWidget;
 	int                                m_iResetFlags;
 	int                                m_iSelectors;
-	KviPtrList<KviSelectorInterface> * m_pSelectorInterfaceList;
+	QList<KviSelectorInterface*>     * m_pSelectorInterfaceList;
 	static QString                     m_szBasicTipStart;
 	static QString                     m_szBasicTipEnd;
 public:
@@ -134,11 +134,7 @@ public:
 	QLabel * addLabel(int x1,int y1,int x2,int y2,const QString & text,bool bEnabled = true);
 	QLabel * addLabel(QWidget * pParent,const QString & text,bool bEnabled = true);
 	QLineEdit * addLineEdit(int x1,int y1,int x2,int y2,bool bEnabled = true);
-#ifdef COMPILE_USE_QT4
 	KviTalGroupBox * addGroupBox(int x1,int y1,int x2,int y2,int nStrips,Qt::Orientation o,const QString &txt,bool bEnabled = true);
-#else
-	KviTalGroupBox * addGroupBox(int x1,int y1,int x2,int y2,int nStrips,KviTalGroupBox::Orientation o,const QString &txt,bool bEnabled = true);
-#endif
 	QFrame * addSeparator(int x1,int y1,int x2,int y2);
 	void addRowSpacer(int x1,int y1,int x2,int y2);
 

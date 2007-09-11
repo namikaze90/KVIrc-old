@@ -88,7 +88,6 @@
 #include "kvi_memmove.h"
 #include "kvi_iconmanager.h"
 #include "kvi_out.h"
-#include "kvi_parameterlist.h"
 #include "kvi_console.h"
 #include "kvi_ircuserdb.h"
 #include "kvi_channel.h"
@@ -349,8 +348,7 @@ KviIrcView::KviIrcView(QWidget *parent,KviFrame *pFrm,KviWindow *pWnd)
 	m_pWrappedBlockSelectionInfo  = new KviIrcViewWrappedBlockSelectionInfo;
 	
 
-	m_pMessagesStoppedWhileSelecting = new KviPtrList<KviIrcViewLine>;
-	m_pMessagesStoppedWhileSelecting->setAutoDelete(false);
+	m_pMessagesStoppedWhileSelecting = new QList<KviIrcViewLine*>;
 
 	// say qt to avoid erasing on repaint
 #ifdef COMPILE_USE_QT4
@@ -444,9 +442,8 @@ KviIrcView::~KviIrcView()
 	// and to remove all the text lines
 	emptyBuffer(false);
 	// the pending ones too!
-	while(KviIrcViewLine * l = m_pMessagesStoppedWhileSelecting->first())
+	foreach(KviIrcViewLine * l,*m_pMessagesStoppedWhileSelecting)
 	{
-		m_pMessagesStoppedWhileSelecting->removeFirst();
 		delete_text_line(l);
 	}
 	delete m_pMessagesStoppedWhileSelecting;

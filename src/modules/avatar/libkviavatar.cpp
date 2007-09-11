@@ -39,7 +39,7 @@
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_console.h"
 #include "kvi_filedialog.h"
-#include "kvi_list.h"
+
 #include "kvi_frame.h"
 #include "kvi_sharedfiles.h"
 #include "kvi_out.h"
@@ -54,7 +54,7 @@
 #include "kvi_tal_hbox.h"
 #include <qlayout.h>
 
-static KviPtrList<KviAsyncAvatarSelectionDialog> * g_pAvatarSelectionDialogList = 0;
+static QList<KviAsyncAvatarSelectionDialog*> * g_pAvatarSelectionDialogList = 0;
 extern KVIRC_API KviSharedFilesManager * g_pSharedFilesManager;
 
 KviAsyncAvatarSelectionDialog::KviAsyncAvatarSelectionDialog(QWidget * par,const QString &szInitialPath,KviIrcConnection * c)
@@ -106,7 +106,7 @@ KviAsyncAvatarSelectionDialog::KviAsyncAvatarSelectionDialog(QWidget * par,const
 
 KviAsyncAvatarSelectionDialog::~KviAsyncAvatarSelectionDialog()
 {
-	g_pAvatarSelectionDialogList->removeRef(this);
+	g_pAvatarSelectionDialogList->removeAll(this);
 }
 
 void KviAsyncAvatarSelectionDialog::okClicked()
@@ -546,8 +546,7 @@ static bool avatar_kvs_cmd_query(KviKvsModuleCommandCall * c)
 
 static bool avatar_module_init(KviModule * m)
 {
-	g_pAvatarSelectionDialogList = new KviPtrList<KviAsyncAvatarSelectionDialog>;
-	g_pAvatarSelectionDialogList->setAutoDelete(false);
+	g_pAvatarSelectionDialogList = new QList<KviAsyncAvatarSelectionDialog*>;
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"query",avatar_kvs_cmd_query);
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"set",avatar_kvs_cmd_set);
@@ -567,8 +566,7 @@ static bool avatar_module_can_unload(KviModule *m)
 
 static bool avatar_module_cleanup(KviModule *m)
 {
-	while(KviAsyncAvatarSelectionDialog * d = g_pAvatarSelectionDialogList->first())
-		delete d;
+	qDeleteAll(*g_pAvatarSelectionDialogList);
 	delete g_pAvatarSelectionDialogList;
 	return true;
 }

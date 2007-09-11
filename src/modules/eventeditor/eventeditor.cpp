@@ -112,9 +112,9 @@ void KviEventEditor::oneTimeSetup()
 	{
 		KviKvsEvent * e = KviKvsEventManager::instance()->appEvent(i);
 		it = new KviEventListViewItem(m_pListView,i,e->name(),e->parameterDescription());
-		if(KviPtrList<KviKvsEventHandler> * l = e->handlers())
+		if(QList<KviKvsEventHandler*> * l = e->handlers())
 		{
-			for(KviKvsEventHandler * s = l->first();s;s = l->next())
+			foreach(KviKvsEventHandler * s,*l)
 			{
 				if(s->type() == KviKvsEventHandler::Script)
 				{

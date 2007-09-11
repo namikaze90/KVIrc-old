@@ -26,8 +26,8 @@
 
 #include "kvi_settings.h"
 #include "kvi_string.h"
-#include "kvi_list.h"
 
+#include <QList>
 #include <qwidget.h>
 #include <qpixmap.h>      // needed
 
@@ -140,7 +140,7 @@ private:
 	bool                        m_bAcceptDrops;
 	int                         m_iUnprocessedPaintEventRequests;
 	bool                        m_bPostedPaintEventPending;
-	KviPtrList<KviIrcViewLine> * m_pMessagesStoppedWhileSelecting;
+	QList<KviIrcViewLine*>     * m_pMessagesStoppedWhileSelecting;
 	KviIrcView                * m_pMasterView;
 	QFontMetrics              * m_pFm;               // assume this valid only inside a paint event (may be 0 in other circumstances)
 	

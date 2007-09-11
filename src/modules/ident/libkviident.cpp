@@ -198,11 +198,9 @@ void KviIdentDaemon::run()
 	m_sock6 = KVI_INVALID_SOCKET;
 	bool bEventPosted = false;
 
-	m_pRequestList = new KviPtrList<KviIdentRequest>;
-	m_pRequestList->setAutoDelete(true);
+	m_pRequestList = new QList<KviIdentRequest*>;
 
-	KviPtrList<KviIdentRequest> dying;
-	dying.setAutoDelete(false);
+	QList<KviIdentRequest*> dying;
 
 #ifdef COMPILE_IPV6_SUPPORT
 	// If we have enabled ipv6 and we have to use a single socket: this one is IPV6
@@ -355,7 +353,7 @@ ipv6_failure:
 		}
 #endif
 
-		for(r = m_pRequestList->first();r;r = m_pRequestList->next())
+		foreach(r,*m_pRequestList)
 		{
 			FD_SET(r->m_sock,&rs);
 			if(((unsigned int)r->m_sock) > ((unsigned int)nmax))nmax = r->m_sock;
@@ -415,7 +413,7 @@ ipv6_failure:
 			}
 #endif
 
-			for(r = m_pRequestList->first();r;r = m_pRequestList->next())
+			foreach(r,*m_pRequestList)
 			{
 				if(FD_ISSET(r->m_sock,&rs))
 				{
@@ -444,7 +442,7 @@ ipv6_failure:
 				}
 			}
 
-			for(r = m_pRequestList->first();r;r = m_pRequestList->next())
+			foreach(r,*m_pRequestList)
 			{
 	
 				int idx = r->m_szData.findFirstIdx('\n');
@@ -493,7 +491,7 @@ ipv6_failure:
 
 		time_t curTime = time(0);
 
-		for(r = m_pRequestList->first();r;r = m_pRequestList->next())
+		foreach(r,*m_pRequestList)
 		{
 			if((unsigned int)(curTime - r->m_tStart) > 30)
 			{
@@ -502,8 +500,9 @@ ipv6_failure:
 			}
 		}
 
-		for(KviIdentRequest * ir = dying.first();ir;ir = dying.next())
-				m_pRequestList->removeRef(ir);
+		foreach(KviIdentRequest * ir,dying)
+				m_pRequestList->removeAll(ir);
+		qDeleteAll(dying);
 
 		dying.clear();
 

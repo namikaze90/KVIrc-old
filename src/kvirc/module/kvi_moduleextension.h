@@ -24,10 +24,11 @@
 
 #include "kvi_settings.h"
 #include "kvi_string.h"
-#include "kvi_list.h"
+
 #include "kvi_heapobject.h"
 
-
+#include <QHash>
+#include <QList>
 #include <qpixmap.h>
 #include <qvariant.h>
 
@@ -65,7 +66,7 @@ private:
 	int                              m_iFlags;         // Flags (0 if not applicable)
 	QPixmap                        * m_pIcon;          // Icon (may be null!)
 	KviModuleExtensionAllocRoutine   m_allocRoutine;
-	KviPtrList<KviModuleExtension> * m_pObjectList;
+	QList<KviModuleExtension*> * m_pObjectList;
 
 	KviModule                      * m_pModule;        // module pointer
 public:
@@ -93,7 +94,7 @@ protected:
 	void unregisterObject(KviModuleExtension * e);
 };
 
-typedef KviPtrList<KviModuleExtensionDescriptor> KviModuleExtensionDescriptorList;
+typedef QList<KviModuleExtensionDescriptor*> KviModuleExtensionDescriptorList;
 
 class KviModuleExtensionManager;
 

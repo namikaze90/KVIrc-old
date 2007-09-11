@@ -406,12 +406,12 @@ void KviCustomizeToolBarsDialog::exportToolBar()
 
 	if(bExportActions)
 	{
-		KviPtrList<QString> * a = t->descriptor()->actions();
+		QStringList * a = t->descriptor()->actions();
 		if(a)
 		{
-			for(QString * s = a->first();s;s = a->next())
+			foreach(QString s,*a)
 			{
-				KviAction * act = KviActionManager::instance()->getAction(*s);
+				KviAction * act = KviActionManager::instance()->getAction(s);
 				if(act)
 				{
 					if(act->isKviUserActionNeverOverrideThis())
@@ -432,15 +432,15 @@ void KviCustomizeToolBarsDialog::exportToolBar()
 	szCode += t->descriptor()->iconId();
 	szCode += "\n";
 
-	KviPtrList<QString> * aa = t->descriptor()->actions();
+	QStringList * aa = t->descriptor()->actions();
 	if(aa)
 	{
-		for(QString * ss = aa->first();ss;ss = aa->next())
+		foreach(QString ss,*aa)
 		{
 			szCode += "toolbar.additem ";
 			szCode += t->descriptor()->id();
 			szCode += " ";
-			szCode += *ss;
+			szCode += ss;
 			szCode += "\n";
 		}
 	}

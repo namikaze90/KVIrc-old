@@ -488,7 +488,7 @@ void KviIrcContextDisplayAction::activeContextChanged()
 {
 	if(m_pWidgetList)
 	{
-		for(QWidget * w = m_pWidgetList->first();w;w = m_pWidgetList->next())
+		foreach(QWidget * w,*m_pWidgetList)
 			w->update();
 	}
 }
@@ -497,7 +497,7 @@ void KviIrcContextDisplayAction::activeContextStateChanged()
 {
 	if(m_pWidgetList)
 	{
-		for(QWidget * w = m_pWidgetList->first();w;w = m_pWidgetList->next())
+		foreach(QWidget * w,*m_pWidgetList)
 			w->update();
 	}
 }
@@ -569,7 +569,7 @@ void KviConnectAction::activeContextChanged()
 void KviConnectAction::activeContextStateChanged()
 {
 
-	KviPtrList<QWidget> * bl = widgetList();
+	QList<QWidget*> * bl = widgetList();
 	if(!bl)return;
 
 	QPixmap * p;
@@ -602,15 +602,17 @@ void KviConnectAction::activeContextStateChanged()
 
 	if(p)
 	{
-		for(QToolButton * b = (QToolButton *)bl->first();b;b =(QToolButton *)bl->next())
+		foreach(QWidget * w,*bl)
 		{
+			QToolButton *b = (QToolButton*)w;
 			if(!b->isEnabled())b->setEnabled(true);
 			b->setPixmap(*p);
 			b->setTextLabel(txt);
 		}
 	} else {
-		for(QToolButton * b = (QToolButton *)bl->first();b;b = (QToolButton *)bl->next())
+		foreach(QWidget * w,*bl)
 		{
+			QToolButton *b = (QToolButton*)w;
 			if(b->isEnabled())b->setEnabled(false);
 		}
 	}
@@ -1002,7 +1004,7 @@ void KviGoAwayAction::activeContextChanged()
 
 void KviGoAwayAction::activeContextStateChanged()
 {
-	KviPtrList<QWidget> * bl = widgetList();
+	QList<QWidget*> * bl = widgetList();
 	if(!bl)return;
 
 	QPixmap * p;
@@ -1029,16 +1031,18 @@ void KviGoAwayAction::activeContextStateChanged()
 
 	if(p)
 	{
-		for(QToolButton * b = (QToolButton *)bl->first();b;b =(QToolButton *)bl->next())
+		foreach(QWidget * w,*bl)
 		{
+			QToolButton *b = (QToolButton*)w;
 			if(!b->isEnabled())b->setEnabled(true);
 			b->setPixmap(*p);
 			b->setTextLabel(txt);
 		}
 		m_uInternalFlags |= KVI_ACTION_FLAG_ENABLED;
 	} else {
-		for(QToolButton * b = (QToolButton *)bl->first();b;b = (QToolButton *)bl->next())
+		foreach(QWidget * w,*bl)
 		{
+			QToolButton *b = (QToolButton*)w;
 			if(b->isEnabled())b->setEnabled(false);
 		}
 		m_uInternalFlags &= ~KVI_ACTION_FLAG_ENABLED;

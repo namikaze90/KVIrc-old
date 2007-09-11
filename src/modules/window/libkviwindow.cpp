@@ -55,7 +55,7 @@
 
 // kvi_app.cpp
 extern KVIRC_API QHash<QString,KviWindow*> * g_pGlobalWindowDict;
-KviPtrList<KviUserWindow> * g_pUserWindowList = 0;
+QList<KviUserWindow*> * g_pUserWindowList = 0;
 
 // $window.caption $window.x $window.y $window.width $window.height $window.isActive $window.type
 // $window.input.text $window.input.cursorpos $window.input.textlen
@@ -1425,8 +1425,7 @@ static bool window_kvs_cmd_setCryptEngine(KviKvsModuleCommandCall * c)
 
 static bool window_module_init(KviModule *m)
 {
-	g_pUserWindowList = new KviPtrList<KviUserWindow>();
-	g_pUserWindowList->setAutoDelete(false);
+	g_pUserWindowList = new QList<KviUserWindow*>();
 
 	KVSM_REGISTER_FUNCTION(m,"activityTemperature",window_kvs_fnc_activityTemperature);
 	KVSM_REGISTER_FUNCTION(m,"activityLevel",window_kvs_fnc_activityLevel);

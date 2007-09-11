@@ -49,10 +49,10 @@
 	
 	#include "kvi_memmove.h"
 	#include "kvi_malloc.h"
+	#include <QList>
+	
 
-	#include "kvi_list.h"
-
-	static KviPtrList<KviCryptEngine> * g_pEngineList = 0;
+	static QList<KviCryptEngine*> * g_pEngineList = 0;
 
 	KviLamerizerEngine::KviLamerizerEngine(bool bLight)
 	: KviCryptEngine()
@@ -63,7 +63,7 @@
 
 	KviLamerizerEngine::~KviLamerizerEngine()
 	{
-		g_pEngineList->removeRef(this);
+		g_pEngineList->removeAll(this);
 	}
 
 	bool KviLamerizerEngine::init(const char *,int,const char *,int)
@@ -208,8 +208,7 @@
 static bool lamerizer_module_init(KviModule * m)
 {
 #ifdef COMPILE_CRYPT_SUPPORT
-	g_pEngineList = new KviPtrList<KviCryptEngine>;
-	g_pEngineList->setAutoDelete(false);
+	g_pEngineList = new QList<KviCryptEngine*>;
 
 	// FIXME: Maybe convert this repeated code to a function eh ?
 

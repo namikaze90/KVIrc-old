@@ -122,8 +122,7 @@ void KviActionManager::save(const QString &szFileName)
 
 void KviActionManager::killAllKvsUserActions()
 {
-	KviPtrList<KviKvsUserAction> dying;
-	dying.setAutoDelete(true);
+	QList<KviKvsUserAction*> dying;
 
 	foreach(KviAction * a,*m_pActions)
 	{
@@ -132,8 +131,7 @@ void KviActionManager::killAllKvsUserActions()
 			dying.append(((KviKvsUserAction *)a));
 		}
 	}
-	
-	dying.clear(); // bye :)
+	qDeleteAll(dying);
 }
 
 
@@ -288,11 +286,10 @@ KviAction * KviActionManager::getAction(const QString &szName)
 	return m_pActions->value(szName);
 }
 
-void KviActionManager::listActionsByCategory(const QString &szCatName,KviPtrList<KviAction> * pBuffer)
+void KviActionManager::listActionsByCategory(const QString &szCatName,QList<KviAction*> * pBuffer)
 {
 	loadAllAvailableActions();
 	KviActionCategory * pCat = category(szCatName);
-	pBuffer->setAutoDelete(false);
 	pBuffer->clear();
 	if(!pCat)return;
 	foreach(KviAction * a,*m_pActions)

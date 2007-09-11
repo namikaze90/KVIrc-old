@@ -25,7 +25,7 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-#include "kvi_list.h"
+
 #include "kvi_kvs_variant.h"
 
 
@@ -48,11 +48,14 @@ public:
 	KviKvsVariantList(QString * s1,QString * s2,QString * s3,QString * s4,QString * s5);
 	KviKvsVariantList(QString * s1,QString * s2,QString * s3,QString * s4,QString * s5,QString * s6);
 	~KviKvsVariantList();
+	typedef QList<KviKvsVariant*>::iterator iterator;
+	typedef QList<KviKvsVariant*>::const_iterator const_iterator;
 protected:
-	KviPtrList<KviKvsVariant> * m_pList;
+	QList<KviKvsVariant*> * m_pList;
+	bool                    m_bAutoDelete;
 public:
+	QList<KviKvsVariant*> * list() { return m_pList; };
 	KviKvsVariant * first(){ return m_pList->first(); };
-	KviKvsVariant * next(){ return m_pList->next(); };
 	KviKvsVariant * at(int iIdx){ return m_pList->at(iIdx); };
 	unsigned int count(){ return m_pList->count(); };
 	
@@ -74,8 +77,6 @@ public:
 	void allAsString(QString &szBuffer);
 	// returns true if there was a first parameter at all
 	bool firstAsString(QString &szBuffer);
-	// returns true if there was a next parameter at all
-	bool nextAsString(QString &szBuffer);
 };
 
 #endif //!_KVI_KVS_VARIANTLIST_H_

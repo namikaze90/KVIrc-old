@@ -29,7 +29,8 @@
 
 #include "kvi_qcstring.h" // QByteArray anyway
 #include <qobject.h>
-#include "kvi_list.h"
+#include <QSet>
+
 
 class KviFile;
 class QProgressDialog;
@@ -91,7 +92,7 @@ protected:
 		QString m_szFileTargetName;
 	};
 
-	KviPtrList<DataField> * m_pDataFields;
+	QSet<DataField*> * m_pDataFields;
 	int m_iCurrentProgress;
 public:
 	// Adds a file to the package. The file must be specified as absolute local

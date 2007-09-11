@@ -294,13 +294,13 @@ KviKvsTreeNodeSpecialCommandSwitch::KviKvsTreeNodeSpecialCommandSwitch(const QCh
 {
 	m_pExpression = e;
 	m_pExpression->setParent(this);
-	m_pLabels = new KviPtrList<KviKvsTreeNodeSpecialCommandSwitchLabel>;
-	m_pLabels->setAutoDelete(true);
+	m_pLabels = new QList<KviKvsTreeNodeSpecialCommandSwitchLabel*>;
 }
 
 KviKvsTreeNodeSpecialCommandSwitch::~KviKvsTreeNodeSpecialCommandSwitch()
 {
 	delete m_pExpression;
+	qDeleteAll(*m_pLabels);
 	delete m_pLabels;
 }
 
@@ -322,7 +322,7 @@ void KviKvsTreeNodeSpecialCommandSwitch::dump(const char * prefix)
 	QString tmp = prefix;
 	tmp.append("  ");
 	m_pExpression->dump(tmp.utf8().data());
-	for(KviKvsTreeNodeSpecialCommandSwitchLabel * l = m_pLabels->first();l;l = m_pLabels->next())
+	foreach(KviKvsTreeNodeSpecialCommandSwitchLabel * l,*m_pLabels)
 		l->dump(tmp.utf8().data());
 }
 
@@ -331,7 +331,7 @@ bool KviKvsTreeNodeSpecialCommandSwitch::execute(KviKvsRunTimeContext * c)
 	KviKvsVariant v;
 	if(!m_pExpression->evaluateReadOnly(c,&v))return false;
 
-	for(KviKvsTreeNodeSpecialCommandSwitchLabel * l = m_pLabels->first();l;l = m_pLabels->next())
+	foreach(KviKvsTreeNodeSpecialCommandSwitchLabel * l,*m_pLabels)
 	{
 		if(!l->execute(c,&v))
 		{

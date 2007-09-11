@@ -57,9 +57,9 @@ KviTipWindow * g_pTipWindow = 0;
 KviTipFrame::KviTipFrame(QWidget * par)
 : QFrame(par)
 {
-	KviStr buffer;
+	QString buffer;
 	g_pApp->findImage(buffer,"kvi_tip.png");
-	m_pTipPixmap = new QPixmap(buffer.ptr());
+	m_pTipPixmap = new QPixmap(buffer);
 	setBackgroundMode(Qt::NoBackground);
 	setFrameStyle(QFrame::Sunken | QFrame::WinPanel);
 }
@@ -155,31 +155,31 @@ KviTipWindow::~KviTipWindow()
 	if(m_pConfig)closeConfig();
 }
 
-bool KviTipWindow::openConfig(const char * filename,bool bEnsureExists)
+bool KviTipWindow::openConfig(const QString& filename,bool bEnsureExists)
 {
 	if(m_pConfig)closeConfig();
 
 	m_szConfigFileName = filename;
 //	m_szConfigFileName.cutToLast('/');
 
-	KviStr buffer;
-	g_pApp->getReadOnlyConfigPath(buffer,m_szConfigFileName.ptr(),KviApp::ConfigPlugins,true);
+	QString buffer;
+	g_pApp->getReadOnlyConfigPath(buffer,m_szConfigFileName,KviApp::ConfigPlugins,true);
 
 	if(bEnsureExists)
 	{
-		if(!KviFileUtils::fileExists(buffer.ptr()))return false;
+		if(!KviFileUtils::fileExists(buffer))return false;
 	}
 
-	m_pConfig = new KviConfig(buffer.ptr(),KviConfig::Read);
+	m_pConfig = new KviConfig(buffer,KviConfig::Read);
 	
 	return true;
 }
 
 void KviTipWindow::closeConfig()
 {
-	KviStr buffer;
-	g_pApp->getLocalKvircDirectory(buffer,KviApp::ConfigPlugins,m_szConfigFileName.ptr());
-	m_pConfig->setSavePath(buffer.ptr());
+	QString buffer;
+	g_pApp->getLocalKvircDirectory(buffer,KviApp::ConfigPlugins,m_szConfigFileName);
+	m_pConfig->setSavePath(buffer);
 	delete m_pConfig;
     m_pConfig = 0;
 }

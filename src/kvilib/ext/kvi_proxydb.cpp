@@ -84,19 +84,22 @@ void KviProxy::normalizeUserAndPass()
 
 KviProxyDataBase::KviProxyDataBase()
 {
-	m_pProxyList = new KviPtrList<KviProxy>;
-	m_pProxyList->setAutoDelete(true);
+	m_pProxyList = new QList<KviProxy*>;
 	m_pCurrentProxy = 0;
 }
 
 KviProxyDataBase::~KviProxyDataBase()
 {
+	foreach(KviProxy*i,*m_pProxyList)
+	{
+		delete i;
+	}
 	delete m_pProxyList;
 }
 
 void KviProxyDataBase::updateProxyIp(const char * proxy,const char * ip)
 {
-	for(KviProxy * prx = m_pProxyList->first();prx;prx = m_pProxyList->next())
+	foreach(KviProxy * prx,*m_pProxyList)
 	{
 		if(kvi_strEqualCI(proxy,prx->m_szHostname.ptr()))
 		{
@@ -108,9 +111,11 @@ void KviProxyDataBase::updateProxyIp(const char * proxy,const char * ip)
 
 void KviProxyDataBase::clear()
 {
-	delete m_pProxyList;
-	m_pProxyList = new KviPtrList<KviProxy>;
-	m_pProxyList->setAutoDelete(true);
+	foreach(KviProxy*i,*m_pProxyList)
+	{
+		delete i;
+	}
+	m_pProxyList->clear();
 	m_pCurrentProxy = 0;
 }
 
@@ -160,7 +165,7 @@ void KviProxyDataBase::save(const char * filename)
 
 	int i=0;
 
-	for(KviProxy * p=m_pProxyList->first();p;p=m_pProxyList->next())
+	foreach(KviProxy * p,*m_pProxyList)
 	{
 		KviStr tmp(KviStr::Format,"%u_Hostname",i);
 		cfg.writeEntry(tmp.ptr(),p->m_szHostname.ptr());

@@ -54,11 +54,9 @@ KviDccBroker::KviDccBroker()
 {
 	KviDccFileTransfer::init();
 
-	m_pBoxList = new KviPtrList<KviDccBox>;
-	m_pBoxList->setAutoDelete(false);
+	m_pBoxList = new QList<KviDccBox*>;
 
-	m_pDccWindowList = new KviPtrList<KviWindow>;
-	m_pDccWindowList->setAutoDelete(false);
+	m_pDccWindowList = new QList<KviWindow*>;
 
 	m_pZeroPortTags = new QHash<QString,KviDccZeroPortTag*>;
 }
@@ -115,13 +113,13 @@ unsigned int KviDccBroker::dccBoxCount()
 
 void KviDccBroker::unregisterDccWindow(KviWindow *wnd)
 {
-	m_pDccWindowList->removeRef(wnd);
+	m_pDccWindowList->removeAll(wnd);
 }
 
 void KviDccBroker::unregisterDccBox(KviDccBox * box)
 {
 	//debug("Forgetting box %d",box);
-	m_pBoxList->removeRef(box);
+	m_pBoxList->removeAll(box);
 }
 
 
@@ -578,11 +576,11 @@ void KviDccBroker::chooseSaveFileName(KviDccBox *box,KviDccDescriptor *dcc)
 			g_pMediaManager->lock();
 			if(KviMediaType * mt = g_pMediaManager->findMediaType(dcc->szFileName.utf8().data(),false))
 			{
-				if(mt->szSavePath.hasData())
+				if(!mt->szSavePath.isEmpty())
 				{
-					if(KviFileUtils::directoryExists(mt->szSavePath.ptr()))dcc->szLocalFileName = mt->szSavePath;
+					if(KviFileUtils::directoryExists(mt->szSavePath))dcc->szLocalFileName = mt->szSavePath;
 					else {
-						if(KviFileUtils::makeDir(mt->szSavePath.ptr()))dcc->szLocalFileName = mt->szSavePath;
+						if(KviFileUtils::makeDir(mt->szSavePath))dcc->szLocalFileName = mt->szSavePath;
 					}
 					if(KVI_OPTION_BOOL(KviOption_boolSortReceivedByDccFilesByNicks))
 					{

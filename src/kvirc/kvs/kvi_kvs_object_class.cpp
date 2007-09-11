@@ -50,8 +50,7 @@ KviKvsObjectClass::KviKvsObjectClass(
 	m_bBuiltin      = bBuiltin;
 	m_bDirty        = !bBuiltin;
 	m_pFunctionHandlers = new QHash<QString,KviKvsObjectFunctionHandler*>;
-	m_pChildClasses = new KviPtrList<KviKvsObjectClass>;
-	m_pChildClasses->setAutoDelete(false);
+	m_pChildClasses = new QList<KviKvsObjectClass*>;
 	m_allocProc     = pProc ? pProc : pParent->m_allocProc;
 
 	// inherit everything from the class above
@@ -115,7 +114,6 @@ KviKvsObject * KviKvsObjectClass::allocateInstance(KviKvsObject * pParent,const 
 	KviKvsObject * pObject = m_allocProc(this,pParent,szName);
 	if(!pObject)return 0;
 
-	KviKvsVariant * v=pParams->first(); // FIXME: what the hell is this ?
 	if(!pObject->init(pContext,pParams))
 	{
 		// internal init failure : abort
@@ -125,11 +123,10 @@ KviKvsObject * KviKvsObjectClass::allocateInstance(KviKvsObject * pParent,const 
 
 	KviKvsVariant ret;
 	KviKvsVariantList copy;
-	copy.setAutoDelete(false);
-	while(v)
+	KviKvsVariant * v;
+	foreach(v,*(pParams->list()))
 	{
 		copy.append(v);
-		v = pParams->next();
 	}
 
 	if(!pObject->callFunction(pObject,"constructor",QString::null,pContext,&ret,&copy))
@@ -167,7 +164,7 @@ void KviKvsObjectClass::registerChildClass(KviKvsObjectClass *pClass)
 
 void KviKvsObjectClass::unregisterChildClass(KviKvsObjectClass *pClass)
 {
-	m_pChildClasses->removeRef(pClass);
+	m_pChildClasses->removeAll(pClass);
 }
 
 bool KviKvsObjectClass::save(const QString &szFileName)

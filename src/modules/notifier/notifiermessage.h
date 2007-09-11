@@ -38,7 +38,7 @@
 #include <qlineedit.h>
 
 #include "kvi_qstring.h"
-#include "kvi_list.h"
+
 #include "kvi_time.h"
 
 // TODO: Qt4

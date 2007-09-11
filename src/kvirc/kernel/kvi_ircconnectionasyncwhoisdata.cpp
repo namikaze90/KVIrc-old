@@ -46,15 +46,18 @@ KviIrcConnectionAsyncWhoisData::KviIrcConnectionAsyncWhoisData()
 
 KviIrcConnectionAsyncWhoisData::~KviIrcConnectionAsyncWhoisData()
 {
-	if(m_pWhoisInfoList)delete m_pWhoisInfoList;
+	if(m_pWhoisInfoList)
+	{
+		qDeleteAll(*m_pWhoisInfoList);
+		delete m_pWhoisInfoList;
+	}
 }
 
 void KviIrcConnectionAsyncWhoisData::add(KviAsyncWhoisInfo * i)
 {
 	if(!m_pWhoisInfoList)
 	{
-		m_pWhoisInfoList = new KviPtrList<KviAsyncWhoisInfo>;
-		m_pWhoisInfoList->setAutoDelete(true);
+		m_pWhoisInfoList = new QList<KviAsyncWhoisInfo*>;
 	}
 	m_pWhoisInfoList->append(i);
 }
@@ -62,7 +65,7 @@ void KviIrcConnectionAsyncWhoisData::add(KviAsyncWhoisInfo * i)
 KviAsyncWhoisInfo * KviIrcConnectionAsyncWhoisData::lookup(const QString &nick)
 {
 	if(!m_pWhoisInfoList)return 0;
-	for(KviAsyncWhoisInfo * i = m_pWhoisInfoList->first();i;i = m_pWhoisInfoList->next())
+	foreach(KviAsyncWhoisInfo * i,*m_pWhoisInfoList)
 	{
 		if(KviQString::equalCI(nick,i->szNick))return i;
 	}
@@ -72,7 +75,8 @@ KviAsyncWhoisInfo * KviIrcConnectionAsyncWhoisData::lookup(const QString &nick)
 void KviIrcConnectionAsyncWhoisData::remove(KviAsyncWhoisInfo * i)
 {
 	if(!m_pWhoisInfoList)return;
-	m_pWhoisInfoList->removeRef(i);
+	m_pWhoisInfoList->removeAll(i);
+	delete i;
 	if(m_pWhoisInfoList->isEmpty())
 	{
 		delete m_pWhoisInfoList;

@@ -352,8 +352,7 @@ KviKvsTreeNodeExpression * KviKvsParser::parseExpressionOperand(char terminator)
 
 KviKvsTreeNodeExpression * KviKvsParser::parseExpressionOperandCore(char terminator)
 {
-	KviPtrList<KviKvsTreeNodeData> * pDataList = new KviPtrList<KviKvsTreeNodeData>;
-	pDataList->setAutoDelete(true);
+	QList<KviKvsTreeNodeData*> * pDataList = new QList<KviKvsTreeNodeData*>;
 
 	static QString szStaticSingleSpace(" ");
 	
@@ -386,6 +385,7 @@ KviKvsTreeNodeExpression * KviKvsParser::parseExpressionOperandCore(char termina
 				KviKvsTreeNodeData * d = parseStringParameter();
 				if(!d)
 				{
+					qDeleteAll(*pDataList);
 					delete pDataList;
 					return 0;
 				}
@@ -400,6 +400,7 @@ KviKvsTreeNodeExpression * KviKvsParser::parseExpressionOperandCore(char termina
 				KviKvsTreeNodeData * d = parseParameterPercentOrDollar();
 				if(!d)
 				{
+					qDeleteAll(*pDataList);
 					delete pDataList;
 					return 0;
 				}
@@ -449,6 +450,7 @@ KviKvsTreeNodeExpression * KviKvsParser::parseExpressionOperandCore(char termina
 					}
 				} else {
 					error(KVSP_curCharPointer,__tr2qs("Unexpected character %q (unicode %h) in expression. If it meant to be a string use the quotes."),KVSP_curCharPointer,KVSP_curCharUnicode);
+					qDeleteAll(*pDataList);
 					delete pDataList;
 					return 0;
 				}
@@ -474,13 +476,13 @@ postprocess_operand:
 
 	if(bHaveVariable)
 	{
-		pDataList->setAutoDelete(false);
 		delete pDataList;
 		return new KviKvsTreeNodeExpressionVariableOperand(pOperandBegin,pUniqueData);
 	}
 
 	// a single constant data element
 	KviKvsTreeNodeExpressionConstantOperand * op =  new KviKvsTreeNodeExpressionConstantOperand(pOperandBegin,new KviKvsVariant(*(((KviKvsTreeNodeConstantData *)pUniqueData)->value())));
+	qDeleteAll(*pDataList);
 	delete pDataList; // auto delete is true
 	return op;
 }

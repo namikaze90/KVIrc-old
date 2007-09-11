@@ -57,12 +57,12 @@ protected:
 	KviTipFrame * m_pTipFrame;
 	KviStyledCheckBox   * m_pShowAtStartupCheck;
 	KviConfig   * m_pConfig;
-	KviStr        m_szConfigFileName; // no path!
+	QString       m_szConfigFileName; // no path!
 protected:
 	virtual void showEvent(QShowEvent *e);
 	virtual void closeEvent(QCloseEvent *e);
 public:
-	bool openConfig(const char * filename,bool bEnsureExists = true);
+	bool openConfig(const QString& filename,bool bEnsureExists = true);
 	void closeConfig();
 public slots:
 	void nextTip();

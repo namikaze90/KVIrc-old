@@ -35,7 +35,7 @@
 #include "kvi_dynamictooltip.h"
 #include "kvi_ircurl.h"
 #include "kvi_internalcmd.h"
-#include "kvi_list.h"
+
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_irccontext.h"
@@ -55,24 +55,20 @@
 #endif
 
 static QPixmap                                  * g_pIccMemBuffer               = 0;
-static KviPtrList<KviToolBarGraphicalApplet>    * g_pToolBarGraphicalAppletList = 0;
+static QList<KviToolBarGraphicalApplet*>        * g_pToolBarGraphicalAppletList = 0;
 
 KviToolBarGraphicalApplet::KviToolBarGraphicalApplet(QWidget * par,const char * name)
 : QToolButton(par,name)
 {
 	if(!g_pToolBarGraphicalAppletList)
 	{
-		g_pToolBarGraphicalAppletList = new KviPtrList<KviToolBarGraphicalApplet>();
-		g_pToolBarGraphicalAppletList->setAutoDelete(false);
+		g_pToolBarGraphicalAppletList = new QList<KviToolBarGraphicalApplet*>;
 		g_pIccMemBuffer = new QPixmap(1,1);
 	}
 	
 	g_pToolBarGraphicalAppletList->append(this);
-#ifdef COMPILE_USE_QT4
+
 	setAutoFillBackground(false);
-#else
-	setBackgroundMode(QWidget::NoBackground);
-#endif
 
 	setMouseTracking(true);
 	m_bResizeMode = false;
@@ -156,7 +152,7 @@ void KviToolBarGraphicalApplet::mouseReleaseEvent(QMouseEvent * e)
 KviToolBarGraphicalApplet::~KviToolBarGraphicalApplet()
 {
 	saveAppletWidth(m_sizeHint.width());
-	g_pToolBarGraphicalAppletList->removeRef(this);
+	g_pToolBarGraphicalAppletList->removeAll(this);
 	if(g_pToolBarGraphicalAppletList->isEmpty())
 	{
 		delete g_pToolBarGraphicalAppletList;
@@ -173,7 +169,7 @@ void KviToolBarGraphicalApplet::resizeMemBuffer()
 {
 	int uMaxW = 0;
 	int uMaxH = 0;
-	for(KviToolBarGraphicalApplet * a = g_pToolBarGraphicalAppletList->first();a;a = g_pToolBarGraphicalAppletList->next())
+	foreach(KviToolBarGraphicalApplet * a,*g_pToolBarGraphicalAppletList)
 	{
 		if(uMaxW < a->width())uMaxW = a->width();
 		if(uMaxH < a->height())uMaxH = a->height();

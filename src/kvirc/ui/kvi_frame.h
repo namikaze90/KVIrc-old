@@ -35,7 +35,7 @@
 
 #include "kvi_tal_mainwindow.h"
 #include "kvi_qstring.h"
-#include "kvi_list.h"
+#include <QList>
 
 class KviMenuBar;
 class KviMdiManager;
@@ -52,11 +52,6 @@ class KviStatusBar;
 class KviTalPopupMenu;
 
 #include "kvi_accel.h" // we need this :/
-
-#ifdef COMPILE_ON_WINDOWS
-	// MSCV has problems with KviPtrList<KviWindow> otherwise
-	#include "kvi_window.h"
-#endif
 
 // base class for the dock extension applets..
 // this should be probably moved out of here
@@ -99,11 +94,11 @@ protected:
 	QSplitter                             * m_pSplitter;                     // the frame is splitted vertically and thus can host widgets
 	KviMenuBar                            * m_pMenuBar;                      // the main menu bar
 	KviMdiManager                         * m_pMdi;                          // the mdi manager widget (child of the splitter)
-	KviPtrList<KviMexToolBar>             * m_pModuleExtensionToolBarList;   // the module extension toolbars
+	QList<KviMexToolBar*>                  * m_pModuleExtensionToolBarList;   // the module extension toolbars
 	KviTaskBarBase                        * m_pTaskBar;                      // the taskbar
 	KviStatusBar                          * m_pStatusBar;
 	// the mdi workspace child windows
-	KviPtrList<KviWindow>                 * m_pWinList;                      // the main list of windows
+	QList<KviWindow*>                     * m_pWinList;                      // the main list of windows
 	KviIrcContext                         * m_pActiveContext;                // the context of the m_pActiveWindow
 	// other
 	KviDockExtension                      * m_pDockExtension;                // the frame's dock extension: this should be prolly moved ?
@@ -124,7 +119,7 @@ public:
 	KviIrcConnection * activeConnection();
 	// The list of the windows belonging to this frame
 	// Note that the windows may be also undocked, but they are still owned by the frame
-	KviPtrList<KviWindow> * windowList() { return m_pWinList; };
+	QList<KviWindow*> * windowList() { return m_pWinList; };
 	// Sets the specified window to be the active one
 	// Raises it and focuses it
 	void setActiveWindow(KviWindow *wnd);
@@ -137,7 +132,7 @@ public:
 	// window list. This is useful for asynchronous functions
 	// that keep a window pointer and need to ensure that it is still
 	// valid after an uncontrolled delay. (Think of a /timer implementation)
-	bool windowExists(KviWindow * wnd){ return (m_pWinList->findRef(wnd) != -1); };
+	bool windowExists(KviWindow * wnd){ return m_pWinList->contains(wnd); };
 	// The number of consoles in this frame
 	unsigned int consoleCount();
 	// Creates a new console window. DON'T use the KviConsole constructor directly.

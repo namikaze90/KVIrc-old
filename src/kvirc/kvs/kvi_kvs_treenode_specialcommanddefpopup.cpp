@@ -252,14 +252,14 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup::KviKvsTreeNodeSpecialCommandDefp
 : KviKvsTreeNodeSpecialCommandDefpopupConditionalLabelWithTextAndIcon(pLocation,QString::null,QString::null,QString::null,QString::null)
 {
 #ifdef COMPILE_NEW_KVS
-	m_pLabels = new KviPtrList<KviKvsTreeNodeSpecialCommandDefpopupLabel>;
-	m_pLabels->setAutoDelete(true);
+	m_pLabels = new QList<KviKvsTreeNodeSpecialCommandDefpopupLabel*>;
 #endif
 }
 
 KviKvsTreeNodeSpecialCommandDefpopupLabelPopup::~KviKvsTreeNodeSpecialCommandDefpopupLabelPopup()
 {
 #ifdef COMPILE_NEW_KVS
+	qDeleteAll(*m_pLabels);
 	delete m_pLabels;
 #endif
 }
@@ -290,7 +290,7 @@ void KviKvsTreeNodeSpecialCommandDefpopupLabelPopup::dump(const char * prefix)
 	x += "ICON: ";
 	x += m_szIcon;
 	debug(x.utf8().data());
-	for(KviKvsTreeNodeSpecialCommandDefpopupLabel * l = m_pLabels->first();l;l = m_pLabels->next())
+	foreach(KviKvsTreeNodeSpecialCommandDefpopupLabel * l,*m_pLabels)
 		l->dump(tmp.utf8().data());
 #endif
 }
@@ -317,7 +317,7 @@ bool KviKvsTreeNodeSpecialCommandDefpopupLabelPopup::execute(KviKvsRunTimeContex
 bool KviKvsTreeNodeSpecialCommandDefpopupLabelPopup::fill(KviKvsRunTimeContext* c,KviKvsPopupMenu * p)
 {
 #ifdef COMPILE_NEW_KVS
-	for(KviKvsTreeNodeSpecialCommandDefpopupLabel * l = m_pLabels->first();l;l = m_pLabels->next())
+	foreach(KviKvsTreeNodeSpecialCommandDefpopupLabel * l,*m_pLabels)
 	{
 		if(!l->execute(c,p))return false;
 	}

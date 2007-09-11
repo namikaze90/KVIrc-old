@@ -82,7 +82,14 @@ KviNickServRuleSet::KviNickServRuleSet(const KviNickServRuleSet &s)
 
 KviNickServRuleSet::~KviNickServRuleSet()
 {
-	if(m_pRules)delete m_pRules;
+	if(m_pRules)
+	{
+		foreach(KviNickServRule* i,*m_pRules)
+		{
+			delete i;
+		}
+		delete m_pRules;
+	}
 }
 
 void KviNickServRuleSet::save(KviConfig * cfg,const QString &prefix)
@@ -98,7 +105,7 @@ void KviNickServRuleSet::save(KviConfig * cfg,const QString &prefix)
 	KviQString::sprintf(tmp,"%QNSRules",&prefix);
 	cfg->writeEntry(tmp,m_pRules->count());
 	int idx = 0;
-	for(KviNickServRule * r = m_pRules->first();r;r = m_pRules->next())
+	foreach(KviNickServRule * r,*m_pRules)
 	{
 		KviQString::sprintf(tmp,"%QNSRule%d_",&prefix,idx);
 		r->save(cfg,tmp);
@@ -139,10 +146,16 @@ void KviNickServRuleSet::save(const QString &szConfigFile)
 
 bool KviNickServRuleSet::loadPrivate(KviConfig * cfg,const QString &prefix,unsigned int nEntries)
 {
-	if(m_pRules)m_pRules->clear();
+	if(m_pRules)
+	{
+		foreach(KviNickServRule* i,*m_pRules)
+		{
+			delete i;
+		}
+		m_pRules->clear();
+	}
 	else {
-		m_pRules = new KviPtrList<KviNickServRule>;
-		m_pRules->setAutoDelete(true);
+		m_pRules = new QSet<KviNickServRule*>;
 	}
 
 	if(nEntries != 0)
@@ -155,7 +168,7 @@ bool KviNickServRuleSet::loadPrivate(KviConfig * cfg,const QString &prefix,unsig
 			KviQString::sprintf(tmp,"%QNSRule%u_",&prefix,u);
 			KviNickServRule * r = new KviNickServRule();
 			if(!r->load(cfg,tmp))delete r;
-			else m_pRules->append(r);
+			else m_pRules->insert(r);
 		}
 	}
 
@@ -173,6 +186,10 @@ void KviNickServRuleSet::clear()
 {
 	if(m_pRules)
 	{
+		foreach(KviNickServRule* i,*m_pRules)
+		{
+			delete i;
+		}
 		delete m_pRules;
 		m_pRules = 0;
 	}
@@ -183,10 +200,9 @@ void KviNickServRuleSet::addRule(KviNickServRule * r)
 {
 	if(!m_pRules)
 	{
-		m_pRules = new KviPtrList<KviNickServRule>;
-		m_pRules->setAutoDelete(true);
+		m_pRules = new QSet<KviNickServRule*>;
 	}
-	m_pRules->append(r);
+	m_pRules->insert(r);
 }
 
 KviNickServRuleSet * KviNickServRuleSet::createInstance()
@@ -198,7 +214,7 @@ KviNickServRuleSet * KviNickServRuleSet::createInstance()
 KviNickServRule * KviNickServRuleSet::matchRule(const QString &szNick,const KviIrcMask *nickServ,const QString &szMsg,const QString &szServer)
 {
 	if(!m_pRules)return 0;
-	for(KviNickServRule *r = m_pRules->first();r;r = m_pRules->next())
+	foreach(KviNickServRule *r,*m_pRules)
 	{
 		if(!KviQString::matchStringCI(r->registeredNick(),szNick,false,true)) continue;
 		if(!szServer.isEmpty())
@@ -217,16 +233,22 @@ void KviNickServRuleSet::copyFrom(const KviNickServRuleSet &src)
 {
 	if(src.m_pRules)
 	{
-		if(m_pRules)m_pRules->clear();
-		else {
-			m_pRules = new KviPtrList<KviNickServRule>;
-			m_pRules->setAutoDelete(true);
+		if(m_pRules)
+		{
+			foreach(KviNickServRule* i,*m_pRules)
+			{
+				delete i;
+			}
+			m_pRules->clear();
 		}
-		for(KviNickServRule * r = src.m_pRules->first();r;r = src.m_pRules->next())
+		else {
+			m_pRules = new QSet<KviNickServRule*>;
+		}
+		foreach(KviNickServRule * r,*(src.m_pRules))
 		{
 			KviNickServRule * c = new KviNickServRule();
 			c->copyFrom(*r);
-			m_pRules->append(c);
+			m_pRules->insert(c);
 		}
 		if(m_pRules->isEmpty())
 		{

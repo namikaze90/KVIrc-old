@@ -55,13 +55,13 @@ KviKvsTreeNodeSpecialCommandClass::KviKvsTreeNodeSpecialCommandClass(const QChar
 {
 	m_pParams = pParams;
 	m_pParams->setParent(this);
-	m_pFunctions = new KviPtrList<KviKvsTreeNodeSpecialCommandClassFunctionDefinition>;
-	m_pFunctions->setAutoDelete(true);
+	m_pFunctions = new QList<KviKvsTreeNodeSpecialCommandClassFunctionDefinition*>;
 }
 
 KviKvsTreeNodeSpecialCommandClass::~KviKvsTreeNodeSpecialCommandClass()
 {
 	delete m_pParams;
+	qDeleteAll(*m_pFunctions);
 	delete m_pFunctions;
 }
 
@@ -83,7 +83,7 @@ void KviKvsTreeNodeSpecialCommandClass::dump(const char * prefix)
 	QString tmp = prefix;
 	tmp.append("  ");
 	m_pParams->dump(tmp.utf8().data());
-	for(KviKvsTreeNodeSpecialCommandClassFunctionDefinition * d = m_pFunctions->first();d;d = m_pFunctions->next())
+	foreach(KviKvsTreeNodeSpecialCommandClassFunctionDefinition * d,*m_pFunctions)
 		d->dump(tmp.utf8().data());
 }
 
@@ -98,7 +98,7 @@ bool KviKvsTreeNodeSpecialCommandClass::execute(KviKvsRunTimeContext * c)
 		c->error(this,__tr2qs("Missing class name"));
 		return false;
 	}
-	KviKvsVariant * pBaseClassName = l.next();
+	KviKvsVariant * pBaseClassName = l.at(1);
 
 	QString szClassName;
 	QString szBaseClassName;
@@ -148,7 +148,7 @@ bool KviKvsTreeNodeSpecialCommandClass::execute(KviKvsRunTimeContext * c)
 	}
 	pActualClass = new KviKvsObjectClass(pBaseClass,szClassName,0,false);
 
-	for(KviKvsTreeNodeSpecialCommandClassFunctionDefinition * d = m_pFunctions->first();d;d = m_pFunctions->next())
+	foreach(KviKvsTreeNodeSpecialCommandClassFunctionDefinition * d,*m_pFunctions)
 	{
 		pActualClass->registerFunctionHandler(d->name(),d->buffer(),d->handlerFlags());
 	}

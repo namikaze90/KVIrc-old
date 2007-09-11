@@ -135,7 +135,7 @@ void KviRegisteredChannelDataBase::remove(KviRegisteredChannel * c)
 				m_pChannelDict->remove(c->name());
 				delete c;
 			} else {
-				l->removeRef(c);
+				l->remove(c);
 			}
 			return;
 		}

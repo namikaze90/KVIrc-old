@@ -31,12 +31,12 @@
 KviKvsTreeNodeInstructionBlock::KviKvsTreeNodeInstructionBlock(const QChar * pLocation)
 : KviKvsTreeNodeInstruction(pLocation)
 {
-	m_pInstructionList = new KviPtrList<KviKvsTreeNodeInstruction>;
-	m_pInstructionList->setAutoDelete(true);
+	m_pInstructionList = new QList<KviKvsTreeNodeInstruction*>;
 }
 
 KviKvsTreeNodeInstructionBlock::~KviKvsTreeNodeInstructionBlock()
 {
+	qDeleteAll(*m_pInstructionList);
 	delete m_pInstructionList;
 }
 
@@ -50,7 +50,7 @@ void KviKvsTreeNodeInstructionBlock::dump(const char * prefix)
 	debug("%s InstructionBlock",prefix);
 	QString tmp = prefix;
 	tmp.append("  ");
-	for(KviKvsTreeNodeInstruction * i = m_pInstructionList->first();i;i = m_pInstructionList->next())
+	foreach(KviKvsTreeNodeInstruction * i,*m_pInstructionList)
 	{
 		i->dump(tmp.utf8().data());
 	}
@@ -58,14 +58,12 @@ void KviKvsTreeNodeInstructionBlock::dump(const char * prefix)
 
 KviKvsTreeNodeInstruction * KviKvsTreeNodeInstructionBlock::releaseFirst()
 {
-	m_pInstructionList->setAutoDelete(false);
 	KviKvsTreeNodeInstruction * i = m_pInstructionList->first();
 	if(i)
 	{
 		i->setParent(0);
 		m_pInstructionList->removeFirst();
 	}
-	m_pInstructionList->setAutoDelete(true);
 	return i;
 }
 
@@ -78,11 +76,11 @@ void KviKvsTreeNodeInstructionBlock::addInstruction(KviKvsTreeNodeInstruction * 
 bool KviKvsTreeNodeInstructionBlock::execute(KviKvsRunTimeContext * c)
 {
 	// to accomodate recursion we need to use an iterator here
-	KviPtrListIterator<KviKvsTreeNodeInstruction> it(*m_pInstructionList);
-	while(KviKvsTreeNodeInstruction * i = it.current())
+	QListIterator<KviKvsTreeNodeInstruction*> it(*m_pInstructionList);
+	while(it.hasNext())
 	{
+		KviKvsTreeNodeInstruction * i = it.next();
 		if(!i->execute(c))return false;
-		++it;
 	}
 	return true;
 }

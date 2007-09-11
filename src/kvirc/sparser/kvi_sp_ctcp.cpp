@@ -1606,11 +1606,11 @@ void KviServerParser::parseCtcpReplyAvatar(KviCtcpMessage *msg)
 				// FIXME: #warning "Ask before making the request ?"
 				if(bIsUrl)
 				{
-					KviStr szLocalFilePath;
-					KviStr szLocalFile = szRemoteFile;
+					QString szLocalFilePath;
+					QString szLocalFile = szRemoteFile;
 					g_pIconManager->urlToCachedFileName(szLocalFile);
-					g_pApp->getLocalKvircDirectory(szLocalFilePath,KviApp::Avatars,szLocalFile.ptr());
-					szLocalFilePath.replaceAll('\\',"\\\\"); // <-- this is especially for windows
+					g_pApp->getLocalKvircDirectory(szLocalFilePath,KviApp::Avatars,szLocalFile);
+					szLocalFilePath.replace('\\',"\\\\"); // <-- this is especially for windows
 					QString szCommand = "http.get -w=nm ";
 					unsigned int uMaxSize = KVI_OPTION_UINT(KviOption_uintMaximumRequestedAvatarSize);
 					if(uMaxSize > 0)KviQString::appendFormatted(szCommand,"-m=%u ",uMaxSize);
@@ -1618,7 +1618,7 @@ void KviServerParser::parseCtcpReplyAvatar(KviCtcpMessage *msg)
 					szRemoteFile = szRemoteFile.replace("\"","%22");
 					szCommand += "\""+szRemoteFile+"\"";
 					szCommand += " \"";
-					szCommand += szLocalFilePath.ptr();
+					szCommand += szLocalFilePath;
 					szCommand += "\"";
 
 					if(KviKvsScript::run(szCommand,msg->msg->console()))
@@ -1626,8 +1626,8 @@ void KviServerParser::parseCtcpReplyAvatar(KviCtcpMessage *msg)
 						if(_OUTPUT_VERBOSE)
 						{
 							KviQString::appendFormatted(textLine,
-								__tr2qs(": No valid local copy of avatar available, requesting one (HTTP GET %s)"),
-								szRemoteFile.utf8().data());
+								__tr2qs(": No valid local copy of avatar available, requesting one (HTTP GET %Q)"),
+								&szRemoteFile);
 						}
 						g_pApp->setAvatarOnFileReceived(msg->msg->console(),
 							szRemoteFile,msg->pSource->nick(),msg->pSource->username(),msg->pSource->host());

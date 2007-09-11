@@ -30,7 +30,7 @@
 #include "kvi_iconmanager.h"
 #include "kvi_texticonmanager.h"
 #include "kvi_string.h"
-#include "kvi_list.h"
+
 #include "kvi_config.h"
 #include "kvi_app.h"
 #include "kvi_confignames.h"
@@ -148,11 +148,11 @@ void KviTextIconManager::checkDefaultAssociations()
 
 void KviTextIconManager::load()
 {
-	KviStr tmps;
+	QString tmps;
 	int upd = 0;
 	if(g_pApp->getReadOnlyConfigPath(tmps,KVI_CONFIGFILE_TEXTICONS))
 	{
-		upd = load(tmps.ptr(),false);
+		upd = load(tmps,false);
 	}
 
 	if(upd == TEXTICONMANAGER_CURRENT_CONFIG_UPDATE)return;
@@ -184,27 +184,26 @@ int KviTextIconManager::load(const QString &filename,bool bMerge)
 	{
 		KviConfigGroup::iterator it(dict->begin());
 	
-		KviPtrList<QString> names;
-		names.setAutoDelete(true);
+		QStringList names;
 	
 		while(it != dict->end())
 		{
-			names.append(new QString(it.key()));
+			names.append(it.key());
 			++it;
 		}
 	
 		cfg.setGroup("TextIcons");
 	
-		for(QString * s = names.first();s;s = names.next())
+		foreach(QString s,names)
 		{
-			int id = cfg.readIntEntry(*s,-1);
+			int id = cfg.readIntEntry(s,-1);
 			QString szTmp;
 			QPixmap * pix=0;
 //			debug("%s %s %i %i",__FILE__,__FUNCTION__,__LINE__,id);
 			if(id!=-1)
 				pix = g_pIconManager->getSmallIcon(id);
 			else {
-				szTmp=cfg.readEntry(*s);
+				szTmp=cfg.readEntry(s);
 				pix=g_pIconManager->getPixmap(szTmp);
 				if(!pix)
 				{
@@ -216,16 +215,16 @@ int KviTextIconManager::load(const QString &filename,bool bMerge)
 			{
 				if(bMerge)
 				{
-					if(!m_pTextIconDict->value(*s))
+					if(!m_pTextIconDict->value(s))
 						if(id!=-1)
-							m_pTextIconDict->insert(*s,new KviTextIcon(id));
+							m_pTextIconDict->insert(s,new KviTextIcon(id));
 						else
-							m_pTextIconDict->insert(*s,new KviTextIcon(szTmp));
+							m_pTextIconDict->insert(s,new KviTextIcon(szTmp));
 				} else {
 					if(id!=-1)
-						m_pTextIconDict->insert(*s,new KviTextIcon(id));
+						m_pTextIconDict->insert(s,new KviTextIcon(id));
 					else
-						m_pTextIconDict->insert(*s,new KviTextIcon(szTmp));
+						m_pTextIconDict->insert(s,new KviTextIcon(szTmp));
 				}
 			}
 		}

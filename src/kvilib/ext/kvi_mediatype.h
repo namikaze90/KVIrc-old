@@ -25,9 +25,9 @@
 #include "kvi_settings.h"
 #include "kvi_heapobject.h"
 #include "kvi_string.h"
-#include "kvi_thread.h"
+#include <QMutex>
+#include <QSet>
 
-#include "kvi_list.h"
 
 
 //
@@ -46,37 +46,37 @@ public:
 	KviMediaType(){};
 	~KviMediaType(){};
 public:
-	KviStr szFileMask;
-	KviStr szMagicBytes;
-	KviStr szIanaType;
-	KviStr szDescription;
-	KviStr szSavePath;
-	KviStr szCommandline;
-	KviStr szRemoteExecCommandline;
-	KviStr szIcon;
+	QString szFileMask;
+	QString szMagicBytes;
+	QString szIanaType;
+	QString szDescription;
+	QString szSavePath;
+	QString szCommandline;
+	QString szRemoteExecCommandline;
+	QString szIcon;
 };
 
-class KVILIB_API KviMediaManager : public KviMutex
+class KVILIB_API KviMediaManager : public QMutex
 {
 public:
 	KviMediaManager();
 	~KviMediaManager();
 protected:
-	KviPtrList<KviMediaType> * m_pMediaTypeList;
+	QSet<KviMediaType*> * m_pMediaTypeList;
 private:
-	KviMediaType * findMediaTypeForRegularFile(const char * szFullPath,const char * szFileName,bool bCheckMagic);
+	KviMediaType * findMediaTypeForRegularFile(const QString& szFullPath,const QString& szFileName,bool bCheckMagic);
 public:
-	KviPtrList<KviMediaType> * mediaTypeList(){ return m_pMediaTypeList; };
-	KviMediaType * findMediaTypeByFileMask(const char * filemask);
-	KviMediaType * findMediaTypeByIanaType(const char * ianaType);
-	bool removeMediaType(KviMediaType * t){ return m_pMediaTypeList->removeRef(t); };
-	void clear(){ m_pMediaTypeList->clear(); };
+	QSet<KviMediaType*> * mediaTypeList(){ return m_pMediaTypeList; };
+	KviMediaType * findMediaTypeByFileMask(const QString& filemask);
+	KviMediaType * findMediaTypeByIanaType(const QString& ianaType);
+	bool removeMediaType(KviMediaType * t){ return m_pMediaTypeList->remove(t); };
+	void clear();
 	void insertMediaType(KviMediaType * t);
-	KviMediaType * findMediaType(const char * filename,bool bCheckMagic = true);
+	KviMediaType * findMediaType(const QString& filename,bool bCheckMagic = true);
 	static void copyMediaType(KviMediaType * dst,KviMediaType * src);
 
-	void load(const char * filename);
-	void save(const char * filename);
+	void load(const QString& filename);
+	void save(const QString& filename);
 };
 
 

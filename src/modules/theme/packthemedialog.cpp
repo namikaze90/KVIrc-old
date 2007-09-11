@@ -64,7 +64,7 @@
 
 
 
-KviPackThemeDialog::KviPackThemeDialog(QWidget * pParent,KviPtrList<KviThemeInfo> * pThemeInfoList)
+KviPackThemeDialog::KviPackThemeDialog(QWidget * pParent,QList<KviThemeInfo*> * pThemeInfoList)
 : KviTalWizard(pParent)
 {
 	m_pThemeInfoList = pThemeInfoList;
@@ -159,7 +159,7 @@ KviPackThemeDialog::KviPackThemeDialog(QWidget * pParent,KviPtrList<KviThemeInfo
 	QPixmap pixScreenshot;
 	QString szScreenshotPath;
 
-	for(pThemeInfo = m_pThemeInfoList->first();pThemeInfo;pThemeInfo = m_pThemeInfoList->next())
+	foreach(pThemeInfo,*m_pThemeInfoList)
 	{
 		QString szThemeDescription;
 		
@@ -413,7 +413,7 @@ bool KviPackThemeDialog::packTheme()
 	f.addInfoField("ThemeCount",szTmp);
 
 	int iIdx = 0;
-	for(KviThemeInfo * pInfo = m_pThemeInfoList->first();pInfo;pInfo = m_pThemeInfoList->next())
+	foreach(KviThemeInfo * pInfo,*m_pThemeInfoList)
 	{
 		KviQString::sprintf(szTmp,"Theme%dName",iIdx);
 		f.addInfoField(szTmp,pInfo->name());

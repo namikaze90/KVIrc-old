@@ -271,8 +271,7 @@
 
 KviKvsTreeNodeData * KviKvsParser::parseOperationRightSide(bool bPreferNumeric)
 {
-	KviPtrList<KviKvsTreeNodeData> * l = new KviPtrList<KviKvsTreeNodeData>();
-	l->setAutoDelete(true);
+	QList<KviKvsTreeNodeData*> * l = new QList<KviKvsTreeNodeData*>;
 
 	const QChar * pBegin = KVSP_curCharPointer;
 	
@@ -307,6 +306,7 @@ KviKvsTreeNodeData * KviKvsParser::parseOperationRightSide(bool bPreferNumeric)
 				if(!p)
 				{
 					// this is an error
+					qDeleteAll(*l);
 					delete l;
 					return 0;
 				}
@@ -324,7 +324,6 @@ end_of_the_param:
 		if(l->count() > 0)
 		{
 			// a single parameter in the list
-			l->setAutoDelete(false);
 			KviKvsTreeNodeData * p = l->first();
 			delete l;
 			return p;
@@ -744,8 +743,7 @@ end_of_the_param:
 
 KviKvsTreeNodeData * KviKvsParser::parseBindingOperationParameter()
 {
-	KviPtrList<KviKvsTreeNodeData> * l = new KviPtrList<KviKvsTreeNodeData>;
-	l->setAutoDelete(true);
+	QList<KviKvsTreeNodeData*> * l = new QList<KviKvsTreeNodeData*>;
 
 	const QChar * pBegin = KVSP_curCharPointer;
 
@@ -768,6 +766,7 @@ KviKvsTreeNodeData * KviKvsParser::parseBindingOperationParameter()
 				if(!p)
 				{
 					// this is an error
+					qDeleteAll(*l);
 					delete l;
 					return 0;
 				}
@@ -781,6 +780,7 @@ KviKvsTreeNodeData * KviKvsParser::parseBindingOperationParameter()
 				if(!p)
 				{
 					// this is an error
+					qDeleteAll(*l);
 					delete l;
 					return 0;
 				}
@@ -802,7 +802,6 @@ end_of_function_parameter:
 		return new KviKvsTreeNodeCompositeData(pBegin,l);
 	} else {
 		// a single parameter in the list or empty list at all
-		l->setAutoDelete(false);
 		KviKvsTreeNodeData * p = l->first();
 		delete l;
 		if(!p)p = new KviKvsTreeNodeConstantData(KVSP_curCharPointer,new KviKvsVariant(QString("")));

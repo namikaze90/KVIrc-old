@@ -1982,6 +1982,7 @@ static bool str_kvs_fnc_printf(KviKvsModuleFunctionCall * c)
 		KviKvsVariant * pVar;
 	
 		pVar = vArgs.first();
+		int iCur = 2;
 
 		for(; fmt->unicode() ; ++fmt)
 		{
@@ -2008,7 +2009,8 @@ static bool str_kvs_fnc_printf(KviKvsModuleFunctionCall * c)
 					const QChar * ch = sz.unicode();
 					while(len--)*p++ = *ch++;
 					reallen += sz.length();
-					pVar = vArgs.next();
+					pVar = vArgs.at(iCur);
+					iCur++;
 					continue;
 				}
 				case 'd': //signed integer
@@ -2044,7 +2046,8 @@ static bool str_kvs_fnc_printf(KviKvsModuleFunctionCall * c)
 					if((allocsize - reallen) < (int)argUValue)INCREMENT_MEM_BY(argUValue)
 					do { *p++ = QChar(*--pNumBuf); } while(pNumBuf != numberBuffer);
 					reallen += argUValue;
-					pVar = vArgs.next();
+					pVar = vArgs.at(iCur);
+					iCur++;
 					continue;
 				}
 				case 'u': //unsigned integer
@@ -2072,7 +2075,8 @@ static bool str_kvs_fnc_printf(KviKvsModuleFunctionCall * c)
 					if((allocsize - reallen) < argValue)INCREMENT_MEM_BY(argValue)
 					do { *p++ = *--pNumBuf; } while(pNumBuf != numberBuffer);
 					reallen += argValue;
-					pVar = vArgs.next();
+					pVar = vArgs.at(iCur);
+					iCur++;
 					continue;
 				}
 				case 'h':
@@ -2104,7 +2108,8 @@ static bool str_kvs_fnc_printf(KviKvsModuleFunctionCall * c)
 					if((allocsize - reallen) < argValue)INCREMENT_MEM_BY(argValue)
 					do { *p++ = *--pNumBuf; } while(pNumBuf != numberBuffer);
 					reallen += argValue;
-					pVar = vArgs.next();
+					pVar = vArgs.at(iCur);
+					iCur++;
 					continue;
 				}
 				case 'H':
@@ -2134,7 +2139,8 @@ static bool str_kvs_fnc_printf(KviKvsModuleFunctionCall * c)
 					if((allocsize - reallen) < argValue)INCREMENT_MEM_BY(argValue)
 					do { *p++ = *--pNumBuf; } while(pNumBuf != numberBuffer);
 					reallen += argValue;
-					pVar = vArgs.next();
+					pVar = vArgs.at(iCur);
+					iCur++;
 					continue;
 				}
 				case '?':
@@ -2210,7 +2216,8 @@ static bool str_kvs_fnc_printf(KviKvsModuleFunctionCall * c)
 							}
 						break;
 					}
-					pVar = vArgs.next();
+					pVar = vArgs.at(iCur);
+					iCur++;
 					continue;
 				}
 				break;

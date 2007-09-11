@@ -84,7 +84,7 @@ void KviModuleManager::loadModulesByCaps(const QString& caps)
 	loadModulesByCaps(caps,szDir);
 }
 
-void KviModuleManager::completeModuleNames(const QString &path,const QString &word,KviPtrList<QString> * matches)
+void KviModuleManager::completeModuleNames(const QString &path,const QString &word,QStringList& matches)
 {
 	QDir d(path);
 #ifdef COMPILE_ON_WINDOWS
@@ -97,21 +97,21 @@ void KviModuleManager::completeModuleNames(const QString &path,const QString &wo
 	QStringList sl = d.entryList(QDir::Files | QDir::Readable | QDir::NoSymLinks);
 	for(QStringList::Iterator it = sl.begin();it != sl.end();++it)
 	{
-		QString * modname = new QString(*it);
-		KviQString::cutToLast(*modname,KVI_PATH_SEPARATOR_CHAR);
-		KviQString::cutToFirst(*modname,"kvi");
-		if(KviQString::equalCIN(word,*modname,word.length()))
+		QString modname = *it;
+		KviQString::cutToLast(modname,KVI_PATH_SEPARATOR_CHAR);
+		KviQString::cutToFirst(modname,"kvi");
+		if(KviQString::equalCIN(word,modname,word.length()))
 		{
-			KviQString::cutFromLast(*modname,".so");
-			if(!modname->isEmpty())
-				matches->append(modname);
+			KviQString::cutFromLast(modname,".so");
+			if(!modname.isEmpty())
+				matches.append(modname);
 			else
 				delete modname;
 		} else delete modname;
 	}
 }
 
-void KviModuleManager::completeModuleNames(const QString &word,KviPtrList<QString> * matches)
+void KviModuleManager::completeModuleNames(const QString &word,QStringList& matches)
 {
 	QString szDir;
 	// FIXME: Should check for duplicate names here!

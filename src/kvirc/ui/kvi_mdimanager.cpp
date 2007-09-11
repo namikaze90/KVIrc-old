@@ -61,8 +61,7 @@ KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)
 : KviTalScrollView(parent)
 {
 	setFrameShape(NoFrame);
-	m_pZ = new KviPtrList<KviMdiChild>;
-	m_pZ->setAutoDelete(true);
+	m_pZ = new QList<KviMdiChild*>;
 
 	m_pFrm = pFrm;
 
@@ -74,9 +73,7 @@ KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)
 	m_pSdiCloseButton = 0;
 	m_pSdiRestoreButton = 0;
 	m_pSdiMinimizeButton = 0;
-#ifdef COMPILE_USE_QT4
 	m_pSdiControls = 0;
-#endif
 
 	m_pWindowPopup = new KviTalPopupMenu(this);
 	connect(m_pWindowPopup,SIGNAL(activated(int)),this,SLOT(menuActivated(int)));
@@ -84,33 +81,28 @@ KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)
 	m_pTileMethodPopup = new KviTalPopupMenu(this);
 	connect(m_pTileMethodPopup,SIGNAL(activated(int)),this,SLOT(tileMethodMenuActivated(int)));
 
-#ifdef COMPILE_USE_QT4
 	viewport()->setAutoFillBackground(false);
-#else
-	viewport()->setBackgroundMode(QWidget::NoBackground);
-#endif
 	setStaticBackground(true);
 	resizeContents(width(),height());
 
-#ifdef COMPILE_USE_QT4
 	setFocusPolicy(Qt::NoFocus);
 	viewport()->setFocusPolicy(Qt::NoFocus);
-#else
-	setFocusPolicy(QWidget::NoFocus);
-	viewport()->setFocusPolicy(QWidget::NoFocus);
-#endif
 	
 	connect(g_pApp,SIGNAL(reloadImages()),this,SLOT(reloadImages()));
 }
 
 KviMdiManager::~KviMdiManager()
 {
+	foreach(KviMdiChild* c, *m_pZ)
+	{
+		delete c;
+	}
 	delete m_pZ;
 }
 
 void KviMdiManager::reloadImages()
 {
-	for(KviMdiChild * c = m_pZ->first();c;c = m_pZ->next())
+	foreach(KviMdiChild* c, *m_pZ)
 	{
 		c->reloadImages();
 	}
@@ -190,9 +182,8 @@ void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 	KviMdiChild * pOldTop = m_pZ->last();
 	if(pOldTop != lpC)
 	{
-		m_pZ->setAutoDelete(false);
 
-		if(!m_pZ->removeRef(lpC))return; // no such child ?
+		if(!m_pZ->removeAll(lpC))return; // no such child ?
 
 		// disable the labels of all the other children
 		//for(KviMdiChild *pC=m_pZ->first();pC;pC=m_pZ->next())
@@ -206,7 +197,6 @@ void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 			if(pOldTop->m_state != KviMdiChild::Maximized)pMaximizedChild=0;
 		}
 		
-		m_pZ->setAutoDelete(true);
 		m_pZ->append(lpC);
 
 		if(pMaximizedChild)lpC->maximize(); //do not animate the change	
@@ -239,12 +229,9 @@ void KviMdiManager::destroyChild(KviMdiChild *lpC,bool bFocusTopChild)
 	bool bWasMaximized = lpC->state() == KviMdiChild::Maximized;
 	disconnect(lpC);
 	lpC->blockSignals(true);
-#ifdef _KVI_DEBUG_CHECK_RANGE_
-	//Report invalid results in a debug session
-	__range_valid(m_pZ->removeRef(lpC));
-#else
-	m_pZ->removeRef(lpC);
-#endif
+	m_pZ->removeAll(lpC);
+	delete lpC;
+
 	if(bWasMaximized)
 	{
 		KviMdiChild * c=topChild();
@@ -268,8 +255,10 @@ void KviMdiManager::destroyChild(KviMdiChild *lpC,bool bFocusTopChild)
 
 KviMdiChild * KviMdiManager::highestChildExcluding(KviMdiChild * pChild)
 {
-	KviMdiChild * c = m_pZ->last();
-	while(c && (c == pChild))c = m_pZ->prev();
+	QListIterator<KviMdiChild *> it(*m_pZ);
+	it.toBack();
+	KviMdiChild * c;
+	while(it.hasPrevious() && (it.peekPrevious() == pChild))c = it.previous();
 	return c;
 }
 
@@ -373,18 +362,11 @@ void KviMdiManager::childMaximized(KviMdiChild * lpC)
 void KviMdiManager::childMinimized(KviMdiChild * lpC,bool bWasMaximized)
 {
 	__range_valid(lpC);
-	if(m_pZ->findRef(lpC) == -1)return;
+	if(!m_pZ->contains(lpC))return;
 	if(m_pZ->count() > 1)
 	{
-		m_pZ->setAutoDelete(false);
-#ifdef _KVI_DEBUG_CHECK_RANGE_
-		//Report invalid results in a debug session
-		__range_valid(m_pZ->removeRef(lpC));
-#else
-		m_pZ->removeRef(lpC);
-#endif
-		m_pZ->setAutoDelete(true);
-		m_pZ->insert(0,lpC);
+		m_pZ->removeAll(lpC);
+		m_pZ->prepend(lpC);
 		if(bWasMaximized)
 		{
 			// Need to maximize the top child
@@ -427,7 +409,8 @@ void KviMdiManager::focusTopChild()
 	//	if(lpC->state()==KviMdiChild::Minimized)return;
 	//	debug("Focusing top child %s",lpC->name());
 	//disable the labels of all the other children
-	for(KviMdiChild *pC=m_pZ->first();pC;pC=m_pZ->next()){
+	foreach(KviMdiChild* pC, *m_pZ)
+	{
 		if(pC != lpC)pC->captionLabel()->setActive(false);
 	}
 	lpC->raise();
@@ -470,7 +453,7 @@ void KviMdiManager::updateContentsSize()
 	int mx = width() - fw;
 	int my = height() - fw;
 
-	for(c = m_pZ->first();c;c = m_pZ->next())
+	foreach(KviMdiChild* c, *m_pZ)
 	{
 		if(c->isVisible())
 		{
@@ -731,7 +714,7 @@ void KviMdiManager::fillWindowPopup()
 	int i=100;
 	QString szItem;
 	QString szCaption;
-	for(KviMdiChild *lpC=m_pZ->first();lpC;lpC=m_pZ->next())
+	foreach(KviMdiChild* lpC, *m_pZ)
 	{
 		szItem.setNum(((uint)i)-99);
 		szItem+=". ";
@@ -774,7 +757,7 @@ void KviMdiManager::ensureNoMaximized()
 {
 	KviMdiChild * lpC;
 
-	for(lpC=m_pZ->first();lpC;lpC=m_pZ->next())
+	foreach(KviMdiChild* lpC, *m_pZ)
 	{
 		if(lpC->state()==KviMdiChild::Maximized)lpC->restore();
 	}
@@ -799,11 +782,8 @@ void KviMdiManager::cascadeWindows()
 	if(g_pApp->closingDown())return;
 
 	int idx=0;
-	KviPtrList<KviMdiChild> list(*m_pZ);
-	list.setAutoDelete(false);
-	while(!list.isEmpty())
+	foreach(KviMdiChild* lpC, *m_pZ)
 	{
-		KviMdiChild *lpC=list.first();
 		if(lpC->state() != KviMdiChild::Minimized)
 		{
 			QPoint p = getCascadePoint(idx);
@@ -811,7 +791,6 @@ void KviMdiManager::cascadeWindows()
 			lpC->resize(lpC->sizeHint());
 			idx++;
 		}
-		list.removeFirst();
 	}
 	focusTopChild();
 	updateContentsSize();
@@ -827,12 +806,9 @@ void KviMdiManager::cascadeMaximized()
 	if(g_pApp->closingDown())return;
 	
 	int idx=0;
-	KviPtrList<KviMdiChild> list(*m_pZ);
 
-	list.setAutoDelete(false);
-	while(!list.isEmpty())
+	foreach(KviMdiChild* lpC, *m_pZ)
 	{
-		KviMdiChild *lpC=list.first();
 		if(lpC->state() != KviMdiChild::Minimized)
 		{
 			QPoint pnt(getCascadePoint(idx));
@@ -843,7 +819,6 @@ void KviMdiManager::cascadeMaximized()
 			else lpC->resize(curSize);
 			idx++;
 		}
-		list.removeFirst();
 	}
 	focusTopChild();
 	updateContentsSize();
@@ -858,17 +833,13 @@ void KviMdiManager::expandVertical()
 	g_pApp->sendPostedEvents();
 	if(g_pApp->closingDown())return;
 	
-	KviPtrList<KviMdiChild> list(*m_pZ);
-	list.setAutoDelete(false);
-	while(!list.isEmpty())
+	foreach(KviMdiChild* lpC, *m_pZ)
 	{
-		KviMdiChild *lpC=list.first();
 		if(lpC->state() != KviMdiChild::Minimized)
 		{
 			moveChild(lpC,lpC->x(),0);
 			lpC->resize(lpC->width(),viewport()->height());
 		}
-		list.removeFirst();
 	}
 
 	focusTopChild();
@@ -884,17 +855,13 @@ void KviMdiManager::expandHorizontal()
 	g_pApp->sendPostedEvents();
 	if(g_pApp->closingDown())return;
 	
-	KviPtrList<KviMdiChild> list(*m_pZ);
-	list.setAutoDelete(false);
-	while(!list.isEmpty())
+	foreach(KviMdiChild* lpC, *m_pZ)
 	{
-		KviMdiChild *lpC=list.first();
 		if(lpC->state() != KviMdiChild::Minimized)
 		{
 			moveChild(lpC,0,lpC->y());
 			lpC->resize(viewport()->width(),lpC->height());
 		}
-		list.removeFirst();
 	}
 	focusTopChild();
 	updateContentsSize();
@@ -902,14 +869,10 @@ void KviMdiManager::expandHorizontal()
 
 void KviMdiManager::minimizeAll()
 {
-	KviPtrList<KviMdiChild> list(*m_pZ);
-	list.setAutoDelete(false);
     m_pFrm->setActiveWindow((KviWindow*)m_pFrm->firstConsole());
-	while(!list.isEmpty())
+    foreach(KviMdiChild* lpC, *m_pZ)
 	{
-		KviMdiChild *lpC=list.first();
 		if(lpC->state() != KviMdiChild::Minimized)lpC->minimize();
-		list.removeFirst();
 	}
 	focusTopChild();
 	updateContentsSize();
@@ -936,7 +899,7 @@ void KviMdiManager::restoreAll()
 int KviMdiManager::getVisibleChildCount()
 {
 	int cnt=0;
-	for(KviMdiChild *lpC=m_pZ->first();lpC;lpC=m_pZ->next())
+	foreach(KviMdiChild* lpC, *m_pZ)
 	{
 		if(lpC->state() != KviMdiChild::Minimized)cnt++;
 	}
@@ -1018,7 +981,7 @@ void KviMdiManager::tileAllInternal(int maxWnds,bool bHorizontal)
 	int curCol=1;
 	int curWin=1;
 
-	for(KviMdiChild * lpC=m_pZ->first();lpC;lpC=m_pZ->next())
+	foreach(KviMdiChild* lpC, *m_pZ)
 	{
 		if(lpC->state()!=KviMdiChild::Minimized)
 		{
@@ -1094,7 +1057,7 @@ void KviMdiManager::tileAnodine()
 	int xQuantum=viewport()->width()/numCols;
 	int yQuantum=viewport()->height()/numRows[numCurCol];
 
-	for(KviMdiChild * lpC=m_pZ->first();lpC;lpC=m_pZ->next())
+	foreach(KviMdiChild* lpC, *m_pZ)
 	{
 		if(lpC->state() != KviMdiChild::Minimized)
 		{

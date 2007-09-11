@@ -50,7 +50,7 @@
 #include "kvi_kvs_script.h"
 #include "kvi_msgbox.h"
 
-static KviPtrList<QWidget> * g_pDialogModuleDialogList;
+static QList<QWidget*> * g_pDialogModuleDialogList;
 
 KviKvsCallbackMessageBox::KviKvsCallbackMessageBox(
 		const QString &szCaption,
@@ -89,7 +89,7 @@ KviKvsCallbackMessageBox::KviKvsCallbackMessageBox(
 
 KviKvsCallbackMessageBox::~KviKvsCallbackMessageBox()
 {
-	g_pDialogModuleDialogList->removeRef(this);
+	g_pDialogModuleDialogList->removeAll(this);
 }
 
 void KviKvsCallbackMessageBox::done(int code)
@@ -309,7 +309,7 @@ KviKvsCallbackTextInput::KviKvsCallbackTextInput(
 
 KviKvsCallbackTextInput::~KviKvsCallbackTextInput()
 {
-	g_pDialogModuleDialogList->removeRef(this);
+	g_pDialogModuleDialogList->removeAll(this);
 }
 
 void KviKvsCallbackTextInput::b0Clicked()
@@ -491,7 +491,7 @@ KviKvsCallbackFileDialog::KviKvsCallbackFileDialog(
 
 KviKvsCallbackFileDialog::~KviKvsCallbackFileDialog()
 {
-	g_pDialogModuleDialogList->removeRef(this);
+	g_pDialogModuleDialogList->removeAll(this);
 }
 
 void KviKvsCallbackFileDialog::done(int code)
@@ -639,7 +639,7 @@ KviKvsCallbackImageDialog::KviKvsCallbackImageDialog(
 
 KviKvsCallbackImageDialog::~KviKvsCallbackImageDialog()
 {
-	g_pDialogModuleDialogList->removeRef(this);
+	g_pDialogModuleDialogList->removeAll(this);
 }
 
 void KviKvsCallbackImageDialog::done(int code)
@@ -874,8 +874,7 @@ static bool dialog_module_fnc_textline(KviModule *m,KviCommand *c,KviParameterLi
 
 static bool dialog_module_init(KviModule * m)
 {
-	g_pDialogModuleDialogList = new KviPtrList<QWidget>;
-	g_pDialogModuleDialogList->setAutoDelete(false);
+	g_pDialogModuleDialogList = new QList<QWidget*>;
 
 	KVSM_REGISTER_CALLBACK_COMMAND(m,"message",dialog_kvs_cmd_message);
 	KVSM_REGISTER_CALLBACK_COMMAND(m,"textinput",dialog_kvs_cmd_textinput);
@@ -890,7 +889,7 @@ static bool dialog_module_init(KviModule * m)
 static bool dialog_module_cleanup(KviModule *m)
 {
 	// Here we get a tragedy if g_iLocalEventLoops > 0!
-	while(g_pDialogModuleDialogList->first())delete g_pDialogModuleDialogList->first();
+	qDeleteAll(*g_pDialogModuleDialogList);
 	delete g_pDialogModuleDialogList;
     g_pDialogModuleDialogList = 0;
 	return true;

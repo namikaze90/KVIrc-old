@@ -45,9 +45,9 @@ KviAction::~KviAction()
 {
 	if(m_pWidgetList)
 	{
-		for(QWidget * b = m_pWidgetList->first();b;b = m_pWidgetList->next())
+		foreach(QWidget * b,*m_pWidgetList)
 			disconnect(b,SIGNAL(destroyed()),this,SLOT(widgetDestroyed()));
-		m_pWidgetList->setAutoDelete(true);
+		qDeleteAll(m_pWidgetList->begin(),m_pWidgetList->end());
 		delete m_pWidgetList;
 	}
 }
@@ -92,14 +92,8 @@ void KviAction::setEnabled(bool bEnabled)
 	
 	if(m_pWidgetList)
 	{
-		if(bEnabled)
-		{
-			for(QWidget * t = m_pWidgetList->first();t;t = m_pWidgetList->next())
-				if(!t->isEnabled())t->setEnabled(true);
-		} else {
-			for(QWidget * t = m_pWidgetList->first();t;t = m_pWidgetList->next())
-				if(t->isEnabled())t->setEnabled(false);
-		}
+		foreach(QWidget * t,*m_pWidgetList)
+			if(!t->isEnabled())t->setEnabled(bEnabled);
 	}
 }
 
@@ -176,7 +170,7 @@ void KviAction::reloadImages()
 {
 	if(!m_pWidgetList)return;
 	QPixmap * p = bigIcon();
-	for(QWidget * b = m_pWidgetList->first();b;b = m_pWidgetList->next())
+	foreach(QWidget * b,*m_pWidgetList)
 	{
 		if(b->inherits("QToolButton"))
 			((QToolButton *)b)->setIconSet(p ? *p : QPixmap());
@@ -395,7 +389,7 @@ void KviAction::widgetDestroyed()
 {
 	if(!m_pWidgetList)return;
 	QWidget * b = (QWidget *)sender();
-	m_pWidgetList->removeRef(b);
+	m_pWidgetList->removeAll(b);
 }
 
 void KviAction::registerWidget(QWidget * b)
@@ -403,8 +397,7 @@ void KviAction::registerWidget(QWidget * b)
 	connect(b,SIGNAL(destroyed()),this,SLOT(widgetDestroyed()));
 	if(!m_pWidgetList)
 	{
-		m_pWidgetList = new KviPtrList<QWidget>;
-		m_pWidgetList->setAutoDelete(false);
+		m_pWidgetList = new QList<QWidget*>;
 	}
 	m_pWidgetList->append(b);
 }

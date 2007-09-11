@@ -65,9 +65,9 @@
 	#include "kvi_memmove.h"
 	#include "kvi_malloc.h"
 
-	#include "kvi_list.h"
+	
 
-	static KviPtrList<KviCryptEngine> * g_pEngineList = 0;
+	static QList<KviCryptEngine*> * g_pEngineList = 0;
 
 
 
@@ -82,7 +82,7 @@
 
 	KviRijndaelEngine::~KviRijndaelEngine()
 	{
-		g_pEngineList->removeRef(this);
+		g_pEngineList->removeAll(this);
 		if(m_pEncryptCipher)delete m_pEncryptCipher;
 		if(m_pDecryptCipher)delete m_pDecryptCipher;
 	}
@@ -364,7 +364,7 @@
 	
 	KviMircryptionEngine::~KviMircryptionEngine()
 	{
-		g_pEngineList->removeRef(this);
+		g_pEngineList->removeAll(this);
 	}
 	
 	bool KviMircryptionEngine::init(const char * encKey,int encKeyLen,const char * decKey,int decKeyLen)
@@ -706,8 +706,7 @@
 static bool rijndael_module_init(KviModule * m)
 {
 #ifdef COMPILE_CRYPT_SUPPORT
-	g_pEngineList = new KviPtrList<KviCryptEngine>;
-	g_pEngineList->setAutoDelete(false);
+	g_pEngineList = new QList<KviCryptEngine*>;
 
 	KviStr format = __tr("Cryptographic engine based on the\n" \
 		"Advanced Encryption Standard (AES)\n" \
@@ -815,7 +814,7 @@ static bool rijndael_module_init(KviModule * m)
 static bool rijndael_module_cleanup(KviModule *m)
 {
 #ifdef COMPILE_CRYPT_SUPPORT
-	while(g_pEngineList->first())delete g_pEngineList->first();
+	qDeleteAll(*g_pEngineList);
 	delete g_pEngineList;
     g_pEngineList = 0;
 	m->unregisterCryptEngines();

@@ -40,7 +40,6 @@
 #include "kvi_userlistview.h"
 #include "kvi_antispam.h"
 #include "kvi_nickserv.h"
-#include "kvi_parameterlist.h"
 #include "kvi_ircuserdb.h"
 #include "kvi_app.h"
 #include "kvi_regusersdb.h"
@@ -505,7 +504,7 @@ void KviServerParser::parseLiteralQuit(KviIrcMessage *msg)
 		QString chanlist;
 		QString szReason = msg->connection()->decodeText(msg->safeTrailing());
 		
-		for(KviChannel *daChan=console->channelList()->first();daChan;daChan=console->channelList()->next())
+		foreach(KviChannel *daChan,*(msg->connection()->channelList()))
 		{
 			if(daChan->isOn(szNick))
 			{
@@ -529,7 +528,7 @@ void KviServerParser::parseLiteralQuit(KviIrcMessage *msg)
 	}
 
 
-	for(KviChannel *c=console->channelList()->first();c;c=console->channelList()->next())
+	foreach(KviChannel *c,*(msg->connection()->channelList()))
 	{
 		if(c->part(szNick))
 		{
@@ -951,7 +950,7 @@ void KviServerParser::parseLiteralPrivmsg(KviIrcMessage *msg)
 					if((aWin->type() == KVI_WINDOW_TYPE_CHANNEL) && ((KviChannel *)aWin)->isOn(szNick))
 						pOut = aWin;
 					else {
-						for(KviChannel * c = pConnection->channelList()->first();c;c = pConnection->channelList()->next())
+						foreach(KviChannel * c,*(pConnection->channelList()))
 							if(c->isOn(szNick))
 							{
 								pOut = (KviWindow *) c;
@@ -1304,7 +1303,7 @@ void KviServerParser::parseLiteralNotice(KviIrcMessage *msg)
 					if((aWin->type() == KVI_WINDOW_TYPE_CHANNEL) && ((KviChannel *)aWin)->isOn(szNick))
 						pOut = aWin;
 					else {
-						for(KviChannel * c = pConnection->channelList()->first();c;c = pConnection->channelList()->next())
+						foreach(KviChannel * c,*(pConnection->channelList()))
 							if(c->isOn(szNick))
 							{
 								pOut = (KviWindow *) c;
@@ -1438,7 +1437,7 @@ void KviServerParser::parseLiteralNick(KviIrcMessage *msg)
 				msg->setHaltOutput();
 	}
 
-	for(KviChannel * c = console->channelList()->first();c;c = console->channelList()->next())
+	foreach(KviChannel * c,*(msg->connection()->channelList()))
 	{
 		if(c->nickChange(szNick,szNewNick))
 		{
@@ -1456,7 +1455,7 @@ void KviServerParser::parseLiteralNick(KviIrcMessage *msg)
 	if(bIsMe)
 	{
 		// just update all the captions : we have changed OUR nick
-		for(KviQuery * q = console->queryList()->first();q;q = console->queryList()->next())
+		foreach(KviQuery * q,*(msg->connection()->queryList()))
 		{
 			if(!msg->haltOutput())
 				q->output(KVI_OUT_NICK,__tr2qs("You have changed your nickname to %Q"),&szNewNick);

@@ -25,7 +25,7 @@
 
 #include "kvi_window.h"
 #include "kvi_string.h"
-#include "kvi_parameterlist.h"
+
 #include "kvi_filedialog.h"
 #include "kvi_imagedialog.h"
 

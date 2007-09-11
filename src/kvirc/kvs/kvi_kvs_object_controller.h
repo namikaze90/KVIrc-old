@@ -28,7 +28,7 @@
 #include "kvi_settings.h"
 
 #include "kvi_qstring.h"
-#include "kvi_list.h"
+
 
 #include "kvi_kvs_object.h"
 #include "kvi_kvs_object_class.h"
@@ -41,7 +41,7 @@ public:
 	KviKvsObjectController();
 	~KviKvsObjectController();
 protected:
-	KviPtrList<KviKvsObject>      * m_pTopLevelObjectList;
+	QList<KviKvsObject*>      * m_pTopLevelObjectList;
 	QHash<kvs_hobject_t,KviKvsObject*>        * m_pObjectDict;
 	QHash<QString,KviKvsObjectClass*>      * m_pClassDict;
 	KviKvsObjectClass             * m_pObjectClass; //base class

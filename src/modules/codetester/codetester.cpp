@@ -31,7 +31,7 @@
 
 #include "kvi_app.h"
 #include "kvi_console.h"
-#include "kvi_parameterlist.h"
+
 #include "kvi_kvs_script.h"
 #include "kvi_kvs_variantlist.h"
 
@@ -41,7 +41,7 @@
 #include <qtoolbutton.h>
 #include "kvi_tal_popupmenu.h"
 
-extern KviPtrList<KviCodeTesterWindow> * g_pCodeTesterWindowList;
+extern QList<KviCodeTesterWindow*> * g_pCodeTesterWindowList;
 
 
 
@@ -89,7 +89,7 @@ KviCodeTesterWindow::KviCodeTesterWindow(KviFrame * lpFrm)
 
 KviCodeTesterWindow::~KviCodeTesterWindow()
 {
-	g_pCodeTesterWindowList->removeRef(this);
+	g_pCodeTesterWindowList->removeAll(this);
 }
 
 QPixmap * KviCodeTesterWindow::myIconPtr()

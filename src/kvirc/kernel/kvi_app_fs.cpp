@@ -176,22 +176,8 @@ void KviApp::getLocalKvircDirectory(QString &szData,KvircSubdir dir,const QStrin
 }
 
 
-void KviApp::getGlobalKvircDirectory(KviStr &szData,KvircSubdir dir,const QString &appendFile)
-{
-	QString szBuffer = szData.ptr();
-	getGlobalKvircDirectory(szBuffer,dir,appendFile);
-	szData=szBuffer;
-	
-}
 
 //=============== getLocalKvircDirectory ================//
-
-void KviApp::getLocalKvircDirectory(KviStr &szData,KvircSubdir dir,const QString &appendFile,bool bCreateIfNeeded)
-{
-	QString szBuffer = szData.ptr();
-	getLocalKvircDirectory(szBuffer,dir,appendFile,bCreateIfNeeded);
-	szData=szBuffer;
-}
 
 void KviApp::getTmpFileName(QString &szBuffer,const QString &szEndingFileName)
 {
@@ -215,35 +201,34 @@ void KviApp::getTmpFileName(QString &szBuffer,const QString &szEndingFileName)
 // Moves a file to the local trash directory
 //
 
-bool KviApp::trashFile(const char *filename)
+bool KviApp::trashFile(const QString& filename)
 {
 	// Exists ?
-	QFileInfo fi = QFileInfo(QString::fromUtf8(filename));
+	QFileInfo fi = QFileInfo(filename);
 	if( !fi.exists() ) return false; // nothing to trash
 
 	// Build the filename
-	KviStr lastPart = filename;
-	lastPart.cutToLast(KVI_PATH_SEPARATOR_CHAR); // need only the filename
+	QString lastPart = KviFileUtils::extractFileName(filename);
 	lastPart.append(".bak_");
 	QDateTime tm(QDateTime::currentDateTime());
 	lastPart.append(tm.toString());
-	lastPart.replaceAll(' ',"_");
+	lastPart.replace(' ',"_");
 	// Ok...have lastPart.bak_Dec_11_31_1999
 	// Find the thrash directory (make it if necessary)
-	KviStr trashFile;
-	getLocalKvircDirectory(trashFile,Trash,lastPart.ptr(),true);
+	QString trashFile;
+	getLocalKvircDirectory(trashFile,Trash,lastPart,true);
 	// Check if a such file already exists
-	fi.setFile(trashFile.ptr());
+	fi.setFile(trashFile);
 	while(fi.exists())
 	{
 		trashFile.append(".rnm");
-		fi.setFile(trashFile.ptr());
+		fi.setFile(trashFile);
 	}
 	// rename the file
-	return KviFileUtils::renameFile(filename,trashFile.ptr());
+	return KviFileUtils::renameFile(filename,trashFile);
 }
 
-void KviApp::completeDirectory(const QString &word,KviPtrList<QString> * matches)
+void KviApp::completeDirectory(const QString &word,QStringList& matches)
 {
 	QString szDir = word;
 	QString szFile = word;
@@ -259,22 +244,20 @@ void KviApp::completeDirectory(const QString &word,KviPtrList<QString> * matches
 
 	for(it = sl.begin();it != sl.end();++it)
 	{
-		QString * t = new QString(*it);
-		if(KviQString::equalCS(*t,".") || KviQString::equalCS(*t,".."))
+		QString t = *it;
+		if(KviQString::equalCS(t,".") || KviQString::equalCS(t,".."))
 		{
-			delete t;
+//			delete t;
 		} else {
 #ifdef COMPILE_ON_WINDOWS
-			if(KviQString::equalCIN(szFile,*t,szFile.length()))
+			if(KviQString::equalCIN(szFile,t,szFile.length()))
 #else //!COMPILE_ON_WINDOWS
-			if(KviQString::equalCSN(szFile,*t,szFile.length()))
+			if(KviQString::equalCSN(szFile,t,szFile.length()))
 #endif //COMPILE_ON_WINDOWS
 			{
-				t->prepend(szDir);
-				t->append(KVI_PATH_SEPARATOR_CHAR);
-				matches->append(t);
-			} else {
-				delete t;
+				t.prepend(szDir);
+				t.append(KVI_PATH_SEPARATOR_CHAR);
+				matches.append(t);
 			}
 		}
 	}
@@ -283,15 +266,15 @@ void KviApp::completeDirectory(const QString &word,KviPtrList<QString> * matches
 
 	for(it = sl.begin();it != sl.end();++it)
 	{
-		QString * t = new QString(*it);
+		QString t = *it;
 #ifdef COMPILE_ON_WINDOWS
-			if(KviQString::equalCIN(szFile,*t,szFile.length()))
+			if(KviQString::equalCIN(szFile,t,szFile.length()))
 #else //!COMPILE_ON_WINDOWS
-			if(KviQString::equalCSN(szFile,*t,szFile.length()))
+			if(KviQString::equalCSN(szFile,t,szFile.length()))
 #endif //COMPILE_ON_WINDOWS
 		{
-			t->prepend(szDir);
-			matches->append(t);
+			t.prepend(szDir);
+			matches.append(t);
 		} else {
 			delete t;
 		}
@@ -323,29 +306,26 @@ void KviApp::getChannelDumpLogFileName(QString &str)
 	KviFileUtils::adjustFilePath(str);
 }
 
-bool KviApp::findFileByMediaType(KviStr &szRetPath,const char * filename)
+bool KviApp::findFileByMediaType(QString &szRetPath,const QString& filename)
 {
 	g_pMediaManager->lock();
 	KviMediaType * m = g_pMediaManager->findMediaType(filename,false);
 
 	if(m)
 	{
-		if(m->szSavePath.hasData())
+		if(!m->szSavePath.isEmpty())
 		{
 			szRetPath = m->szSavePath;
-			szRetPath.ensureLastCharIs(KVI_PATH_SEPARATOR_CHAR);
+			szRetPath.append(KVI_PATH_SEPARATOR_CHAR);
 			szRetPath.append(filename);
-			if(KviFileUtils::fileExists(szRetPath.ptr()))
+			if(KviFileUtils::fileExists(szRetPath))
 			{
 				// check again the media type... check the magic too
-				KviMediaType * mt = g_pMediaManager->findMediaType(szRetPath.ptr());
+				KviMediaType * mt = g_pMediaManager->findMediaType(szRetPath);
 				if(mt == m)
 				{
 					g_pMediaManager->unlock();
-					//if(retMediaType)*retMediaType = mt;
-					QString szTmp = szRetPath.ptr(); // FIXME
-					KviFileUtils::adjustFilePath(szTmp);
-					szRetPath = szTmp;
+					KviFileUtils::adjustFilePath(szRetPath);
 					return true;
 				} // else mime type not matched...we should not be looking there!
 			}
@@ -361,7 +341,7 @@ bool KviApp::findFileByMediaType(KviStr &szRetPath,const char * filename)
 // Looks for an user file in the standard directories
 //
 
-bool KviApp::findUserFile(KviStr &szRetPath,const char *filename)
+bool KviApp::findUserFile(QString &szRetPath,const QString& filename)
 {
 	static KviApp::KvircSubdir localsubdirs[5]={ Avatars , Incoming , Pics , Audio , Log };
 	static KviApp::KvircSubdir globalsubdirs[3]={ Avatars , Pics , Audio };
@@ -370,9 +350,7 @@ bool KviApp::findUserFile(KviStr &szRetPath,const char *filename)
 	if(kvi_isAbsolutePath(filename))
 	{
 		szRetPath=filename;
-		QString szTmp = szRetPath.ptr(); // FIXME
-		KviFileUtils::adjustFilePath(szTmp);
-		szRetPath = szTmp;
+		KviFileUtils::adjustFilePath(szRetPath);
 		return KviFileUtils::fileExists(filename);
 	}
 
@@ -387,22 +365,22 @@ bool KviApp::findUserFile(KviStr &szRetPath,const char *filename)
 	for(i= 0;i<5; i++)
 	{
 		getLocalKvircDirectory(szRetPath,localsubdirs[i],filename);
-		if(KviFileUtils::fileExists(szRetPath.ptr()))return true;
+		if(KviFileUtils::fileExists(szRetPath))return true;
 	}
 
 	for(i= 0;i<3; i++)
 	{
 		getGlobalKvircDirectory(szRetPath,globalsubdirs[i],filename);
-		if(KviFileUtils::fileExists(szRetPath.ptr()))return true;
+		if(KviFileUtils::fileExists(szRetPath))return true;
 	}
 
 	if(findImageInImageSearchPath(szRetPath,filename))return true;
 
 	// Last resort ...
 	szRetPath = QDir::homeDirPath();
-	szRetPath.ensureLastCharIs(KVI_PATH_SEPARATOR_CHAR);
+	szRetPath.append(KVI_PATH_SEPARATOR_CHAR);
 	szRetPath.append(filename);
-	if(KviFileUtils::fileExists(szRetPath.ptr()))return true;;
+	if(KviFileUtils::fileExists(szRetPath))return true;;
 
 	szRetPath = filename;
 	//if(retMediaType)*retMediaType = m;
@@ -424,23 +402,7 @@ bool KviApp::findUserFile(KviStr &szRetPath,const char *filename)
 
 // FIXME: #warning "Check WHEN findImage is used and when findUserFile is used...we have a mess here"
 
-bool KviApp::findImageInImageSearchPath(KviStr &szRetPath,const char * filename)
-{
-	// first lookup the user defined paths
-	for(QStringList::Iterator it = KVI_OPTION_STRINGLIST(KviOption_stringlistImageSearchPaths).begin();
-			it != KVI_OPTION_STRINGLIST(KviOption_stringlistImageSearchPaths).end();++it)
-	{
-		szRetPath = *it;
-		szRetPath.ensureLastCharIs(KVI_PATH_SEPARATOR_CHAR);
-		szRetPath.append(filename);
-		//debug("LOOK FOR %s",szRetPath.ptr());
-		if(KviFileUtils::fileExists(szRetPath.ptr()))return true;
-	}
-
-	return false;
-}
-
-bool KviApp::findImageInImageSearchPath(QString &szRetPath,const char * filename)
+bool KviApp::findImageInImageSearchPath(QString &szRetPath,const QString& filename)
 {
 	// first lookup the user defined paths
 	for(QStringList::Iterator it = KVI_OPTION_STRINGLIST(KviOption_stringlistImageSearchPaths).begin();
@@ -459,15 +421,7 @@ bool KviApp::findImageInImageSearchPath(QString &szRetPath,const char * filename
 static KviApp::KvircSubdir pics_localsubdirs[2]={ KviApp::Pics , KviApp::Avatars };
 static KviApp::KvircSubdir pics_globalsubdirs[2]={ KviApp::Pics , KviApp::Avatars };
 
-bool KviApp::mapImageFile(KviStr &szRetPath,const char * filename)
-{
-	QString buff;
-	bool ret=mapImageFile(buff,filename);
-	szRetPath=buff;
-	return ret;
-}
-
-bool KviApp::mapImageFile(QString &szRetPath,const char * filename)
+bool KviApp::mapImageFile(QString &szRetPath,const QString& filename)
 {
 	szRetPath = filename;
 	// can't map non absolute paths
@@ -479,7 +433,7 @@ bool KviApp::mapImageFile(QString &szRetPath,const char * filename)
 
 	unsigned int size = fi.size();
 
-	KviStr szBestMatch;
+	QString szBestMatch;
 
 	while(szRetPath.find(KVI_PATH_SEPARATOR) != -1)
 	{
@@ -487,16 +441,16 @@ bool KviApp::mapImageFile(QString &szRetPath,const char * filename)
 
 		if(szRetPath.isEmpty())break;
 
-		KviStr szBuffer;
+		QString szBuffer;
 
 		int i;
 
 		for(i=0;i<2;i++)
 		{
 			getLocalKvircDirectory(szBuffer,pics_localsubdirs[i],szRetPath);
-			if(KviFileUtils::fileExists(szBuffer.ptr()))
+			if(KviFileUtils::fileExists(szBuffer))
 			{
-				QFileInfo fi2(QString::fromUtf8(szBuffer.ptr()));
+				QFileInfo fi2(QString::fromUtf8(szBuffer));
 				if(size == fi2.size())
 				{
 					// probably the same file
@@ -509,9 +463,9 @@ bool KviApp::mapImageFile(QString &szRetPath,const char * filename)
 		{
 			getGlobalKvircDirectory(szBuffer,pics_globalsubdirs[i],szRetPath);
 			//debug("CHECK %s",szBuffer.ptr());
-			if(KviFileUtils::fileExists(szBuffer.ptr()))
+			if(KviFileUtils::fileExists(szBuffer))
 			{
-				QFileInfo fi2(QString::fromUtf8(szBuffer.ptr()));
+				QFileInfo fi2(szBuffer);
 				if(size == fi2.size())
 				{
 					// probably the same file
@@ -522,11 +476,11 @@ bool KviApp::mapImageFile(QString &szRetPath,const char * filename)
 	
 		// Last resort
 		szBuffer = QDir::homeDirPath();
-		szBuffer.ensureLastCharIs(KVI_PATH_SEPARATOR_CHAR);
+		szBuffer.append(KVI_PATH_SEPARATOR_CHAR);
 		szBuffer.append(szRetPath);
-		if(KviFileUtils::fileExists(szBuffer.ptr()))
+		if(KviFileUtils::fileExists(szBuffer))
 		{
-			QFileInfo fi2(QString::fromUtf8(szBuffer.ptr()));
+			QFileInfo fi2(szBuffer);
 			if(size == fi2.size())
 			{
 				// prolly the same file
@@ -535,7 +489,7 @@ bool KviApp::mapImageFile(QString &szRetPath,const char * filename)
 		}
 	}
 
-	if(szBestMatch.hasData())
+	if(!szBestMatch.isEmpty())
 	{
 		szRetPath = szBestMatch;
 		return true;
@@ -548,15 +502,7 @@ bool KviApp::mapImageFile(QString &szRetPath,const char * filename)
 }
 
 
-bool KviApp::findImage(KviStr &szRetPath,const char *filename)
-{
-	QString buff;
-	bool ret=findImage(buff,filename);
-	szRetPath=buff;
-	return ret;
-}
-
-bool KviApp::findImage(QString &szRetPath,const char *filename)
+bool KviApp::findImage(QString &szRetPath,const QString& filename)
 {
 	// Find an user file...
 	if(kvi_isAbsolutePath(filename))
@@ -606,7 +552,7 @@ bool KviApp::findImage(QString &szRetPath,const char *filename)
 	return false;
 }
 
-bool KviApp::findImageThemeOnlyCompat(QString &szRetPath,const char *filename)
+bool KviApp::findImageThemeOnlyCompat(QString &szRetPath,const QString& filename)
 {
 	// if we have a theme, look it up as first
 	if(!KVI_OPTION_STRING(KviOption_stringIconThemeSubdir).isEmpty())
@@ -633,7 +579,7 @@ bool KviApp::findImageThemeOnlyCompat(QString &szRetPath,const char *filename)
 	return false;
 }
 
-bool KviApp::findSmallIcon(QString &szRetPath,const char *filename)
+bool KviApp::findSmallIcon(QString &szRetPath,const QString& filename)
 {
 	// this is a bit optimized for the small builtin icons
 	// looks up less places.
@@ -692,15 +638,6 @@ bool KviApp::findSmallIcon(QString &szRetPath,const char *filename)
 //
 // We want to READ a config file...find it
 //
-
-bool KviApp::getReadOnlyConfigPath(KviStr &buffer,const char *config_name,KvircSubdir sbd,bool bNoFail)
-{
-	// DEPRECATED
-	QString tmp;
-	bool bRet = getReadOnlyConfigPath(tmp,config_name,sbd,bNoFail);
-	buffer = tmp;
-	return bRet;
-}
 
 bool KviApp::getReadOnlyConfigPath(QString &buffer,const char *config_name,KvircSubdir sbd,bool bNoFail)
 {

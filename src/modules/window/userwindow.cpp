@@ -30,7 +30,7 @@
 #include "kvi_frame.h"
 #include "kvi_console.h"
 
-extern KviPtrList<KviUserWindow> * g_pUserWindowList;
+extern QList<KviUserWindow*> * g_pUserWindowList;
 
 
 KviUserWindow::KviUserWindow(KviFrame * pFrm,const char * name,int iIcon,KviConsole * pConsole,int iCreationFlags)
@@ -70,7 +70,7 @@ KviUserWindow::KviUserWindow(KviFrame * pFrm,const char * name,int iIcon,KviCons
 KviUserWindow::~KviUserWindow()
 {
 	if(context())context()->unregisterContextWindow(this);
-	g_pUserWindowList->removeRef(this);
+	g_pUserWindowList->removeAll(this);
 }
 
 QPixmap * KviUserWindow::myIconPtr()

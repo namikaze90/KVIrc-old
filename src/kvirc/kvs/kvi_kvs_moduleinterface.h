@@ -33,7 +33,7 @@
 #include "kvi_kvs_parameterprocessor.h"
 #include "kvi_kvs_switchlist.h"
 #include "kvi_kvs_script.h"
-#include "kvi_list.h"
+
 #include "kvi_qstring.h"
 
 class KviModule;
@@ -170,8 +170,8 @@ public:
 	KviKvsModuleFunctionExecRoutine * kvsFindFunction(const QString &szFunction)
 		{ return m_pModuleFunctionExecRoutineDict->value(szFunction); };
 
-	void completeCommand(const QString &cmd,KviPtrList<QString> * matches);
-	void completeFunction(const QString &cmd,KviPtrList<QString> * matches);
+	void completeCommand(const QString &cmd,QStringList & matches);
+	void completeFunction(const QString &cmd,QStringList & matches);
 protected:
 	void registerDefaultCommands();
 };

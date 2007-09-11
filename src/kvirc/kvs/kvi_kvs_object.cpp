@@ -600,8 +600,7 @@ KviKvsObject::KviKvsObject(KviKvsObjectClass * pClass,KviKvsObject * pParent,con
 
 	m_pClass             = pClass;
 
-	m_pChildList         = new KviPtrList<KviKvsObject>;
-	m_pChildList->setAutoDelete(false);
+	m_pChildList         = new QList<KviKvsObject*>;
 
 	m_pDataContainer     = new KviKvsHash();
 
@@ -642,10 +641,10 @@ KviKvsObject::~KviKvsObject()
 
 		while(it != m_pSignalDict->end())
 		{
-			KviKvsObjectConnectionListIterator cit(*(it.value()));
-			while(cit.current())
+			KviKvsObjectConnectionList::iterator cit(it.value()->begin());
+			while(cit != it.value()->end())
 			{
-				disconnectSignal(it.key(),cit.current());
+				disconnectSignal(it.key(),*cit);
 				// ++cit // NO!...we point to the next now!
 			}
 			// the iterator should automatically point to the next now
@@ -656,11 +655,10 @@ KviKvsObject::~KviKvsObject()
 	// Disconnect all the slots
 	if(m_pConnectionList)
 	{
-		KviKvsObjectConnectionListIterator cit(*m_pConnectionList);
-		while(cit.current())
+		foreach(KviKvsObjectConnection *c, *m_pConnectionList)
 		{
-			QString szSig = cit.current()->szSignal;
-			cit.current()->pSourceObject->disconnectSignal(szSig,cit.current());
+			QString szSig = c->szSignal;
+			c->pSourceObject->disconnectSignal(szSig,c);
 			//++cit;// NO!... we point to the next now!
 		}
 	}
@@ -699,7 +697,7 @@ QWidget * KviKvsObject::parentScriptWidget()
 
 void KviKvsObject::unregisterChild(KviKvsObject *pChild)
 {
-	m_pChildList->removeRef(pChild);
+	m_pChildList->removeAll(pChild);
 }
 
 void KviKvsObject::registerChild(KviKvsObject *pChild)
@@ -722,7 +720,6 @@ bool KviKvsObject::connectSignal(const QString &sigName,KviKvsObject * pTarget,c
 	if(!l)
 	{
 		l = new KviKvsObjectConnectionList;
-		l->setAutoDelete(true);
 		m_pSignalDict->insert(sigName,l);
 	}
 
@@ -743,7 +740,6 @@ void KviKvsObject::registerConnection(KviKvsObjectConnection *pConnection)
 	if(!m_pConnectionList)
 	{
 		m_pConnectionList = new KviKvsObjectConnectionList;
-		m_pConnectionList->setAutoDelete(false);
 	}
 	m_pConnectionList->append(pConnection);
 }
@@ -755,16 +751,15 @@ bool KviKvsObject::disconnectSignal(const QString &sigName,KviKvsObject * pTarge
 	KviKvsObjectConnectionList * l = m_pSignalDict->value(sigName);
 	if(!l)return false;
 
-	KviKvsObjectConnectionListIterator it(*l);
-
-	while(KviKvsObjectConnection * sl = it.current())
+	foreach(KviKvsObjectConnection * sl,*l)
 	{
 		if(sl->pTargetObject == pTarget)
 		{
 			if(KviQString::equalCI(sl->szSlot,slotName))
 			{
 				pTarget->unregisterConnection(sl);
-				l->removeRef(sl);
+				l->removeAll(sl);
+				delete sl;
 				if(l->isEmpty()) delete m_pSignalDict->take(sigName);
 				if(m_pSignalDict->isEmpty())
 				{
@@ -774,7 +769,7 @@ bool KviKvsObject::disconnectSignal(const QString &sigName,KviKvsObject * pTarge
 				return true;
 			}
 		}
-		++it;
+		
 	}
 	return false;
 }
@@ -787,7 +782,7 @@ bool KviKvsObject::disconnectSignal(const QString &sigName,KviKvsObjectConnectio
 	if(!l)return false;
 	pConnection->pTargetObject->unregisterConnection(pConnection);
 	//__range_valid(l->findRef(pConnection) > -1);
-	l->removeRef(pConnection);
+	l->removeAll(pConnection);
 	if(l->isEmpty()) delete m_pSignalDict->take(sigName);
 	if(m_pSignalDict->isEmpty())
 	{
@@ -800,7 +795,7 @@ bool KviKvsObject::disconnectSignal(const QString &sigName,KviKvsObjectConnectio
 bool KviKvsObject::unregisterConnection(KviKvsObjectConnection * pConnection)
 {
 	if(!m_pConnectionList)return false;
-	bool bOk = m_pConnectionList->removeRef(pConnection); // no auto delete !
+	bool bOk = m_pConnectionList->removeAll(pConnection); // no auto delete !
 	if(!bOk)return false;
 	if(m_pConnectionList->isEmpty())
 	{
@@ -820,13 +815,11 @@ int KviKvsObject::emitSignal(const QString &sigName,KviKvsObjectFunctionCall * p
 	KviKvsVariant retVal;
 
 	// The objects we're going to disconnect
-	KviPtrList<KviKvsObjectConnection> * pDis = 0;
+	QList<KviKvsObjectConnection*> * pDis = 0;
 
 	kvs_int_t emitted = 0;
 
-	KviKvsObjectConnectionListIterator it(*l);
-
-	while(KviKvsObjectConnection * s = it.current())
+	foreach(KviKvsObjectConnection * s,*l)
 	{
 		// save it , since s may be destroyed in the call!
 		KviKvsObject * pTarget = s->pTargetObject;
@@ -841,7 +834,7 @@ int KviKvsObject::emitSignal(const QString &sigName,KviKvsObjectFunctionCall * p
 
 		if(!pTarget->callFunction(this,s->szSlot,QString::null,pOuterCall->context(),&retVal,pParams))
 		{
-			if(KviKvsKernel::instance()->objectController()->lookupObject(hTarget) && it.current())
+			if(KviKvsKernel::instance()->objectController()->lookupObject(hTarget))
 			{
 				pOuterCall->warning(
 					__tr2qs("Broken slot '%Q' in target object '%Q::%Q' while emitting signal '%Q' from object '%Q::%Q': disconnecting"),
@@ -854,8 +847,7 @@ int KviKvsObject::emitSignal(const QString &sigName,KviKvsObjectFunctionCall * p
 
 				if(!pDis)
 				{
-					pDis = new KviPtrList<KviKvsObjectConnection>;
-					pDis->setAutoDelete(false);
+					pDis = new QList<KviKvsObjectConnection*>;
 				}
 				pDis->append(s);
 			} else {
@@ -873,14 +865,12 @@ int KviKvsObject::emitSignal(const QString &sigName,KviKvsObjectFunctionCall * p
 		{
 			pTarget->setSignalSender(hOld);
 		}
-
-		++it;
 	}
 
 	if(pDis)
 	{
 		// we have some signals to disconnect (because they're broken)
-		for(KviKvsObjectConnection * con = pDis->first();con;con = pDis->next())
+		foreach(KviKvsObjectConnection * con,*pDis)
 			disconnectSignal(sigName,con);
 		delete pDis;
 	}
@@ -935,7 +925,7 @@ bool KviKvsObject::function_children(KviKvsObjectFunctionCall * c)
 {
 	KviKvsArray * a = new KviKvsArray();
 	int id=0;
-	for(KviKvsObject * o = m_pChildList->first();o;o = m_pChildList->next())
+	foreach(KviKvsObject * o,*m_pChildList)
 	{
 		a->set(id,new KviKvsVariant(o->handle()));
 		id++;
@@ -1472,13 +1462,13 @@ bool KviKvsObject::function_property(KviKvsObjectFunctionCall * c)
 
 void KviKvsObject::killAllChildrenWithClass(KviKvsObjectClass *cl)
 {
-	KviPtrList<KviKvsObject> l;
-	l.setAutoDelete(true);
-	for(KviKvsObject * o=m_pChildList->first();o;o=m_pChildList->next())
+	QList<KviKvsObject*> l;
+	foreach(KviKvsObject * o,*m_pChildList)
 	{
 		if(o->getClass() == cl)
 		{
 			l.append(o);
+			delete o;
 		} else o->killAllChildrenWithClass(cl);
 	}
 }
@@ -1669,7 +1659,7 @@ void KviKvsObject::registerPrivateImplementation(const QString &szFunctionName,c
 
 KviKvsObject * KviKvsObject::findChild(const QString &szClass,const QString &szName)
 {
-	for(KviKvsObject * o = m_pChildList->first();o;o= m_pChildList->next())
+	foreach(KviKvsObject * o,*m_pChildList)
 	{
 		if(szClass.isEmpty())
 		{

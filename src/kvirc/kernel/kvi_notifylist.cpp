@@ -39,7 +39,6 @@
 #include "kvi_sparser.h"
 #include "kvi_ircmask.h"
 #include "kvi_numeric.h"
-#include "kvi_parameterlist.h"
 #include "kvi_ircconnection.h"
 #include "kvi_app.h"
 #include "kvi_qstring.h"
@@ -316,14 +315,6 @@ KviIsOnNotifyListManager::KviIsOnNotifyListManager(KviIrcConnection * pConnectio
 : KviNotifyListManager(pConnection)
 {
 	m_pRegUserDict = new QHash<QString,QString>; // case insensitive , copy keys
-	m_pNotifyList  = new KviPtrList<QString>;
-	m_pNotifyList->setAutoDelete(true);
-	m_pIsOnList = new KviPtrList<QString>;
-	m_pIsOnList->setAutoDelete(true);
-	m_pOnlineList = new KviPtrList<QString>;
-	m_pOnlineList->setAutoDelete(true);
-	m_pUserhostList = new KviPtrList<QString>;
-	m_pUserhostList->setAutoDelete(true);
 	m_pDelayedNotifyTimer = new QTimer();
 	connect(m_pDelayedNotifyTimer,SIGNAL(timeout()),this,SLOT(newNotifySession()));
 	m_pDelayedIsOnTimer = new QTimer();
@@ -341,10 +332,6 @@ KviIsOnNotifyListManager::~KviIsOnNotifyListManager()
 	delete m_pDelayedIsOnTimer;
 	delete m_pDelayedUserhostTimer;
 	delete m_pRegUserDict;
-	delete m_pOnlineList;
-	delete m_pNotifyList;
-	delete m_pIsOnList;
-	delete m_pUserhostList;
 }
 
 void KviIsOnNotifyListManager::start()
@@ -414,7 +401,7 @@ void KviIsOnNotifyListManager::delayedNotifySession()
 void KviIsOnNotifyListManager::newNotifySession()
 {
 	buildNotifyList();
-	if(m_pNotifyList->isEmpty())
+	if(m_lNotifyList.isEmpty())
 	{
 		if(_OUTPUT_VERBOSE)
 			m_pConsole->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Notify list: Notify list empty, quitting"));
@@ -426,11 +413,11 @@ void KviIsOnNotifyListManager::newNotifySession()
 
 void KviIsOnNotifyListManager::buildNotifyList()
 {
-	m_pNotifyList->clear();
+	m_lNotifyList.clear();
 	QHash<QString,QString>::iterator it(m_pRegUserDict->begin());
 	while(it != m_pRegUserDict->end())
 	{
-		m_pNotifyList->append(new QString(it.key()));
+		m_lNotifyList.append(it.key());
 		++it;
 	}
 }
@@ -455,26 +442,24 @@ void KviIsOnNotifyListManager::delayedIsOnSession()
 void KviIsOnNotifyListManager::newIsOnSession()
 {
 	buildIsOnList();
-	if(m_pIsOnList->isEmpty())delayedNotifySession();
+	if(m_lIsOnList.isEmpty())delayedNotifySession();
 	else sendIsOn();
 }
 
 void KviIsOnNotifyListManager::buildIsOnList()
 {
-	m_pIsOnList->clear();
+	m_lIsOnList.clear();
 	m_szIsOnString = "";
-	m_pNotifyList->setAutoDelete(false);
-	while(QString * s = m_pNotifyList->first())
+	foreach(QString s,m_lNotifyList)
 	{
-		if(((m_szIsOnString.length() + s->length()) + 1) < 504)
+		if(((m_szIsOnString.length() + s.length()) + 1) < 504)
 		{
 			if(!m_szIsOnString.isEmpty())m_szIsOnString.append(' ');
-			m_szIsOnString.append(*s);
-			m_pIsOnList->append(s);
-			m_pNotifyList->removeFirst();
+			m_szIsOnString.append(s);
+			m_lIsOnList.append(s);
+			m_lNotifyList.removeFirst();
 		} else break;
 	}
-	m_pNotifyList->setAutoDelete(true);
 }
 
 void KviIsOnNotifyListManager::sendIsOn()
@@ -498,8 +483,7 @@ bool KviIsOnNotifyListManager::handleIsOn(KviIrcMessage *msg)
 	// Check if it is our ISON
 	// all the nicks must be on the IsOnList
 
-	KviPtrList<QString> tmplist;
-	tmplist.setAutoDelete(false);
+	QStringList tmplist;
 
 	KviStr nk;
 	const char * aux = msg->trailing();
@@ -512,9 +496,9 @@ bool KviIsOnNotifyListManager::handleIsOn(KviIrcMessage *msg)
 		{
 			bool bGotIt = false;
 			QString dnk = m_pConnection->decodeText(nk.ptr());
-			for(QString * s = m_pIsOnList->first();s && (!bGotIt);s = m_pIsOnList->next())
+			foreach(QString s,m_lIsOnList)
 			{
-				if(KviQString::equalCI(*s,dnk))
+				if(KviQString::equalCI(s,dnk))
 				{
 					tmplist.append(s);
 					bGotIt = true;
@@ -536,37 +520,34 @@ bool KviIsOnNotifyListManager::handleIsOn(KviIrcMessage *msg)
 
 	m_bExpectingIsOn = false;
 
-	m_pOnlineList->clear();
-
-	m_pIsOnList->setAutoDelete(false);
+	m_lOnlineList.clear();
 
 	// Ok...we have an IsOn reply here
 	// The nicks in the IsOnList that are also in the reply are online , and go to the OnlineList
 	// the remaining in the IsOnList are offline
 
-	QString * s;
+	QString s;
 	
-	for(s = tmplist.first();s;s = tmplist.next())
+	foreach(s,tmplist)
 	{
-		m_pIsOnList->removeRef(s);
-		m_pOnlineList->append(s);
+		m_lIsOnList.removeAll(s);
+		m_lOnlineList.append(s);
 	}
 
-	m_pIsOnList->setAutoDelete(true);
 	// Ok...all the users that are online , are on the OnlineList
 	// the remaining users are in the m_pIsOnList , and are no longer online
 
 	// first the easy step: remove the users that have just left irc or have never been online
 	// we're clearling the m_pIsOnList
-	while((s = m_pIsOnList->first()))
+	foreach(s,m_lIsOnList)
 	{
-		if(m_pConsole->notifyListView()->findEntry(*s))
+		if(m_pConsole->notifyListView()->findEntry(s))
 		{
 			// has just left IRC... make him part
-			notifyOffLine(*s);
+			notifyOffLine(s);
 		} // else has never been here
 
-		m_pIsOnList->removeFirst(); // autodelete is true
+		m_lIsOnList.removeFirst(); // autodelete is true
 	}
 
 	// ok... complex step now: the remaining users in the userhost list are online
@@ -576,12 +557,11 @@ bool KviIsOnNotifyListManager::handleIsOn(KviIrcMessage *msg)
 
 	KviIrcUserDataBase * db = console()->connection()->userDataBase();
 
-	KviPtrList<QString> l;
-	l.setAutoDelete(false);
+	QStringList l;
 
-	for(s = m_pOnlineList->first();s;s = m_pOnlineList->next())
+	foreach(s,m_lOnlineList)
 	{
-		if(KviUserListEntry * ent = m_pConsole->notifyListView()->findEntry(*s))
+		if(KviUserListEntry * ent = m_pConsole->notifyListView()->findEntry(s))
 		{
 			// the user was online from a previous notify session
 			// might the mask have been changed ? (heh...this is tricky, maybe too much even)
@@ -594,14 +574,13 @@ bool KviIsOnNotifyListManager::handleIsOn(KviIrcMessage *msg)
 					// mmmh...we have more than one ref , so the user is at least in one query or channel
 					// look him up on channels , if we find his entry , we can be sure that he is
 					// still the right user
-					KviPtrList<KviChannel> * chlist = m_pConsole->connection()->channelList();
-					for(KviChannel * ch = chlist->first();ch;ch = chlist->next())
+					foreach(KviChannel * ch,*(m_pConsole->connection()->channelList()))
 					{
-						if(KviUserListEntry * le = ch->findEntry(*s))
+						if(KviUserListEntry * le = ch->findEntry(s))
 						{
 							l.append(s); // ok...found on a channel...we don't need an userhost to match him
-							KviIrcMask mk(*s,le->globalData()->user(),le->globalData()->host());
-							if(!doMatchUser(*s,mk))return true; // critical problems = have to restart!!!
+							KviIrcMask mk(s,le->globalData()->user(),le->globalData()->host());
+							if(!doMatchUser(s,mk))return true; // critical problems = have to restart!!!
 							break;
 						}
 					}
@@ -616,15 +595,15 @@ bool KviIsOnNotifyListManager::handleIsOn(KviIrcMessage *msg)
 			// check if we have a cached mask
 			if(db)
 			{
-				if(KviIrcUserEntry * ue = db->find(*s))
+				if(KviIrcUserEntry * ue = db->find(s))
 				{
 					// already in the db... do we have a mask ?
 					if(ue->hasUser() && ue->hasHost())
 					{
 						// yup! we have a complete mask to match on
-						KviIrcMask mk(*s,ue->user(),ue->host());
+						KviIrcMask mk(s,ue->user(),ue->host());
 						// lookup the user's name in the m_pRegUserDict
-						if(!doMatchUser(*s,mk))return true; // critical problems = have to restart!!!
+						if(!doMatchUser(s,mk))return true; // critical problems = have to restart!!!
 						l.append(s); // remove anyway
 					}
 				}
@@ -632,14 +611,14 @@ bool KviIsOnNotifyListManager::handleIsOn(KviIrcMessage *msg)
 		}
 	}
 
-	for(s = l.first();s;s = l.next())
+	foreach(s,l)
 	{
-		m_pOnlineList->removeRef(s); // autodelete is true
+		m_lOnlineList.removeAll(s); // autodelete is true
 	}
 
-	if(m_pOnlineList->isEmpty())
+	if(m_lOnlineList.isEmpty())
 	{
-		if(m_pNotifyList->isEmpty())delayedNotifySession();
+		if(m_lNotifyList.isEmpty())delayedNotifySession();
 		else delayedIsOnSession();
 	} else delayedUserhostSession();
 
@@ -713,13 +692,13 @@ void KviIsOnNotifyListManager::delayedUserhostSession()
 void KviIsOnNotifyListManager::newUserhostSession()
 {
 	buildUserhostList();
-	if(m_pUserhostList->isEmpty())
+	if(m_lUserhostList.isEmpty())
 	{
 		// this is unexpected!
 		m_pConsole->output(KVI_OUT_SYSTEMWARNING,__tr2qs("Notify list: Unexpected inconsistency, userhost list is empty!"));
-		if(m_pOnlineList->isEmpty())
+		if(m_lOnlineList.isEmpty())
 		{
-			if(m_pNotifyList->isEmpty())delayedNotifySession();
+			if(m_lNotifyList.isEmpty())delayedNotifySession();
 			else delayedIsOnSession();
 		} else delayedUserhostSession();
 		return;
@@ -732,20 +711,20 @@ void KviIsOnNotifyListManager::newUserhostSession()
 void KviIsOnNotifyListManager::buildUserhostList()
 {
 	m_szUserhostString = "";
-	m_pUserhostList->clear();
+	m_lUserhostList.clear();
 
-	m_pOnlineList->setAutoDelete(false);
 	int i = 0;
-	QString * s;
-	while((s = m_pOnlineList->first()) && (i < MAX_USERHOST_ENTRIES))
+	QString s;
+	while(i < MAX_USERHOST_ENTRIES)
 	{
+		if(m_lOnlineList.isEmpty()) break;
+		s = m_lOnlineList.first();
 		if(!m_szUserhostString.isEmpty())m_szUserhostString.append(' ');
-		m_szUserhostString.append(*s);
-		m_pUserhostList->append(s);
-		m_pOnlineList->removeFirst();
+		m_szUserhostString.append(s);
+		m_lUserhostList.append(s);
+		m_lOnlineList.removeFirst();
 		i++;
 	}
-	m_pOnlineList->setAutoDelete(true);
 }
 
 void KviIsOnNotifyListManager::sendUserhost()
@@ -765,8 +744,7 @@ bool KviIsOnNotifyListManager::handleUserhost(KviIrcMessage *msg)
 {
 	if(!m_bExpectingUserhost)return false;
 	// first check for consistency: all the replies must be on the USERHOST list
-	KviPtrList<KviIrcMask> tmplist;
-	tmplist.setAutoDelete(true);
+	QList<KviIrcMask*> tmplist;
 
 	KviStr nk;
 	const char * aux = msg->trailing();
@@ -806,14 +784,14 @@ bool KviIsOnNotifyListManager::handleUserhost(KviIrcMessage *msg)
 				QString szUser = m_pConnection->decodeText(user.ptr());
 				QString szHost = m_pConnection->decodeText(host.ptr());
 				
-				for(QString * s = m_pUserhostList->first();s && (!bGotIt);s = m_pUserhostList->next())
+				foreach(QString s,m_lUserhostList)
 				{
-					if(KviQString::equalCI(*s,szNick))
+					if(KviQString::equalCI(s,szNick))
 					{
 						KviIrcMask * mk = new KviIrcMask(szNick,szUser,szHost);	
 						tmplist.append(mk);
 						bGotIt = true;
-						m_pUserhostList->removeRef(s);
+						m_lUserhostList.removeAll(s);
 					}
 				}
 	
@@ -839,26 +817,27 @@ bool KviIsOnNotifyListManager::handleUserhost(KviIrcMessage *msg)
 
 	m_bExpectingUserhost = false;
 
-	for(KviIrcMask * mk = tmplist.first();mk;mk = tmplist.next())
+	foreach(KviIrcMask * mk,tmplist)
 	{
-		if(!doMatchUser(mk->nick(),*mk))return true; // have to restart!!!
+		if(!doMatchUser(mk->nick(),*mk))
+			return true; // have to restart!!!
 	}
 
-	if(!(m_pUserhostList->isEmpty()))
+	if(!m_lUserhostList.isEmpty())
 	{
 		// ops...someone is no longer online ?
-		while(QString * s = m_pUserhostList->first())
+		foreach(QString s,m_lUserhostList)
 		{
 			if(_OUTPUT_VERBOSE)
-				m_pConsole->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Notify list: \r!n\r%Q\r appears to have gone offline before USERHOST reply was received, will recheck in the next loop"),s);
-			m_pUserhostList->removeFirst();
+				m_pConsole->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Notify list: \r!n\r%Q\r appears to have gone offline before USERHOST reply was received, will recheck in the next loop"),&s);
+			m_lUserhostList.removeFirst();
 		}
 	
 	}
 
-	if(m_pOnlineList->isEmpty())
+	if(m_lOnlineList.isEmpty())
 	{
-		if(m_pNotifyList->isEmpty())delayedNotifySession();
+		if(m_lNotifyList.isEmpty())delayedNotifySession();
 		else delayedIsOnSession();
 	} else delayedUserhostSession();
 
@@ -879,10 +858,10 @@ void KviIsOnNotifyListManager::stop()
 	m_pDelayedUserhostTimer->stop();
 	m_pConsole->notifyListView()->partAllButOne(m_pConnection->currentNickName());
 	m_pRegUserDict->clear();
-	m_pNotifyList->clear();
-	m_pIsOnList->clear();
-	m_pOnlineList->clear();
-	m_pUserhostList->clear();
+	m_lNotifyList.clear();
+	m_lIsOnList.clear();
+	m_lOnlineList.clear();
+	m_lUserhostList.clear();
 	m_szIsOnString = "";
 	m_szUserhostString = "";
 	m_bRunning = false;
@@ -898,8 +877,6 @@ void KviIsOnNotifyListManager::stop()
 KviStupidNotifyListManager::KviStupidNotifyListManager(KviIrcConnection * pConnection)
 : KviNotifyListManager(pConnection)
 {
-	m_pNickList = new KviPtrList<QString>;
-	m_pNickList->setAutoDelete(true);
 	m_iRestartTimer = 0;
 }
 
@@ -910,7 +887,6 @@ KviStupidNotifyListManager::~KviStupidNotifyListManager()
 		killTimer(m_iRestartTimer);
 		m_iRestartTimer = 0;
 	}
-	delete m_pNickList;
 }
 
 void KviStupidNotifyListManager::start()
@@ -923,7 +899,7 @@ void KviStupidNotifyListManager::start()
 	if(_OUTPUT_VERBOSE)
 		m_pConsole->outputNoFmt(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Starting notify list"));
 	buildNickList();
-	if(m_pNickList->isEmpty())
+	if(m_lNickList.isEmpty())
 	{
 		if(_OUTPUT_VERBOSE)
 			m_pConsole->outputNoFmt(KVI_OUT_SYSTEMMESSAGE,__tr2qs("No users in the notify list"));
@@ -937,15 +913,16 @@ void KviStupidNotifyListManager::start()
 void KviStupidNotifyListManager::sendIsOn()
 {
 	m_szLastIsOnMsg = "";
-	QString * nick = m_pNickList->at(m_iNextNickToCheck);
+	QString nick = m_lNickList.at(m_iNextNickToCheck);
 	__range_valid(nick);
 
-	int i = 0;
-	while(nick && ((nick->length() + 5 + m_szLastIsOnMsg.length()) < 510))
+	m_iNextNickToCheck++;
+	while( (nick.length() + 5 + m_szLastIsOnMsg.length()) < 510)
 	{
-		KviQString::appendFormatted(m_szLastIsOnMsg," %Q",nick);
-		nick = m_pNickList->next();
-		i++;
+		KviQString::appendFormatted(m_szLastIsOnMsg," %Q",&nick);
+		nick = m_lNickList.at(m_iNextNickToCheck);
+		if(m_lNickList.isEmpty()) break;
+		m_iNextNickToCheck++;
 	}
 	if(_OUTPUT_PARANOIC)
 		m_pConsole->output(KVI_OUT_SYSTEMMESSAGE,__tr2qs("Notify list: Checking for:%Q"),&m_szLastIsOnMsg);
@@ -955,7 +932,6 @@ void KviStupidNotifyListManager::sendIsOn()
 	if(m_pConnection->lagMeter())
 		m_pConnection->lagMeter()->lagCheckRegister("@notify_naive",20);
 
-	m_iNextNickToCheck += i;
 }
 
 bool KviStupidNotifyListManager::handleIsOn(KviIrcMessage * msg)
@@ -993,7 +969,7 @@ bool KviStupidNotifyListManager::handleIsOn(KviIrcMessage * msg)
 		} // else has never been here...
 	}
 
-	if(((unsigned int)m_iNextNickToCheck) >= m_pNickList->count())
+	if(((unsigned int)m_iNextNickToCheck) >= m_lNickList.count())
 	{
 		// have to restart
 		unsigned int iTimeout = KVI_OPTION_UINT(KviOption_uintNotifyListCheckTimeInSecs);
@@ -1043,13 +1019,13 @@ void KviStupidNotifyListManager::stop()
 
 void KviStupidNotifyListManager::buildNickList()
 {
-	m_pNickList->clear();
+	m_lNickList.clear();
 	foreach(KviRegisteredUser* u, *(g_pRegisteredUserDataBase->userDict()))
 	{
 		QString notify;
 		if(u->getProperty("notify",notify))
 		{
-			m_pNickList->append(new QString(notify));
+			m_lNickList.append(notify);
 		};
 	}
 }

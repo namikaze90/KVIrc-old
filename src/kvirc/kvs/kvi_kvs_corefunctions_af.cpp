@@ -234,7 +234,7 @@ namespace KviKvsCoreFunctions
 		KviKvsArray * a = new KviKvsArray();
 		kvs_int_t idx = 0;
 
-		for(KviKvsVariant * v = KVSCF_pParams->first();v;v = KVSCF_pParams->next())
+		foreach(KviKvsVariant * v,*(KVSCF_pParams->list()))
 		{
 			a->set(idx,new KviKvsVariant(*v));
 			idx++;
@@ -1089,7 +1089,7 @@ namespace KviKvsCoreFunctions
 		KviKvsArray * a = new KviKvsArray();
 		KVSCF_pRetBuffer->setArray(a);
 		unsigned int uIdx = 0;
-		for(KviKvsVariant * v = KVSCF_pParams->first();v;v = KVSCF_pParams->next())
+		foreach(KviKvsVariant * v,*(KVSCF_pParams->list()))
 		{
 			switch(v->type())
 			{

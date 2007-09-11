@@ -26,7 +26,7 @@
 
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
-#include "kvi_list.h"
+
 
 class KviWindow;
 
@@ -48,8 +48,8 @@ protected:
 	KviWindow           * m_pWindow;        // the window that the script was attacched to
 
 	// optional
-	KviPtrList<QString> * m_pCodeListing;   // code listing, if present, it is owned
-	KviPtrList<QString> * m_pCallStack;     // call stack, if present, it is owned
+	QStringList           m_lCodeListing;   // code listing, if present, it is owned
+	QStringList            m_lCallStack;     // call stack, if present, it is owned
 public:
 	Type type() const { return m_eType; };
 
@@ -57,17 +57,17 @@ public:
 	const QString & context(){ return m_szContext; };
 	const QString & message(){ return m_szMessage; };
 	const QString & location(){ return m_szLocation; };
-	KviPtrList<QString> * codeListing(){ return m_pCodeListing; };
-	KviPtrList<QString> * callStack(){ return m_pCallStack; };
+	const QStringList&     codeListing(){ return m_lCodeListing; };
+	const QStringList&     callStack(){ return m_lCallStack; };
 
 	void setContext(const QString &szContext){ m_szContext = szContext; };
 	void setMessage(const QString &szMessage){ m_szMessage = szMessage; };
 	void setLocation(const QString &szLocation){ m_szLocation = szLocation; };
-	void setCodeListing(KviPtrList<QString> * pListing){ m_pCodeListing = pListing; };
-	void setCallStack(KviPtrList<QString> * pStack){ m_pCallStack = pStack; };
+	void setCodeListing(QStringList& pListing){ m_lCodeListing = pListing; };
+	void setCallStack(QStringList& pStack){ m_lCallStack = pStack; };
 
 	static void findLineAndCol(const QChar * pBegin,const QChar * pPoint,int &iLine,int &iCol);
-	static void findLineColAndListing(const QChar * pBegin,const QChar * pPoint,int &iLine,int &iCol,KviPtrList<QString> * pListing);
+	static void findLineColAndListing(const QChar * pBegin,const QChar * pPoint,int &iLine,int &iCol,QStringList& pListing);
 
 	static void report(KviKvsReport * r,KviWindow * pOutput);
 };

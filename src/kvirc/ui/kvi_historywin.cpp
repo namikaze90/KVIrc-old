@@ -71,9 +71,9 @@ KviHistoryWindow::~KviHistoryWindow()
 void KviHistoryWindow::fill()
 {
 	clear();
-	for(QString * s = g_pInputHistory->list()->last();s;s = g_pInputHistory->list()->prev())
+	for(QStringList::const_iterator it(g_pInputHistory->list().constEnd());it != g_pInputHistory->list().constBegin();--it)
 	{
-		insertItem(*s);
+		insertItem(*it);
 	}
 	if(count() > 0)setCurrentItem(count() - 1);
 }

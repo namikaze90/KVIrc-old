@@ -864,8 +864,10 @@ namespace KviKvsCoreSimpleCommands
 
 		// copy parameters
 		KviKvsVariantList * pPopupParams = new KviKvsVariantList();
-		KVSCSC_pParams->first();
-		while(KviKvsVariant * v = KVSCSC_pParams->next())pPopupParams->append(new KviKvsVariant(*v));
+		foreach(KviKvsVariant * v,*(KVSCSC_pParams->list()))
+		{
+			pPopupParams->append(new KviKvsVariant(*v));
+		}
 
 		KviKvsPopupMenu * pMenu = KviKvsPopupManager::instance()->lookup(szPopupName);
 		

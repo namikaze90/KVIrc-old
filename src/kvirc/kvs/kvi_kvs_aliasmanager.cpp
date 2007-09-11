@@ -73,12 +73,12 @@ void KviKvsAliasManager::done()
 	delete KviKvsAliasManager::instance();
 }
 
-void KviKvsAliasManager::completeCommand(const QString &word,KviPtrList<QString> * matches)
+void KviKvsAliasManager::completeCommand(const QString &word,QStringList& matches)
 {
 	foreach(KviKvsScript* s,*m_pAliasDict)
 	{
 		if(KviQString::equalCIN(word,s->name(),word.length()))
-			matches->append(new QString(s->name()));
+			matches.append(s->name());
 	}
 }
 

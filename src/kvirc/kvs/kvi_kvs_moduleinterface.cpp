@@ -71,18 +71,18 @@ KviKvsModuleInterface::~KviKvsModuleInterface()
 		while(it != __dict->end()) \
 		{ \
 			if(KviQString::equalCIN(__word,it.key(),l)) \
-				__list->append(new QString(it.key())); \
+				__list.append(it.key()); \
 			++it; \
 		} \
 	}
 
-void KviKvsModuleInterface::completeCommand(const QString &szCommandBegin,KviPtrList<QString> * pMatches)
+void KviKvsModuleInterface::completeCommand(const QString &szCommandBegin,QStringList& pMatches)
 {
 	COMPLETE_WORD_BY_DICT(szCommandBegin,pMatches,KviKvsModuleSimpleCommandExecRoutine,m_pModuleSimpleCommandExecRoutineDict)
 	COMPLETE_WORD_BY_DICT(szCommandBegin,pMatches,KviKvsModuleCallbackCommandExecRoutine,m_pModuleCallbackCommandExecRoutineDict)
 }
 
-void KviKvsModuleInterface::completeFunction(const QString &szFunctionBegin,KviPtrList<QString> * pMatches)
+void KviKvsModuleInterface::completeFunction(const QString &szFunctionBegin,QStringList& pMatches)
 {
 	COMPLETE_WORD_BY_DICT(szFunctionBegin,pMatches,KviKvsModuleFunctionExecRoutine,m_pModuleFunctionExecRoutineDict)
 }

@@ -28,10 +28,10 @@
 #include "kvi_frame.h"
 #include "kvi_window.h"
 #include "kvi_locale.h"
-
+#include <QList>
 #include <qsplitter.h>
 
-KviPtrList<KviLinksWindow> * g_pLinksWindowList = 0;
+QList<KviLinksWindow*> * g_pLinksWindowList = 0;
 
 
 /*
@@ -82,8 +82,7 @@ static bool links_kvs_cmd_open(KviKvsModuleCommandCall * c)
 
 static bool links_module_init(KviModule * m)
 {
-	g_pLinksWindowList = new KviPtrList<KviLinksWindow>;
-	g_pLinksWindowList->setAutoDelete(false);
+	g_pLinksWindowList = new QList<KviLinksWindow*>;
 
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"open",links_kvs_cmd_open);

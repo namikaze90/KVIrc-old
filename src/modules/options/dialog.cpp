@@ -452,34 +452,31 @@ void KviOptionsDialog::searchClicked()
 		search(szTxt);
 }
 
-void KviOptionsDialog::fillListView(KviTalListViewItem * p,KviPtrList<KviOptionsWidgetInstanceEntry> * l,const QString &szGroup,bool bNotContainedOnly)
+void KviOptionsDialog::fillListView(KviTalListViewItem * p,QList<KviOptionsWidgetInstanceEntry*> * l,const QString &szGroup,bool bNotContainedOnly)
 {
 	if(!l)return;
 
 	KviOptionsListViewItem * it;
 	KviOptionsWidgetInstanceEntry * e;
 
-	KviPtrList<KviOptionsWidgetInstanceEntry> tmp;
-	tmp.setAutoDelete(false);
+	QList<KviOptionsWidgetInstanceEntry*> tmp;
 
 
-	for(e = l->first();e;e = l->next())
+	foreach(e,*l)
 	{
 		// must be in the correct group
 		// if we want only containers then well.. must be one
 		e->bDoInsert = KviQString::equalCI(szGroup,e->szGroup) && ((!bNotContainedOnly) || e->bIsContainer || e->bIsNotContained);
-		KviOptionsWidgetInstanceEntry * ee = tmp.first();
 		int idx = 0;
-		while(ee)
+		foreach(KviOptionsWidgetInstanceEntry * ee,tmp)
 		{
 			if(ee->iPriority >= e->iPriority)break;
 			idx++;
-			ee = tmp.next();
 		}
 		tmp.insert(idx,e);
 	}
 
-	for(e = tmp.first();e;e = tmp.next())
+	foreach(e,tmp)
 	{
 		if(e->bDoInsert)
 		{

@@ -30,7 +30,7 @@
 #include <qobject.h>
 #include <QHash>
 #include <qtimer.h>
-#include "kvi_list.h"
+
 
 #include "kvi_module.h"
 
@@ -56,9 +56,9 @@ public:
 	void loadModulesByCaps(const QString& caps,const QString& dir);
 	void loadModulesByCaps(const QString& caps);
 	bool hasLockedModules();
-	void completeModuleNames(const QString &word,KviPtrList<QString> * matches);
+	void completeModuleNames(const QString &word,QStringList& matches);
 protected:
-	void completeModuleNames(const QString &path,const QString &work,KviPtrList<QString> * matches);
+	void completeModuleNames(const QString &path,const QString &work,QStringList& matches);
 public slots:
 	void cleanupUnusedModules();
 signals:

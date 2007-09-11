@@ -28,7 +28,7 @@
 #include "kvi_frame.h"
 #include "kvi_locale.h"
 
-#include "kvi_list.h"
+
 #include <qbitmap.h>
 #include <qtooltip.h>
 #include <qpainter.h>

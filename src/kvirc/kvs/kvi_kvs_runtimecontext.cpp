@@ -92,56 +92,52 @@ void KviKvsRunTimeContext::report(bool bError,KviKvsTreeNode * pNode,const QStri
 	QString szMsg;
 	KviQString::vsprintf(szMsg,szMsgFmt,va);
 
-	KviPtrList<QString> * pCodeListing = 0;
-	KviPtrList<QString> * pCallStack = 0;
+	QStringList lCodeListing;
+	QStringList lCallStack;
 	QString szLocation;
 
 	if(pNode)
 	{
 		if(pNode->location() && m_pScript)
 		{
-			pCodeListing = new KviPtrList<QString>;
-			pCodeListing->setAutoDelete(true);
 	
 			int iLine,iCol;
 	
-			KviKvsReport::findLineColAndListing(m_pScript->buffer(),pNode->location(),iLine,iCol,pCodeListing);
+			KviKvsReport::findLineColAndListing(m_pScript->buffer(),pNode->location(),iLine,iCol,lCodeListing);
 			
 			KviQString::sprintf(szLocation,__tr2qs("line %d, near character %d"),iLine,iCol);
 		}
 		
 		// create the call stack
 		int iFrame = 0;
-		
-		pCallStack = new KviPtrList<QString>;
-		pCallStack->setAutoDelete(true);
+
 
 		while(pNode && (iFrame < 12))
 		{
-			QString * pString = new QString();
+			QString pString;
 			QString szTmp;
 			pNode->contextDescription(szTmp);
-			KviQString::sprintf(*pString,"#%d %Q",iFrame,&szTmp);
+			KviQString::sprintf(pString,"#%d %Q",iFrame,&szTmp);
 			if(pNode->location())
 			{
 				int iLine,iCol;
 				KviKvsReport::findLineAndCol(m_pScript->buffer(),pNode->location(),iLine,iCol);
 				QString tmpi;
 				KviQString::sprintf(tmpi," [line %d, near character %d]",iLine,iCol);
-				*pString += tmpi;
+				pString += tmpi;
 			}
-			pCallStack->append(pString);
+			lCallStack.append(pString);
 			iFrame++;
 			pNode = pNode->parent();
 		}
 		if(pNode)
-			pCallStack->append(new QString("#12 ..."));
+			lCallStack.append("#12 ...");
 	}
 
 	QString szContext = m_pScript ? m_pScript->name() : "kvirc core code";
 	KviKvsReport rep(bError ? KviKvsReport::RunTimeError : KviKvsReport::RunTimeWarning,szContext,szMsg,szLocation,m_pWindow);
-	if(pCodeListing)rep.setCodeListing(pCodeListing);
-	if(pCallStack)rep.setCallStack(pCallStack);
+	if(!lCodeListing.isEmpty())rep.setCodeListing(lCodeListing);
+	if(!lCallStack.isEmpty())rep.setCallStack(lCallStack);
 
 	KviKvsReport::report(&rep,m_pWindow);
 }

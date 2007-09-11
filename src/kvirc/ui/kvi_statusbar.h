@@ -25,7 +25,7 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-#include "kvi_list.h"
+
 #include "kvi_heapobject.h"
 
 #include <qstring.h>
@@ -71,10 +71,10 @@ public:
 	~KviStatusBar();
 protected:
 	KviFrame                                 * m_pFrame;
-	KviPtrList<KviStatusBarMessage>          * m_pMessageQueue;
+	QList<KviStatusBarMessage*>          * m_pMessageQueue;
 	QTimer                                   * m_pMessageTimer;
 	QLabel                                   * m_pMessageLabel;
-	KviPtrList<KviStatusBarApplet>           * m_pAppletList;
+	QList<KviStatusBarApplet*>           * m_pAppletList;
 	QHash<QString,KviStatusBarAppletDescriptor*>  * m_pAppletDescriptors;
 	KviTalPopupMenu                               * m_pContextPopup;
 	KviTalPopupMenu                               * m_pAppletsPopup;

@@ -63,7 +63,7 @@
 
 
 extern KVIRC_API QHash<QString,KviWindow*> * g_pGlobalWindowDict;
-static KviPtrList<KviDockWidget> * g_pDockWidgetList = 0;
+static QList<KviDockWidget*> * g_pDockWidgetList = 0;
 
 static QPixmap * g_pDock1 = 0;
 static QPixmap * g_pDock2 = 0;
@@ -120,7 +120,7 @@ KviDockWidget::KviDockWidget(KviFrame * frm)
 KviDockWidget::~KviDockWidget()
 {
 	m_pFrm->setDockExtension(0);
-	g_pDockWidgetList->removeRef(this);
+	g_pDockWidgetList->removeAll(this);
 }
 
 void KviDockWidget::die()
@@ -472,7 +472,7 @@ void KviDockWidget::updateIcon()
 static KviDockWidget * dockwidget_find(KviFrame *f)
 {
 	if(!g_pDockWidgetList)return 0;
-	for(KviDockWidget * w = g_pDockWidgetList->first();w;w = g_pDockWidgetList->next())
+	foreach(KviDockWidget * w,*g_pDockWidgetList)
 	{
 		if(w->frame() == f)return w;
 	}
@@ -630,8 +630,7 @@ static bool dockwidget_module_init(KviModule * m)
 	g_pDock3 = new QPixmap(buffer);
 
 
-	g_pDockWidgetList = new KviPtrList<KviDockWidget>;
-	g_pDockWidgetList->setAutoDelete(false);
+	g_pDockWidgetList = new QList<KviDockWidget*>;
 
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"hide",dockwidget_kvs_cmd_hide);
@@ -644,7 +643,7 @@ static bool dockwidget_module_init(KviModule * m)
 
 static bool dockwidget_module_cleanup(KviModule *m)
 {
-	while(g_pDockWidgetList->first())delete g_pDockWidgetList->first();
+	qDeleteAll(*g_pDockWidgetList);
 	delete g_pDockWidgetList;
     g_pDockWidgetList = 0;
 

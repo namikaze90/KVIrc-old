@@ -39,7 +39,6 @@
 #include "kvi_settings.h"
 #include "kvi_themedlabel.h"
 #include "kvi_useraction.h"
-#include "kvi_parameterlist.h"
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_sparser.h"

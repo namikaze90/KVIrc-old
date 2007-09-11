@@ -35,7 +35,7 @@
 
 #include "kvi_qstring.h"
 #include "kvi_locale.h"
-#include "kvi_list.h"
+
 
 
 #include <qstringlist.h>
@@ -141,6 +141,7 @@ namespace KviKvsParameterProcessor
 	{
 		KviKvsVariant * v = pVariantList->first();
 		
+		int i = 0;
 		while(pFmtArray->szName)
 		{
 			if(!v)
@@ -170,12 +171,11 @@ namespace KviKvsParameterProcessor
 					v->asString(*((QString *)(pFmtArray->pContainer)));
 					if(pFmtArray->uFlags & KVS_PF_APPENDREMAINING)
 					{
-						v = pVariantList->next();
-						while(v)
+						for(i++;i<pVariantList->list()->count();i++)
 						{
+							v = pVariantList->at(i);
 							*((QString *)(pFmtArray->pContainer)) += QChar(' ');
 							v->appendAsString(*((QString *)(pFmtArray->pContainer)));
-							v = pVariantList->next();
 						}
 						return true;
 					}
@@ -186,12 +186,11 @@ namespace KviKvsParameterProcessor
 					QString pSz;
 					v->asString(pSz);
 					((QStringList *)(pFmtArray->pContainer))->append(pSz);
-					v = pVariantList->next();
-					while(v)
+					for(i++;i<pVariantList->list()->count();i++)
 					{
+						v = pVariantList->at(i);
 						v->asString(pSz);
 						((QStringList *)(pFmtArray->pContainer))->append(pSz);
-						v = pVariantList->next();
 					}
 					return true;
 				}
@@ -201,11 +200,10 @@ namespace KviKvsParameterProcessor
 					((KviKvsVariantList *)(pFmtArray->pContainer))->clear();
 					((KviKvsVariantList *)(pFmtArray->pContainer))->setAutoDelete(false);
 					((KviKvsVariantList *)(pFmtArray->pContainer))->append(v);
-					v = pVariantList->next();
-					while(v)
+					for(i++;i<pVariantList->list()->count();i++)
 					{
+						v = pVariantList->at(i);
 						((KviKvsVariantList *)(pFmtArray->pContainer))->append(v);
-						v = pVariantList->next();
 					}
 					return true;
 				}
@@ -216,12 +214,11 @@ namespace KviKvsParameterProcessor
 					bool bDoReturn = false;
 					if(pFmtArray->uFlags & KVS_PF_APPENDREMAINING)
 					{
-						v = pVariantList->next();
-						while(v)
+						for(i++;i<pVariantList->list()->count();i++)
 						{
+							v = pVariantList->at(i);
 							*((QString *)(pFmtArray->pContainer)) += QChar(' ');
 							v->appendAsString(*((QString *)(pFmtArray->pContainer)));
-							v = pVariantList->next();
 						}
 						bDoReturn = true;
 					}
@@ -243,12 +240,11 @@ namespace KviKvsParameterProcessor
 					v->asString(tmp);
 					if(pFmtArray->uFlags & KVS_PF_APPENDREMAINING)
 					{
-						v = pVariantList->next();
-						while(v)
+						for(i++;i<pVariantList->list()->count();i++)
 						{
+							v = pVariantList->at(i);
 							*((KviQCString *)(pFmtArray->pContainer)) += ' ';
 							v->appendAsString(tmp);
-							v = pVariantList->next();
 						}
 						*((KviQCString *)(pFmtArray->pContainer)) = tmp.utf8();
 						return true;
@@ -263,12 +259,11 @@ namespace KviKvsParameterProcessor
 					bool bDoReturn = false;
 					if(pFmtArray->uFlags & KVS_PF_APPENDREMAINING)
 					{
-						v = pVariantList->next();
-						while(v)
+						for(i++;i<pVariantList->list()->count();i++)
 						{
+							v = pVariantList->at(i);
 							*((KviQCString *)(pFmtArray->pContainer)) += ' ';
 							v->appendAsString(tmp);
-							v = pVariantList->next();
 						}
 						*((KviQCString *)(pFmtArray->pContainer)) = tmp.utf8();
 						bDoReturn = true;
@@ -363,7 +358,8 @@ namespace KviKvsParameterProcessor
 				break;
 			}
 			pFmtArray++;
-			v = pVariantList->next();
+			i++;
+			v = pVariantList->at(i);
 		}
 		return true;
 	}

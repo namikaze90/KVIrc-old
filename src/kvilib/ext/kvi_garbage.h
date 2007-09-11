@@ -25,8 +25,9 @@
 #include "kvi_settings.h"
 
 #include <qobject.h>
-#include "kvi_list.h"
+
 #include <qtimer.h>
+#include <QSet>
 
 
 class KVILIB_API KviGarbageCollector : public QObject
@@ -36,7 +37,7 @@ public:
 	KviGarbageCollector();
 	~KviGarbageCollector();
 protected:
-	KviPtrList<QObject> * m_pGarbageList;
+	QSet<QObject*>      * m_pGarbageList;
 	QTimer              * m_pCleanupTimer;
 	bool                  m_bForceCleanupNow;
 public:

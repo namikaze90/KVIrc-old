@@ -39,7 +39,7 @@
 #include <qnamespace.h>
 #include <qapplication.h>
 #include <qfontmetrics.h>
-#include "kvi_list.h"
+
 #include <qpixmap.h>
 #include <qstyle.h>
 #include <qpainter.h>

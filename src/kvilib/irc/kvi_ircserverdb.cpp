@@ -39,14 +39,17 @@
 KviIrcServerDataBaseRecord::KviIrcServerDataBaseRecord(KviIrcNetwork * n)
 {
 	m_pNetwork = n;
-	m_pServerList = new KviPtrList<KviIrcServer>;
-	m_pServerList->setAutoDelete(true);
+	m_pServerList = new QList<KviIrcServer*>;
 	m_pCurrentServer = 0;
 }
 
 KviIrcServerDataBaseRecord::~KviIrcServerDataBaseRecord()
 {
 	delete m_pNetwork;
+	foreach(KviIrcServer *i,*m_pServerList)
+	{
+		delete i;
+	}
 	delete m_pServerList;
 }
 
@@ -57,7 +60,7 @@ void KviIrcServerDataBaseRecord::insertServer(KviIrcServer *srv)
 
 KviIrcServer * KviIrcServerDataBaseRecord::findServer(const KviIrcServer * pServer)
 {
-	for(KviIrcServer *s=m_pServerList->first();s;s=m_pServerList->next())
+	foreach(KviIrcServer *s,*m_pServerList)
 	{
 		if(KviQString::equalCI(s->m_szHostname,pServer->m_szHostname) &&
 			(s->m_uPort == pServer->m_uPort) &&
@@ -69,7 +72,7 @@ KviIrcServer * KviIrcServerDataBaseRecord::findServer(const KviIrcServer * pServ
 
 void KviIrcServerDataBaseRecord::setCurrentServer(KviIrcServer *srv)
 {
-	if(m_pServerList->findRef(srv) != -1)m_pCurrentServer = srv;
+	if(m_pServerList->contains(srv))m_pCurrentServer = srv;
 }
 
 KviIrcServer * KviIrcServerDataBaseRecord::currentServer()
@@ -186,7 +189,7 @@ bool KviIrcServerDataBase::makeCurrentBestServerInNetwork(const QString &szNetNa
 		return false;
 	}
 
-	for(KviIrcServer * s = r->m_pServerList->first();s;s = r->m_pServerList->next())
+	foreach(KviIrcServer * s,*(r->m_pServerList))
 	{
 		if(s->m_szDescription.contains("random",Qt::CaseInsensitive) ||
 			(s->m_szDescription.contains("round",Qt::CaseInsensitive) && s->m_szDescription.contains("robin",Qt::CaseInsensitive)))
@@ -204,7 +207,7 @@ bool KviIrcServerDataBase::makeCurrentBestServerInNetwork(const QString &szNetNa
 	KviQString::sprintf(tryAlso2,"irc.%Q.net",&szNetName);
 	KviQString::sprintf(tryAlso3,"irc.%Q.com",&szNetName);
 
-	for(KviIrcServer * ss = r->m_pServerList->first();ss;ss = r->m_pServerList->next())
+	foreach(KviIrcServer * ss,*(r->m_pServerList))
 	{
 		if(KviQString::equalCI(ss->m_szHostname,tryAlso1) ||
 			KviQString::equalCI(ss->m_szHostname,tryAlso2) ||
@@ -246,7 +249,7 @@ bool KviIrcServerDataBase::makeCurrentServer(KviIrcServerDefinition * d,QString 
 
 		foreach(r,*m_pRecords)
 		{
-			for(srv = r->serverList()->first();srv && (!pServer);srv = r->serverList()->next())
+			foreach(srv,*(r->serverList()))
 			{
 				if(KviQString::equalCI(srv->id(),szId))
 				{
@@ -261,7 +264,7 @@ bool KviIrcServerDataBase::makeCurrentServer(KviIrcServerDefinition * d,QString 
 	
 	foreach(r,*m_pRecords)
 	{
-		for(srv = r->serverList()->first();srv && (!pServer);srv = r->serverList()->next())
+		foreach(srv,*(r->serverList()))
 		{
 			if(KviQString::equalCI(srv->hostName(),d->szServer))
 			{
@@ -611,7 +614,7 @@ void KviIrcServerDataBase::save(const QString &filename)
 		if(!n->m_szUserIdentityId.isEmpty())
 			cfg.writeEntry("UserIdentityId",n->m_szUserIdentityId);
 		int i=0;
-		for(KviIrcServer *s = r->m_pServerList->first();s;s = r->m_pServerList->next())
+		foreach(KviIrcServer *s,*(r->m_pServerList))
 		{
 			KviQString::sprintf(tmp,"%d_",i);
 			s->save(&cfg,tmp);

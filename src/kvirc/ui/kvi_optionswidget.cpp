@@ -59,8 +59,7 @@ KviOptionsWidget::KviOptionsWidget(QWidget * parent,const char * name,bool bSunk
 	m_pTabWidget = 0;
 	m_iResetFlags = 0;
 	m_iSelectors = 0;
-	m_pSelectorInterfaceList = new KviPtrList<KviSelectorInterface>;
-	m_pSelectorInterfaceList->setAutoDelete(false);
+	m_pSelectorInterfaceList = new QList<KviSelectorInterface*>;
 }
 
 KviOptionsWidget::~KviOptionsWidget()
@@ -693,7 +692,7 @@ void KviOptionsWidget::commitSelectors()
 //	if(m_iSelectors & KVI_OPTIONSELECTOR_TYPE_STRING)commitStringSelectors();
 //	if(m_iSelectors & KVI_OPTIONSELECTOR_TYPE_PIXMAP)commitPixmapSelectors();
 //	m_iSelectors = 0;
-	for(KviSelectorInterface * i = m_pSelectorInterfaceList->first();i;i = m_pSelectorInterfaceList->next())
+	foreach(KviSelectorInterface * i,*m_pSelectorInterfaceList)
 	{
 		i->commit();
 	}

@@ -40,7 +40,7 @@ void KviKvsEvent::clear()
 
 void KviKvsEvent::removeHandler(KviKvsEventHandler * h)
 {
-	m_pHandlers->removeRef(h);
+	m_pHandlers->removeAll(h);
 	if(m_pHandlers->isEmpty())
 	{
 		delete m_pHandlers;
@@ -52,8 +52,7 @@ void KviKvsEvent::addHandler(KviKvsEventHandler * h)
 {
 	if(!m_pHandlers)
 	{
-		m_pHandlers = new KviPtrList<KviKvsEventHandler>();
-		m_pHandlers->setAutoDelete(true);
+		m_pHandlers = new QList<KviKvsEventHandler*>;
 	}
 	m_pHandlers->append(h);
 }
@@ -61,17 +60,15 @@ void KviKvsEvent::addHandler(KviKvsEventHandler * h)
 void KviKvsEvent::clearScriptHandlers()
 {
 	if(!m_pHandlers)return;
-	KviPtrList<KviKvsEventHandler> dl;
-	dl.setAutoDelete(false);
-	KviKvsEventHandler * e;
-	for(e = m_pHandlers->first();e;e = m_pHandlers->next())
+	QList<KviKvsEventHandler*>::iterator it(m_pHandlers->begin());
+	while(it != m_pHandlers->end())
 	{
-		if(e->type() == KviKvsEventHandler::Script)dl.append(e);
+		if((*it)->type() == KviKvsEventHandler::Script)
+			it = m_pHandlers->erase(it);
+		else
+			++it;	
 	}
-	for(e = dl.first();e;e = dl.next())
-	{
-		m_pHandlers->removeRef(e);
-	}
+
 	if(m_pHandlers->isEmpty())
 	{
 		delete m_pHandlers;

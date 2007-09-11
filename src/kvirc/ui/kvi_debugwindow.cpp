@@ -32,7 +32,6 @@
 #include "kvi_locale.h"
 #include "kvi_config.h"
 
-#include "kvi_parameterlist.h"
 #include "kvi_frame.h"
 
 

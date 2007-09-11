@@ -26,7 +26,7 @@
 
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
-#include "kvi_list.h"
+
 
 
 
@@ -121,7 +121,7 @@ private:
 	// if started in the middle of the list returns only the remaining
 	// parameters.
 	KviKvsTreeNodeDataList                   * parseCommaSeparatedParameterList();
-	KviPtrList<QString>                      * parseCommaSeparatedParameterListNoTree();
+	QStringList                              * parseCommaSeparatedParameterListNoTree();
 	// returns 0 in case of error or if it starts on a terminating character (null parameter)
 	// check error() to see if there was an error condition (unless you already know that
 	// there was a valid first character)

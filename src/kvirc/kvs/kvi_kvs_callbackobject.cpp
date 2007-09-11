@@ -40,7 +40,7 @@ KviKvsCallbackObject::KviKvsCallbackObject(const QString &szCallbackName,KviWind
 		m_pTargetConsole = 0;
 	m_pMagicParams = new KviKvsVariantList();
 	if(pMagicParams)
-		for(KviKvsVariant * v = pMagicParams->first();v;v = pMagicParams->next())
+		foreach(KviKvsVariant * v,*(pMagicParams->list()))
 			m_pMagicParams->append(new KviKvsVariant(*v));
 	QString szName;
 	szName = szCallbackName;
@@ -88,10 +88,9 @@ KviKvsCallbackObject::CallbackStatus KviKvsCallbackObject::execute(KviKvsVariant
 	KviKvsVariant * v;
 	
 	if(pParams)
-		for(v = pParams->first();v;v = pParams->next())
+		foreach(v,*(pParams->list()))
 			params.append(v);
-
-	for(v = m_pMagicParams->first();v;v = m_pMagicParams->next())
+	foreach(v,*(m_pMagicParams->list()))
 		params.append(v);
 	
 	unsigned int uRet = m_pScript->run(m_pTargetWindow,&params,pRetVal,KviKvsScript::PreserveParams);

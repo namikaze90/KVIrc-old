@@ -27,7 +27,7 @@
 #include "kvi_settings.h"
 
 
-#include "kvi_list.h"
+
 #include "kvi_qstring.h"
 
 #include "kvi_kvs_script.h"
@@ -58,7 +58,7 @@ public:
 	void save(const QString & filename);
 	void load(const QString & filename);
 
-	void completeCommand(const QString &word,KviPtrList<QString> * matches);
+	void completeCommand(const QString &word,QStringList& matches);
 };
 
 // namespaces are handled completly in the editing!

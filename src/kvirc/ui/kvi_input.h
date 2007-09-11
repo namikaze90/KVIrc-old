@@ -31,7 +31,7 @@
 #include <qwidget.h>
 #include "kvi_tal_hbox.h"
 #include <qpixmap.h>
-#include "kvi_list.h"
+
 
 #include "kvi_string.h"
 
@@ -63,12 +63,12 @@ public:
 	KviInputHistory();
 	~KviInputHistory();
 protected:
-	KviPtrList<QString> * m_pStringList;
+	QStringList m_stringList;
 public:
-	void add(QString * s);
-	KviPtrList<QString> * list(){ return m_pStringList; };
-	void save(const char * filename);
-	void load(const char * filename);
+	void add(const QString& s);
+	const QStringList& list(){ return m_stringList; };
+	void save(const QString& filename);
+	void load(const QString& filename);
 };
 
 #ifdef COMPILE_USE_QT4
@@ -121,7 +121,7 @@ protected:
 	int                      m_iSelectionAnchorChar;
 
 	// History stuff
-	KviPtrList<QString>    * m_pHistory;
+	QStringList              m_historyList;
 	int                      m_iCurHistoryIdx;
 
 	KviStr                   m_szSaveTextBuffer;

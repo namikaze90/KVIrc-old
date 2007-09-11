@@ -59,7 +59,7 @@ void KviServerParser::parseMessage(const char * message,KviIrcConnection * pConn
 				parms.append(pConnection->decodeText(msg.safePrefix()));
 				parms.append(pConnection->decodeText(msg.command()));
 	
-				for(KviStr * str = msg.firstParam();str;str = msg.nextParam())
+				foreach(KviStr * str,*(msg.params()))
 					parms.append(pConnection->console()->decodeText(str->ptr()));
 
 				if(KviKvsEventManager::instance()->triggerRaw(msg.numeric(),pConnection->console(),&parms))
@@ -113,7 +113,7 @@ void KviServerParser::parseMessage(const char * message,KviIrcConnection * pConn
 				parms.append(pConnection->decodeText(msg.safePrefix()));
 				parms.append(pConnection->decodeText(msg.command()));
 	
-				for(KviStr * str = msg.firstParam();str;str = msg.nextParam())
+				foreach(KviStr * str,*(msg.params()))
 					parms.append(pConnection->console()->decodeText(str->ptr()));
 					
 				if(KviKvsEventManager::instance()->trigger(KviEvent_OnUnhandledLiteral,pConnection->console(),&parms))

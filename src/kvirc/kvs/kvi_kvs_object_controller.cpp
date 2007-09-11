@@ -40,8 +40,7 @@ static KviKvsObject * objectClassCreateInstance(KviKvsObjectClass *pClass,KviKvs
 
 KviKvsObjectController::KviKvsObjectController()
 {
-	m_pTopLevelObjectList = new KviPtrList<KviKvsObject>;
-	m_pTopLevelObjectList->setAutoDelete(false);
+	m_pTopLevelObjectList = new QList<KviKvsObject*>;
 	m_pObjectDict = new QHash<kvs_hobject_t,KviKvsObject*>;
 	m_pClassDict = new QHash<QString,KviKvsObjectClass*>;
 }
@@ -94,29 +93,28 @@ void KviKvsObjectController::init()
 void KviKvsObjectController::killAllObjectsWithClass(KviKvsObjectClass * pClass)
 {
 	if(!m_pObjectDict)return; // no more objects at all...
-	KviPtrList<KviKvsObject> l;
-	l.setAutoDelete(true);
+	QList<KviKvsObject*> l;
 
-	for(KviKvsObject * o = m_pTopLevelObjectList->first();o;o = m_pTopLevelObjectList->next())
+	foreach(KviKvsObject * o,*m_pTopLevelObjectList)
 	{
 		if(o->getClass() == pClass)l.append(o);
 		else o->killAllChildrenWithClass(pClass);
 	}
+	qDeleteAll(l);
 }
 
 void KviKvsObjectController::clearUserClasses()
 {
 	flushUserClasses();
 	QHash<QString,KviKvsObjectClass*>::iterator it(m_pClassDict->begin());
-	KviPtrList<KviKvsObjectClass> l;
-	l.setAutoDelete(true);
 	while(it != m_pClassDict->end())
 	{
 		if(!(it.value()->isBuiltin()))
 		{
-			l.append(it.value());
+			it = m_pClassDict->erase(it);
+		} else {
+			++it;
 		}
-		++it;
 	}
 }
 
@@ -129,8 +127,7 @@ void KviKvsObjectController::clearInstances()
 		delete o;
 	}
 	m_pObjectDict->clear(); // empty dict
-	m_pTopLevelObjectList = new KviPtrList<KviKvsObject>;
-	m_pTopLevelObjectList->setAutoDelete(false);
+	m_pTopLevelObjectList = new QList<KviKvsObject*>;
 }
 
 void KviKvsObjectController::registerClass(KviKvsObjectClass *pClass)
@@ -156,7 +153,7 @@ void KviKvsObjectController::registerObject(KviKvsObject *pObject)
 void KviKvsObjectController::unregisterObject(KviKvsObject *pObject)
 {
 	m_pObjectDict->remove(pObject->handle());
-	if(pObject->parent() == 0)m_pTopLevelObjectList->removeRef(pObject);
+	if(pObject->parent() == 0)m_pTopLevelObjectList->removeAll(pObject);
 }
 
 void KviKvsObjectController::flushUserClasses()

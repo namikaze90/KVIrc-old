@@ -354,12 +354,6 @@ void * KviModule::getSymbol(const char * symname)
 	return kvi_library_symbol(handle(),symname);
 }
 
-void KviModule::getDefaultConfigFileName(KviStr &buffer)
-{
-	KviStr szName(KviStr::Format,"libkvi%Q.kvc",&m_szName);
-	g_pApp->getLocalKvircDirectory(buffer,KviApp::ConfigPlugins,szName.ptr());
-}
-
 void KviModule::getDefaultConfigFileName(QString &szBuffer)
 {
 	QString tmp = "libkvi";

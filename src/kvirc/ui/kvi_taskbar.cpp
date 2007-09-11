@@ -440,8 +440,7 @@ void KviTaskBarToolTip::maybeTip(const QPoint &pnt)
 KviClassicTaskBar::KviClassicTaskBar()
 : KviTaskBarBase()
 {
-	m_pButtonList = new KviPtrList<KviTaskBarButton>;
-	m_pButtonList->setAutoDelete(true);
+	m_pButtonList = new QList<KviTaskBarButton*>;
 
 	calcButtonHeight();
 
@@ -460,15 +459,15 @@ KviClassicTaskBar::KviClassicTaskBar()
 	setMinimumHeight(m_iButtonHeight+5);
 	
 	setResizeEnabled( true );
-#ifdef COMPILE_USE_QT4
 	connect(this,SIGNAL(orientationChanged(Qt::Orientation)),this,SLOT(orientationChangedSlot(Qt::Orientation)));
-#else
-	connect(this,SIGNAL(orientationChanged(Orientation)),this,SLOT(orientationChangedSlot(Orientation)));
-#endif
 }
 
 KviClassicTaskBar::~KviClassicTaskBar()
 {
+	foreach(KviTaskBarButton*i,*m_pButtonList)
+	{
+		delete i;
+	}
 	delete m_pButtonList;
 	m_pButtonList = 0;
 }
@@ -492,7 +491,7 @@ void KviClassicTaskBar::updateActivityMeter()
 {
 	if(KVI_OPTION_BOOL(KviOption_boolUseTaskBarActivityMeter))
 	{
-		for(KviTaskBarButton * btn = m_pButtonList->first();btn;btn = m_pButtonList->next())
+		foreach(KviTaskBarButton * btn,*m_pButtonList)
 			btn->update();
 	}
 }
@@ -512,13 +511,13 @@ void KviClassicTaskBar::insertButton(KviTaskBarButton * b)
 //	if(KVI_OPTION_BOOL(KviOption_boolSortTaskbarButtons))
 //	{
 		// first sort by irc context
-		for(KviTaskBarButton * btn = m_pButtonList->first();btn;btn = m_pButtonList->next())
+		foreach(KviTaskBarButton * btn,*m_pButtonList)
 		{
 			if(btn->kviWindow()->console() == b->kviWindow()->console())
 			{
 				// same irc context (or none)
 				// sort by type now
-				for(;btn;btn = m_pButtonList->next())
+				foreach(btn,*m_pButtonList)
 				{
 					if((btn->kviWindow()->type() > b->kviWindow()->type()) ||
 						(btn->kviWindow()->console() != b->kviWindow()->console()))
@@ -574,7 +573,7 @@ bool KviClassicTaskBar::removeItem(KviTaskBarItem * it)
 {
 	if(it)
 	{
-		m_pButtonList->removeRef((KviTaskBarButton *)it);
+		m_pButtonList->removeAll((KviTaskBarButton *)it);
 		doLayout();
 		if(g_pFrame->dockExtension())g_pFrame->dockExtension()->refresh();
 	}
@@ -585,7 +584,7 @@ void KviClassicTaskBar::setActiveItem(KviTaskBarItem * it)
 {
 	if(it)
 	{
-		for(KviTaskBarButton * b = m_pButtonList->first();b;b = m_pButtonList->next())
+		foreach(KviTaskBarButton * b,*m_pButtonList)
 		{
 			b->setActive(((KviTaskBarButton *)it) == b);
 		}
@@ -635,7 +634,7 @@ void KviClassicTaskBar::doLayout()
 	int theY          = -m_iButtonHeight;
 	int btnIdx        = 0;
 	int btnInRow      = 1;
-	for(KviTaskBarButton * b = m_pButtonList->first();b;b = m_pButtonList->next())
+	foreach(KviTaskBarButton * b,*m_pButtonList)
 	{
 		if((btnIdx % btnsInRow) == 0)
 		{
@@ -665,7 +664,7 @@ void KviClassicTaskBar::doLayout()
 
 void KviClassicTaskBar::applyOptions()
 {
-	for(KviTaskBarButton * b = m_pButtonList->first();b;b = m_pButtonList->next())
+	foreach(KviTaskBarButton * b,*m_pButtonList)
 	{
 		b->setFlat(KVI_OPTION_BOOL(KviOption_boolUseFlatClassicTaskbarButtons));
 	}
@@ -695,21 +694,6 @@ KviTaskBarItem * KviClassicTaskBar::firstItem()
 KviTaskBarItem * KviClassicTaskBar::lastItem(void)
 {
 	return m_pButtonList->last();
-}
-
-KviTaskBarItem * KviClassicTaskBar::nextItem()
-{
-	return m_pButtonList->next();
-}
-
-KviTaskBarItem * KviClassicTaskBar::prevItem(void)
-{
-	return m_pButtonList->prev();
-}
-
-bool KviClassicTaskBar::setIterationPointer(KviTaskBarItem * it)
-{
-	return (m_pButtonList->findRef((const KviTaskBarButton *)it) != -1);
 }
 
 

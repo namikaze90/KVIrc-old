@@ -34,9 +34,10 @@
 #include "kvi_string.h"
 #include "kvi_qstring.h"
 #include "kvi_tal_application.h"
-#include "kvi_list.h"
+
 #include "kvi_time.h"
 #include <QHash>
+#include <QSet>
 
 #define KVI_RECENT_CHANNELS_SEPARATOR ":"
 
@@ -103,7 +104,7 @@ protected:
 	bool                            m_bFirstTimeRun;
 	KviWindow                     * m_pActiveWindow;
 	bool                            m_bUpdateGuiPending;
-	KviPtrList<KviPendingAvatarChange> * m_pPendingAvatarChanges;
+	QSet<KviPendingAvatarChange*> * m_pPendingAvatarChanges;
 	bool                            m_bSetupDone;
 	QHash<QString,QStringList*>   * m_pRecentChannelsDict;
 #ifdef COMPILE_PSEUDO_TRANSPARENCY
@@ -116,7 +117,7 @@ public:
 	// setup stuff (accessed from kvi_main.cpp: consider private othwerise)
 	QString	          m_szConfigFile;        // setup
 	bool              m_bCreateConfig;      // setup           
-	KviStr            m_szExecAfterStartup;
+	QString            m_szExecAfterStartup;
 	bool              m_bShowSplashScreen;
 public:
 	// FIXME: "Plugins" and "ConfigPlugins" should become "Modules" and "ConfigModules"
@@ -134,9 +135,6 @@ public:
 	};
 
 public:
-
-	void getClipboardText(KviStr &buffer);
-	void setClipboardText(const KviStr &str);
 
 	QString getClipboardText();
 	void setClipboardText(const QString &str);
@@ -195,11 +193,9 @@ public:
 
 	// kvi_app_fs.cpp : Filesystem thingies
 	void getGlobalKvircDirectory(QString &szData,KvircSubdir dir,const QString &appendFile = QString::null);
-	void getGlobalKvircDirectory(KviStr &szData,KvircSubdir dir,const QString &appendFile = QString::null);
-	void getLocalKvircDirectory(KviStr  &szData,KvircSubdir dir,const QString &appendFile = QString::null,bool bCreateIfNeeded = true);
 	void getLocalKvircDirectory(QString &szData,KvircSubdir dir,const QString &appendFile = QString::null,bool bCreateIfNeeded = true);
 	void getTmpFileName(QString &szBuffer,const QString &szEndingFileName = QString::null);
-	bool trashFile(const char *filename);
+	bool trashFile(const QString& filename);
 	void getChannelDumpLogFileName(QString &str);
 
 	static QTextCodec * defaultTextCodec();
@@ -207,24 +203,21 @@ public:
 	// if the mediatype can be guessed ,it is looked up in the media type save path
 	// if found , true is returned
 	// if not found or the mediatype can't be guessed then false is returned
-	bool findFileByMediaType(KviStr &szRetPath,const char * filename);
+	bool findFileByMediaType(QString &szRetPath,const QString& filename);
 	
-	bool findImageInImageSearchPath(KviStr &szRetPath,const char * filename);
-	bool findImageInImageSearchPath(QString &szRetPath,const char * filename);
+	bool findImageInImageSearchPath(QString &szRetPath,const QString& filename);
 	
-	bool findUserFile(KviStr &szRetPath,const char *filename);
+	bool findUserFile(QString &szRetPath,const QString& filename);
 	
-	bool findImage(KviStr &szRetPath,const char *filename);
-	bool findImage(QString &szRetPath,const char *filename);
-	bool findImageThemeOnlyCompat(QString &szRetPath,const char *filename); // temporary compat, will be removed soon (do not use)
-	bool findSmallIcon(QString &szRetPath,const char *filename);
+	bool findImage(QString &szRetPath,const QString& filename);
+	bool findImageThemeOnlyCompat(QString &szRetPath,const QString& filename); // temporary compat, will be removed soon (do not use)
+	bool findSmallIcon(QString &szRetPath,const QString& filename);
 	// tries to map the full path filename to one of the KVIrc's mapped directories
 	// if it doesn't succeed it just returns the complete filename in szRetPath
-	bool mapImageFile(KviStr &szRetPath,const char * filename);
-	bool mapImageFile(QString &szRetPath,const char * filename);
+	bool mapImageFile(QString &szRetPath,const QString& filename);
 
 	//void getDefaultDccSaveFilePath(KviStr &path,const char *filename);
-	void completeDirectory(const QString &word,KviPtrList<QString> * matches);
+	void completeDirectory(const QString &word,QStringList & matches);
 	//
 	// Returns a config path suitable for reading (at least)
 	// First lookups the user local config directory,
@@ -234,14 +227,12 @@ public:
 	// if no config file has been found: in this case the local config
 	// directory is used
 	//
-	bool getReadOnlyConfigPath(KviStr &buffer,const char *config_name,KvircSubdir sbd = Config,bool bNoFail = false);
 	bool getReadOnlyConfigPath(QString &buffer,const char *config_name,KvircSubdir sbd = Config,bool bNoFail = false);
 
 	// kvi_app.cpp : Window stuff
 	KviWindow       * findWindow(const QString & windowId);
 	KviWindow       * findWindowByCaption(const QString &windowCaption,int iContextId=-1);
 	KviConsole      * findConsole(unsigned int ircContextId);
-	KviConsole      * findConsole(KviStr & server,KviStr & nick);
 	KviConsole      * findConsole(QString & servr,QString & nick);
 	KviConsole      * topmostConnectedConsole();
 	KviConsole      * activeConsole();
@@ -265,13 +256,12 @@ public:
 
 	void setAvatarFromOptions();
 
-	bool playFile(const char * filename,KviStr &error,KviWindow * w = 0);
+	bool playFile(const QString& filename,QString &error,KviWindow * w = 0);
 
 	// uMessageLifetime is in seconds! and 0 means "forever"
 	void notifierMessage(KviWindow * pWnd,int iIconId,const QString &szMsg,unsigned int uMessageLifetime);
 
 
-	void addRecentNickname(const char * newNick);
 	void addRecentNickname(const QString& newNick);
 	void addRecentChannel(const QString& chan,const QString& net);
 	QStringList* getRecentChannels(const QString& net);

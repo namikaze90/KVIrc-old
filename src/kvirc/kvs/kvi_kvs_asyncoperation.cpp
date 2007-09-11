@@ -43,14 +43,13 @@ KviKvsAsyncOperation::~KviKvsAsyncOperation()
 
 KviKvsAsyncOperationManager::KviKvsAsyncOperationManager()
 {
-	m_pOperationList = new KviPtrList<KviKvsAsyncOperation>;
-	m_pOperationList->setAutoDelete(false);
+	m_pOperationList = new QList<KviKvsAsyncOperation*>;
 }
 
 KviKvsAsyncOperationManager::~KviKvsAsyncOperationManager()
 {
-	while(m_pOperationList->first())
-		delete m_pOperationList->first();
+	foreach(KviKvsAsyncOperation*o,*m_pOperationList)
+		delete o;
 	delete m_pOperationList;
 }
 
@@ -61,6 +60,6 @@ void KviKvsAsyncOperationManager::registerOperation(KviKvsAsyncOperation * o)
 
 void KviKvsAsyncOperationManager::unregisterOperation(KviKvsAsyncOperation * o)
 {
-	m_pOperationList->removeRef(o);
+	m_pOperationList->removeAll(o);
 }
 

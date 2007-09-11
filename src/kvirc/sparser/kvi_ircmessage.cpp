@@ -37,8 +37,7 @@ KviIrcMessage::KviIrcMessage(const char * message,KviIrcConnection * pConnection
 	const char * aux;
 	m_ptr = message;
 
-	m_pParams = new KviPtrList<KviStr>;
-	m_pParams->setAutoDelete(true);
+	m_pParams = new QList<KviStr*>;
 
 	//m_pcParams = new KviPtrList<QCString>;
 	//m_pcParams->setAutoDelete(true);
@@ -108,6 +107,10 @@ KviIrcMessage::KviIrcMessage(const char * message,KviIrcConnection * pConnection
 
 KviIrcMessage::~KviIrcMessage()
 {
+	foreach(KviStr* s,*m_pParams)
+	{
+		delete s;
+	}
 	delete m_pParams;
 }
 

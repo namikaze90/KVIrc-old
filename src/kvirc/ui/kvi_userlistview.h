@@ -35,7 +35,7 @@
 #include <time.h>
 #include "kvi_tal_tooltip.h"
 #include <qwidget.h>
-#include "kvi_list.h"
+
 #include <QHash>
 #include "kvi_toolwindows_container.h"
 
@@ -221,7 +221,7 @@ public:
 	void emitRightClick();
 	void emitDoubleClick();
 	bool completeNickStandard(const QString &begin,const QString &skipAfter,QString &buffer,bool bAppendMask);
-	void completeNickBashLike(const QString &begin,KviPtrList<QString> * l,bool bAppendMask);
+	void completeNickBashLike(const QString &begin,QStringList& l,bool bAppendMask);
 };
 
 class KVIRC_API KviUserListViewArea : public QWidget

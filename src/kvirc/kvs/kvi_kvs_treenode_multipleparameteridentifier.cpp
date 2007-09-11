@@ -70,16 +70,18 @@ bool KviKvsTreeNodeMultipleParameterIdentifier::evaluateReadOnly(KviKvsRunTimeCo
 	{
 		// only up to m_iEnd
 		int idx = m_iStart;
-		for(v = c->parameterList()->next();v && (idx < m_iEnd);v = c->parameterList()->next())
+		for(int i=m_iStart;i<c->parameterList()->count() && (idx < m_iEnd);i++)
 		{
+			v = c->parameterList()->at(i);
 			sz += QChar(' ');
 			v->appendAsString(sz);
 			idx++;
 		}
 	} else {
 		// all up to the end of the list
-		for(v = c->parameterList()->next();v;v = c->parameterList()->next())
+		for(int i=m_iStart;i<c->parameterList()->count();i++)
 		{
+			v = c->parameterList()->at(i);
 			sz += QChar(' ');
 			v->appendAsString(sz);
 		}

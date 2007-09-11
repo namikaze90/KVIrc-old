@@ -46,7 +46,6 @@
 #include "kvi_maskeditor.h"
 #include "kvi_mirccntrl.h"
 #include "kvi_settings.h"
-#include "kvi_parameterlist.h"
 #include "kvi_modeeditor.h"
 #include "kvi_app.h"
 #include "kvi_useraction.h"
@@ -95,14 +94,10 @@ KviChannel::KviChannel(KviFrame * lpFrm,KviConsole * lpConsole,const char * name
 	// Init some member variables
 	m_pInput               = 0;
 	m_iStateFlags          = 0;
-	m_pBanList             = new KviPtrList<KviMaskEntry>;
-	m_pBanList->setAutoDelete(true);
-	m_pBanExceptionList    = new KviPtrList<KviMaskEntry>;
-	m_pBanExceptionList->setAutoDelete(true);
-	m_pInviteList = new KviPtrList<KviMaskEntry>;
-	m_pInviteList->setAutoDelete(true);
-	m_pActionHistory = new KviPtrList<KviChannelAction>;
-	m_pActionHistory->setAutoDelete(true);
+	m_pBanList             = new QList<KviMaskEntry*>;
+	m_pBanExceptionList    = new QList<KviMaskEntry*>;
+	m_pInviteList = new QList<KviMaskEntry*>;
+	m_pActionHistory = new QList<KviChannelAction*>;
 	m_uActionHistoryHotActionCount = 0;
 
 	m_pTmpHighLighted      = new QHash<QString,QString>;
@@ -231,6 +226,16 @@ KviChannel::~KviChannel()
 	// Then remove all the users and free mem
 	m_pUserListView->enableUpdates(false);
 	m_pUserListView->partAll();
+	
+	m_pBanList             = new QList<KviMaskEntry*>;
+	m_pBanExceptionList    = new QList<KviMaskEntry*>;
+	m_pInviteList = new QList<KviMaskEntry*>;
+	m_pActionHistory = new QList<KviChannelAction*>;
+	
+	foreach(KviMaskEntry*i,*m_pBanList) { delete i;}
+	foreach(KviMaskEntry*i,*m_pBanExceptionList) { delete i;}
+	foreach(KviMaskEntry*i,*m_pInviteList) { delete i;}
+	foreach(KviChannelAction*i,*m_pActionHistory) { delete i;}
 	delete m_pActionHistory;
 	delete m_pBanList;
 	delete m_pBanExceptionList;
@@ -449,7 +454,7 @@ void KviChannel::toggleInviteEditor()
 			m_pInviteList,'I',"invite_exception_editor");
 }
 
-void KviChannel::toggleEditor(KviMaskEditor ** ppEd,KviWindowToolPageButton ** ppBtn,KviPtrList<KviMaskEntry> *l,char flag,const char *edName)
+void KviChannel::toggleEditor(KviMaskEditor ** ppEd,KviWindowToolPageButton ** ppBtn,QList<KviMaskEntry*> *l,char flag,const char *edName)
 {
 	if(*ppEd)
 	{
@@ -502,12 +507,12 @@ void KviChannel::toggleEditor(KviMaskEditor ** ppEd,KviWindowToolPageButton ** p
 	}
 }
 
-void KviChannel::removeMasks(KviMaskEditor *ed,KviPtrList<KviMaskEntry> *l)
+void KviChannel::removeMasks(KviMaskEditor *ed,QList<KviMaskEntry*> *l)
 {
 	KviStr masks;
 	KviStr flags;
 	unsigned int count = 0;
-	for(KviMaskEntry * e = l->first();e;e = l->next())
+	foreach(KviMaskEntry * e,*l)
 	{
 		if(masks.hasData())masks.append(' ');
 		masks.append(e->szMask);
@@ -1304,8 +1309,10 @@ void KviChannel::getChannelActivityStats(KviChannelActivityStats * s)
 	s->lTalkingUsers.clear();
 	s->lWereTalkingUsers.clear();
 
-	for(a = m_pActionHistory->last();a;a = m_pActionHistory->prev())
+	QList<KviChannelAction*>::const_iterator it(m_pActionHistory->constEnd());
+	while(it!=m_pActionHistory->constBegin())
 	{
+		a = *it;
 		if(a->tTime >= tNow)s->uActionsInTheLastMinute++;
 
 		if(a->iTemperature > 0)s->uHotActionCount++;
@@ -1325,6 +1332,7 @@ void KviChannel::getChannelActivityStats(KviChannelActivityStats * s)
 				}
 			}
 		}
+		--it;
 	}
 
 	s->iAverageActionTemperature = s->iAverageActionTemperature / (int)s->uActionCount;
@@ -1423,7 +1431,7 @@ int KviChannel::myFlags()
 void KviChannel::setMask(char flag, const QString &mask,bool bAdd,const QString &setBy,unsigned int setAt)
 {
 	if(!connection())return;
-	KviPtrList<KviMaskEntry> * list = m_pBanList;
+	QList<KviMaskEntry*> * list = m_pBanList;
 	KviMaskEditor * editor = m_pBanEditor;
 	switch(flag)
 	{
@@ -1446,12 +1454,12 @@ void KviChannel::setMask(char flag, const QString &mask,bool bAdd,const QString 
 	m_pUserListView->setMaskEntries(flag,(int)list->count());
 }
 
-void KviChannel::internalMask(const QString &mask,bool bAdd,const QString &setBy,unsigned int setAt,KviPtrList<KviMaskEntry> *l,KviMaskEditor **ppEd)
+void KviChannel::internalMask(const QString &mask,bool bAdd,const QString &setBy,unsigned int setAt,QList<KviMaskEntry*> *l,KviMaskEditor **ppEd)
 {
 	KviMaskEntry * e = 0;
 	if(bAdd)
 	{
-		for(e = l->first();e;e = l->next())
+		foreach(e,*l)
 		{
 			if(KviQString::equalCI(e->szMask,mask))return; //already there
 		}
@@ -1462,14 +1470,14 @@ void KviChannel::internalMask(const QString &mask,bool bAdd,const QString &setBy
 		l->append(e);
 		if(*ppEd)(*ppEd)->addMask(e);
 	} else {
-		for(e = l->first();e;e = l->next())
+		foreach(e,*l)
 		{
 			if(KviQString::equalCI(e->szMask,mask))break;
 		}
 		if(e)
 		{
 			if(*ppEd)(*ppEd)->removeMask(e);
-			l->removeRef(e);
+			l->removeAll(e);
 		}
 	}
 }

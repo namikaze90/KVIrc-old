@@ -31,16 +31,11 @@
 #include <qpoint.h>
 #include <qrect.h>
 #include "kvi_settings.h"
-#include "kvi_list.h"
+
 #include "notifiersettings.h"
 #include "notifierwindow.h"
 
 #include "notifiermessage.h"
-
-// TODO: Qt4
-#define QPtrList Q3PtrList
-#define QPtrListIterator Q3PtrListIterator
-#include <q3ptrlist.h>
 
 class QPainter;
 class KviWindow;
@@ -73,7 +68,7 @@ private:
 
 	QString	m_label;
 
-	KviPtrList<KviNotifierMessage> * m_pMessageList;
+	QList<KviNotifierMessage*> * m_pMessageList;
 	KviWindow * m_pWnd;
 	KviNotifierMessage	* m_pCurrentMessage;
 		
@@ -113,7 +108,7 @@ public:
 	QString label() { return m_label; };
 	
 	KviNotifierMessage * currentMessage() { return m_pCurrentMessage; };
-	KviPtrList<KviNotifierMessage> * messageList() { return m_pMessageList; };
+	QList<KviNotifierMessage*> * messageList() { return m_pMessageList; };
 	KviWindow * window() { return m_pWnd; };
 	KviWindow * wnd() {return m_pWnd; };
 	

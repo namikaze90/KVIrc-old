@@ -51,7 +51,7 @@
 #include "kvi_themedlabel.h"
 #include "kvi_socket.h"
 #include "kvi_app.h"
-#include "kvi_parameterlist.h"
+
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_kvs_eventtriggers.h"
@@ -539,14 +539,16 @@ void KviDccChat::connected()
 KviDccChatThread::KviDccChatThread(KviWindow *wnd,kvi_socket_t fd)
 : KviDccThread(wnd,fd)
 {
-	m_pOutBuffers = new KviPtrList<KviDataBuffer>;
-	m_pOutBuffers->setAutoDelete(true);
+	m_pOutBuffers = new QList<KviDataBuffer*>;
 }
 
 
 KviDccChatThread::~KviDccChatThread()
 {
-	if(m_pOutBuffers)delete m_pOutBuffers;
+	if(m_pOutBuffers) {
+		qDeleteAll(*m_pOutBuffers);
+		delete m_pOutBuffers;
+	}
 }
 
 

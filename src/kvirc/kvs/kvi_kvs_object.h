@@ -26,7 +26,7 @@
 
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
-#include "kvi_list.h"
+
 #include "kvi_kvs_runtimecall.h"
 #include "kvi_kvs_parameterprocessor.h"
 #include "kvi_kvs_object_functionhandler.h"
@@ -45,8 +45,7 @@ typedef struct _KviKvsObjectConnection
 	QString        szSlot;           // target slot function
 } KviKvsObjectConnection;
 
-typedef KviPtrList<KviKvsObjectConnection> KviKvsObjectConnectionList;
-typedef KviPtrListIterator<KviKvsObjectConnection> KviKvsObjectConnectionListIterator;
+typedef QList<KviKvsObjectConnection*> KviKvsObjectConnectionList;
 
 class KVIRC_API KviKvsObject : public QObject
 {
@@ -64,7 +63,7 @@ protected:
 
 	KviKvsHash                                 * m_pDataContainer;     // member variables
 
-	KviPtrList<KviKvsObject>                   * m_pChildList;
+	QList<KviKvsObject*>                   * m_pChildList;
 
 	QHash<QString,KviKvsObjectFunctionHandler*>         * m_pFunctionHandlers;  // our function handlers
 

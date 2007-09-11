@@ -75,35 +75,46 @@
 
 
 KviMediaManager::KviMediaManager()
-: KviMutex()
+: QMutex()
 {
-	m_pMediaTypeList = new KviPtrList<KviMediaType>;
-	m_pMediaTypeList->setAutoDelete(true);
+	m_pMediaTypeList = new QSet<KviMediaType*>;
 }
 
 KviMediaManager::~KviMediaManager()
 {
+	foreach(KviMediaType*i,*m_pMediaTypeList)
+	{
+		delete i;
+	}
 	delete m_pMediaTypeList;
 }
 
-KviMediaType * KviMediaManager::findMediaTypeByIanaType(const char * ianaType)
+void KviMediaManager::clear()
+{
+	foreach(KviMediaType*i,*m_pMediaTypeList)
+	{
+		delete i;
+	}
+	m_pMediaTypeList->clear();
+}
+
+KviMediaType * KviMediaManager::findMediaTypeByIanaType(const QString& ianaType)
 {
 	__range_valid(locked());
-	for(KviMediaType * mt = m_pMediaTypeList->first();mt;mt = m_pMediaTypeList->next())
+	foreach(KviMediaType * mt,*m_pMediaTypeList)
 	{
-		if(kvi_strEqualCI(mt->szIanaType.ptr(),ianaType))return mt;
+		if(mt->szIanaType == ianaType)return mt;
 	}
 
 	return 0;
 }
 
-KviMediaType * KviMediaManager::findMediaTypeByFileMask(const char * filemask)
+KviMediaType * KviMediaManager::findMediaTypeByFileMask(const QString& filemask)
 {
 	__range_valid(locked());
-	for(KviMediaType * mt = m_pMediaTypeList->first();mt;mt = m_pMediaTypeList->next())
+	foreach(KviMediaType * mt,*m_pMediaTypeList)
 	{
-// FIXME: #warning "Should this be case sensitive ?"
-		if(kvi_strEqualCI(mt->szFileMask.ptr(),filemask))return mt;
+		if(mt->szFileMask == filemask)return mt;
 	}
 
 	return 0;
@@ -125,162 +136,43 @@ void KviMediaManager::copyMediaType(KviMediaType * dst,KviMediaType * src)
 void KviMediaManager::insertMediaType(KviMediaType * m)
 {
 	__range_valid(locked());
-	int iWildCount    = m->szFileMask.occurences('*');
-	int iNonWildCount = m->szFileMask.len() - iWildCount;
-
-	// The masks with no wildcards go first in the list
-	// then we insert the ones with more non-wild chars
-
-	int index = 0;
-	for(KviMediaType * mt = m_pMediaTypeList->first();mt;mt = m_pMediaTypeList->next())
-	{
-		if(iWildCount)
-		{
-			// the new mask has wildcards... if the current one has none, skip it
-			int iWildCountExisting = mt->szFileMask.occurences('*');
-			if(iWildCountExisting)
-			{
-				// the one in the list has wildcards too...
-				// the ones with more non-wild chars go first...
-				int iNonWildCountExisting = mt->szFileMask.len() - iWildCountExisting;
-				if(iNonWildCountExisting < iNonWildCount)
-				{
-					// ok...the new one has more non-wildcards , insert
-					m_pMediaTypeList->insert(index,m);
-					return;
-				} else {
-					if(iNonWildCount == iNonWildCountExisting)
-					{
-						// the same number of non-wildcards
-						// let the number of wildcards decide (it will be eventually equal)
-						if(iWildCount < iWildCountExisting)
-						{
-							// the new one has less wildcards... goes first
-							m_pMediaTypeList->insert(index,m);
-							return;
-						} // else the same number of wildcards and non-wildcards...skip
-					} // else the existing one has more non-wildcards...skip
-				}
-			} // else the current has no wildcards...skip
-		} else {
-			// the new mask has no wildcards....
-			if(mt->szFileMask.contains('*'))
-			{
-				// current one has wildcards...insert
-				m_pMediaTypeList->insert(index,m);
-				return;
-			}
-			// the current one has no wildcards...
-			// the longer masks go first....
-			if(mt->szFileMask.len() < m->szFileMask.len())
-			{
-				// the current one is shorter than the new one...insert
-				m_pMediaTypeList->insert(index,m);
-				return;
-			} // else current one is longer...skip
-		}
-		index++;
-	}
-	m_pMediaTypeList->append(m);
-
-/*
-	// the masks with no wildcards go first
-	// longer masks go first
-
-	bool bHasWildcards = m->szFileMask.contains('*');
-	int index = 0;
-	for(KviMediaType * mt = m_pMediaTypeList->first();mt;mt = m_pMediaTypeList->next())
-	{
-		if(bHasWildcards)
-		{
-			if(mt->szFileMask.len() < m->szFileMask.len())
-			{
-				m_pMediaTypeList->insert(index,m);
-				return;
-			} else if(mt->szFileMask.len() == m->szFileMask.len())
-			{
-				if(mt->szMagicBytes.len() < m->szMagicBytes.len())
-				{
-					m_pMediaTypeList->insert(index,m);
-					return;
-				}
-			}
-		} else {
-			if(mt->szFileMask.contains('*'))
-			{
-				m_pMediaTypeList->insert(index,m);
-				return;
-			} else {
-				if(mt->szFileMask.len() < m->szFileMask.len())
-				{
-					m_pMediaTypeList->insert(index,m);
-					return;
-				} else if(mt->szFileMask.len() == m->szFileMask.len())
-				{
-					if(mt->szMagicBytes.len() < m->szMagicBytes.len())
-					{
-						m_pMediaTypeList->insert(index,m);
-						return;
-					}
-				}
-			}
-		}
-		index++;
-	}
-	m_pMediaTypeList->append(m);
-*/
+	m_pMediaTypeList->insert(m);
 }
 
 
-KviMediaType * KviMediaManager::findMediaType(const char * filename,bool bCheckMagic)
+KviMediaType * KviMediaManager::findMediaType(const QString& filename,bool bCheckMagic)
 {
-	// FIXME: This should be ported at least to QString....
 	__range_valid(locked());
 
-	KviStr szFullPath = filename;
-	if(!kvi_isAbsolutePath(szFullPath.ptr()))
+	QString szFullPath = filename;
+	if(!KviFileUtils::isAbsolutePath(szFullPath))
 	{
-		KviStr tmp = QDir::currentPath();
+		QString tmp = QDir::currentPath();
 
-		tmp.ensureLastCharIs('/');
+		tmp.append('/');
 		szFullPath.prepend(tmp);
 	}
 
-	KviStr szFile = filename;
-	szFile.cutToLast('/',true);
+	QString szFile = KviFileUtils::extractFileName(filename);
 
-
+	QFileInfo fileInfo(szFullPath);
+	
 	// first of all , lstat() the file
-#ifdef COMPILE_ON_WINDOWS
-	struct _stat st;
-	if(_stat(szFullPath.ptr(),&st) != 0)
-#else
-	struct stat st;
-	if(lstat(szFullPath.ptr(),&st) != 0)
-#endif
+	if(fileInfo.exists() && fileInfo.isFile())
 	{
 		//debug("Problems while stating file %s",szFullPath.ptr());
 		// We do just the pattern matching
 		// it's better to avoid magic checks
 		// if the file is a device , we would be blocked while attempting to read data
-		return findMediaTypeForRegularFile(szFullPath.ptr(),szFile.ptr(),false);
-	} else {
-		// If it is a link , stat() the link target
-#ifndef COMPILE_ON_WINDOWS
-		if(S_ISLNK(st.st_mode))
-		{	
-			if(stat(szFullPath.ptr(),&st) != 0)
-			{
-				debug("Problems while stating() target for link %s",szFullPath.ptr());
-				// Same as above
-				return findMediaTypeForRegularFile(szFullPath.ptr(),szFile.ptr(),false);
-			}
-		}
-#endif
+		return findMediaTypeForRegularFile(szFullPath,szFile,false);
 	}
 
+	if(fileInfo.isSymLink())
+	{
+		return findMediaTypeForRegularFile(fileInfo.symLinkTarget(),szFile,false);
+	}
 
-	if(S_ISDIR(st.st_mode))
+	if(fileInfo.isDir())
 	{
 		// Directory : return default media type
 		KviMediaType * mtd = findMediaTypeByIanaType("inode/directory");
@@ -297,9 +189,9 @@ KviMediaType * KviMediaManager::findMediaType(const char * filename,bool bCheckM
 		return mtd;
 	}
 
-
+/*
 #ifndef COMPILE_ON_WINDOWS
-	if(S_ISSOCK(st.st_mode))
+	if(fileInfo.is)
 	{
 		// Socket : return default media type
 		KviMediaType * mtd = findMediaTypeByIanaType("inode/socket");
@@ -366,20 +258,19 @@ KviMediaType * KviMediaManager::findMediaType(const char * filename,bool bCheckM
 		return mtd;
 	}
 
-
+*/
 	// this is a regular file (or at least it looks like one)
-	return findMediaTypeForRegularFile(szFullPath.ptr(),szFile.ptr(),bCheckMagic);
+	return findMediaTypeForRegularFile(szFullPath,szFile,bCheckMagic);
 }
 
-KviMediaType * KviMediaManager::findMediaTypeForRegularFile(const char * szFullPath,const char * szFileName,bool bCheckMagic)
+KviMediaType * KviMediaManager::findMediaTypeForRegularFile(const QString& szFullPath,const QString& szFileName,bool bCheckMagic)
 {
 	char buffer[17];
 	int len = 0;
 
 	if(bCheckMagic)
 	{
-		QString szTmp=QString::fromUtf8(szFullPath);
-		KviFile f(szTmp);
+		KviFile f(szFullPath);
 		if(f.openForReading())
 		{
 			len = f.readBlock(buffer,16);
@@ -392,14 +283,14 @@ KviMediaType * KviMediaManager::findMediaTypeForRegularFile(const char * szFullP
 		}
 	}
 
-	for(KviMediaType * m = m_pMediaTypeList->first();m;m = m_pMediaTypeList->next())
+	foreach(KviMediaType * m,*m_pMediaTypeList)
 	{
 // FIXME: #warning "Should this be case sensitive ?"
-		if(kvi_matchWildExpr(m->szFileMask.ptr(),szFileName))
+		if(KviQString::matchWildExpressionsCI(m->szFileMask,szFileName))
 		{
-			if(len && m->szMagicBytes.hasData())
+			if(len && !m->szMagicBytes.isEmpty())
 			{
-				QRegExp re(m->szMagicBytes.ptr());
+				QRegExp re(m->szMagicBytes);
 				// It looks like they can't decide the name for this function :D
 				// ... well, maybe the latest choice is the best one.
 
@@ -454,7 +345,7 @@ static KviDefaultMediaType g_defMediaTypes[]=
 	{ 0,0,0,0,0 }
 };
 
-void KviMediaManager::load(const char * filename)
+void KviMediaManager::load(const QString& filename)
 {
 	__range_valid(locked());
 
@@ -499,7 +390,7 @@ void KviMediaManager::load(const char * filename)
 
 }
 
-void KviMediaManager::save(const char * filename)
+void KviMediaManager::save(const QString& filename)
 {
 	__range_valid(locked());
 	KviConfig cfg(filename,KviConfig::Write);
@@ -508,24 +399,24 @@ void KviMediaManager::save(const char * filename)
 	cfg.setGroup("MediaTypes");
 	cfg.writeEntry("NEntries",m_pMediaTypeList->count());
 	int index = 0;
-	for(KviMediaType * m= m_pMediaTypeList->first();m;m = m_pMediaTypeList->next())
+	foreach(KviMediaType * m,*m_pMediaTypeList)
 	{
 		KviStr tmp(KviStr::Format,"%dFileMask",index);
-		cfg.writeEntry(tmp.ptr(),m->szFileMask.ptr());
+		cfg.writeEntry(tmp.ptr(),m->szFileMask);
 		tmp.sprintf("%dMagicBytes",index);
-		cfg.writeEntry(tmp.ptr(),m->szMagicBytes.ptr());
+		cfg.writeEntry(tmp.ptr(),m->szMagicBytes);
 		tmp.sprintf("%dIanaType",index);
-		cfg.writeEntry(tmp.ptr(),m->szIanaType.ptr());
+		cfg.writeEntry(tmp.ptr(),m->szIanaType);
 		tmp.sprintf("%dDescription",index);
-		cfg.writeEntry(tmp.ptr(),m->szDescription.ptr());
+		cfg.writeEntry(tmp.ptr(),m->szDescription);
 		tmp.sprintf("%dSavePath",index);
-		cfg.writeEntry(tmp.ptr(),m->szSavePath.ptr());
+		cfg.writeEntry(tmp.ptr(),m->szSavePath);
 		tmp.sprintf("%dCommandline",index);
-		cfg.writeEntry(tmp.ptr(),m->szCommandline.ptr());
+		cfg.writeEntry(tmp.ptr(),m->szCommandline);
 		tmp.sprintf("%dRemoteExecCommandline",index);
-		cfg.writeEntry(tmp.ptr(),m->szRemoteExecCommandline.ptr());
+		cfg.writeEntry(tmp.ptr(),m->szRemoteExecCommandline);
 		tmp.sprintf("%dIcon",index);
-		cfg.writeEntry(tmp.ptr(),m->szIcon.ptr());
+		cfg.writeEntry(tmp.ptr(),m->szIcon);
 		++index;
 	}
 }

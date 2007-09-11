@@ -83,7 +83,11 @@ KviKvsTimerManager::~KviKvsTimerManager()
 	delete m_pTimerDictById;
 	foreach(KviKvsTimer*i,*m_pTimerDictByName) {delete i;}
 	delete m_pTimerDictByName;
-	if(m_pKilledTimerList)delete m_pKilledTimerList;
+	if(m_pKilledTimerList)
+	{
+		qDeleteAll(*m_pKilledTimerList);
+		delete m_pKilledTimerList;
+	}
 }
 
 void KviKvsTimerManager::init()
@@ -176,8 +180,7 @@ void KviKvsTimerManager::scheduleKill(KviKvsTimer *t)
 {
 	if(!m_pKilledTimerList)
 	{
-		m_pKilledTimerList = new KviPtrList<KviKvsTimer>;
-		m_pKilledTimerList->setAutoDelete(true);
+		m_pKilledTimerList = new QList<KviKvsTimer*>;
 	}
 	m_pKilledTimerList->append(t);
 

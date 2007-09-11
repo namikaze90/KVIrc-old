@@ -25,7 +25,7 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-#include "kvi_list.h"
+
 #include <qobject.h>
 
 class KviWindow;
@@ -50,7 +50,7 @@ public:
 	KviKvsAsyncOperationManager();
 	~KviKvsAsyncOperationManager();
 protected:
-	KviPtrList<KviKvsAsyncOperation> * m_pOperationList;
+	QList<KviKvsAsyncOperation*> * m_pOperationList;
 protected:
 	void registerOperation(KviKvsAsyncOperation * o);
 	void unregisterOperation(KviKvsAsyncOperation * o);

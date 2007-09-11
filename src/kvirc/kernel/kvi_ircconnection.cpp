@@ -82,10 +82,8 @@ KviIrcConnection::KviIrcConnection(KviIrcContext * pContext,KviIrcConnectionTarg
 	m_pFrame = m_pConsole->frame();
 	m_pTarget = pTarget;
 	m_pUserIdentity = pIdentity;
-	m_pChannelList = new KviPtrList<KviChannel>;
-	m_pChannelList->setAutoDelete(false);
-	m_pQueryList = new KviPtrList<KviQuery>;
-	m_pQueryList->setAutoDelete(false);
+	m_pChannelList = new QList<KviChannel*>;
+	m_pQueryList = new QList<KviQuery*>;
 	m_pLink = new KviIrcLink(this);
 	m_pUserDataBase = new KviIrcUserDataBase();
 	m_pUserInfo = new KviIrcConnectionUserInfo();
@@ -159,7 +157,7 @@ void KviIrcConnection::setEncoding(const QString &szEncoding)
 		return;
 	}
 	QString tmp = c->name();
-	for(KviChannel * ch = m_pChannelList->first();ch;ch = m_pChannelList->next())
+	foreach(KviChannel * ch,*m_pChannelList)
 	{
 		if((ch->textCodec() != c) && (ch->textCodec() != ch->defaultTextCodec())) // actually not using the default!
 		{
@@ -167,7 +165,7 @@ void KviIrcConnection::setEncoding(const QString &szEncoding)
 			if(_OUTPUT_VERBOSE)ch->output(KVI_OUT_VERBOSE,__tr2qs("Changed text encoding to %Q"),&tmp);
 		}
 	}
-	for(KviQuery * q = m_pQueryList->first();q;q = m_pQueryList->next())
+	foreach(KviQuery * q,*m_pQueryList)
 	{
 		if((q->textCodec() != c) && (q->textCodec() != q->defaultTextCodec())) // actually not using the default!
 		{
@@ -286,9 +284,9 @@ void KviIrcConnection::linkEstabilished()
 	m_pStatistics->setLastMessageTime(kvi_unixTime());
 	m_pServerInfo->setName(target()->server()->m_szHostname);
 
-	if(KviPtrList<KviIrcDataStreamMonitor> * l = context()->monitorList())
+	if(QList<KviIrcDataStreamMonitor*> * l = context()->monitorList())
 	{
-		for(KviIrcDataStreamMonitor *m =l->first();m;m =l->next())
+		foreach(KviIrcDataStreamMonitor *m,*l)
 			m->connectionInitiated();
 	}
 
@@ -320,9 +318,9 @@ void KviIrcConnection::linkTerminated()
 		m_pLagMeter = 0;
 	}
 	
-	if(KviPtrList<KviIrcDataStreamMonitor> * l = context()->monitorList())
+	if(QList<KviIrcDataStreamMonitor*> * l = context()->monitorList())
 	{
-		for(KviIrcDataStreamMonitor *m =l->first();m;m =l->next())
+		foreach(KviIrcDataStreamMonitor *m ,*l)
 			m->connectionTerminated();
 	}
 
@@ -343,7 +341,7 @@ void KviIrcConnection::linkAttemptFailed(int iError)
 
 KviChannel * KviIrcConnection::findChannel(const QString &name)
 {
-	for(KviChannel * c = m_pChannelList->first();c;c = m_pChannelList->next())
+	foreach(KviChannel * c,*m_pChannelList)
 	{
 		if(KviQString::equalCI(name,c->windowName()))return c;
 	}
@@ -353,7 +351,7 @@ KviChannel * KviIrcConnection::findChannel(const QString &name)
 int KviIrcConnection::getCommonChannels(const QString &nick,QString &szChansBuffer,bool bAddEscapeSequences)
 {
 	int count = 0;
-	for(KviChannel * c = m_pChannelList->first();c;c = m_pChannelList->next())
+	foreach(KviChannel * c,*m_pChannelList)
 	{
 		if(c->isOn(nick))
 		{
@@ -374,19 +372,19 @@ int KviIrcConnection::getCommonChannels(const QString &nick,QString &szChansBuff
 
 void KviIrcConnection::unhighlightAllChannels()
 {
-	for(KviChannel * c = m_pChannelList->first();c;c = m_pChannelList->next())
+	foreach(KviChannel * c,*m_pChannelList)
 		c->unhighlight();
 }
 
 void KviIrcConnection::unhighlightAllQueries()
 {
-	for(KviQuery * c = m_pQueryList->first();c;c = m_pQueryList->next())
+	foreach(KviQuery * c,*m_pQueryList)
 		c->unhighlight();
 }
 
 void KviIrcConnection::partAllChannels()
 {
-	for(KviChannel * c = m_pChannelList->first();c;c = m_pChannelList->next())
+	foreach(KviChannel * c,*m_pChannelList)
 	{
 		c->close();
 	}
@@ -453,9 +451,9 @@ KviQuery * KviIrcConnection::createQuery(const QString &szNick)
 
 KviQuery * KviIrcConnection::findQuery(const QString &name)
 {
-	for(KviQuery * c = m_pQueryList->first();c;c = m_pQueryList->next())
+	foreach(KviQuery * cm,*m_pQueryList)
 	{
-		if(KviQString::equalCI(name,c->windowName()))return c;
+		if(KviQString::equalCI(name,cm->windowName()))return cm;
 	}
 	return 0;
 }
@@ -471,7 +469,7 @@ void KviIrcConnection::registerChannel(KviChannel * c)
 
 void KviIrcConnection::unregisterChannel(KviChannel * c)
 {
-	m_pChannelList->removeRef(c);
+	m_pChannelList->removeAll(c);
 	emit(channelUnregistered(c));
 	emit(chanListChanged());
 }
@@ -484,7 +482,7 @@ void KviIrcConnection::registerQuery(KviQuery * c)
 
 void KviIrcConnection::unregisterQuery(KviQuery * c)
 {
-	if(m_pQueryList->removeRef(c))return;
+	if(m_pQueryList->removeAll(c))return;
 }
 
 void KviIrcConnection::keepChannelsOpenAfterDisconnect()
@@ -554,9 +552,9 @@ bool KviIrcConnection::sendFmtData(const char *fmt,...)
 	}
 
 	// notify the monitors
-	if(KviPtrList<KviIrcDataStreamMonitor> * l = context()->monitorList())
+	if(QList<KviIrcDataStreamMonitor*> * l = context()->monitorList())
 	{
-		for(KviIrcDataStreamMonitor *m = l->first();m;m = l->next())
+		foreach(KviIrcDataStreamMonitor *m,*l)
 			m->outgoingMessage((const char *)(pData->data()),iLen - 2);
 	}
 
@@ -578,9 +576,9 @@ bool KviIrcConnection::sendData(const char *buffer,int buflen)
 	*(pData->data()+buflen+1)='\n';
 
 	// notify the monitors
-	if(KviPtrList<KviIrcDataStreamMonitor> * l = context()->monitorList())
+	if(QList<KviIrcDataStreamMonitor*> * l = context()->monitorList())
 	{
-		for(KviIrcDataStreamMonitor *m = l->first();m;m = l->next())
+		foreach(KviIrcDataStreamMonitor *m,*l)
 			m->outgoingMessage((const char *)(pData->data()),buflen);
 	}
 
@@ -1293,9 +1291,9 @@ void KviIrcConnection::incomingMessage(const char * message)
 {
 	// A message has arrived from the current server
 	// First of all , notify the monitors
-	if(KviPtrList<KviIrcDataStreamMonitor> * l = context()->monitorList())
+	if(QList<KviIrcDataStreamMonitor*> * l = context()->monitorList())
 	{
-		for(KviIrcDataStreamMonitor *m = l->first();m;m = l->next())
+		foreach(KviIrcDataStreamMonitor *m,*l)
 		{
 			m->incomingMessage(message);
 		}
@@ -1323,7 +1321,7 @@ void KviIrcConnection::heartbeat(kvi_time_t tNow)
 					// find the channel that has the older list now
 					kvi_time_t tOldest = tNow;
 					KviChannel * pOldest = 0;
-					for(KviChannel * pChan = m_pChannelList->first();pChan;pChan = m_pChannelList->next())
+					foreach(KviChannel * pChan,*m_pChannelList)
 					{
 						if(pChan->lastReceivedWhoReply() < tOldest)
 						{

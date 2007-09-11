@@ -618,7 +618,10 @@ KviApp::~KviApp()
 	destroyPseudoTransparency();
 #endif
 	KviDoubleBuffer::done();
-	if(m_pPendingAvatarChanges)delete m_pPendingAvatarChanges;
+	if(m_pPendingAvatarChanges){
+		qDeleteAll(*m_pPendingAvatarChanges);
+		delete m_pPendingAvatarChanges;
+	}
 	// Kill the thread manager.... all the slave threads should have been already terminated ...
 #ifdef COMPILE_SSL_SUPPORT
 	KviSSL::globalDestroy();
@@ -891,62 +894,16 @@ void KviApp::destroySplashScreen()
 
 QString KviApp::getClipboardText()
 {
-	/*
-	QString buffer;
-#if QT_VERSION >= 300
-	bool bOldMode = clipboard()->selectionModeEnabled();
-	clipboard()->setSelectionMode(false);
-#endif
-	buffer = clipboard()->text();
-#if QT_VERSION >= 300
-	if(buffer.isEmpty())
-	{
-		// lookup the global clipboard
-		clipboard()->setSelectionMode(true);
-		buffer = clipboard()->text();
-	}
-	clipboard()->setSelectionMode(bOldMode);
-#endif
-	return buffer;
-	*/
-	
 	QString buffer = clipboard()->text(QClipboard::Clipboard);
 	if(buffer.isEmpty())return clipboard()->text(QClipboard::Selection);
 	return buffer;
 }
 
 
-void KviApp::getClipboardText(KviStr &buffer)
-{
-	buffer = getClipboardText();
-}
-
 void KviApp::setClipboardText(const QString &str)
 {
-	/*
-#if QT_VERSION >= 300
-	if(clipboard()->supportsSelection())
-	{
-		bool bOldMode = clipboard()->selectionModeEnabled();
-		clipboard()->setSelectionMode(true);
-		clipboard()->setText(str);
-		clipboard()->setSelectionMode(false);
-		clipboard()->setText(str);
-		clipboard()->setSelectionMode(bOldMode);
-	} else {
-#endif
-		clipboard()->setText(str);
-#if QT_VERSION >= 300
-	}
-#endif*/
 	clipboard()->setText(str,QClipboard::Clipboard);
 	clipboard()->setText(str,QClipboard::Selection);
-}
-
-void KviApp::setClipboardText(const KviStr &str)
-{
-	debug("WARNING : KviApp::setClipboardText(const KviStr &) is deprecated!");
-	setClipboardText(QString(str.ptr()));
 }
 
 void KviApp::setAvatarFromOptions()
@@ -966,14 +923,9 @@ void KviApp::setAvatarOnFileReceived(KviConsole * pConsole,const QString &szRemo
 {
 	if(!m_pPendingAvatarChanges)
 	{
-		m_pPendingAvatarChanges = new KviPtrList<KviPendingAvatarChange>;
-		m_pPendingAvatarChanges->setAutoDelete(true);
+		m_pPendingAvatarChanges = new QSet<KviPendingAvatarChange*>;
 	}
 
-	if(m_pPendingAvatarChanges->count() >= KVI_MAX_PENDING_AVATARS) // can't be...
-	{
-		m_pPendingAvatarChanges->removeFirst(); // kill the first entry
-	}
 
 	KviPendingAvatarChange * p = new KviPendingAvatarChange;
 	p->pConsole = pConsole;
@@ -982,7 +934,7 @@ void KviApp::setAvatarOnFileReceived(KviConsole * pConsole,const QString &szRemo
 	p->szUser = szUser;
 	p->szHost = szHost;
 
-	m_pPendingAvatarChanges->append(p);
+	m_pPendingAvatarChanges->insert(p);
 }
 
 KviPendingAvatarChange * KviApp::findPendingAvatarChange(KviConsole * pConsole,const QString &szNick,const QString &szRemoteUrl)
@@ -991,7 +943,7 @@ KviPendingAvatarChange * KviApp::findPendingAvatarChange(KviConsole * pConsole,c
 
 	KviPendingAvatarChange * p;
 
-	for(p = m_pPendingAvatarChanges->first();p;p = m_pPendingAvatarChanges->next())
+	foreach(p,*m_pPendingAvatarChanges)
 	{
 		if(!pConsole || (p->pConsole == pConsole))
 		{
@@ -1066,7 +1018,8 @@ void KviApp::fileDownloadTerminated(bool bSuccess,const QString &szRemoteUrl,con
 		}
 	}
 
-	m_pPendingAvatarChanges->removeRef(p);
+	m_pPendingAvatarChanges->remove(p);
+	delete p;
 
 	if(m_pPendingAvatarChanges->count() == 0)
 	{
@@ -1574,10 +1527,10 @@ void KviApp::createFrame()
 	g_pFrame = new KviFrame();
 	g_pFrame->createNewConsole(true);
 
-	if(m_szExecAfterStartup.hasData())
+	if(!m_szExecAfterStartup.isEmpty())
 	{
 		// FIXME , this should be a QString
-		KviKvsScript::run(m_szExecAfterStartup.ptr(),g_pFrame->firstConsole());
+		KviKvsScript::run(m_szExecAfterStartup,g_pFrame->firstConsole());
 		m_szExecAfterStartup = "";
 	}
 	
@@ -1666,14 +1619,6 @@ KviConsole * KviApp::findConsole(QString &server,QString &nick)
 		}
 	}
 	return 0;
-}
-
-KviConsole * KviApp::findConsole(KviStr &server,KviStr &nick)
-{
-	// DEPRECATED: TO BE KILLED (if nobody is using it)
-	QString s = server.ptr();
-	QString n = nick.ptr();
-	return findConsole(s,n);
 }
 
 void KviApp::restartLagMeters()
@@ -1815,12 +1760,6 @@ void KviApp::addRecentUrl(const QString& text)
 	emit(recentUrlsChanged());
 }
 
-void KviApp::addRecentNickname(const char * newNick)
-{
-	QString nk(newNick);
-	merge_to_stringlist_option(nk,KviOption_stringlistRecentNicknames,KVI_MAX_RECENT_NICKNAMES);
-}
-
 void KviApp::addRecentNickname(const QString& newNick)
 {
 	merge_to_stringlist_option(newNick,KviOption_stringlistRecentNicknames,KVI_MAX_RECENT_NICKNAMES);
@@ -1951,50 +1890,6 @@ void KviApp::fillRecentChannelsPopup(KviTalPopupMenu * m,KviConsole * pConsole)
 			}
 		}
 	}
-}
-
-
-/*
-void KviApp::fillRecentServersListBox(KviTalListBox * l)
-{
-	l->clear();
-	for(QStringList::Iterator it = KVI_OPTION_STRINGLIST(KviOption_stringlistRecentServers).begin(); it != KVI_OPTION_STRINGLIST(KviOption_stringlistRecentServers).end(); ++it)
-		l->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SERVER)),*it);
-}
-*/
-
-
-
-
-bool KviApp::playFile(const char * filename,KviStr &error,KviWindow * w)
-{
-	g_pMediaManager->lock();
-	KviMediaType * m = g_pMediaManager->findMediaType(filename);
-	if(m)
-	{
-		KviStr szCommandline = m->szCommandline;
-		KviStr szDescription = m->szDescription;
-		g_pMediaManager->unlock();
-		if(szCommandline.hasData())
-		{
-			KviKvsVariantList l;
-			l.append(new KviKvsVariant(QString(filename)));
-
-			if(!KviKvsScript::run(szCommandline.ptr(),w ? w : g_pActiveWindow,&l))
-			{
-				error.sprintf(__tr("The commandline for media type '%s' seems to be broken"),szDescription.ptr());
-				return false;
-			}
-		} else {
-			error.sprintf(__tr("Media type of file %s matched to '%s' but no commandline specified"),filename,szDescription.ptr());
-			return false;
-		}
-	} else {
-		g_pMediaManager->unlock();
-		error.sprintf(__tr("No idea on how to play file %s (no media type match)"),filename);
-		return false;
-	}
-	return true;
 }
 
 void KviApp::heartbeat(kvi_time_t tNow)

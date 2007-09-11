@@ -31,7 +31,7 @@
 #include "kvi_string.h"
 #include "kvi_irccontext.h"
 
-#include "kvi_list.h"
+
 
 #include <time.h>
 #include <qcombobox.h>
@@ -182,21 +182,15 @@ public:
 
 	// Status string (usermode + nick) (connection related too)
 	const QString & statusString(){ return m_szStatusString; };
-	
-	// forwarders from KviIrcConnection
-	KVI_DEPRECATED KviPtrList<KviChannel> * channelList(){ return connection() ? connection()->channelList() : 0; };
-	KVI_DEPRECATED KviPtrList<KviQuery> * queryList(){ return connection() ? connection()->queryList() : 0; };
-	KVI_DEPRECATED unsigned int channelCount(){ return (connection() ? connection()->channelList()->count() : 0); };
-	KVI_DEPRECATED unsigned int queryCount(){ return (connection() ? connection()->queryList()->count() : 0); };
-	
+		
 	// Window management
 	//KVI_DEPRECATED KviChannel * findChannel(const char * name){ return connection() ? connection()->findChannel(name) : 0; };
 	//KVI_DEPRECATED KviQuery * findQuery(const char * nick){ return connection() ? connection()->findQuery(nick) : 0; };
 
 	KviWindow * activeWindow();
 	// User db, connection related
-	void completeChannel(const QString &word,KviPtrList<QString> * matches);
-	void completeServer(const QString &word,KviPtrList<QString> * matches);
+	void completeChannel(const QString &word,QStringList& matches);
+	void completeServer(const QString &word,QStringList& matches);
 	void connectionAttached();
 	void connectionDetached();
 public slots:

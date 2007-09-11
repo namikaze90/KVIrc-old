@@ -79,15 +79,17 @@ KviStatusBarAppletDescriptor::KviStatusBarAppletDescriptor(const QString &szVisi
 	m_szInternalName = szInternalName;
 	m_szPreloadModule = szPreloadModule;
 	m_pProc = pProc;
-	m_pAppletList = new KviPtrList<KviStatusBarApplet>;
-	m_pAppletList->setAutoDelete(false);
+	m_pAppletList = new QList<KviStatusBarApplet*>;
 	if(!pixIcon.isNull())m_pIcon = new QPixmap(pixIcon);
 	else m_pIcon = 0;
 }
 
 KviStatusBarAppletDescriptor::~KviStatusBarAppletDescriptor()
 {
-	while(KviStatusBarApplet * a = m_pAppletList->first())delete a;
+	foreach(KviStatusBarApplet * a,*m_pAppletList)
+	{
+		delete a;
+	}
 	delete m_pAppletList;
 	if(m_pIcon)delete m_pIcon;
 }
@@ -104,7 +106,7 @@ void KviStatusBarAppletDescriptor::registerApplet(KviStatusBarApplet * a)
 
 void KviStatusBarAppletDescriptor::unregisterApplet(KviStatusBarApplet * a)
 {
-	m_pAppletList->removeRef(a);
+	m_pAppletList->removeAll(a);
 }
 
 

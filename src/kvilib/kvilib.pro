@@ -94,7 +94,6 @@ HEADERS += tal/kvi_tal_application_kde.h \
     ext/kvi_miscutils.h \
     ext/kvi_msgtype.h \
     ext/kvi_osinfo.h \
-    ext/kvi_parameterlist.h \
     ext/kvi_pixmap.h \
     ext/kvi_proxydb.h \
     ext/kvi_regchan.h \
@@ -106,7 +105,6 @@ HEADERS += tal/kvi_tal_application_kde.h \
     core/kvi_error.h \
     core/kvi_heapobject.h \
     core/kvi_inttypes.h \
-    core/kvi_list.h \
     core/kvi_malloc.h \
     core/kvi_memmove.h \
     core/kvi_qcstring.h \
@@ -175,7 +173,6 @@ SOURCES += tal/kvi_tal_application.cpp \
     ext/kvi_miscutils.cpp \
     ext/kvi_msgtype.cpp \
     ext/kvi_osinfo.cpp \
-    ext/kvi_parameterlist.cpp \
     ext/kvi_pixmap.cpp \
     ext/kvi_proxydb.cpp \
     ext/kvi_regchan.cpp \

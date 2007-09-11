@@ -82,7 +82,7 @@ public:
 
 	static KviCustomToolBar * currentToolBar(){ return m_pCurrentToolBar; };
 	KviAction * getAction(const QString &szName);
-	void listActionsByCategory(const QString &szCatName,KviPtrList<KviAction> * pBuffer);
+	void listActionsByCategory(const QString &szCatName,QList<KviAction*> * pBuffer);
 	QString nameForAutomaticAction(const QString &szTemplate);
 	bool coreActionExists(const QString &szName);
 

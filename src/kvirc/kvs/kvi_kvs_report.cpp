@@ -36,18 +36,12 @@
 KviKvsReport::KviKvsReport(Type t,const QString &szContext,const QString &szMessage,const QString &szLocation,KviWindow * pWindow)
 : m_eType(t), m_szContext(szContext), m_szMessage(szMessage), m_szLocation(szLocation), m_pWindow(pWindow)
 {
-#ifdef COMPILE_NEW_KVS
-	m_pCallStack = 0;
-	m_pCodeListing = 0;
-#endif
+
 }
 
 KviKvsReport::~KviKvsReport()
 {
-#ifdef COMPILE_NEW_KVS
-	if(m_pCallStack)delete m_pCallStack;
-	if(m_pCodeListing)delete m_pCodeListing;
-#endif
+
 }
 
 void KviKvsReport::findLineAndCol(const QChar * pBegin,const QChar * pPoint,int &iLine,int &iCol)
@@ -82,7 +76,7 @@ void KviKvsReport::findLineAndCol(const QChar * pBegin,const QChar * pPoint,int 
 
 
 
-void KviKvsReport::findLineColAndListing(const QChar * pBegin,const QChar * pPoint,int &iLine,int &iCol,KviPtrList<QString> * pListing)
+void KviKvsReport::findLineColAndListing(const QChar * pBegin,const QChar * pPoint,int &iLine,int &iCol,QStringList& pListing)
 {
 #ifdef COMPILE_NEW_KVS
 	iLine = 1;
@@ -116,16 +110,16 @@ void KviKvsReport::findLineColAndListing(const QChar * pBegin,const QChar * pPoi
 		// there would be yet another line before
 		if(pPrevLine > pBufferBegin)
 		{
-			QString * pListingStrZ = new QString();
-			KviQString::sprintf(*pListingStrZ,"%d ...",iLine - 2);
-			pListing->append(pListingStrZ);
+			QString pListingStrZ;
+			KviQString::sprintf(pListingStrZ,"%d ...",iLine - 2);
+			pListing.append(pListingStrZ);
 		}
 
-		QString * pListingStr = new QString();
-		KviQString::sprintf(*pListingStr,"%d ",iLine - 1);
-		*pListingStr += QString(pPrevLine,pLineBegin - pPrevLine);
-		pListingStr->replace("\n","");
-		pListing->append(pListingStr);
+		QString pListingStr;
+		KviQString::sprintf(pListingStr,"%d ",iLine - 1);
+		pListingStr += QString(pPrevLine,pLineBegin - pPrevLine);
+		pListingStr.replace("\n","");
+		pListing.append(pListingStr);
 	}
 	
 	// current line
@@ -140,11 +134,11 @@ void KviKvsReport::findLineColAndListing(const QChar * pBegin,const QChar * pPoi
 	if(us)pBegin++;
 
 	{
-		QString * pListingStr = new QString();
-		KviQString::sprintf(*pListingStr,"%c%d ",KVI_TEXT_BOLD,iLine);
-		*pListingStr += QString(pLineBegin,pBegin - pLineBegin);
-		pListingStr->replace("\n","");
-		pListing->append(pListingStr);
+		QString pListingStr;
+		KviQString::sprintf(pListingStr,"%c%d ",KVI_TEXT_BOLD,iLine);
+		pListingStr += QString(pLineBegin,pBegin - pLineBegin);
+		pListingStr.replace("\n","");
+		pListing.append(pListingStr);
 	}
 
 	if(us)
@@ -161,19 +155,19 @@ void KviKvsReport::findLineColAndListing(const QChar * pBegin,const QChar * pPoi
 		if(us)pBegin++;
 	
 		{
-			QString * pListingStr = new QString();
-			KviQString::sprintf(*pListingStr,"%d ",iLine + 1);
-			*pListingStr += QString(pLineBegin,pBegin - pLineBegin);
-			pListingStr->replace("\n","");
-			pListing->append(pListingStr);
+			QString pListingStr;
+			KviQString::sprintf(pListingStr,"%d ",iLine + 1);
+			pListingStr += QString(pLineBegin,pBegin - pLineBegin);
+			pListingStr.replace("\n","");
+			pListing.append(pListingStr);
 		}
 	
 		// there would be yet another line
 		if(us)
 		{
-			QString * pListingStr = new QString();
-			KviQString::sprintf(*pListingStr,"%d ...",iLine + 2);
-			pListing->append(pListingStr);
+			QString pListingStr;
+			KviQString::sprintf(pListingStr,"%d ...",iLine + 2);
+			pListing.append(pListingStr);
 		}
 	}
 #endif
@@ -227,12 +221,12 @@ void KviKvsReport::report(KviKvsReport * r,KviWindow * pOutput)
 	
 	if(pOutput == KviDebugWindow::instance())
 	{
-		KviPtrList<QString> * l;
-		if(l = r->codeListing())
+		QStringList l = r->codeListing();
+		if(!l.isEmpty())
 		{
 			pOutput->outputNoFmt(out,__tr2qs("[KVS] Code listing:"));
-			for(QString * s = l->first();s;s = l->next())
-				pOutput->output(out,"[KVS]   %Q",s);
+			foreach(QString s,l)
+				pOutput->output(out,"[KVS]   %Q",&s);
 		}
 	
 		pOutput->output(out,__tr2qs("[KVS] Window:"));
@@ -241,11 +235,12 @@ void KviKvsReport::report(KviKvsReport * r,KviWindow * pOutput)
 			else
 				pOutput->output(out,__tr2qs("[KVS]   Destroyed window with pointer %x"),r->window());
 
-		if(l = r->callStack())
+		l = r->callStack();
+		if(!l.isEmpty())
 		{
 			pOutput->outputNoFmt(out,__tr2qs("[KVS] Call stack:"));
-			for(QString * s = l->first();s;s = l->next())
-				pOutput->output(out,"[KVS]   %Q",s);
+			foreach(QString s,l)
+				pOutput->output(out,"[KVS]   %Q",&s);
 		}
 
 		pOutput->outputNoFmt(out,"[KVS]");

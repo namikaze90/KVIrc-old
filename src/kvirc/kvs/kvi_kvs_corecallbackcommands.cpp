@@ -1106,7 +1106,7 @@ namespace KviKvsCoreCallbackCommands
 	KVSCCC(timer)
 	{
 		KviKvsVariant * vName = KVSCCC_pParams->first();
-		KviKvsVariant * vDelay = KVSCCC_pParams->next();
+		KviKvsVariant * vDelay = KVSCCC_pParams->at(1);
 
 		if(!vName || vName->isEmpty())
 		{
@@ -1140,11 +1140,12 @@ namespace KviKvsCoreCallbackCommands
 		KviKvsVariantList * l = new KviKvsVariantList();
 		l->setAutoDelete(true);
 
-		KviKvsVariant * v = KVSCCC_pParams->next();
-		while(v)
+		KviKvsVariantList::const_iterator it(KVSCCC_pParams->list()->begin());
+		
+		while(it != KVSCCC_pParams->list()->end())
 		{
-			l->append(new KviKvsVariant(*v)); // copy
-			v = KVSCCC_pParams->next();
+			l->append(new KviKvsVariant(*(*it))); // copy
+			++it;
 		}
 
 		if(!KviKvsTimerManager::instance()->addTimer(szName,lt,KVSCCC_pContext->window(),iDelay,new KviKvsScript(*KVSCCC_pCallback),l))

@@ -134,8 +134,7 @@ void KviIrcContext::registerDataStreamMonitor(KviIrcDataStreamMonitor * m)
 {
 	if(!m_pMonitorList)
 	{
-		m_pMonitorList = new KviPtrList<KviIrcDataStreamMonitor>;
-		m_pMonitorList->setAutoDelete(false);
+		m_pMonitorList = new QList<KviIrcDataStreamMonitor*>;
 	}
 	m_pMonitorList->append(m);
 }
@@ -143,7 +142,7 @@ void KviIrcContext::registerDataStreamMonitor(KviIrcDataStreamMonitor * m)
 void KviIrcContext::unregisterDataStreamMonitor(KviIrcDataStreamMonitor *m)
 {
 	if(!m_pMonitorList)return;
-	m_pMonitorList->removeRef(m);
+	m_pMonitorList->removeAll(m);
 	if(m_pMonitorList->isEmpty())
 	{
 		delete m_pMonitorList;
@@ -197,7 +196,7 @@ void KviIrcContext::closeAllContextWindows()
 KviChannel * KviIrcContext::findDeadChannel(const QString &name)
 {
 	if(!m_pDeadChannels)return 0;
-	for(KviChannel * c = m_pDeadChannels->first();c;c = m_pDeadChannels->next())
+	foreach(KviChannel * c,*m_pDeadChannels)
 	{
 		__range_valid(c->isDeadChan());
 		if(KviQString::equalCI(name,c->windowName()))return c;
@@ -208,7 +207,7 @@ KviChannel * KviIrcContext::findDeadChannel(const QString &name)
 KviQuery * KviIrcContext::findDeadQuery(const QString &name)
 {
 	if(!m_pDeadQueries)return 0;
-	for(KviQuery * c = m_pDeadQueries->first();c;c = m_pDeadQueries->next())
+	foreach(KviQuery * c,*m_pDeadQueries)
 	{
 		__range_valid(c->isDeadQuery());
 		if(KviQString::equalCI(name,c->windowName()))return c;
@@ -226,8 +225,7 @@ void KviIrcContext::registerContextWindow(KviWindow * pWnd)
 {
 	if(!m_pContextWindows)
 	{
-		m_pContextWindows = new KviPtrList<KviWindow>;
-		m_pContextWindows->setAutoDelete(false);
+		m_pContextWindows = new QList<KviWindow*>;
 	}
 	m_pContextWindows->append(pWnd);
 }
@@ -236,8 +234,7 @@ void KviIrcContext::registerDeadChannel(KviChannel * c)
 {
 	if(!m_pDeadChannels)
 	{
-		m_pDeadChannels = new KviPtrList<KviChannel>;
-		m_pDeadChannels->setAutoDelete(false);
+		m_pDeadChannels = new QList<KviChannel*>;
 	}
 	m_pDeadChannels->append(c);
 }
@@ -246,8 +243,7 @@ void KviIrcContext::registerDeadQuery(KviQuery * q)
 {
 	if(!m_pDeadQueries)
 	{
-		m_pDeadQueries = new KviPtrList<KviQuery>;
-		m_pDeadQueries->setAutoDelete(false);
+		m_pDeadQueries = new QList<KviQuery*>;
 	}
 	m_pDeadQueries->append(q);
 }
@@ -256,7 +252,7 @@ bool KviIrcContext::unregisterDeadChannel(KviChannel * c)
 {
 	// was a dead channel ?
 	if(!m_pDeadChannels)return false;
-	if(!m_pDeadChannels->removeRef(c))
+	if(!m_pDeadChannels->removeAll(c))
 	{
 		return false;
 	}
@@ -271,7 +267,7 @@ bool KviIrcContext::unregisterDeadChannel(KviChannel * c)
 bool KviIrcContext::unregisterContextWindow(KviWindow * pWnd)
 {
 	if(!m_pContextWindows)return false;
-	if(!m_pContextWindows->removeRef(pWnd))
+	if(!m_pContextWindows->removeAll(pWnd))
 	{
 		return false;
 	}
@@ -286,7 +282,7 @@ bool KviIrcContext::unregisterContextWindow(KviWindow * pWnd)
 bool KviIrcContext::unregisterDeadQuery(KviQuery * q)
 {
 	if(!m_pDeadQueries)return false;
-	if(!m_pDeadQueries->removeRef(q))
+	if(!m_pDeadQueries->removeAll(q))
 	{
 		return false;
 	}
@@ -716,7 +712,7 @@ void KviIrcContext::connectionTerminated()
 				KviChannel * c;
 				QString szChannels,szProtectedChannels,szPasswords,szCurPass,szCurChan;
 				// first only chans without key, in groups of 4
-				for(c = connection()->channelList()->first();c;c = connection()->channelList()->next())
+				foreach(c,*(connection()->channelList()))
 				{
 					szCurPass=c->channelKey();
 					szCurChan = c->windowName();
@@ -748,7 +744,7 @@ void KviIrcContext::connectionTerminated()
 	
 			if(KVI_OPTION_BOOL(KviOption_boolReopenQueriesAfterReconnect))
 			{
-				for(KviQuery * q = connection()->queryList()->first();q;q = connection()->queryList()->next())
+				foreach(KviQuery * q,*(connection()->queryList()))
 				{
 					pInfo->m_szOpenQueryes.append(q->target());
 				}

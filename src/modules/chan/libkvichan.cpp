@@ -1201,9 +1201,9 @@ static bool chan_kvs_fnc_banlist(KviKvsModuleFunctionCall * c)
 
 	int idx = 0;
 
-	KviPtrList<KviMaskEntry> * l = ((KviChannel *)(c->window()))->banList();
+	QList<KviMaskEntry*> * l = ((KviChannel *)(c->window()))->banList();
 
-	for(KviMaskEntry * e = l->first();e;e = l->next())
+	foreach(KviMaskEntry * e,*l)
 	{
 		pArray->set(idx,new KviKvsVariant(e->szMask));
 		idx++;
@@ -1244,9 +1244,9 @@ static bool chan_kvs_fnc_banexceptionlist(KviKvsModuleFunctionCall * c)
 
 	int idx = 0;
 
-	KviPtrList<KviMaskEntry> * l = ((KviChannel *)(c->window()))->banExceptionList();
+	QList<KviMaskEntry*> * l = ((KviChannel *)(c->window()))->banExceptionList();
 
-	for(KviMaskEntry * e = l->first();e;e = l->next())
+	foreach(KviMaskEntry * e,*l)
 	{
 		pArray->set(idx,new KviKvsVariant(e->szMask));
 		idx++;
@@ -1287,9 +1287,9 @@ static bool chan_kvs_fnc_invitelist(KviKvsModuleFunctionCall * c)
 
 	int idx = 0;
 
-	KviPtrList<KviMaskEntry> * l = ((KviChannel *)(c->window()))->inviteList();
+	QList<KviMaskEntry*> * l = ((KviChannel *)(c->window()))->inviteList();
 
-	for(KviMaskEntry * e = l->first();e;e = l->next())
+	foreach(KviMaskEntry * e,*l)
 	{
 		pArray->set(idx,new KviKvsVariant(e->szMask));
 		idx++;
@@ -1332,9 +1332,9 @@ static bool chan_kvs_fnc_matchban(KviKvsModuleFunctionCall * c)
 		return true;
 	}
 
-	KviPtrList<KviMaskEntry> * l = ((KviChannel *)(c->window()))->banList();
+	QList<KviMaskEntry*> * l = ((KviChannel *)(c->window()))->banList();
 
-	for(KviMaskEntry * e = l->first();e;e = l->next())
+	foreach(KviMaskEntry * e,*l)
 	{
 		if(KviQString::matchStringCI(e->szMask,szMask))
 		{
@@ -1381,9 +1381,9 @@ static bool chan_kvs_fnc_matchbanexception(KviKvsModuleFunctionCall * c)
 		return true;
 	}
 
-	KviPtrList<KviMaskEntry> * l = ((KviChannel *)(c->window()))->banExceptionList();
+	QList<KviMaskEntry*> * l = ((KviChannel *)(c->window()))->banExceptionList();
 
-	for(KviMaskEntry * e = l->first();e;e = l->next())
+	foreach(KviMaskEntry * e,*l)
 	{
 		if(KviQString::matchStringCI(e->szMask,szMask))
 		{
@@ -1430,9 +1430,9 @@ static bool chan_kvs_fnc_matchinvite(KviKvsModuleFunctionCall * c)
 		return true;
 	}
 
-	KviPtrList<KviMaskEntry> * l = ((KviChannel *)(c->window()))->inviteList();
+	QList<KviMaskEntry*> * l = ((KviChannel *)(c->window()))->inviteList();
 
-	for(KviMaskEntry * e = l->first();e;e = l->next())
+	foreach(KviMaskEntry * e,*l)
 	{
 		if(KviQString::matchStringCI(e->szMask,szMask))
 		{

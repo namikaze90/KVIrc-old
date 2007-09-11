@@ -29,11 +29,11 @@
 #include "kvi_kvs_rwevaluationresult.h"
 #include "kvi_locale.h"
 
-KviKvsTreeNodeSpecialCommandUnset::KviKvsTreeNodeSpecialCommandUnset(const QChar * pLocation,KviPtrList<KviKvsTreeNodeVariable> * pVariableList)
+KviKvsTreeNodeSpecialCommandUnset::KviKvsTreeNodeSpecialCommandUnset(const QChar * pLocation,QList<KviKvsTreeNodeVariable*> * pVariableList)
 : KviKvsTreeNodeSpecialCommand(pLocation,"unset")
 {
 	m_pVariableList = pVariableList;
-	for(KviKvsTreeNodeVariable * pVar = m_pVariableList->first();pVar;pVar = m_pVariableList->next())
+	foreach(KviKvsTreeNodeVariable * pVar,*m_pVariableList)
 	{
 		pVar->setParent(this);
 	}
@@ -54,7 +54,7 @@ void KviKvsTreeNodeSpecialCommandUnset::dump(const char * prefix)
 	debug("%s SpecialCommandUnset",prefix);
 	QString tmp = prefix;
 	tmp.append("  ");
-	for(KviKvsTreeNodeVariable * pVar = m_pVariableList->first();pVar;pVar = m_pVariableList->next())
+	foreach(KviKvsTreeNodeVariable * pVar,*m_pVariableList)
 	{
 		pVar->dump(tmp.utf8().data());
 	}
@@ -62,7 +62,7 @@ void KviKvsTreeNodeSpecialCommandUnset::dump(const char * prefix)
 
 bool KviKvsTreeNodeSpecialCommandUnset::execute(KviKvsRunTimeContext * c)
 {
-	for(KviKvsTreeNodeVariable * pVar = m_pVariableList->first();pVar;pVar = m_pVariableList->next())
+	foreach(KviKvsTreeNodeVariable * pVar,*m_pVariableList)
 	{
 		KviKvsRWEvaluationResult * r = pVar->evaluateReadWrite(c);
 		if(!r)return false;

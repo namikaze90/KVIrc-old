@@ -1,907 +1,550 @@
-/**********************************************************************
-
-** Copyright (C) 2000-2003 Trolltech AS.  All rights reserved.
-
+/****************************************************************************
 **
-
-** This file is part of the Qt Assistant.
-
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
-
-** This file may be distributed and/or modified under the terms of the
-
-** GNU General Public License version 2 as published by the Free Software
-
-** Foundation and appearing in the file LICENSE.GPL included in the
-
-** packaging of this file.
-
+** This file is part of the Qt Assistant of the Qt Toolkit.
 **
-
-** Licensees holding valid Qt Enterprise Edition or Qt Professional Edition
-
-** licenses may use this file in accordance with the Qt Commercial License
-
-** Agreement provided with the Software.
-
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-
 **
-
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-
-**   information about Qt Commercial License Agreements.
-
-**
-
-** Contact info@trolltech.com if any conditions of this licensing are
-
-** not clear to you.
-
-**
-
-**********************************************************************/
-
-
+****************************************************************************/
 
 #include "index.h"
 
-
-
-#include "kvi_file.h"
-
-#include <qdir.h>
-
-#include <qstringlist.h>
-
-
-
-#include <qapplication.h>
-
-#include <qtextstream.h>
-
+#include <QFile>
+#include <QDir>
+#include <QStringList>
+#include <QApplication>
+#include <QByteArray>
+#include <QTextStream>
+#include <QtAlgorithms>
+#include <QUrl>
+#include <QTextCodec>
 #include <ctype.h>
 
+struct Term {
+    Term() : frequency(-1) {}
+    Term( const QString &t, int f, QVector<Document> l ) : term( t ), frequency( f ), documents( l ) {}
+    QString term;
+    int frequency;
+    QVector<Document>documents;
+    bool operator<( const Term &i2 ) const { return frequency < i2.frequency; }
+};
 
 QDataStream &operator>>( QDataStream &s, Document &l )
-
 {
-
     s >> l.docNumber;
-
     s >> l.frequency;
-
     return s;
-
 }
-
-
 
 QDataStream &operator<<( QDataStream &s, const Document &l )
-
 {
-
-    s << (Q_INT16)l.docNumber;
-
-    s << (Q_INT16)l.frequency;
-
+    s << (qint16)l.docNumber;
+    s << (qint16)l.frequency;
     return s;
-
 }
-
-
 
 Index::Index( const QString &dp, const QString &hp )
-    : QObject( 0, 0 )
+    : QObject( 0 ), docPath( dp )
 {
+    Q_UNUSED(hp);
 
-    alreadyHaveDocList = FALSE;
-
-    lastWindowClosed = FALSE;
-
-    connect( qApp, SIGNAL( lastWindowClosed() ),
-
-	     this, SLOT( setLastWinClosed() ) );
-
+    alreadyHaveDocList = false;
+    lastWindowClosed = false;
+    connect( qApp, SIGNAL(lastWindowClosed()),
+             this, SLOT(setLastWinClosed()) );
 }
-
-
 
 Index::Index( const QStringList &dl, const QString &hp )
-
-    : QObject( 0, 0 )
-
+    : QObject( 0 )
 {
-
+    Q_UNUSED(hp);
     docList = dl;
-
-    alreadyHaveDocList = TRUE;
-
-    lastWindowClosed = FALSE;
-
-    connect( qApp, SIGNAL( lastWindowClosed() ),
-
-	     this, SLOT( setLastWinClosed() ) );
-
+    alreadyHaveDocList = true;
+    lastWindowClosed = false;
+    connect( qApp, SIGNAL(lastWindowClosed()),
+             this, SLOT(setLastWinClosed()) );
 }
-
-
 
 void Index::setLastWinClosed()
-
 {
-
-    lastWindowClosed = TRUE;
-
+    lastWindowClosed = true;
 }
-
-
 
 void Index::setDictionaryFile( const QString &f )
-
 {
-
     dictFile = f;
-
 }
-
-
 
 void Index::setDocListFile( const QString &f )
 {
     docListFile = f;
 }
 
-
+void Index::setDocList( const QStringList &lst )
+{
+    docList = lst;
+}
 
 int Index::makeIndex()
 {
     if ( !alreadyHaveDocList )
-	setupDocumentList();
+        setupDocumentList();
     if ( docList.isEmpty() )
-	return 1;
-    dict.clear();
+        return 1;
     QStringList::Iterator it = docList.begin();
     int steps = docList.count() / 100;
     if ( !steps )
-	steps++;
+        steps++;
     int prog = 0;
     for ( int i = 0; it != docList.end(); ++it, ++i ) {
-	if ( lastWindowClosed ) {
-	    return -1;
-	}
-	parseDocument( *it, i );
-	if ( i%steps == 0 ) {
-	    prog++;
-	    emit indexingProgress( prog );
-	}
+        if ( lastWindowClosed ) {
+            return -1;
+        }
+        QUrl url(*it);
+        parseDocument( url.toLocalFile(), i );
+        if ( i%steps == 0 ) {
+            prog++;
+            emit indexingProgress( prog );
+        }
     }
     return 0;
 }
 
-
-
 void Index::setupDocumentList()
-
 {
-    docList.clear();
-    titleList.clear();
     QDir d( docPath );
-    QString szCur;
-    QStringList lst = d.entryList( "*.html" );
-    QStringList::ConstIterator it = lst.begin();
-    for ( ; it != lst.end(); ++it )
-    {
-	szCur=docPath + "/" + *it;
-	docList.append( szCur );
-	titleList.append(getDocumentTitle( szCur ));
-    }
+    QStringList filters;
+    filters.append(QLatin1String("*.html"));
+    QStringList lst = d.entryList(filters);
+    QStringList::ConstIterator it = lst.constBegin();
+    for ( ; it != lst.constEnd(); ++it )
+        docList.append( QLatin1String("file:") + docPath + QLatin1String("/") + *it );
 }
-
-
 
 void Index::insertInDict( const QString &str, int docNum )
-
 {
-
-    if ( strcmp( str, "amp" ) == 0 || strcmp( str, "nbsp" ) == 0 )
-
-	return;
-
+    if ( str == QLatin1String("amp") || str == QLatin1String("nbsp"))
+        return;
     Entry *e = 0;
-
     if ( dict.count() )
-
-	e = dict[ str ];
-
-
+        e = dict[ str ];
 
     if ( e ) {
-
-	if ( e->documents.first().docNumber != docNum )
-
-	    e->documents.prepend( Document( docNum, 1 ) );
-
-	else
-
-	    e->documents.first().frequency++;
-
+        if ( e->documents.last().docNumber != docNum )
+            e->documents.append( Document(docNum, 1 ) );
+        else
+            e->documents.last().frequency++;
     } else {
-
-	dict.insert( str, new Entry( docNum ) );
-
+        dict.insert( str, new Entry( docNum ) );
     }
-
 }
 
+QString Index::getCharsetForDocument(QFile *file)
+{
+    QTextStream s(file);
+    QString contents = s.readAll();
 
+    QString encoding;
+    int start = contents.indexOf(QLatin1String("<meta"), 0, Qt::CaseInsensitive);
+    if (start > 0) {
+        int end = contents.indexOf(QLatin1String(">"), start);
+        QString meta = contents.mid(start+5, end-start);
+        meta = meta.toLower();
+        QRegExp r(QLatin1String("charset=([^\"\\s]+)"));
+        if (r.indexIn(meta) != -1) {
+            encoding = r.cap(1);        
+        }
+    }
+
+    file->seek(0);
+    if (encoding.isEmpty())
+        return QLatin1String("utf-8");
+    return encoding;
+}
 
 void Index::parseDocument( const QString &filename, int docNum )
 {
-    KviFile file( filename );
-    if ( !file.openForReading() ) {
-	qWarning( "can not open file " + filename );
-	return;
+    QFile file( filename );
+    if ( !file.open(QFile::ReadOnly) ) {
+        qWarning( (QLatin1String("can not open file ") + filename).toAscii().constData() );
+        return;
     }
-    QTextStream s( &file );
-    QString text = s.read();
+
+    QTextStream s(&file);
+    QString en = getCharsetForDocument(&file);
+    s.setCodec(QTextCodec::codecForName(en.toLatin1().constData()));
+
+    QString text = s.readAll();
     if (text.isNull())
         return;
-    bool valid = TRUE;
+
+    bool valid = true;
     const QChar *buf = text.unicode();
     QChar str[64];
     QChar c = buf[0];
     int j = 0;
     int i = 0;
-    while ( (uint)j < text.length() ) {
-	if ( c == '<' || c == '&' ) {
-	    valid = FALSE;
-	    if ( i > 1 )
-		insertInDict( QString(str,i), docNum );
-	    i = 0;
-	    c = buf[++j];
-	    continue;
-	}
-	if ( ( c == '>' || c == ';' ) && !valid ) {
-	    valid = TRUE;
-	    c = buf[++j];
-	    continue;
-	}
-
-	if ( !valid ) {
-
-	    c = buf[++j];
-
-	    continue;
-
-	}
-
-	if ( ( c.isLetterOrNumber() || c == '_' ) && i < 63 ) {
-
-	    str[i] = c.lower();
-
-	    ++i;
-
-	} else {
-
-	    if ( i > 1 )
-
-		insertInDict( QString(str,i), docNum );
-
-	    i = 0;
-
-	}
-
-	c = buf[++j];
-
+    while ( j < text.length() ) {
+        if ( c == QLatin1Char('<') || c == QLatin1Char('&') ) {
+            valid = false;
+            if ( i > 1 )
+                insertInDict( QString(str,i), docNum );
+            i = 0;
+            c = buf[++j];
+            continue;
+        }
+        if ( ( c == QLatin1Char('>') || c == QLatin1Char(';') ) && !valid ) {
+            valid = true;
+            c = buf[++j];
+            continue;
+        }
+        if ( !valid ) {
+            c = buf[++j];
+            continue;
+        }
+        if ( ( c.isLetterOrNumber() || c == QLatin1Char('_') ) && i < 63 ) {
+            str[i] = c.toLower();
+            ++i;
+        } else {
+            if ( i > 1 )
+                insertInDict( QString(str,i), docNum );
+            i = 0;
+        }
+        c = buf[++j];
     }
-
     if ( i > 1 )
-
-	insertInDict( QString(str,i), docNum );
-
+        insertInDict( QString(str,i), docNum );
     file.close();
-
 }
 
-
-
 void Index::writeDict()
-
 {
-
-    QHash<QString,Entry*>::iterator it( dict.begin() );
-    KviFile f( dictFile );
-    if ( !f.openForWriting() )
-	return;
+    QFile f( dictFile );
+    if ( !f.open(QFile::WriteOnly ) )
+        return;
     QDataStream s( &f );
-    for( ; it != dict.end(); ++it ) {
-        Entry *e = it.value();
+    for(QHash<QString, Entry *>::Iterator it = dict.begin(); it != dict.end(); ++it) {
         s << it.key();
-        s << e->documents;
+        s << it.value()->documents.count();
+        s << it.value()->documents;
     }
     f.close();
     writeDocumentList();
 }
 
-
-
 void Index::writeDocumentList()
-
 {
-    KviFile f( docListFile );
-    if ( !f.openForWriting() )
-	return;
-    QTextStream s( &f );
-    QString docs = docList.join("[#item#]");
-    s << docs;
-    
-    KviFile f1( docListFile+".titles" );
-    if ( !f1.openForWriting() )
-	return;
-    QTextStream s1( &f1 );
-    docs = titleList.join("[#item#]");
-    s1 << docs;
+    QFile f( docListFile );
+    if ( !f.open(QFile::WriteOnly ) )
+        return;
+    QDataStream s( &f );
+    s << docList;
 }
 
-
-
 void Index::readDict()
-
 {
-    KviFile f( dictFile );
-    if ( !f.openForReading() )
-	return;
+    QFile f( dictFile );
+    if ( !f.open(QFile::ReadOnly ) )
+        return;
+
     dict.clear();
     QDataStream s( &f );
     QString key;
-    QList<Document> docs;
+    int numOfDocs;
+    QVector<Document> docs;
     while ( !s.atEnd() ) {
-	s >> key;
-	s >> docs;
-	dict.insert( key, new Entry( docs ) );
+        s >> key;
+        s >> numOfDocs;
+        docs.resize(numOfDocs);
+        s >> docs;
+        dict.insert( key, new Entry( docs ) );
     }
     f.close();
     readDocumentList();
 }
 
-
-
 void Index::readDocumentList()
 {
-    //reading docs
-    KviFile f( docListFile );
-    if ( !f.openForReading() )
-	return;
-    QTextStream s( &f );
-    docList = QStringList::split("[#item#]",s.read());
-    
-    //reading titles
-    KviFile f1( docListFile+".titles" );
-    if ( !f1.openForReading() )
-	return;
-    QTextStream s1( &f1 );
-    titleList = QStringList::split("[#item#]",s1.read());
-//    debug(titleList);
+    QFile f( docListFile );
+    if ( !f.open(QFile::ReadOnly ) )
+        return;
+    QDataStream s( &f );
+    s >> docList;
 }
-
-
 
 QStringList Index::query( const QStringList &terms, const QStringList &termSeq, const QStringList &seqWords )
-
 {
-
-    TermList termList;
-
-
-
-    QStringList::ConstIterator it = terms.begin();
-
-    for ( it = terms.begin(); it != terms.end(); ++it ) {
-
-	Entry *e = 0;
-
-	if ( (*it).contains( '*' ) ) {
-
-	    QList<Document> wcts = setupDummyTerm( getWildcardTerms( *it ) );
-
-	    termList.append( new Term( "dummy", wcts.count(), wcts ) );
-
-	} else if ( dict[ *it ] ) {
-
-	    e = dict[ *it ];
-
-	    termList.append( new Term( *it, e->documents.count(), e->documents ) );
-
-	} else {
-
-	    return QStringList();
-
-	}
-
+    QList<Term> termList;
+    for (QStringList::ConstIterator it = terms.begin(); it != terms.end(); ++it ) {
+        Entry *e = 0;
+        if ( (*it).contains(QLatin1Char('*')) ) {
+            QVector<Document> wcts = setupDummyTerm( getWildcardTerms( *it ) );
+            termList.append( Term(QLatin1String("dummy"), wcts.count(), wcts ) );
+        } else if ( dict[ *it ] ) {
+            e = dict[ *it ];
+            termList.append( Term( *it, e->documents.count(), e->documents ) );
+        } else {
+            return QStringList();
+        }
     }
-
-    termList.sort();
-
-
-
-    Term *minTerm = termList.first();
-
     if ( !termList.count() )
+        return QStringList();
+    qSort(termList);
 
-	return QStringList();
-
-    termList.removeFirst();
-
-
-
-    QList<Document> minDocs = minTerm->documents;
-
-    QList<Document>::iterator C;
-
-    QList<Document>::ConstIterator It;
-
-    Term *t = termList.first();
-
-    for ( ; t; t = termList.next() ) {
-
-	QList<Document> docs = t->documents;
-
-	C = minDocs.begin();
-
-	while ( C != minDocs.end() ) {
-
-	    bool found = FALSE;
-
-	    for ( It = docs.begin(); It != docs.end(); ++It ) {
-
-		if ( (*C).docNumber == (*It).docNumber ) {
-
-		    (*C).frequency += (*It).frequency;
-
-		    found = TRUE;
-
-		    break;
-
-		}
-
-	    }
-
-	    if ( !found )
-
-		C = minDocs.remove( C );
-
-	    else
-
-		++C;
-
-	}
-
+    QVector<Document> minDocs = termList.takeFirst().documents;
+    for(QList<Term>::Iterator it = termList.begin(); it != termList.end(); ++it) {
+        Term *t = &(*it);
+        QVector<Document> docs = t->documents;
+        for(QVector<Document>::Iterator minDoc_it = minDocs.begin(); minDoc_it != minDocs.end(); ) {
+            bool found = false;
+            for (QVector<Document>::ConstIterator doc_it = docs.constBegin(); doc_it != docs.constEnd(); ++doc_it ) {
+                if ( (*minDoc_it).docNumber == (*doc_it).docNumber ) {
+                    (*minDoc_it).frequency += (*doc_it).frequency;
+                    found = true;
+                    break;
+                }
+            }
+            if ( !found )
+                minDoc_it = minDocs.erase( minDoc_it );
+            else
+                ++minDoc_it;
+        }
     }
-
-
 
     QStringList results;
-
+    qSort( minDocs );
     if ( termSeq.isEmpty() ) {
-
-	for ( C = minDocs.begin(); C != minDocs.end(); ++C )
-
-	    results << docList[ (int)(*C).docNumber ];
-
-	return results;
-
+        for(QVector<Document>::Iterator it = minDocs.begin(); it != minDocs.end(); ++it)
+            results << docList.at((int)(*it).docNumber);
+        return results;
     }
-
-
 
     QString fileName;
-
-    for ( C = minDocs.begin(); C != minDocs.end(); ++C ) {
-
-	fileName =  docList[ (int)(*C).docNumber ];
-
-	if ( searchForPattern( termSeq, seqWords, fileName ) )
-
-	    results << fileName;
-
+    for(QVector<Document>::Iterator it = minDocs.begin(); it != minDocs.end(); ++it) {
+        fileName =  docList[ (int)(*it).docNumber ];
+        if ( searchForPattern( termSeq, seqWords, fileName ) )
+            results << fileName;
     }
-
     return results;
-
 }
 
-
-
-QString Index::getDocumentTitle( const QString &fileName )
-
+QString Index::getDocumentTitle( const QString &fullFileName )
 {
+    QUrl url(fullFileName);
+    QString fileName = url.toLocalFile();
 
-    KviFile file( fileName );
+    if (documentTitleCache.contains(fileName))
+        return documentTitleCache.value(fileName);
 
-    if ( !file.openForReading() ) {
-
-	qWarning( "cannot open file " + fileName );
-
-	return fileName;
-
+    QFile file( fileName );
+    if ( !file.open( QFile::ReadOnly ) ) {
+        qWarning( (QLatin1String("cannot open file ") + fileName).toAscii().constData() );
+        return fileName;
     }
-
     QTextStream s( &file );
+    QString text = s.readAll();
 
-    QString text = s.read();
-
-
-
-    int start = text.find( "<title>", 0, FALSE ) + 7;
-
-    int end = text.find( "</title>", 0, FALSE );
-
-
+    int start = text.indexOf(QLatin1String("<title>"), 0, Qt::CaseInsensitive) + 7;
+    int end = text.indexOf(QLatin1String("</title>"), 0, Qt::CaseInsensitive);
 
     QString title = ( end - start <= 0 ? tr("Untitled") : text.mid( start, end - start ) );
-
+    documentTitleCache.insert(fileName, title);
     return title;
-
 }
-
-
 
 QStringList Index::getWildcardTerms( const QString &term )
-
 {
-
     QStringList lst;
-
     QStringList terms = split( term );
+    QStringList::Iterator iter;
 
-	QStringList::Iterator iter;
-
-
-    QHash<QString,Entry*>::iterator it( dict.begin() );
-
-    for( ; it != dict.end(); ++it ) {
-	int index = 0;
-	bool found = FALSE;
-	QString text( it.key() );
-	for ( iter = terms.begin(); iter != terms.end(); ++iter ) {
-	    if ( *iter == "*" ) {
-		found = TRUE;
-		continue;
-	    }
-	    if ( iter == terms.begin() && (*iter)[0] != text[0] ) {
-		found = FALSE;
-		break;
-	    }
-	    index = text.find( *iter, index );
-	    if ( *iter == terms.last() && index != (int)text.length()-1 ) {
-		index = text.findRev( *iter );
-		if ( index != (int)text.length() - (int)(*iter).length() ) {
-
-		    found = FALSE;
-
-		    break;
-
-		}
-
-	    }
-
-	    if ( index != -1 ) {
-
-		found = TRUE;
-
-		index += (*iter).length();
-
-		continue;
-
-	    } else {
-
-		found = FALSE;
-
-		break;
-
-	    }
-
-	}
-
-	if ( found )
-
-	    lst << text;
-
+    for(QHash<QString, Entry*>::Iterator it = dict.begin(); it != dict.end(); ++it) {
+        int index = 0;
+        bool found = false;
+        QString text( it.key() );
+        for ( iter = terms.begin(); iter != terms.end(); ++iter ) {
+            if ( *iter == QLatin1String("*") ) {
+                found = true;
+                continue;
+            }
+            if ( iter == terms.begin() && (*iter)[0] != text[0] ) {
+                found = false;
+                break;
+            }
+            index = text.indexOf( *iter, index );
+            if ( *iter == terms.last() && index != (int)text.length()-1 ) {
+                index = text.lastIndexOf( *iter );
+                if ( index != (int)text.length() - (int)(*iter).length() ) {
+                    found = false;
+                    break;
+                }
+            }
+            if ( index != -1 ) {
+                found = true;
+                index += (*iter).length();
+                continue;
+            } else {
+                found = false;
+                break;
+            }
+        }
+        if ( found )
+            lst << text;
     }
 
-
-
     return lst;
-
 }
-
-
 
 QStringList Index::split( const QString &str )
-
 {
-
     QStringList lst;
-
     int j = 0;
+    int i = str.indexOf(QLatin1Char('*'), j );
 
-    int i = str.find( '*', j );
-
-
+    if (str.startsWith(QLatin1String("*")))
+        lst << QLatin1String("*");
 
     while ( i != -1 ) {
-
-	if ( i > j && i <= (int)str.length() ) {
-
-	    lst << str.mid( j, i - j );
-
-	    lst << "*";
-
-	}
-
-	j = i + 1;
-
-	i = str.find( '*', j );
-
+        if ( i > j && i <= (int)str.length() ) {
+            lst << str.mid( j, i - j );
+            lst << QLatin1String("*");
+        }
+        j = i + 1;
+        i = str.indexOf(QLatin1Char('*'), j );
     }
-
-
 
     int l = str.length() - 1;
-
     if ( str.mid( j, l - j + 1 ).length() > 0 )
-
-	lst << str.mid( j, l - j + 1 );
-
-
+        lst << str.mid( j, l - j + 1 );
 
     return lst;
-
 }
 
-
-
-QList<Document> Index::setupDummyTerm( const QStringList &terms )
-
+QVector<Document> Index::setupDummyTerm( const QStringList &terms )
 {
-
-    TermList termList;
-
-    QStringList::ConstIterator it = terms.begin();
-
-    for ( ; it != terms.end(); ++it ) {
-
-	Entry *e = 0;
-
-	if ( dict[ *it ] ) {
-
-	    e = dict[ *it ];
-
-	    termList.append( new Term( *it, e->documents.count(), e->documents ) );
-
-	}
-
+    QList<Term> termList;
+    for (QStringList::ConstIterator it = terms.begin(); it != terms.end(); ++it) {
+        Entry *e = 0;
+        if ( dict[ *it ] ) {
+            e = dict[ *it ];
+            termList.append( Term( *it, e->documents.count(), e->documents ) );
+        }
     }
-
-    termList.sort();
-
-
-
-    QList<Document> maxList;
-
-
-
+    QVector<Document> maxList(0);
     if ( !termList.count() )
+        return maxList;
+    qSort(termList);
 
-	return maxList;
-
-    maxList = termList.last()->documents;
-
-    termList.removeLast();
-
-
-
-    QList<Document>::iterator docIt;
-
-    Term *t = termList.first();
-
-    while ( t ) {
-
-	QList<Document> docs = t->documents;
-
-	for ( docIt = docs.begin(); docIt != docs.end(); ++docIt ) {
-
-	    if ( maxList.findIndex( *docIt ) == -1 )
-
-		maxList.append( *docIt );
-
-	}
-
-	t = termList.next();
-
+    maxList = termList.takeLast().documents;
+    for(QList<Term>::Iterator it = termList.begin(); it != termList.end(); ++it) {
+        Term *t = &(*it);
+        QVector<Document> docs = t->documents;
+        for (QVector<Document>::iterator docIt = docs.begin(); docIt != docs.end(); ++docIt ) {
+            if ( maxList.indexOf( *docIt ) == -1 )
+                maxList.append( *docIt );
+        }
     }
-
     return maxList;
-
 }
-
-
 
 void Index::buildMiniDict( const QString &str )
-
 {
-
     if ( miniDict[ str ] )
-
-	miniDict[ str ]->positions.append( wordNum );
-
+        miniDict[ str ]->positions.append( wordNum );
     ++wordNum;
-
 }
-
-
 
 bool Index::searchForPattern( const QStringList &patterns, const QStringList &words, const QString &fileName )
-
 {
-
-    KviFile file( fileName );
-
-    if ( !file.openForReading() ) {
-
-	qWarning( "cannot open file " + fileName );
-
-	return FALSE;
-
+    QUrl url(fileName);
+    QString fName = url.toLocalFile();
+    QFile file( fName );
+    if ( !file.open( QFile::ReadOnly ) ) {
+        qWarning( (QLatin1String("cannot open file ") + fName).toAscii().constData() );
+        return false;
     }
-
-
 
     wordNum = 3;
-
     miniDict.clear();
-
     QStringList::ConstIterator cIt = words.begin();
-
     for ( ; cIt != words.end(); ++cIt )
-
-	miniDict.insert( *cIt, new PosEntry( 0 ) );
-
-
+        miniDict.insert( *cIt, new PosEntry( 0 ) );
 
     QTextStream s( &file );
-
-    QString text = s.read();
-
-    bool valid = TRUE;
-
+    QString text = s.readAll();
+    bool valid = true;
     const QChar *buf = text.unicode();
-
     QChar str[64];
-
     QChar c = buf[0];
-
     int j = 0;
-
     int i = 0;
-
-    while ( (uint)j < text.length() ) {
-
-	if ( c == '<' || c == '&' ) {
-
-	    valid = FALSE;
-
-	    if ( i > 1 )
-
-		buildMiniDict( QString(str,i) );
-
-	    i = 0;
-
-	    c = buf[++j];
-
-	    continue;
-
-	}
-
-	if ( ( c == '>' || c == ';' ) && !valid ) {
-
-	    valid = TRUE;
-
-	    c = buf[++j];
-
-	    continue;
-
-	}
-
-	if ( !valid ) {
-
-	    c = buf[++j];
-
-	    continue;
-
-	}
-
-	if ( ( c.isLetterOrNumber() || c == '_' ) && i < 63 ) {
-
-	    str[i] = c.lower();
-
-	    ++i;
-
-	} else {
-
-	    if ( i > 1 )
-
-		buildMiniDict( QString(str,i) );
-
-	    i = 0;
-
-	}
-
-	c = buf[++j];
-
+    while ( j < text.length() ) {
+        if ( c == QLatin1Char('<') || c == QLatin1Char('&') ) {
+            valid = false;
+            if ( i > 1 )
+                buildMiniDict( QString(str,i) );
+            i = 0;
+            c = buf[++j];
+            continue;
+        }
+        if ( ( c == QLatin1Char('>') || c == QLatin1Char(';') ) && !valid ) {
+            valid = true;
+            c = buf[++j];
+            continue;
+        }
+        if ( !valid ) {
+            c = buf[++j];
+            continue;
+        }
+        if ( ( c.isLetterOrNumber() || c == QLatin1Char('_') ) && i < 63 ) {
+            str[i] = c.toLower();
+            ++i;
+        } else {
+            if ( i > 1 )
+                buildMiniDict( QString(str,i) );
+            i = 0;
+        }
+        c = buf[++j];
     }
-
     if ( i > 1 )
-
-	buildMiniDict( QString(str,i) );
-
+        buildMiniDict( QString(str,i) );
     file.close();
 
-
-
     QStringList::ConstIterator patIt = patterns.begin();
-
     QStringList wordLst;
-
     QList<uint> a, b;
-
     QList<uint>::iterator aIt;
-
     for ( ; patIt != patterns.end(); ++patIt ) {
-
-	wordLst = QStringList::split( ' ', *patIt );
-
-	a = miniDict[ wordLst[0] ]->positions;
-
-	for ( int j = 1; j < (int)wordLst.count(); ++j ) {
-
-	    b = miniDict[ wordLst[j] ]->positions;
-
-	    aIt = a.begin();
-
-	    while ( aIt != a.end() ) {
-
-		if ( b.find( *aIt + 1 ) != b.end() ) {
-
-		    (*aIt)++;
-
-		    ++aIt;
-
-		} else {
-
-		    aIt = a.remove( aIt );
-
-		}
-
-	    }
-
-	}
-
+        wordLst = (*patIt).split(QLatin1Char(' '));
+        a = miniDict[ wordLst[0] ]->positions;
+        for ( int j = 1; j < (int)wordLst.count(); ++j ) {
+            b = miniDict[ wordLst[j] ]->positions;
+            aIt = a.begin();
+            while ( aIt != a.end() ) {
+                if ( b.contains( *aIt + 1 )) {
+                    (*aIt)++;
+                    ++aIt;
+                } else {
+                    aIt = a.erase( aIt );
+                }
+            }
+        }
     }
-
     if ( a.count() )
-
-	return TRUE;
-
-    return FALSE;
-
+        return true;
+    return false;
 }
-
-

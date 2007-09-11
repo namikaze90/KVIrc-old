@@ -37,7 +37,7 @@
 #include "kvi_tal_popupmenu.h"
 #include <qpainter.h>
 
-static KviPtrList<KviHttpFileTransfer> * g_pHttpFileTransfers = 0;
+static QList<KviHttpFileTransfer*> * g_pHttpFileTransfers = 0;
 static QPixmap * g_pHttpIcon = 0;
 
 
@@ -73,7 +73,7 @@ KviHttpFileTransfer::KviHttpFileTransfer()
 
 KviHttpFileTransfer::~KviHttpFileTransfer()
 {
-	g_pHttpFileTransfers->removeRef(this);
+	g_pHttpFileTransfers->removeAll(this);
 	delete m_pHttpRequest;
 	if(m_pAutoCleanTimer)
 	{
@@ -337,8 +337,7 @@ QString KviHttpFileTransfer::tipText()
 void KviHttpFileTransfer::init()
 {
 	if(g_pHttpFileTransfers)return;
-	g_pHttpFileTransfers = new KviPtrList<KviHttpFileTransfer>;
-	g_pHttpFileTransfers->setAutoDelete(false);
+	g_pHttpFileTransfers = new QList<KviHttpFileTransfer*>;
 
 	QPixmap * pix = g_pIconManager->getImage("kvi_httpicons.png");
 	if(pix)g_pHttpIcon = new QPixmap(*pix);

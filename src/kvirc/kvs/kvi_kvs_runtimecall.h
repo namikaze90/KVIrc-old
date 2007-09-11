@@ -53,7 +53,6 @@ public:
 	unsigned int paramCount(){ return m_pParams->count(); };
 	unsigned int parameterCount(){ return m_pParams->count(); };
 	KviKvsVariant * firstParam(){ return m_pParams->first(); };
-	KviKvsVariant * nextParam(){ return m_pParams->next(); };
 	
 	// This is virtual and returns false by default
 	// only few derived classes allow the parameter code to be

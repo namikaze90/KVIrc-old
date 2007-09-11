@@ -185,8 +185,7 @@ KviKvsTreeNodeCommand * KviKvsParser::parseSpecialCommandUnset()
 
 	const QChar * pCmdBegin = KVSP_curCharPointer;
 
-	KviPtrList<KviKvsTreeNodeVariable> * pVarList = new KviPtrList<KviKvsTreeNodeVariable>;
-	pVarList->setAutoDelete(true);
+	QList<KviKvsTreeNodeVariable*> * pVarList = new QList<KviKvsTreeNodeVariable*>;
 	
 	while(KVSP_curCharUnicode == '%')
 	{
@@ -1573,7 +1572,7 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 		QString szLabel(pLabelBegin,KVSP_curCharPointer - pLabelBegin);
 		QString szLabelLow = szLabel.lower();
 
-		KviPtrList<QString> * pParameters = 0;
+		QStringList* pParameters =0;
 		
 		QString szCondition;
 
@@ -1673,8 +1672,7 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			{
 				QString szInstruction(pBegin,KVSP_curCharPointer - pBegin);
 				KviCommandFormatter::bufferFromBlock(szInstruction);
-				QString * pItemName = pParameters ? pParameters->first() : 0;
-				QString szItemName = pItemName ? *pItemName : QString::null;
+				QString szItemName = pParameters ? pParameters->first() : QString::null;
 				if(bPrologue)
 					pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelPrologue(pLabelBegin,szInstruction,szItemName));
 				else
@@ -1696,18 +1694,18 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			EXTRACT_POPUP_LABEL_PARAMETERS
 			EXTRACT_POPUP_LABEL_CONDITION
 
-			QString * pText = pParameters->first();
-			if(!pText)
+			QString szText = pParameters->first();
+			if(!szText.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <text> field in label parameters. See /help defpopup for the syntax"));
 				delete pParameters;
 				delete pPopup;
 				return 0;
 			}
-			QString * pIcon = pParameters->next();
+			QString szIcon = pParameters->at(1);
 			if(KVSP_curCharUnicode == ';')KVSP_skipChar;
-			QString * pItemName = pParameters->next();
-			pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelLabel(pLabelBegin,szCondition,*pText,pIcon ? *pIcon : QString::null,pItemName ? *pItemName : QString::null));
+			QString szItemName = pParameters->at(2);
+			pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelLabel(pLabelBegin,szCondition,szText,szIcon,szItemName));
 			delete pParameters;
 		} else if(szLabelLow == "popup")
 		{
@@ -1715,16 +1713,16 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			EXTRACT_POPUP_LABEL_PARAMETERS
 			EXTRACT_POPUP_LABEL_CONDITION
 
-			QString * pText = pParameters->first();
-			if(!pText)
+			QString szText = pParameters->first();
+			if(!szText.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <text> field in extpopup parameters. See /help defpopup for the syntax"));
 				delete pParameters;
 				delete pPopup;
 				return 0;
 			}
-			QString * pIcon = pParameters->next();
-			QString * pItemName = pParameters->next();
+			QString szIcon = pParameters->at(1);
+			QString szItemName = pParameters->at(2);
 
 			KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * pSubPopup = parseSpecialCommandDefpopupLabelPopup();
 			if(!pSubPopup)
@@ -1735,9 +1733,9 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			}
 			
 			pSubPopup->setCondition(szCondition);
-			pSubPopup->setText(*pText);
-			pSubPopup->setItemName(pItemName ? *pItemName : QString::null);
-			if(pIcon)pSubPopup->setIcon(*pIcon);
+			pSubPopup->setText(szText);
+			pSubPopup->setItemName(szItemName);
+			if(!szIcon.isEmpty())pSubPopup->setIcon(szIcon);
 			pPopup->addLabel(pSubPopup);
 			delete pParameters;
 		} else if(szLabelLow == "item")
@@ -1746,16 +1744,16 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			EXTRACT_POPUP_LABEL_PARAMETERS
 			EXTRACT_POPUP_LABEL_CONDITION
 
-			QString * pText = pParameters->first();
-			if(!pText)
+			QString szText = pParameters->first();
+			if(!szText.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <text> field in extpopup parameters. See /help defpopup for the syntax"));
 				delete pParameters;
 				delete pPopup;
 				return 0;
 			}
-			QString * pIcon = pParameters->next();
-			QString * pItemName = pParameters->next();
+			QString szIcon = pParameters->at(1);
+			QString szItemName = pParameters->at(2);
 
 			const QChar * pBegin = KVSP_curCharPointer;
 			KviKvsTreeNodeInstruction * pInstruction = parseInstruction();
@@ -1780,12 +1778,14 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			{
 				QString szInstruction(pBegin,KVSP_curCharPointer - pBegin);
 				KviCommandFormatter::bufferFromBlock(szInstruction);
-				pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelItem(pLabelBegin,szCondition,*pText,pIcon ? *pIcon : QString::null,szInstruction,pItemName ? *pItemName : QString::null));
+				pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelItem(pLabelBegin,szCondition,szText,szIcon,
+						szInstruction,szItemName));
 			} else {
 				// zero length instruction, but still add the item
 				QString szInstruction = "";
 				KviCommandFormatter::bufferFromBlock(szInstruction);
-				pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelItem(pLabelBegin,szCondition,*pText,pIcon ? *pIcon : QString::null,szInstruction,pItemName ? *pItemName : QString::null));
+				pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelItem(pLabelBegin,szCondition,
+						szText,szIcon,szInstruction,szItemName));
 			}
 			delete pParameters;
 		} else if(szLabelLow == "extpopup")
@@ -1794,26 +1794,27 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			EXTRACT_POPUP_LABEL_PARAMETERS
 			EXTRACT_POPUP_LABEL_CONDITION
 
-			QString * pText = pParameters->first();
-			if(!pText)
+			QString szText = pParameters->first();
+			if(!szText.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <text> field in extpopup parameters. See /help defpopup for the syntax"));
 				delete pParameters;
 				delete pPopup;
 				return 0;
 			}
-			QString * pName = pParameters->next();
-			if(!pName)
+			QString szName = pParameters->at(1);
+			if(szName.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <name> field in extpopup parameters. See /help defpopup for the syntax"));
 				delete pParameters;
 				delete pPopup;
 				return 0;
 			}
-			QString * pIcon = pParameters->next();
-			QString * pItemName = pParameters->next();
+			QString szIcon = pParameters->at(2);
+			QString szItemName = pParameters->at(2);
 			if(KVSP_curCharUnicode == ';')KVSP_skipChar;
-			pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelExtpopup(pLabelBegin,szCondition,*pText,pIcon ? *pIcon : QString::null,*pName,pItemName ? *pItemName : QString::null));
+			pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelExtpopup(pLabelBegin,szCondition,szText,szIcon,
+					szName,szItemName));
 			delete pParameters;
 		} else {
 			/////////////////////////////////////////////////////////////////////////////////////////////////

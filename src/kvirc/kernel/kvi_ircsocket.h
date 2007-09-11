@@ -28,7 +28,7 @@
 #include "kvi_string.h"
 #include "kvi_sockettype.h"
 #include "kvi_time.h"
-#include "kvi_list.h"
+
 
 #include <qobject.h>
 

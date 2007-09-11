@@ -175,12 +175,15 @@ bool KviPackageIOEngine::readError()
 KviPackageWriter::KviPackageWriter()
 : KviPackageIOEngine()
 {
-	m_pDataFields = new KviPtrList<DataField>();
-	m_pDataFields->setAutoDelete(true);
+	m_pDataFields = new QSet<DataField*>;
 }
 
 KviPackageWriter::~KviPackageWriter()
 {
+	foreach(DataField* i,*m_pDataFields)
+	{
+		delete i;
+	}
 	delete m_pDataFields;
 }
 
@@ -216,7 +219,7 @@ bool KviPackageWriter::addFileInternal(const QFileInfo * fi,const QString &szLoc
 	f->m_bFileAllowCompression = !(uAddFileFlags & NoCompression);
 	f->m_szFileLocalName = szLocalFileName;
 	f->m_szFileTargetName = szTargetFileName;
-	m_pDataFields->append(f);
+	m_pDataFields->insert(f);
 	
 	return true;
 }
@@ -556,7 +559,7 @@ bool KviPackageWriter::packInternal(const QString &szFileName,kvi_u32_t uPackFla
 
 	// write PackageData
 	int iIdx = 0;
-	for(DataField * pDataField = m_pDataFields->first();pDataField;pDataField = m_pDataFields->next())
+	foreach(DataField * pDataField,*m_pDataFields)
 	{
 		kvi_u32_t uDataFieldType = pDataField->m_uType;
 		if(!f.save(uDataFieldType))return writeError();

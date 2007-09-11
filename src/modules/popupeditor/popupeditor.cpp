@@ -38,7 +38,7 @@
 #include "kvi_kvs_popupmanager.h"
 #include "kvi_kvs_popupmenu.h"
 #include "kvi_kvs_variantlist.h"
-//#include "kvi_parameterlist.h"
+//
 
 #include <qmessagebox.h>
 #include <qdir.h>
@@ -880,7 +880,7 @@ void KviSinglePopupEditor::populateMenu(KviKvsPopupMenu * pop,KviPopupListViewIt
 {
 	if(!pop)return;
 
-	for(KviKvsScript * sp = pop->prologues()->first();sp;sp = pop->prologues()->next())
+	foreach(KviKvsScript * sp,*(pop->prologues()))
 	{
 		if(par)theItem = new KviPopupListViewItem(par,theItem,KviPopupListViewItem::Prologue);
 		else theItem = new KviPopupListViewItem(m_pListView,theItem,KviPopupListViewItem::Prologue);
@@ -888,7 +888,7 @@ void KviSinglePopupEditor::populateMenu(KviKvsPopupMenu * pop,KviPopupListViewIt
 		theItem->setId(sp->name());
 	}
 
-	for(KviKvsPopupMenuItem * item = pop->m_pItemList->first();item;item = pop->m_pItemList->next())
+	foreach(KviKvsPopupMenuItem * item,*(pop->m_pItemList))
 	{
 		switch(item->type())
 		{
@@ -937,7 +937,7 @@ void KviSinglePopupEditor::populateMenu(KviKvsPopupMenu * pop,KviPopupListViewIt
 		}
 	}
 
-	for(KviKvsScript * se = pop->epilogues()->first();se;se = pop->epilogues()->next())
+	foreach(KviKvsScript * se,*(pop->epilogues()))
 	{
 		if(par)theItem = new KviPopupListViewItem(par,theItem,KviPopupListViewItem::Epilogue);
 		else theItem = new KviPopupListViewItem(m_pListView,theItem,KviPopupListViewItem::Epilogue);

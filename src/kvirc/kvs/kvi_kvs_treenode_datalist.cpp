@@ -32,12 +32,12 @@
 KviKvsTreeNodeDataList::KviKvsTreeNodeDataList(const QChar * pLocation)
 : KviKvsTreeNode(pLocation)
 {
-	m_pDataList = new KviPtrList<KviKvsTreeNodeData>();
-	m_pDataList->setAutoDelete(true);
+	m_pDataList = new QList<KviKvsTreeNodeData*>;
 }
 
 KviKvsTreeNodeDataList::~KviKvsTreeNodeDataList()
 {
+	qDeleteAll(*m_pDataList);
 	delete m_pDataList;
 }
 
@@ -46,9 +46,7 @@ KviKvsTreeNodeData * KviKvsTreeNodeDataList::releaseFirst()
 	KviKvsTreeNodeData * d = m_pDataList->first();
 	if(d)
 	{
-		m_pDataList->setAutoDelete(false);
 		m_pDataList->removeFirst();
-		m_pDataList->setAutoDelete(true);
 	}
 	return d;
 }
@@ -70,7 +68,7 @@ void KviKvsTreeNodeDataList::dump(const char * prefix)
 	debug("%s DataList",prefix);
 	QString tmp = prefix;
 	tmp.append("  ");
-	for(KviKvsTreeNodeData * t = m_pDataList->first();t;t = m_pDataList->next())
+	foreach(KviKvsTreeNodeData * t,*m_pDataList)
 	{
 		t->dump(tmp.utf8().data());
 	}
@@ -81,9 +79,10 @@ bool KviKvsTreeNodeDataList::evaluate(KviKvsRunTimeContext * c,KviKvsVariantList
 	pBuffer->clear();
 
 	// we use an iterator to accomodate recursion
-	KviPtrListIterator<KviKvsTreeNodeData> it(*m_pDataList);
-	while(KviKvsTreeNodeData * t = it.current())
+	QListIterator<KviKvsTreeNodeData*> it(*m_pDataList);
+	while(it.hasNext())
 	{
+		KviKvsTreeNodeData * t = it.next();
 		KviKvsVariant * v = new KviKvsVariant();
 		if(!t->evaluateReadOnly(c,v))
 		{
@@ -92,7 +91,6 @@ bool KviKvsTreeNodeDataList::evaluate(KviKvsRunTimeContext * c,KviKvsVariantList
 			return false;
 		}
 		pBuffer->append(v);
-		++it;
 	}
 	return true;
 }

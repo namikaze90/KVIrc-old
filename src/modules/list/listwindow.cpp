@@ -53,7 +53,7 @@
 #include "kvi_tal_hbox.h"
 #include "kvi_msgbox.h"
 
-extern KviPtrList<KviListWindow> * g_pListWindowList;
+extern QList<KviListWindow*> * g_pListWindowList;
 
 // kvi_ircview.cpp
 //extern KVIRC_API const char * getColorBytes(const char *data_ptr,unsigned char *byte_1,unsigned char *byte_2);
@@ -168,8 +168,7 @@ KviListWindow::KviListWindow(KviFrame * lpFrm,KviConsole * lpConsole)
 
 	m_pFlushTimer = 0;
 
-	m_pItemList = new KviPtrList<KviChannelListViewItemData>;
-	m_pItemList->setAutoDelete(false);
+	m_pItemList = new QList<KviChannelListViewItemData*>;
 
 	m_pSplitter = new QSplitter(Qt::Horizontal,this,"splitter");
 	m_pTopSplitter = new QSplitter(Qt::Horizontal,this,"top_splitter");
@@ -229,10 +228,10 @@ KviListWindow::KviListWindow(KviFrame * lpFrm,KviConsole * lpConsole)
 
 KviListWindow::~KviListWindow()
 {
-	g_pListWindowList->removeRef(this);
+	g_pListWindowList->removeAll(this);
 	m_pConsole->ircContext()->setListWindowPointer(0);
 	if(m_pFlushTimer)delete m_pFlushTimer;
-	m_pItemList->setAutoDelete(true);
+	qDeleteAll(*m_pItemList);
 	delete m_pItemList;
 }
 
@@ -427,9 +426,8 @@ void KviListWindow::endOfList()
 
 void KviListWindow::startOfList()
 {
-	m_pItemList->setAutoDelete(true);
+	qDeleteAll(*m_pItemList);
 	m_pItemList->clear();
-	m_pItemList->setAutoDelete(false);
 
 	m_pListView->clear();
 

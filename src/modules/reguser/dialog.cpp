@@ -843,23 +843,23 @@ void KviRegisteredUsersDialog::importClicked()
 
 			if(img.isNull())debug("Ops.. readed a null image ?");
 
-			KviStr fName = u->name();
+			QString fName = u->name();
 			kvi_encodeFileName(fName);
 
-			KviStr fPath;
+			QString fPath;
 			int rnm = 0 ;
 			do
 			{
-				g_pApp->getLocalKvircDirectory(fPath,KviApp::Avatars,fName.ptr());
-				fPath.append(KviStr::Format,"%d.png",rnm);
+				g_pApp->getLocalKvircDirectory(fPath,KviApp::Avatars,fName);
+				KviQString::appendFormatted(fPath,"%d.png",rnm);
 				rnm++;
-			} while(KviFileUtils::fileExists(fPath.ptr()));
+			} while(KviFileUtils::fileExists(fPath));
 
-			if(!img.save(fPath.ptr(),"PNG"))
+			if(!img.save(fPath,"PNG"))
 			{
-				debug("Can't save image %s",fPath.ptr());
+				//debug("Can't save image %s",fPath.ptr());
 			} else {
-				u->setProperty("avatar",fPath.ptr());
+				u->setProperty("avatar",fPath);
 			}
 		}
 	}

@@ -54,7 +54,7 @@
 #include "kvi_mediatype.h"
 #include "kvi_socket.h"
 #include "kvi_kvs_eventtriggers.h"
-#include "kvi_parameterlist.h"
+
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_sparser.h"
@@ -87,7 +87,7 @@ extern KviDccBroker * g_pDccBroker;
 extern KVIRC_API KviMediaManager * g_pMediaManager; // kvi_app.cpp
 
 
-static KviPtrList<KviDccFileTransfer> * g_pDccFileTransfers = 0;
+static QList<KviDccFileTransfer*> * g_pDccFileTransfers = 0;
 static QPixmap * g_pDccFileTransferIcon = 0;
 
 //#warning "The events that have a KviStr data pointer should become real classes, that take care of deleting the data pointer!"
@@ -764,7 +764,7 @@ KviDccFileTransfer::KviDccFileTransfer(KviDccDescriptor * dcc)
 
 KviDccFileTransfer::~KviDccFileTransfer()
 {
-	g_pDccFileTransfers->removeRef(this);
+	g_pDccFileTransfers->removeAll(this);
 
 	if(m_pResumeTimer)delete m_pResumeTimer;
 	if(m_pBandwidthDialog)delete m_pBandwidthDialog;
@@ -1354,8 +1354,7 @@ QString KviDccFileTransfer::tipText()
 void KviDccFileTransfer::init()
 {
 	if(g_pDccFileTransfers)return;
-	g_pDccFileTransfers = new KviPtrList<KviDccFileTransfer>;
-	g_pDccFileTransfers->setAutoDelete(false);
+	g_pDccFileTransfers = new QList<KviDccFileTransfer*>;
 
 	QPixmap * pix = g_pIconManager->getImage("kvi_dccfiletransfericons.png");
 	if(pix)g_pDccFileTransferIcon = new QPixmap(*pix);
@@ -1365,8 +1364,7 @@ void KviDccFileTransfer::init()
 void KviDccFileTransfer::done()
 {
 	if(!g_pDccFileTransfers)return;
-	while(KviDccFileTransfer * t = g_pDccFileTransfers->first())
-		delete t;
+	qDeleteAll(*g_pDccFileTransfers);
 	delete g_pDccFileTransfers;
 	g_pDccFileTransfers = 0;
 	delete g_pDccFileTransferIcon;
@@ -1382,7 +1380,7 @@ unsigned int KviDccFileTransfer::transferCount()
 KviDccFileTransfer * KviDccFileTransfer::nonFailedTransferWithLocalFileName(const QString &szLocalFileName)
 {
 	if(!g_pDccFileTransfers)return 0;
-	for(KviDccFileTransfer * t = g_pDccFileTransfers->first();t;t = g_pDccFileTransfers->next())
+	foreach(KviDccFileTransfer * t,*g_pDccFileTransfers)
 	{
 #ifdef COMPILE_ON_WINDOWS
 		// on windows the file names are case insensitive
@@ -1403,7 +1401,7 @@ unsigned int KviDccFileTransfer::runningTransfersCount()
 {
 	if(!g_pDccFileTransfers)return 0;
 	unsigned int cnt = 0;
-	for(KviDccFileTransfer * t = g_pDccFileTransfers->first();t;t = g_pDccFileTransfers->next())
+	foreach(KviDccFileTransfer * t,*g_pDccFileTransfers)
 	{
 		if(t->active())cnt++;
 	}
@@ -1414,7 +1412,7 @@ bool KviDccFileTransfer::handleResumeAccepted(const char * filename,const char *
 {
 	if(!g_pDccFileTransfers)return false;
 
-	for(KviDccFileTransfer * t = g_pDccFileTransfers->first();t;t = g_pDccFileTransfers->next())
+	foreach(KviDccFileTransfer * t,*g_pDccFileTransfers)
 	{
 		if(t->resumeAccepted(filename,port,szZeroPortTag))return true;
 	}
@@ -1426,7 +1424,7 @@ bool KviDccFileTransfer::handleResumeRequest(const char * filename,const char * 
 {
 	if(!g_pDccFileTransfers)return false;
 
-	for(KviDccFileTransfer * t = g_pDccFileTransfers->first();t;t = g_pDccFileTransfers->next())
+	foreach(KviDccFileTransfer * t,*g_pDccFileTransfers)
 	{
 		if(t->doResume(filename,port,filePos))return true;
 	}

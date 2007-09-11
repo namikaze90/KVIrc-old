@@ -43,7 +43,6 @@
 #include "kvi_debug.h"
 #include "kvi_irctoolbar.h"
 #include "kvi_confignames.h"
-#include "kvi_parameterlist.h"
 #include "kvi_module.h"
 #include "kvi_mextoolbar.h"
 #include "kvi_locale.h"
@@ -110,11 +109,9 @@ KviFrame::KviFrame()
 
 	setIcon(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_KVIRC)));
 
-	m_pWinList  = new KviPtrList<KviWindow>;
-	m_pWinList->setAutoDelete(false);
+	m_pWinList  = new QList<KviWindow*>;
 
-	m_pModuleExtensionToolBarList = new KviPtrList<KviMexToolBar>;
-	m_pModuleExtensionToolBarList->setAutoDelete(false);
+	m_pModuleExtensionToolBarList = new QList<KviMexToolBar*>;
 
 	m_pActiveContext = 0;
 
@@ -234,7 +231,7 @@ void KviFrame::registerModuleExtensionToolBar(KviMexToolBar * t)
 
 void KviFrame::unregisterModuleExtensionToolBar(KviMexToolBar * t)
 {
-	m_pModuleExtensionToolBarList->removeRef(t);
+	m_pModuleExtensionToolBarList->removeAll(t);
 }
 
 void KviFrame::restoreModuleExtensionToolBars()
@@ -256,7 +253,7 @@ void KviFrame::saveModuleExtensionToolBars()
 {
 	KVI_OPTION_STRINGLIST(KviOption_stringlistModuleExtensionToolbars).clear();
 
-	for(KviMexToolBar * t = m_pModuleExtensionToolBarList->first();t;t = m_pModuleExtensionToolBarList->next())
+	foreach(KviMexToolBar * t,*m_pModuleExtensionToolBarList)
 	{
 		QString s = t->descriptor()->module()->name();
 		s += ":";
@@ -270,7 +267,7 @@ void KviFrame::saveModuleExtensionToolBars()
 
 KviMexToolBar * KviFrame::moduleExtensionToolBar(int extensionId)
 {
-	for(KviMexToolBar * t = m_pModuleExtensionToolBarList->first();t;t = m_pModuleExtensionToolBarList->next())
+	foreach(KviMexToolBar * t,*m_pModuleExtensionToolBarList)
 	{
 		if(extensionId == t->descriptor()->id())return t;
 	}
@@ -341,7 +338,7 @@ KviMexToolBar * KviFrame::moduleExtensionToolBar(int extensionId)
 KviAccel * KviFrame::installAccelerators(QWidget * wnd)
 {
 	QWidget * pParent = wnd ? (QWidget *)wnd : (QWidget *)this;
-#ifdef COMPILE_USE_QT4
+
 	new QShortcut(QKeySequence(Qt::Key_Left + Qt::ALT),pParent,SLOT(switchToPrevWindow()));
 	new QShortcut(QKeySequence(Qt::Key_Right + Qt::ALT),pParent,SLOT(switchToNextWindow()));
 	new QShortcut(QKeySequence(Qt::Key_Up + Qt::CTRL),pParent,SLOT(maximizeWindow()));
@@ -349,7 +346,7 @@ KviAccel * KviFrame::installAccelerators(QWidget * wnd)
 	new QShortcut(QKeySequence(Qt::Key_Escape +Qt::CTRL),pParent,SLOT(minimizeWindow()));
 	new QShortcut(QKeySequence(Qt::Key_Left + Qt::ALT + Qt::SHIFT),pParent,SLOT(switchToPrevWindowInContext()));
 	new QShortcut(QKeySequence(Qt::Key_Right + Qt::ALT + Qt::SHIFT),pParent,SLOT(switchToNextWindowInContext()));
-#endif
+
 	KviAccel *ac = new KviAccel(pParent);
 
 	static int accel_table[] = {
@@ -560,7 +557,7 @@ void KviFrame::closeWindow(KviWindow *wnd)
 	}
 
 	// forget it...
-	m_pWinList->removeRef(wnd);
+	m_pWinList->removeAll(wnd);
 
 	// hide it
 	if(wnd->mdiParent())wnd->mdiParent()->hide();
@@ -757,7 +754,7 @@ KviConsole * KviFrame::createNewConsole(bool bFirstInFrame)
 unsigned int KviFrame::consoleCount()
 {
 	unsigned int count = 0;
-	for(KviWindow * wnd = m_pWinList->first();wnd;wnd = m_pWinList->next())
+	foreach(KviWindow * wnd,*m_pWinList)
 	{
 		if(wnd->type() == KVI_WINDOW_TYPE_CONSOLE)count++;
 	}
@@ -766,7 +763,7 @@ unsigned int KviFrame::consoleCount()
 
 KviConsole * KviFrame::firstConsole()
 {
-	for(KviWindow * wnd = m_pWinList->first();wnd;wnd = m_pWinList->next())
+	foreach(KviWindow * wnd,*m_pWinList)
 	{
 		if(wnd->type() == KVI_WINDOW_TYPE_CONSOLE)return (KviConsole *)wnd;
 	}
@@ -776,7 +773,7 @@ KviConsole * KviFrame::firstConsole()
 
 KviConsole * KviFrame::firstNotConnectedConsole()
 {
-	for(KviWindow * wnd = m_pWinList->first();wnd;wnd = m_pWinList->next())
+	foreach(KviWindow * wnd,*m_pWinList)
 	{
 		if(wnd->type() == KVI_WINDOW_TYPE_CONSOLE)
 		{
@@ -794,7 +791,7 @@ void KviFrame::childWindowCloseRequest(KviWindow *wnd)
 
 void KviFrame::unhighlightWindowsOfContext(KviIrcContext * c)
 {
-	for(KviWindow *w = m_pWinList->first();w;w = m_pWinList->next())
+	foreach(KviWindow *w,*m_pWinList)
 		if(w->context() == c)w->unhighlight();
 }
 
@@ -963,7 +960,7 @@ void KviFrame::closeEvent(QCloseEvent *e)
 			// check for running connections
 			
 			bool bGotRunningConnection = false;
-			for(KviWindow * w = m_pWinList->first();w;w = m_pWinList->next())
+			foreach(KviWindow * w,*m_pWinList)
 			{
 				if(w->type() == KVI_WINDOW_TYPE_CONSOLE)
 				{
@@ -1016,7 +1013,10 @@ void KviFrame::updatePseudoTransparency()
 
 	if(g_pShadedChildGlobalDesktopBackground)
 	{
-		for(KviWindow * wnd = m_pWinList->first();wnd;wnd = m_pWinList->next())wnd->updateBackgrounds();
+		foreach(KviWindow * wnd,*m_pWinList)
+		{
+			wnd->updateBackgrounds();
+		}
 		m_pTaskBar->updatePseudoTransparency();
 	}
 #endif
@@ -1035,7 +1035,10 @@ void KviFrame::moveEvent(QMoveEvent *e)
 void KviFrame::applyOptions()
 {
 	m_pMdi->update();
-	for(KviWindow * wnd = m_pWinList->first();wnd;wnd = m_pWinList->next())wnd->applyOptions();
+	foreach(KviWindow * wnd,*m_pWinList)
+	{
+		wnd->applyOptions();
+	}
 	updateCaption();
 	
 	m_pTaskBar->applyOptions();
@@ -1070,7 +1073,7 @@ void KviFrame::fillToolBarsPopup(KviTalPopupMenu * p)
 	KviModuleExtensionDescriptorList * l = g_pModuleExtensionManager->getExtensionList("toolbar");
 	if(l)
 	{
-		for(KviModuleExtensionDescriptor * d = l->first();d;d = l->next())
+		foreach(KviModuleExtensionDescriptor * d,*l)
 		{
 			QString label = __tr2qs("Show %1").arg(d->visibleName());
 			if(d->icon())id = p->insertItem(*(d->icon()),label);
@@ -1288,14 +1291,14 @@ void KviFrame::recreateTaskBar()
 
 	saveToolBarPositions();
 	KviWindow * w;
-	for(w = m_pWinList->first();w;w = m_pWinList->next())
+	foreach(w,*m_pWinList)
 	{
 		w->destroyTaskBarItem();
 	}
 	removeDockWindow(m_pTaskBar);
 	delete m_pTaskBar;
 	createTaskBar();
-	for(w = m_pWinList->first();w;w = m_pWinList->next())
+	foreach(w,*m_pWinList)
 	{
 		w->createTaskBarItem();
 	}
@@ -1330,39 +1333,6 @@ void KviFrame::recreateTaskBar()
 }
 
 
-#if QT_VERSION == 0x030201
-unsigned int KviFrame::windowState()
-{
-	/*		enum GNWindowState {	WindowNoState = 0x00000000, WindowMinimized = 0x00000001,
-									WindowMaximized = 0x00000002, WindowFullScreen = 0x00000004, WindowActive = 0x00000008 };
-			GNWindowState GNWState;
-			if(isMinimized())		GNWState=WindowMinimized;
-			else if(isMaximized())		GNWState=WindowMaximized;
-			else if(isActiveWindow())	GNWState=WindowActive;
-			else if(isFullScreen())		GNWState=WindowFullScreen;
-			else GNWState=WindowNoState; */
-
-/*	WindowNoState	=	0x00000000	WindowMinimized		= 0x00000001	
-	WindowMaximized	=	0x00000002	WindowFullScreen	= 0x00000004 WindowActive = 0x00000008*/
-			if(isMinimized())		return 0x00000001;
-			else if(isMaximized())		return 0x00000002;
-			else if(isActiveWindow())	return 0x00000008;
-			else if(isFullScreen())		return 0x00000004;
-			else return 0x00000000;
-}
-void KviFrame::setWindowState(unsigned int GNWState)
-{
-	switch(GNWState)
-	{
-	case 0x00000001:
-		showMinimized();
-		break;
-	case 0x00000002:
-		showMaximized();
-		break;
-	} // switch
-}
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Some accelerators

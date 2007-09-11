@@ -41,12 +41,12 @@
     #include <unistd.h>
 #endif
 
-KviPtrList<SPasteController> * g_pControllerList = 0;
+QList<SPasteController*> * g_pControllerList = 0;
 int ctrlId = 0;
 
 static SPasteController * spaste_find_controller(KviWindow * w)
 {
-	for(SPasteController * spc = g_pControllerList->first();spc;spc = g_pControllerList->next())
+	foreach(SPasteController * spc,*g_pControllerList)
 	{
 		if(spc->window() == w)return spc;
 	}
@@ -204,11 +204,12 @@ static bool spaste_kvs_cmd_stop(KviKvsModuleCommandCall * c)
 
 	if(c->hasSwitch('a',"all")) //Delete all spaste's
     {
-        while(g_pControllerList->first()) delete g_pControllerList->first();
+        qDeleteAll(*g_pControllerList);
+        g_pControllerList->clear();
         return true;
     } else 
     {
-        KviPtrListIterator<SPasteController> it(*g_pControllerList);
+        QList<SPasteController*>::iterator it(g_pControllerList->begin());
         SPasteController *item;
         
         if(!iId) //Delete all spaste's from the current window
@@ -221,18 +222,29 @@ static bool spaste_kvs_cmd_stop(KviKvsModuleCommandCall * c)
             } else 
             {
                 
-                while( (item = it.current()) != 0)
+                while( it!= g_pControllerList->end())
                 {
-                    ++it;
-                    if(kvi_strEqualCS(item->window()->id(),c->window()->id()))delete item;
+                	item=*it;
+                    if(item->window()->numericId()==c->window()->numericId())
+                    {
+                    	delete item;
+                    	it = g_pControllerList->erase(it);
+                    } else {
+                    	++it;
+                    }
                 }
             }
         } else //Delete the spaste with the given id
         { 
-            while( (item = it.current()) != 0) 
-            { 
-                ++it;
-                if(item->getId() == iId)delete item;
+            while(it!= g_pControllerList->end()) 
+            {
+            	item=*it;
+                if(item->getId() == iId){
+                	delete item;
+                	it = g_pControllerList->erase(it);
+                } else {
+                	++it;
+                }
             }
         }
         return true;
@@ -264,12 +276,10 @@ static bool spaste_kvs_cmd_stop(KviKvsModuleCommandCall * c)
 
 static bool spaste_kvs_cmd_list(KviKvsModuleCommandCall * c)
 { 
-	KviPtrListIterator<SPasteController> it(*g_pControllerList);
     SPasteController *item;
     
-    while( (item = it.current()) != 0)
+    foreach( item,*g_pControllerList)
     {
-        ++it;
 		QString szWinId = item->window()->id();
         c->window()->output(KVI_OUT_NONE,__tr2qs("Slow-paste ID:%d Window:%Q"),item->getId(),&szWinId);
     }
@@ -312,8 +322,7 @@ static bool spaste_kvs_cmd_setdelay(KviKvsModuleCommandCall * c)
 //-------------------------------------------------    
 static bool spaste_module_init(KviModule * m)
 {
-    g_pControllerList = new KviPtrList<SPasteController>;
-    g_pControllerList->setAutoDelete(false);
+    g_pControllerList = new QList<SPasteController*>;
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"file",spaste_kvs_cmd_file);
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"clipboard",spaste_kvs_cmd_clipboard);
@@ -325,7 +334,7 @@ static bool spaste_module_init(KviModule * m)
 //-------------------------------------------------
 static bool spaste_module_cleanup(KviModule *m)
 {
-    while(g_pControllerList->first()) delete g_pControllerList->first();
+    qDeleteAll(*g_pControllerList);
     delete g_pControllerList;
     g_pControllerList = 0;
     

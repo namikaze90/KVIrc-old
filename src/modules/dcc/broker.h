@@ -29,7 +29,7 @@
 // #define COMPILE_DCC_CANVAS
 
 #include "kvi_string.h"
-#include "kvi_list.h"
+
 #include "kvi_sparser.h"
 
 #include <QHash>
@@ -59,8 +59,8 @@ public:
 	KviDccBroker();
 	~KviDccBroker();
 protected:
-	KviPtrList<KviDccBox>         * m_pBoxList;
-	KviPtrList<KviWindow>         * m_pDccWindowList;
+	QList<KviDccBox*>         * m_pBoxList;
+	QList<KviWindow*>         * m_pDccWindowList;
 	QHash<QString,KviDccZeroPortTag*>      * m_pZeroPortTags;
 public:
 	KviDccZeroPortTag * addZeroPortTag();

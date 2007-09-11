@@ -30,7 +30,7 @@
 #include "kvi_tal_menubar.h"
 #include "kvi_string.h"
 
-#include "kvi_list.h"
+
 
 class KviFrame;
 class KviTalPopupMenu;
@@ -55,7 +55,7 @@ protected:
 	KviTalPopupMenu                       * m_pToolbarsPopup;
 	KviTalPopupMenu                       * m_pRecentServersPopup;
 	KviFrame                         * m_pFrm;
-	KviPtrList<KviScriptMenuBarItem> * m_pScriptItemList;
+	QList<KviScriptMenuBarItem*> * m_pScriptItemList;
 	int                                m_iNumDefaultItems;
 	int                              * m_pDefaultItemId;
 protected:

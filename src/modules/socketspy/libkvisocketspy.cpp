@@ -31,7 +31,7 @@
 
 #include <qsplitter.h>
 
-KviPtrList<KviSocketSpyWindow> * g_pSocketSpyWindowList = 0;
+QList<KviSocketSpyWindow*> * g_pSocketSpyWindowList = 0;
 
 
 /*
@@ -60,8 +60,7 @@ static bool socketspy_kvs_cmd_open(KviKvsModuleCommandCall * c)
 
 static bool socketspy_module_init(KviModule * m)
 {
-	g_pSocketSpyWindowList = new KviPtrList<KviSocketSpyWindow>;
-	g_pSocketSpyWindowList->setAutoDelete(false);
+	g_pSocketSpyWindowList = new QList<KviSocketSpyWindow*>;
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"open",socketspy_kvs_cmd_open);
 	return true;

@@ -830,14 +830,16 @@ void KviCahnnelListSelector::addClicked()
 
 void KviCahnnelListSelector::removeClicked()
 {
-	KviPtrList<KviTalListViewItem> lst;
+	QList<KviTalListViewItem*> lst;
 	KviTalListViewItemIterator it( m_pListView, KviTalListViewItemIterator::Selected );
 	while ( it.current() ) {
 		lst.append((KviTalListViewItem *)it.current() );
 		++it;
 	}
-	lst.setAutoDelete(TRUE);
-	lst.clear();
+	foreach(KviTalListViewItem*i,lst)
+	{
+		delete i;
+	}
 }
 
 KviTextCharFormatSelector::KviTextCharFormatSelector(QWidget * par,const QString & txt,QTextCharFormat * pOption,bool bEnabled)

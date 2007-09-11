@@ -227,7 +227,7 @@ void KviCustomToolBar::syncDescriptor()
 	while((i = iter.current()))
 	{
 		if(QWidget * w = i->widget())
-			m_pDescriptor->actions()->append(new QString(w->name()));
+			m_pDescriptor->actions()->append(w->name());
 		++iter;
 	}
 }

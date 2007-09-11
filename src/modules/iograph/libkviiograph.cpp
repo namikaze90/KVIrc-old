@@ -33,7 +33,7 @@
 #include "kvi_frame.h"
 #include "kvi_locale.h"
 
-#include "kvi_list.h"
+
 #include <qtooltip.h>
 #include <qpointarray.h>
 #include <qpainter.h>

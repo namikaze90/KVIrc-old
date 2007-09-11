@@ -33,7 +33,7 @@
 #include "kvi_actionmanager.h"
 #include "kvi_taskbar.h"
 #include "icons.h"
-#include "kvi_list.h"
+
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qcursor.h>

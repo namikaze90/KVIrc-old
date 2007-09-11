@@ -31,7 +31,7 @@
 #include <qobject.h>
 
 
-#include "kvi_list.h"
+
 
 class KviKvsTimerManager;
 class KviKvsScript;
@@ -95,7 +95,7 @@ private:
 	QHash<int,KviKvsTimer*>     * m_pTimerDictById;      // stored by id
 	QHash<QString,KviKvsTimer*>        * m_pTimerDictByName;    // stored by name
 	static KviKvsTimerManager * m_pInstance;           // the one and only timer manager instance
-	KviPtrList<KviKvsTimer>   * m_pKilledTimerList;    // list of timers for that killing has been scheduled
+	QList<KviKvsTimer*>       * m_pKilledTimerList;    // list of timers for that killing has been scheduled
 	int                         m_iAssassinTimer;      // assassin timer id
 	int                         m_iCurrentTimer;       // the timer currently executed
 public:

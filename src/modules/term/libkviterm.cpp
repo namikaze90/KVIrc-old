@@ -29,7 +29,7 @@
 #include "kvi_frame.h"
 
 #include <qsplitter.h>
-#include "kvi_list.h"
+
 
 #ifdef COMPILE_KDE_SUPPORT
 

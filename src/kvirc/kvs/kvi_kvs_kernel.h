@@ -27,7 +27,7 @@
 #include "kvi_settings.h"
 
 #include "kvi_kvs_parser.h"
-#include "kvi_list.h"
+
 #include "kvi_qstring.h"
 
 
@@ -120,14 +120,14 @@ public:
 	KviKvsCoreCallbackCommandExecRoutine * findCoreCallbackCommandExecRoutine(const QString &szCmdName)
 		{ return m_pCoreCallbackCommandExecRoutineDict->value(szCmdName); };
 
-	void completeCommand(const QString &szCommandBegin,KviPtrList<QString> * pMatches);
-	void completeFunction(const QString &szFunctionBegin,KviPtrList<QString> * pMatches);
-	void completeModuleCommand(const QString &szModuleName,const QString &szCommandBegin,KviPtrList<QString> * matches);
-	void completeModuleFunction(const QString &szModuleName,const QString &szFunctionBegin,KviPtrList<QString> * matches);
+	void completeCommand(const QString &szCommandBegin,QStringList& pMatches);
+	void completeFunction(const QString &szFunctionBegin,QStringList& pMatches);
+	void completeModuleCommand(const QString &szModuleName,const QString &szCommandBegin,QStringList& matches);
+	void completeModuleFunction(const QString &szModuleName,const QString &szFunctionBegin,QStringList& matches);
 /*
-	KviPtrList<QString> * completeCommandAllocateResult(const QString &szCommandBegin);
-	KviPtrList<QString> * completeFunctionAllocateResult(const QString &szFunctionBegin);
-	void freeCompletionResult(KviPtrList<QString> * l);
+	QStringList * completeCommandAllocateResult(const QString &szCommandBegin);
+	QStringList * completeFunctionAllocateResult(const QString &szFunctionBegin);
+	void freeCompletionResult(QStringList * l);
 */
 };
 

@@ -30,7 +30,7 @@
 #include <qstringlist.h>
 #include <qclipboard.h>
 
-extern KviPtrList<SPasteController> * g_pControllerList;
+extern QList<SPasteController*> * g_pControllerList;
 
 SPasteController::SPasteController(KviWindow * w,int id)
 	: m_pClipBuff(NULL),m_pFile(NULL),m_pId(id),m_pWindow(w)
@@ -42,7 +42,7 @@ SPasteController::SPasteController(KviWindow * w,int id)
 
 SPasteController::~SPasteController()
 {
-	g_pControllerList->removeRef(this);
+	g_pControllerList->removeAll(this);
 	if(m_pFile)
 	{
 		m_pFile->close();

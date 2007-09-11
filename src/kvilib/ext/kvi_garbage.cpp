@@ -44,11 +44,10 @@ void KviGarbageCollector::collect(QObject * g)
 {
 	if(!m_pGarbageList)
 	{
-		m_pGarbageList = new KviPtrList<QObject>;
-		m_pGarbageList->setAutoDelete(true);
+		m_pGarbageList = new QSet<QObject*>;
 	}
 	//debug("COLLECTING GARBAGE %s",g->className());
-	m_pGarbageList->append(g);
+	m_pGarbageList->insert(g);
 //	debug("Registering garbage object %d (%s:%s)",g,g->className(),g->name());
 	connect(g,SIGNAL(destroyed()),this,SLOT(garbageSuicide()));
 	triggerCleanup(0);
@@ -61,13 +60,12 @@ void KviGarbageCollector::garbageSuicide()
 		debug("Ops... garbage suicide while no garbage list");
 		return;
 	}
-	int idx = m_pGarbageList->findRef(sender());
-	if(idx == -1)
+	if(!m_pGarbageList->contains(sender()))
 	{
 		debug("Ops... unregistered garbage suicide");
 		return;
 	}
-	m_pGarbageList->removeRef(sender());
+	m_pGarbageList->remove(sender());
 	if(m_pGarbageList->isEmpty())
 	{
 		cleanup();
@@ -93,9 +91,8 @@ void KviGarbageCollector::cleanup()
 	if(m_pGarbageList)
 	{
 		//debug("SOME GARBAGE TO DELETE");
-		KviPtrList<QObject> dying;
-		dying.setAutoDelete(false);
-		for(QObject * o = m_pGarbageList->first();o;o = m_pGarbageList->next())
+		QSet<QObject*> dying;
+		foreach(QObject * o,*m_pGarbageList)
 		{
 			//debug("CHECKING GARBAGE CLASS %s",o->className());
 			bool bDeleteIt = m_bForceCleanupNow;
@@ -111,14 +108,15 @@ void KviGarbageCollector::cleanup()
 //					if(!bDeleteIt)debug("And doesn't want to be delete now!");
 				} else bDeleteIt = true; // must be deleted
 			}
-			if(bDeleteIt)dying.append(o);
+			if(bDeleteIt)dying.insert(o);
 		}
 
-		for(QObject * o2 = dying.first();o2;o2 = dying.next())
+		foreach(QObject * o2,dying)
 		{
 			//debug("KILLING GARBAGE CLASS %s",o2->className());
 			disconnect(o2,SIGNAL(destroyed()),this,SLOT(garbageSuicide()));
-			m_pGarbageList->removeRef(o2);
+			m_pGarbageList->remove(o2);
+			delete o2;
 		}
 
 		if(m_pGarbageList->isEmpty())

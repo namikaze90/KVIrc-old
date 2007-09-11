@@ -28,7 +28,6 @@
 #include "kvi_window.h"
 #include "kvi_out.h"
 #include "kvi_locale.h"
-#include "kvi_parameterlist.h"
 #include "kvi_app.h"
 #include "kvi_console.h"
 #include "kvi_kvs_script.h"

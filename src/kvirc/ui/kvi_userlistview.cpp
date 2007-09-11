@@ -33,7 +33,6 @@
 #include "kvi_defaults.h"
 #include "kvi_iconmanager.h"
 #include "kvi_regusersdb.h"
-#include "kvi_parameterlist.h"
 #include "kvi_window.h"
 #include "kvi_console.h"
 #include "kvi_app.h"
@@ -337,7 +336,7 @@ void KviUserListView::setMaskEntries(char type, int num)
 	updateUsersLabel();
 }
 
-void KviUserListView::completeNickBashLike(const QString &begin,KviPtrList<QString> *l,bool bAppendMask)
+void KviUserListView::completeNickBashLike(const QString &begin,QStringList& l,bool bAppendMask)
 {
 	KviUserListEntry * entry = m_pHeadItem;
 
@@ -347,11 +346,11 @@ void KviUserListView::completeNickBashLike(const QString &begin,KviPtrList<QStri
 		{
 			if(bAppendMask)
 			{
-				QString * s = new QString();
-				KviQString::sprintf(*s,"%Q!%Q@%Q",&(entry->m_szNick),&(entry->m_pGlobalData->user()),&(entry->m_pGlobalData->host()));
-				l->append(s);
+				QString s;
+				KviQString::sprintf(s,"%Q!%Q@%Q",&(entry->m_szNick),&(entry->m_pGlobalData->user()),&(entry->m_pGlobalData->host()));
+				l.append(s);
 			} else
-				l->append(new QString(entry->m_szNick));
+				l.append(entry->m_szNick);
 		}
 		entry = entry->m_pNext;
 	}

@@ -114,11 +114,11 @@ void KviRawEditor::oneTimeSetup()
 
 	for(unsigned int i = 0;i < 999;i++)
 	{
-		KviPtrList<KviKvsEventHandler> * l = KviKvsEventManager::instance()->rawHandlers(i);
+		QList<KviKvsEventHandler*> * l = KviKvsEventManager::instance()->rawHandlers(i);
 		if(l)
 		{
 			it = new KviRawListViewItem(m_pListView,i);
-			for(KviKvsEventHandler * s = l->first();s;s = l->next())
+			foreach(KviKvsEventHandler * s,*l)
 			{
 				if(s->type() == KviKvsEventHandler::Script)
 				{

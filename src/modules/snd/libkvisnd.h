@@ -30,7 +30,7 @@
 #include "kvi_thread.h"
 #include "kvi_string.h"
 
-#include "kvi_list.h"
+
 
 #include "kvi_options.h"
 
@@ -177,12 +177,11 @@ public:
 	bool play(const QString &szFileName);
 	void detectSoundSystem();
 	bool havePlayingSounds();
-	//void getAvailableSoundSystems(KviPtrList<QString> * l);
 	void getAvailableSoundSystems(QStringList * l);
 	bool isMuted() {return KVI_OPTION_BOOL(KviOption_boolMuteAllSounds); };
 	void setMuted(bool muted) {KVI_OPTION_BOOL(KviOption_boolMuteAllSounds)=muted;};
 protected:
-	KviPtrList<KviSoundThread> * m_pThreadList;
+	QList<KviSoundThread*> * m_pThreadList;
 	QHash<QString,SoundSystemRoutine*> * m_pSoundSystemDict;
 protected:
 	void registerSoundThread(KviSoundThread * t);

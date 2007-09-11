@@ -71,7 +71,6 @@ bool KviKvsTreeNodeSpecialCommandForeach::execute(KviKvsRunTimeContext * c)
 	if(!v)return false;
 
 	KviKvsVariantList l;
-	l.setAutoDelete(true);
 	if(!m_pIterationData->evaluate(c,&l))
 	{
 		delete v;
@@ -86,7 +85,7 @@ bool KviKvsTreeNodeSpecialCommandForeach::execute(KviKvsRunTimeContext * c)
 
 	bool bIncludeEmptyScalars = swl.find('a',"all") != 0;
 
-	for(KviKvsVariant * pArg = l.first();pArg;pArg = l.next())
+	foreach(KviKvsVariant * pArg,*(l.list()))
 	{
 		switch(pArg->type())
 		{

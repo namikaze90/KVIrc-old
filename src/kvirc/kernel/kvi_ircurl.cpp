@@ -326,7 +326,7 @@ int KviIrcUrl::run(const QString& text,int contextSpec,KviConsole* pConsole)
 				// the same server, but probably new chanlist
 				QString tmp;
 				QString toPart;
-				for(KviChannel * c = pConsole->connection()->channelList()->first();c;c = pConsole->connection()->channelList()->next())
+				foreach(KviChannel * c,*(pConsole->connection()->channelList()))
 				{
 					tmp=c->name();
 					if(c->hasChannelKey()) {
