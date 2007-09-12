@@ -1,0 +1,1 @@
+package.bat --with-qt --build-doc --build-translations --debug

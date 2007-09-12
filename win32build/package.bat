@@ -12,7 +12,7 @@ rem		The batch file will build the translations too
 rem #####################################################
 
 set PROJECTDIR=..
-set DESTDIR=bpackage
+set DESTDIR=package
 set DOCSDIR=..\kvirc-docs
 
 set SEPERATOR=---------------------------------------
@@ -70,21 +70,34 @@ xcopy /y %PROJECTDIR%\src\modules\url\caps\url %DESTDIR%\modules\caps\action\
 xcopy /y %PROJECTDIR%\data\helppics\helplogoleft.png %DESTDIR%\help\en\
 xcopy /y %PROJECTDIR%\data\helppics\helplogoright.png %DESTDIR%\help\en\
 
-xcopy /y %PROJECTDIR%\bin\release\*.dll %DESTDIR%\
-xcopy /y %PROJECTDIR%\bin\release\*.exe %DESTDIR%\
-xcopy /y %PROJECTDIR%\bin\release\modules\*.dll %DESTDIR%\modules\
+rem nsis does not take empty dirs
+echo "dummy" > %DESTDIR%\qt-plugins\dummy.txt
 
 echo %SEPERATOR%
-echo Finished main part. Checking for additional options.
+echo Finished main part. Checking for options.
 echo %SEPERATOR%
 
 rem Checking parameters
 :nextpar
 shift
 if "%0"=="--with-qt" goto with-qt
+if "%0"=="--release" goto release
+if "%0"=="--debug" goto debug
 if "%0"=="--build-doc" goto build-doc
 if "%0"=="--build-translations" goto build-translations
 if "%0"=="" goto finished
+goto nextpar
+
+:release
+xcopy /y %PROJECTDIR%\bin\release\*.dll %DESTDIR%\
+xcopy /y %PROJECTDIR%\bin\release\*.exe %DESTDIR%\
+xcopy /y %PROJECTDIR%\bin\release\modules\*.dll %DESTDIR%\modules\
+goto nextpar
+
+:debug
+xcopy /y %PROJECTDIR%\bin\debug\*.dll %DESTDIR%\
+xcopy /y %PROJECTDIR%\bin\debug\*.exe %DESTDIR%\
+xcopy /y %PROJECTDIR%\bin\debug\modules\*.dll %DESTDIR%\modules\
 goto nextpar
 
 :with-qt

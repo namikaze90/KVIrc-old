@@ -1,1 +1,1 @@
-package.bat --with-qt --build-doc --build-translations
+package.bat --with-qt --build-doc --build-translations --release

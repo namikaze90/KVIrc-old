@@ -34,7 +34,7 @@ Var LocalDir
 !define MUI_FINISHPAGE_RUN "$INSTDIR\kvirc.exe"
 
 ; Pages
-!insertmacro MUI_PAGE_LICENSE "bpackage\License\COPYING"
+!insertmacro MUI_PAGE_LICENSE "package\License\COPYING"
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
@@ -103,31 +103,31 @@ Section !$(KVIrc) KVIrc_IDX
 	SetDetailsPrint listonly 
 
 	SetOutPath "$INSTDIR"
-	File bpackage\*.*
+	File package\*.*
 	SetOutPath "$INSTDIR\config"
-	File /r bpackage\config\*.*
+	File /r package\config\*.*
 	SetOutPath "$INSTDIR\qt-plugins"
-	File /r bpackage\qt-plugins\*.*
+	File /r package\qt-plugins\*.*
 	SetOutPath "$INSTDIR\defscript"
-	File /r bpackage\defscript\*.*
+	File /r package\defscript\*.*
 	SetOutPath "$INSTDIR\doc"
-	File /r bpackage\doc\*.*
+	File /r package\doc\*.*
 	SetOutPath "$INSTDIR\help"
-	File /r bpackage\help\*.*
+	File /r package\help\*.*
 	SetOutPath "$INSTDIR\license"
-	File bpackage\license\COPYING
+	File package\license\COPYING
 	SetOutPath "$INSTDIR\locale"
-	File bpackage\locale\*.mo
+	File package\locale\*.mo
 	SetOutPath "$INSTDIR\modules"
-	File /r bpackage\modules\*.*
+	File /r package\modules\*.*
 	SetOutPath "$INSTDIR\msgcolors"
-	File /r bpackage\msgcolors\*.*
+	File /r package\msgcolors\*.*
 	SetOutPath "$INSTDIR\pics"
-	File bpackage\pics\*.png
+	File package\pics\*.png
 	SetOutPath "$INSTDIR\pics\coresmall\"
-	File bpackage\pics\coresmall\*.png
+	File package\pics\coresmall\*.png
 	SetOutPath "$INSTDIR\themes"
-	File /r bpackage\themes\*.*
+	File /r package\themes\*.*
 
   
 	; Write the installation path into the registry
