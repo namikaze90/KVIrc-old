@@ -277,7 +277,6 @@ namespace KviKvsCoreFunctions
 
 	KVSCF(sort)
 	{
-#ifdef COMPILE_NEW_KVS
 		KviKvsArrayCast a;
 
 		KVSCF_PARAMETERS_BEGIN
@@ -292,7 +291,6 @@ namespace KviKvsCoreFunctions
 		} else {
 			KVSCF_pRetBuffer->setArray(new KviKvsArray());
 		}
-#endif
 		return true;
 	}
 
@@ -834,9 +832,7 @@ namespace KviKvsCoreFunctions
 
 	KVSCF(trueCKEYWORDWORKAROUND)
 	{
-#ifdef COMPILE_NEW_KVS
 		KVSCF_pRetBuffer->setBoolean(true);
-#endif
 		return true;
 	}
 
@@ -869,7 +865,6 @@ namespace KviKvsCoreFunctions
 
 	KVSCF(typeofCKEYWORDWORKAROUND)
 	{
-#ifdef COMPILE_NEW_KVS
 		KviKvsVariant * v;
 
 		KVSCF_PARAMETERS_BEGIN
@@ -879,7 +874,6 @@ namespace KviKvsCoreFunctions
 		QString szType;
 		v->getTypeName(szType);
 		KVSCF_pRetBuffer->setString(szType);
-#endif
 		return true;
 	}
 

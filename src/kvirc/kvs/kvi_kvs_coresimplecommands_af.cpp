@@ -1031,11 +1031,9 @@ namespace KviKvsCoreSimpleCommands
 
 	KVSCSC(error)
 	{
-#ifdef COMPILE_NEW_KVS
 		QString szAll;
 		KVSCSC_pParams->allAsString(szAll);
 		KVSCSC_pContext->error("%Q",&szAll);
-#endif
 		return false;
 	}
 

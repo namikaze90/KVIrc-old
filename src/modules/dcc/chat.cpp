@@ -132,7 +132,7 @@ KviDccChat::~KviDccChat()
 		delete m_pSlaveThread;
 		m_pSlaveThread = 0;
 	}
-	KviThreadManager::killPendingEvents(this);
+//	KviThreadManager::killPendingEvents(this);
 }
 
 void KviDccChat::textViewRightClicked()

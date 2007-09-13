@@ -489,14 +489,12 @@ namespace KviKvsCoreFunctions
 
 	KVSCF(isEmpty)
 	{
-#ifdef COMPILE_NEW_KVS
 		KviKvsVariant * v;
 		KVSCF_PARAMETERS_BEGIN
 			KVSCF_PARAMETER("data",KVS_PT_VARIANT,0,v)
 		KVSCF_PARAMETERS_END
 
 		KVSCF_pRetBuffer->setBoolean(v->isEmpty());
-#endif
 		return true;
 	}
 	//FIXME: documentation
@@ -750,7 +748,6 @@ namespace KviKvsCoreFunctions
 
 	KVSCF(isNumeric)
 	{
-#ifdef COMPILE_NEW_KVS
 		KviKvsVariant * v;
 		KVSCF_PARAMETERS_BEGIN
 			KVSCF_PARAMETER("data",KVS_PT_VARIANT,0,v)
@@ -758,7 +755,6 @@ namespace KviKvsCoreFunctions
 
 		KviKvsNumber n;
 		KVSCF_pRetBuffer->setBoolean(v->asNumber(n));
-#endif
 		return true;
 	}
 
@@ -788,14 +784,12 @@ namespace KviKvsCoreFunctions
 
 	KVSCF(isSet)
 	{
-#ifdef COMPILE_NEW_KVS
 		KviKvsVariant * v;
 		KVSCF_PARAMETERS_BEGIN
 			KVSCF_PARAMETER("data",KVS_PT_VARIANT,0,v)
 		KVSCF_PARAMETERS_END
 
 		KVSCF_pRetBuffer->setBoolean(!v->isEmpty());
-#endif
 		return true;
 	}
 
@@ -937,7 +931,6 @@ namespace KviKvsCoreFunctions
 
 	KVSCF(keys)
 	{
-#ifdef COMPILE_NEW_KVS
 		KviKvsHash * pHash;
 		KVSCF_PARAMETERS_BEGIN
 			KVSCF_PARAMETER("hash",KVS_PT_HASH,0,pHash)
@@ -956,7 +949,6 @@ namespace KviKvsCoreFunctions
 			idx++;
 		}
 		KVSCF_pRetBuffer->setArray(a);
-#endif
 		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////

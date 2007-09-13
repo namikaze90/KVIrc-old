@@ -41,7 +41,7 @@
 #include <stdio.h>
 
 static bool g_bSSLInitialized = false;
-static KviMutex * g_pSSLMutex = 0;
+static QMutex * g_pSSLMutex = 0;
 
 
 static inline void my_ssl_lock()
@@ -228,7 +228,7 @@ DH * my_ugly_dh_callback(SSL *s, int is_export, int keylength)
 void KviSSL::globalInit()
 {
 	if(g_pSSLMutex)return;
-	g_pSSLMutex = new KviMutex();
+	g_pSSLMutex = new QMutex();
 }
 
 void KviSSL::globalDestroy()

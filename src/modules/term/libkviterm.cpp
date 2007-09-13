@@ -136,9 +136,7 @@ static bool term_module_init(KviModule * m)
 #endif
 
 //	m->registerCommand("open",term_module_cmd_open);
-#ifdef COMPILE_NEW_KVS
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"open",term_kvs_cmd_open);
-#endif
 	return true;
 }
 

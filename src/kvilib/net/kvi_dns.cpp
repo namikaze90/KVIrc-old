@@ -372,7 +372,6 @@ KviDns::KviDns()
 KviDns::~KviDns()
 {
 	if(m_pSlaveThread)delete m_pSlaveThread; // will eventually terminate it (but it will also block us!!!)
-	KviThreadManager::killPendingEvents(this);
 	if(m_pDnsResult)delete m_pDnsResult;
 	if(m_pAuxData)debug("You're leaking memory man! m_pAuxData is non 0!");
 }
@@ -387,9 +386,11 @@ bool KviDns::lookup(const QString &query,QueryType type)
 {
 	if(m_state == Busy)return false;
 	m_pSlaveThread->setQuery(KviQString::trimmed(query),type);
-	bool bStarted = m_pSlaveThread->start();
-	m_state = bStarted ? Busy : Failure;
-	return bStarted;
+	m_pSlaveThread->start();
+	return true;
+//	bool bStarted = m_pSlaveThread->start();
+//	m_state = bStarted ? Busy : Failure;
+//	return bStarted;
 }
 
 int KviDns::error()

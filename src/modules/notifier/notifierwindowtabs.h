@@ -140,8 +140,8 @@ private:
 	QPoint	m_pnt;
 
 	QMap<KviWindow *, KviNotifierWindowTab *> m_tabMap;
-	QPtrList<KviNotifierWindowTab> m_tabPtrList;
-	QPtrList<KviNotifierWindowTab> m_lastVisitedTabPtrList;
+	QList<KviNotifierWindowTab*> m_tabPtrList;
+	QList<KviNotifierWindowTab*> m_lastVisitedTabPtrList;
 	
 	QFont * m_pFocusedFont;
 	QFont * m_pUnfocusedFont;

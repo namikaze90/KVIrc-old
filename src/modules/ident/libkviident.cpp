@@ -50,14 +50,14 @@ void startIdentService()
 //	debug("Stargin");
 	if(!g_pIdentDaemon)g_pIdentDaemon = new KviIdentDaemon();
 	if(!g_pIdentDaemon->isRunning())g_pIdentDaemon->start();
-	while(g_pIdentDaemon->isStartingUp())
-	{
-#ifdef COMPILE_ON_WINDOWS
-		Sleep(10);
-#else
-		usleep(100);
-#endif
-	}
+//	while(g_pIdentDaemon->isStartingUp())
+//	{
+//#ifdef COMPILE_ON_WINDOWS
+//		Sleep(10);
+//#else
+//		usleep(100);
+//#endif
+//	}
 //	debug("Service started");
 }
 
@@ -76,7 +76,7 @@ KviIdentSentinel::KviIdentSentinel()
 
 KviIdentSentinel::~KviIdentSentinel()
 {
-	KviThreadManager::killPendingEvents(this);
+//	KviThreadManager::killPendingEvents(this);
 }
 
 bool KviIdentSentinel::event(QEvent *e)

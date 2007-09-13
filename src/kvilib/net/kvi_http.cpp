@@ -87,8 +87,6 @@ void KviHttpRequest::resetInternalStatus()
 
 	m_pBuffer->clear();
 	m_bHeaderProcessed = false;
-
-	KviThreadManager::killPendingEvents(this);
 }
 
 void KviHttpRequest::resetStatus()
@@ -240,13 +238,14 @@ void KviHttpRequest::haveServerIp()
 	
 	debug(m_url.encodedQuery());
 	
-	if(!m_pThread->start())
-	{
-		resetInternalStatus();
-		m_szLastError = __tr2qs("Unable to start the request slave thread");
-		emit terminated(false);
-		return;
-	}
+	m_pThread->start();
+//	if(!m_pThread->start())
+//	{
+//		resetInternalStatus();
+//		m_szLastError = __tr2qs("Unable to start the request slave thread");
+//		emit terminated(false);
+//		return;
+//	}
 
 	KviQString::sprintf(tmp,__tr2qs("Contacting host %Q on port %u"),&m_szIp,uPort);
 	emit status(tmp);

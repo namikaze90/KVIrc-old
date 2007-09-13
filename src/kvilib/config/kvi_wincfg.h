@@ -29,9 +29,6 @@
 // Windows configuration: do not touch
 //=============================================================================
 
-/* define if you want to compile with new parser */
-#define COMPILE_NEW_KVS 1
-
 /* define if you want to use the Qt 4.x support */
 /* #undef COMPILE_USE_QT4 */
 

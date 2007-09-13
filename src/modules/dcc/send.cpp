@@ -783,7 +783,7 @@ KviDccFileTransfer::~KviDccFileTransfer()
 		m_pSlaveSendThread = 0;
 	}
 
-	KviThreadManager::killPendingEvents(this);
+//	KviThreadManager::killPendingEvents(this);
 
 	delete m_pDescriptor;
 	delete m_pMarshal;

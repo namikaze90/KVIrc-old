@@ -63,9 +63,7 @@ namespace KviKvsCoreSimpleCommands
 
 	KVSCSC(halt)
 	{
-#ifdef COMPILE_NEW_KVS
 		KVSCSC_pContext->setHaltCalled();
-#endif
 		return false;
 	}
 
@@ -507,7 +505,6 @@ try_again:
 
 	KVSCSC(killtimer)
 	{
-#ifdef COMPILE_NEW_KVS
 		QString szName;
 		KVSCSC_PARAMETERS_BEGIN
 			KVSCSC_PARAMETER("name",KVS_PT_STRING,KVS_PF_OPTIONAL,szName)
@@ -533,7 +530,6 @@ try_again:
 					KVSCSC_pContext->warning(__tr2qs("Can't kill the timer '%Q' since it is not running"),&szName);
 			}
 		}
-#endif
 		return true;
 	}
 

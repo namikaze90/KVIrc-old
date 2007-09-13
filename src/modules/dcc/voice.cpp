@@ -730,7 +730,7 @@ KviDccVoice::~KviDccVoice()
 		m_pSlaveThread = 0;
 	}
 
-	KviThreadManager::killPendingEvents(this);
+//	KviThreadManager::killPendingEvents(this);
 
 	delete m_pUpdateTimer;
 //	delete m_pDescriptor;

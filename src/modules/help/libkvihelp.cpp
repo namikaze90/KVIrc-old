@@ -102,11 +102,9 @@ KviPtrList<KviHelpWindow> * g_pHelpWindowList = 0;
 	return c->leaveStackFrame();
 }*/
 /*
-#ifdef COMPILE_NEW_KVS
 static bool help_kvs_cmd_search(KviKvsModuleCommandCall * c)
 { 
 }
-#endif
 */
 /*
 	@doc: help.open

@@ -117,7 +117,7 @@ KviSoundPlayer::~KviSoundPlayer()
 {
 	qDeleteAll(*m_pThreadList);
 	delete m_pThreadList;
-	KviThreadManager::killPendingEvents(this);
+//	KviThreadManager::killPendingEvents(this);
 	foreach(SoundSystemRoutine* i,*m_pSoundSystemDict) { delete i; }
 	delete m_pSoundSystemDict;
 

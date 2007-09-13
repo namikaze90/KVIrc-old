@@ -42,21 +42,16 @@ KviKvsTreeNodeHashCount::~KviKvsTreeNodeHashCount()
 
 void KviKvsTreeNodeHashCount::contextDescription(QString &szBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	szBuffer = "Hash Count Operator";
-#endif
 }
 
 void KviKvsTreeNodeHashCount::dump(const char * prefix)
 {
-#ifdef COMPILE_NEW_KVS
 	debug("%s HashCount",prefix);
-#endif
 }
 
 bool KviKvsTreeNodeHashCount::evaluateReadOnlyInObjectScope(KviKvsObject *o,KviKvsRunTimeContext * c,KviKvsVariant * pBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	KviKvsVariant val;
 	if(o)
 	{
@@ -78,7 +73,6 @@ bool KviKvsTreeNodeHashCount::evaluateReadOnlyInObjectScope(KviKvsObject *o,KviK
 	}
 
 	pBuffer->setInteger(val.hash()->size());
-#endif
 	return true;
 }
 bool KviKvsTreeNodeHashCount::evaluateReadOnly(KviKvsRunTimeContext * c,KviKvsVariant * pBuffer)

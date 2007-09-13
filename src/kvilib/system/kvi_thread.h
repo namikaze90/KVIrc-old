@@ -33,6 +33,8 @@
 #include <qevent.h>
 #include <QList>
 #include <QQueue>
+#include <QThread>
+#include <QMutex>
 
 //
 // Simple thread implementation
@@ -41,185 +43,25 @@
 //
 
 
-// Portability stuff
-
-#ifdef COMPILE_ON_WINDOWS
-
-	#include <winsock2.h> // this will pull in windows.h and will avoid windock.h inclusion
-	//#include <windows.h>
-	// Windoze thread abstraction layer
-	#define kvi_mutex_t HANDLE
-	inline void kvi_threadMutexInit(kvi_mutex_t * _pMutex_t)
-	{
-		*_pMutex_t = CreateMutex(0,0,NULL);
-	}
-	#define kvi_threadMutexLock(_pMutex_t) WaitForSingleObject(*_pMutex_t,INFINITE)
-	#define kvi_threadMutexUnlock(_pMutex_t) ReleaseMutex(*_pMutex_t)
-	#define kvi_threadMutexDestroy(_pMutex_t) CloseHandle(*_pMutex_t)
-	inline bool kvi_threadMutexTryLock(kvi_mutex_t *_pMutex_t)
-	{
-		return (WaitForSingleObject(*_pMutex_t,0) == WAIT_OBJECT_0);
-	}
-
-	#define kvi_thread_t HANDLE
-
-	inline bool kvi_threadCreate(kvi_thread_t *t,LPTHREAD_START_ROUTINE start_routine,void * arg)
-	{
-		DWORD dwThreadId;
-		*t = CreateThread(NULL,0,start_routine,arg,0,&dwThreadId);
-		return (*t != NULL);
-	}
-
-	#define kvi_threadExit() ExitThread(0)
-
-#else
-	#ifdef COMPILE_THREADS_USE_POSIX
-		// Glibc pthread implementation
-
-		#include <pthread.h>
-		#include <errno.h> // for EBUSY
-	
-		// Mutex stuff
-		#define kvi_mutex_t pthread_mutex_t
-		#define kvi_threadMutexInit(_pMutex_t) pthread_mutex_init(_pMutex_t,0)
-		#define kvi_threadMutexLock(_pMutex_t) pthread_mutex_lock(_pMutex_t)
-		#define kvi_threadMutexUnlock(_pMutex_t) pthread_mutex_unlock(_pMutex_t)
-		#define kvi_threadMutexDestroy(_pMutex_t) pthread_mutex_destroy(_pMutex_t)
-		inline bool kvi_threadMutexTryLock(kvi_mutex_t *_pMutex_t)
-		{
-			return (pthread_mutex_trylock(_pMutex_t) != EBUSY);
-		}
-		// Actually unused
-		// #define kvi_threadMutexTryLock(_pMutex_t) pthread_mutex_trylock(_pMutex_t)
-	
-		// Thread stuff
-		#define kvi_thread_t pthread_t
-	
-		inline bool kvi_threadCreate(kvi_thread_t *t,void * (*start_routine)(void *),void * arg)
-		{
-			pthread_attr_t a;
-			pthread_attr_init(&a);
-			pthread_attr_setinheritsched(&a,PTHREAD_INHERIT_SCHED);
-			pthread_attr_setdetachstate(&a,PTHREAD_CREATE_DETACHED);
-	
-			int ret = pthread_create(t,&a,start_routine,arg);
-	
-			pthread_attr_destroy(&a);
-			return (ret == 0);
-		}
-	
-		// We don't care about exit codes at all
-		#define kvi_threadExit() pthread_exit(0)
-	#else
-		#ifdef COMPILE_THREADS_USE_SOLARIS_LIBTHREAD
-			// Native solaris implementation
-			#include <thread.h>
-			#include <synch.h>
-			#include <errno.h>
-
-			// Mutex stuff
-			#define kvi_mutex_t mutex_t
-			#define kvi_threadMutexInit(_pMutex_t) mutex_init(_pMutex_t,0,0)
-			#define kvi_threadMutexLock(_pMutex_t) mutex_lock(_pMutex_t)
-			#define kvi_threadMutexUnlock(_pMutex_t) mutex_unlock(_pMutex_t)
-			#define kvi_threadMutexDestroy(_pMutex_t) mutex_destroy(_pMutex_t)
-			inline bool kvi_threadMutexTryLock(kvi_mutex_t *_pMutex_t)
-			{
-				return (mutex_trylock(_pMutex_t) != EBUSY);
-			};
-			// Actually unused
-			// #define kvi_threadMutexTryLock(_pMutex_t) mutex_trylock(_pMutex_t)
-	
-			// Thread stuff
-			#define kvi_thread_t thread_t
-	
-			inline bool kvi_threadCreate(kvi_thread_t *t,void * (*start_routine)(void *),void *arg)
-			{
-				return (thr_create(0,0,start_routine,arg,THR_DETACHED,t) == 0);
-			}
-	
-			// We don't care about exit codes at all
-			#define kvi_threadExit() thr_exit(0)
-		#else
-		 	#error "Missing a decent thread implementation: we're going to fail , sorry!"
-		#endif
-	#endif
-#endif	
-	
-class KVILIB_API KviMutex : public KviHeapObject
-{
-private:
-	kvi_mutex_t m_mutex;
-#ifdef COMPILE_ON_WINDOWS
-	bool        m_bLocked;
-#endif
-public:
-	KviMutex(){ kvi_threadMutexInit(&m_mutex); };
-	virtual ~KviMutex(){ kvi_threadMutexDestroy(&m_mutex); };
-public:
-#ifdef COMPILE_ON_WINDOWS
-	void lock(){ kvi_threadMutexLock(&m_mutex); m_bLocked = true; };
-	void unlock(){ m_bLocked = false; kvi_threadMutexUnlock(&m_mutex); };
-	bool locked(){ return m_bLocked; };
-#else
-	void lock(){ kvi_threadMutexLock(&m_mutex); };
-	void unlock(){ kvi_threadMutexUnlock(&m_mutex); };
-	bool locked();
-#endif
-};
-
-
 // simple thread class implementation
 // this is also called "Blind" thread class
 
-class KVILIB_API KviThread : public KviHeapObject
+class KVILIB_API KviThread : public QThread
 {
 public:
 	KviThread();
 	virtual ~KviThread();
 private:
-	kvi_thread_t     m_thread;
-	bool             m_bRunning;
-	bool             m_bStartingUp;
-	KviMutex       * m_pRunningMutex;
+	QMutex         * m_pRunningMutex;
 	QList<QEvent*> * m_pLocalEventQueue;
 public:
-	// public KviThread interface
-	// HANDLE WITH CARE
-
-	// Runs the thread...call only from external threads!!! :)
-	// This function returns true if the child thread has been succesfully created
-	// this des not mean that run() is being already executed...
-	// isStartingUp() will return true from this moment until
-	// the child thread jumps into run() where it will be set to running state (isRunning() == true)
-	// and removed from startingUp state.
-	bool start();
-	// Returns the state of the thread...safe to call from anywhere
-	bool isRunning();
-	// Returns the state of the thread...safe to call from anywhere
-	bool isStartingUp(); // start() called , but not in run() yet...
-	// Waits for the termination of this thread: call only from external threads!!! :)
-	void wait();
-	// DO NOT TOUCH THIS ONE!
-	void internalThreadRun_doNotTouchThis();
-
 	static void sleep(unsigned long sec);
 	static void msleep(unsigned long msec);
 	static void usleep(unsigned long usec);
 protected:
-	// protected KviThread interface
-	// HANDLE WITH CARE TOO!
-
-	// Reimplement this with your job
-	virtual void run(){};
-	// Terminates the execution of the calling thread
-	void exit();
 	// The tricky part: threadsafe event dispatching
 	// Slave thread -> main thread objects
 	void postEvent(QObject *o,QEvent *e);
-private:
-	void setRunning(bool bRunning);
-	void setStartingUp(bool bStartingUp);
 };
 
 // QEvent::Type for Thread events
@@ -307,7 +149,7 @@ public:
 	KviSensitiveThread();
 	virtual ~KviSensitiveThread();
 protected:
-	KviMutex               * m_pLocalEventQueueMutex;
+	QMutex                  * m_pLocalEventQueueMutex;
 	QQueue<KviThreadEvent*> * m_pLocalEventQueue;
 public:
 	// enqueues an event directed to THIS thread
@@ -331,7 +173,7 @@ protected:
 typedef struct _KviThreadPendingEvent
 {
 	QObject *o;
-	QEvent *e;
+	QEvent  *e;
 } KviThreadPendingEvent;
 
 class KVILIB_API KviThreadManager : public QObject
@@ -344,20 +186,10 @@ protected:
 	// Treat as private plz.
 	KviThreadManager();
 	~KviThreadManager();
-public:
-	static void killPendingEvents(QObject * receiver);
 private:
-#ifndef COMPILE_ON_WINDOWS
-	QSocketNotifier * m_pSn;
-#endif
-	KviMutex * m_pMutex; // This class performs only atomic operations
+	QMutex * m_pMutex; // This class performs only atomic operations
 	QList<KviThread*> * m_pThreadList;
 	int m_iWaitingThreads;
-#ifndef COMPILE_ON_WINDOWS
-	KviPtrList<KviThreadPendingEvent> * m_pEventQueue;
-	int m_fd[2];
-	int m_iTriggerCount;
-#endif
 protected:
 	// Public to KviThread only
 	void registerSlaveThread(KviThread *t);
@@ -366,13 +198,11 @@ protected:
 	void threadEnteredWaitState();
 	void threadLeftWaitState();
 
-	void postSlaveEvent(QObject *o,QEvent *e);
-	void killPendingEventsByReceiver(QObject * receiver);
 	// Public to KviApp only
 	static void globalInit();
 	static void globalDestroy();
-private slots:
-	void eventsPending(int fd);
+	
+	void postSlaveEvent(QObject *o,QEvent *e);
 };
 
 

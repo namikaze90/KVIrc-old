@@ -46,7 +46,6 @@ KviKvsReport::~KviKvsReport()
 
 void KviKvsReport::findLineAndCol(const QChar * pBegin,const QChar * pPoint,int &iLine,int &iCol)
 {
-#ifdef COMPILE_NEW_KVS
 	iLine = 1;
 
 	const QChar * pBufferBegin = pBegin;
@@ -71,14 +70,12 @@ void KviKvsReport::findLineAndCol(const QChar * pBegin,const QChar * pPoint,int 
 	}
 	
 	iCol = (pBegin - pLineBegin) + 1;
-#endif
 }
 
 
 
 void KviKvsReport::findLineColAndListing(const QChar * pBegin,const QChar * pPoint,int &iLine,int &iCol,QStringList& pListing)
 {
-#ifdef COMPILE_NEW_KVS
 	iLine = 1;
 
 	const QChar * pBufferBegin = pBegin;
@@ -170,7 +167,6 @@ void KviKvsReport::findLineColAndListing(const QChar * pBegin,const QChar * pPoi
 			pListing.append(pListingStr);
 		}
 	}
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -178,7 +174,6 @@ void KviKvsReport::findLineColAndListing(const QChar * pBegin,const QChar * pPoi
 
 void KviKvsReport::report(KviKvsReport * r,KviWindow * pOutput)
 {
-#ifdef COMPILE_NEW_KVS
 	if(!pOutput)return; // ?
 	if(!g_pApp->windowExists(pOutput))
 	{
@@ -252,6 +247,5 @@ void KviKvsReport::report(KviKvsReport * r,KviWindow * pOutput)
 				report(r,KviDebugWindow::getInstance());
 		}
 	}
-#endif
 }
 

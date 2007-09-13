@@ -44,7 +44,6 @@ namespace KviKvsParameterProcessor
 {	
 	void setDefaultValue(KviKvsParameterProcessor::ParameterFormat * pFmtArray)
 	{
-#ifdef COMPILE_NEW_KVS
 		switch(pFmtArray->uType)
 		{
 			case KVS_PT_STRING:
@@ -96,7 +95,6 @@ namespace KviKvsParameterProcessor
 				debug("Internal error in KviKvsParameterProcessor::setDefaultValue(): unknown parameter type %d",pFmtArray->uType);
 			break;
 		}
-#endif
 	}
 
 	bool handleParameterTypeError(KviKvsRunTimeContext * pContext,KviKvsParameterProcessor::ParameterFormat * pFmtArray,KviKvsVariant * v,const char * szExpectedType)

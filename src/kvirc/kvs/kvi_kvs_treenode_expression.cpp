@@ -129,41 +129,31 @@ bool KviKvsTreeNodeExpressionVariableOperand::evaluateReadOnly(KviKvsRunTimeCont
 KviKvsTreeNodeExpressionConstantOperand::KviKvsTreeNodeExpressionConstantOperand(const QChar * pLocation,KviKvsVariant * pConstant)
 : KviKvsTreeNodeExpression(pLocation)
 {
-#ifdef COMPILE_NEW_KVS
 	m_pConstant = pConstant;
-#endif
 }
 
 KviKvsTreeNodeExpressionConstantOperand::~KviKvsTreeNodeExpressionConstantOperand()
 {
-#ifdef COMPILE_NEW_KVS
 	delete m_pConstant;
-#endif
 }
 
 void KviKvsTreeNodeExpressionConstantOperand::contextDescription(QString &szBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	szBuffer = "Expression Constant Operand Evaluation";
-#endif
 }
 
 
 void KviKvsTreeNodeExpressionConstantOperand::dump(const char * prefix)
 {
-#ifdef COMPILE_NEW_KVS
 	debug("%s ExpressionConstantOperand",prefix);
 	QString tmp = prefix;
 	tmp.append("  ");
 	m_pConstant->dump(tmp.utf8().data());
-#endif
 }
 
 bool KviKvsTreeNodeExpressionConstantOperand::evaluateReadOnly(KviKvsRunTimeContext * c,KviKvsVariant * pBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	pBuffer->copyFrom(m_pConstant);
-#endif
 	return true;
 }
 
@@ -181,17 +171,13 @@ KviKvsTreeNodeExpressionOperator::~KviKvsTreeNodeExpressionOperator()
 
 void KviKvsTreeNodeExpressionOperator::contextDescription(QString &szBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	szBuffer = "Expression Operator Evaluation";
-#endif
 }
 
 
 void KviKvsTreeNodeExpressionOperator::dump(const char * prefix)
 {
-#ifdef COMPILE_NEW_KVS
 	debug("%s ExpressionOperator",prefix);
-#endif
 }
 
 
@@ -202,25 +188,19 @@ void KviKvsTreeNodeExpressionOperator::dump(const char * prefix)
 KviKvsTreeNodeExpressionUnaryOperator::KviKvsTreeNodeExpressionUnaryOperator(const QChar * pLocation,KviKvsTreeNodeExpression * pData)
 : KviKvsTreeNodeExpressionOperator(pLocation)
 {
-#ifdef COMPILE_NEW_KVS
 	m_pData = pData;
 	m_pData->setParent(this);
 	m_pData->setParentExpression(this);
-#endif
 }
 
 KviKvsTreeNodeExpressionUnaryOperator::~KviKvsTreeNodeExpressionUnaryOperator()
 {
-#ifdef COMPILE_NEW_KVS
 	delete m_pData;
-#endif
 }
 
 void KviKvsTreeNodeExpressionUnaryOperator::contextDescription(QString &szBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	szBuffer = "Expression Unary Operator Evaluation";
-#endif
 }
 
 
@@ -228,17 +208,14 @@ void KviKvsTreeNodeExpressionUnaryOperator::contextDescription(QString &szBuffer
 
 void KviKvsTreeNodeExpressionUnaryOperator::dump(const char * prefix)
 {
-#ifdef COMPILE_NEW_KVS
 	debug("%s ExpressionUnaryOperator",prefix);
 	QString tmp = prefix;
 	tmp.append("  ");
 	m_pData->dump(tmp.utf8().data());
-#endif
 }
 
 bool KviKvsTreeNodeExpressionUnaryOperator::evaluateOperand(KviKvsRunTimeContext * c)
 {
-#ifdef COMPILE_NEW_KVS
 	KviKvsVariant v;
 	if(!m_pData->evaluateReadOnly(c,&v))return false;
 
@@ -247,7 +224,6 @@ bool KviKvsTreeNodeExpressionUnaryOperator::evaluateOperand(KviKvsRunTimeContext
 		c->error(this,__tr2qs("Operand of unary operator didn't evaluate to a number"));
 		return false;
 	}
-#endif
 	return true;
 }
 
@@ -266,20 +242,16 @@ KviKvsTreeNodeExpressionUnaryOperatorNegate::~KviKvsTreeNodeExpressionUnaryOpera
 
 void KviKvsTreeNodeExpressionUnaryOperatorNegate::contextDescription(QString &szBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	szBuffer = "Expression Unary Operator Negate";
-#endif
 }
 
 
 void KviKvsTreeNodeExpressionUnaryOperatorNegate::dump(const char * prefix)
 {
-#ifdef COMPILE_NEW_KVS
 	debug("%s ExpressionUnaryOperatorNegate",prefix);
 	QString tmp = prefix;
 	tmp.append("  ");
 	m_pData->dump(tmp.utf8().data());
-#endif
 }
 
 int KviKvsTreeNodeExpressionUnaryOperatorNegate::precedence()
@@ -289,11 +261,9 @@ int KviKvsTreeNodeExpressionUnaryOperatorNegate::precedence()
 
 bool KviKvsTreeNodeExpressionUnaryOperatorNegate::evaluateReadOnly(KviKvsRunTimeContext * c,KviKvsVariant * pBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	if(!evaluateOperand(c))return false;
 	if(m_nData.isReal())pBuffer->setReal(-m_nData.real());
 	else pBuffer->setInteger(-m_nData.integer());
-#endif
 	return true;
 }
 
@@ -312,19 +282,15 @@ KviKvsTreeNodeExpressionUnaryOperatorBitwiseNot::~KviKvsTreeNodeExpressionUnaryO
 
 void KviKvsTreeNodeExpressionUnaryOperatorBitwiseNot::contextDescription(QString &szBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	szBuffer = "Expression Unary Operator Bitwise Not";
-#endif
 }
 
 void KviKvsTreeNodeExpressionUnaryOperatorBitwiseNot::dump(const char * prefix)
 {
-#ifdef COMPILE_NEW_KVS
 	debug("%s ExpressionUnaryOperatorBitwiseNot",prefix);
 	QString tmp = prefix;
 	tmp.append("  ");
 	m_pData->dump(tmp.utf8().data());
-#endif
 }
 
 int KviKvsTreeNodeExpressionUnaryOperatorBitwiseNot::precedence()
@@ -334,11 +300,9 @@ int KviKvsTreeNodeExpressionUnaryOperatorBitwiseNot::precedence()
 
 bool KviKvsTreeNodeExpressionUnaryOperatorBitwiseNot::evaluateReadOnly(KviKvsRunTimeContext * c,KviKvsVariant * pBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	if(!evaluateOperand(c))return false;
 	if(m_nData.isReal())pBuffer->setInteger(~(int)(m_nData.real()));
 	else pBuffer->setInteger(~m_nData.integer());
-#endif
 	return true;
 }
 
@@ -357,19 +321,15 @@ KviKvsTreeNodeExpressionUnaryOperatorLogicalNot::~KviKvsTreeNodeExpressionUnaryO
 
 void KviKvsTreeNodeExpressionUnaryOperatorLogicalNot::contextDescription(QString &szBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	szBuffer = "Expression Unary Operator Logical Not";
-#endif
 }
 
 void KviKvsTreeNodeExpressionUnaryOperatorLogicalNot::dump(const char * prefix)
 {
-#ifdef COMPILE_NEW_KVS
 	debug("%s ExpressionUnaryOperatorLogicalNot",prefix);
 	QString tmp = prefix;
 	tmp.append("  ");
 	m_pData->dump(tmp.utf8().data());
-#endif
 }
 
 int KviKvsTreeNodeExpressionUnaryOperatorLogicalNot::precedence()
@@ -379,12 +339,10 @@ int KviKvsTreeNodeExpressionUnaryOperatorLogicalNot::precedence()
 
 bool KviKvsTreeNodeExpressionUnaryOperatorLogicalNot::evaluateReadOnly(KviKvsRunTimeContext * c,KviKvsVariant * pBuffer)
 {
-#ifdef COMPILE_NEW_KVS
 	KviKvsVariant v;
 	if(!m_pData->evaluateReadOnly(c,&v))return false;
 //#warning "FIXME: We could use setNothing() for false and setInteger(1) for true: this would save memory allocations for false conditions"
 	pBuffer->setBoolean(!v.asBoolean());
-#endif
 	return true;
 }
 

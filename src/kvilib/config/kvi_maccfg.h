@@ -49,9 +49,6 @@
 /* define if you want the gcc memory profile */
 /* #undef COMPILE_MEMORY_PROFILE */
 
-/* define if you want to enable the new KVS parser */
-#define COMPILE_NEW_KVS 1
-
 /* define this if you want to disable the inter-process communication support
    */
 /* #undef COMPILE_NO_IPC */

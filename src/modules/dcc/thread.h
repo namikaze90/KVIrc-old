@@ -57,7 +57,7 @@ public:
 	KviDccThread(QObject * par,kvi_socket_t fd);
 	~KviDccThread();
 protected:
-	KviMutex              * m_pMutex;     // OWNED! PROTECTS m_pOutBuffers
+	QMutex                * m_pMutex;     // OWNED! PROTECTS m_pOutBuffers
 	kvi_socket_t            m_fd;
 	QObject               * m_pParent;    // READ ONLY!
 #ifdef COMPILE_SSL_SUPPORT

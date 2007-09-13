@@ -40,7 +40,6 @@
 
 KviKvsTreeNode * KviKvsParser::parseComment()
 {
-#ifdef COMPILE_NEW_KVS
 
 	KVSP_ASSERT((KVSP_curCharUnicode == '#') || (KVSP_curCharUnicode == '/'));
 
@@ -95,7 +94,6 @@ KviKvsTreeNode * KviKvsParser::parseComment()
 			KVSP_ASSERT(false);
 		break;
 	}
-#endif
 	return 0; 
 }
 

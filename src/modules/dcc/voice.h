@@ -77,7 +77,7 @@ protected:
 	int                        m_iLastSignalBufferSize;
 	long                       m_iLastSignalBufferTime;
 //	unsigned  int              m_uSleepTime;
-	KviMutex                 * m_pInfoMutex;
+	QMutex                   * m_pInfoMutex;
 	// stuff protected by the mutex:
 	int                        m_iInputBufferSize;
 	int                        m_iOutputBufferSize;

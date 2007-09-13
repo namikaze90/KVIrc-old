@@ -120,7 +120,7 @@ void KviKvsObjectController::clearUserClasses()
 
 void KviKvsObjectController::clearInstances()
 {
-	while(m_pTopLevelObjectList->first())delete m_pTopLevelObjectList->first();
+	qDeleteAll(*m_pTopLevelObjectList);
 	delete m_pTopLevelObjectList; // empty list
 	foreach(KviKvsObject*o,*m_pObjectDict)
 	{
