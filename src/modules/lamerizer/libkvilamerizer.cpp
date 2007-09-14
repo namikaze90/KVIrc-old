@@ -240,7 +240,7 @@ static bool lamerizer_module_init(KviModule * m)
 static bool lamerizer_module_cleanup(KviModule *m)
 {
 #ifdef COMPILE_CRYPT_SUPPORT
-	while(g_pEngineList->first())delete g_pEngineList->first();
+	qDeleteAll(*g_pEngineList);
 	delete g_pEngineList;
     g_pEngineList = 0;
 	m->unregisterCryptEngines();

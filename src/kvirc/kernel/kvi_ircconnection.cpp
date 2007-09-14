@@ -392,17 +392,18 @@ void KviIrcConnection::partAllChannels()
 
 void KviIrcConnection::closeAllChannels()
 {
-	while(m_pChannelList->first())
+	foreach(KviWindow* w,*m_pChannelList)
 	{
-		m_pFrame->closeWindow(m_pChannelList->first());
+		m_pFrame->closeWindow(w);
 	}
+	m_pChannelList->clear();
 }
 
 void KviIrcConnection::closeAllQueries()
 {
-	while(m_pQueryList->first())
+	foreach(KviWindow* w,*m_pChannelList)
 	{
-		m_pFrame->closeWindow(m_pQueryList->first());
+		m_pFrame->closeWindow(w);
 	}
 }
 

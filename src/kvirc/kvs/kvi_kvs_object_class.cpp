@@ -75,7 +75,7 @@ KviKvsObjectClass::~KviKvsObjectClass()
 	KviKvsKernel::instance()->objectController()->unregisterClass(this);
 	foreach(KviKvsObjectFunctionHandler*i,*m_pFunctionHandlers){delete i;};
 	delete m_pFunctionHandlers;
-	while(m_pChildClasses->first())delete m_pChildClasses->first();
+	qDeleteAll(*m_pChildClasses);
 	delete m_pChildClasses;
 }
 

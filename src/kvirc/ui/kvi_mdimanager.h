@@ -63,7 +63,7 @@ public:
 	KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name);
 	~KviMdiManager();
 public:
-	KviMdiChild * topChild(){ return m_pZ->last(); };
+	KviMdiChild * topChild(){ return m_pZ->isEmpty() ? 0 : m_pZ->last(); };
 	KviMdiChild * highestChildExcluding(KviMdiChild * pChild);
 	void manageChild(KviMdiChild * lpC,bool bCascade = true,QRect * setGeom = 0);
 	void setTopChild(KviMdiChild *lpC,bool bSetFocus);

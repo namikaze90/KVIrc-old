@@ -572,7 +572,7 @@ void KviAliasEditor::exportSelectionInSinglesFiles(QList<KviAliasListViewItem*> 
 {
 	if(!m_szDir.endsWith(QString(KVI_PATH_SEPARATOR)))m_szDir += KVI_PATH_SEPARATOR;
 	debug ("dir %s",m_szDir.latin1());
-	if (!l->first())
+	if (l->isEmpty())
 	{
 		g_pAliasEditorModule->lock();
 		QMessageBox::warning(this,__tr2qs("Alias Export"),__tr2qs("There is not selection!"),__tr2qs("Ok"));

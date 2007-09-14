@@ -394,7 +394,7 @@ void KviMdiManager::childRestored(KviMdiChild * lpC,bool bWasMaximized)
 {
 	if(bWasMaximized)
 	{
-		if(lpC != m_pZ->last())return; // do nothing in this case
+		if(lpC != topChild())return; // do nothing in this case
 		leaveSDIMode();
 		updateContentsSize();
 	}
@@ -403,7 +403,7 @@ void KviMdiManager::childRestored(KviMdiChild * lpC,bool bWasMaximized)
 
 void KviMdiManager::focusTopChild()
 {
-	KviMdiChild *lpC=m_pZ->last();
+	KviMdiChild *lpC=topChild();
 	if(!lpC)return;
 	if(!lpC->isVisible())return;
 	//	if(lpC->state()==KviMdiChild::Minimized)return;
@@ -419,28 +419,28 @@ void KviMdiManager::focusTopChild()
 
 void KviMdiManager::minimizeActiveChild()
 {
-	KviMdiChild * lpC = m_pZ->last();
+	KviMdiChild * lpC = topChild();
 	if(!lpC)return;
 	if(lpC->state() != KviMdiChild::Minimized)lpC->minimize();
 }
 
 void KviMdiManager::restoreActiveChild()
 {
-	KviMdiChild * lpC = m_pZ->last();
+	KviMdiChild * lpC = topChild();
 	if(!lpC)return;
 	if(lpC->state() == KviMdiChild::Maximized)lpC->restore();
 }
 
 void KviMdiManager::closeActiveChild()
 {
-	KviMdiChild * lpC = m_pZ->last();
+	KviMdiChild * lpC = topChild();
 	if(!lpC)return;
 	lpC->closeRequest();
 }
 
 void KviMdiManager::updateContentsSize()
 {
-	KviMdiChild * c = m_pZ->last();
+	KviMdiChild * c = topChild();
 	if(c)
 	{
 		if(c->state() == KviMdiChild::Maximized)
@@ -471,7 +471,7 @@ void KviMdiManager::updateContentsSize()
 void KviMdiManager::updateSDIMode()
 {
 
-	KviMdiChild * lpC = m_pZ->last();
+	KviMdiChild * lpC = topChild();
 
 	if(m_pSdiCloseButton)
 		m_pSdiCloseButton->setEnabled(lpC ? lpC->closeEnabled() : false);
@@ -507,7 +507,7 @@ void KviMdiManager::updateSDIMode()
 
 void KviMdiManager::activeChildSystemPopup()
 {
-	KviMdiChild * lpC = m_pZ->last();
+	KviMdiChild * lpC = topChild();
 	if(!lpC)return;
 	QPoint pnt;
 	if(m_pSdiIconButton)

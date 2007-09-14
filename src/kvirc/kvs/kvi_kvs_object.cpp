@@ -631,7 +631,7 @@ KviKvsObject::~KviKvsObject()
 
 	callFunction(this,"destructor");
 
-	while(m_pChildList->first())delete m_pChildList->first();
+	qDeleteAll(*m_pChildList);
 	delete m_pChildList;
 
 	// Disconnect all the signals

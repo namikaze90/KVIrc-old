@@ -65,10 +65,10 @@ KviDccBroker::~KviDccBroker()
 {
 	foreach(KviDccZeroPortTag* i,*m_pZeroPortTags){ delete i;}
 	delete m_pZeroPortTags;
-	while(m_pBoxList->first())delete m_pBoxList->first();
+	qDeleteAll(*m_pBoxList);
 	delete m_pBoxList;
 	m_pBoxList = 0;
-	while(m_pDccWindowList->first())delete m_pDccWindowList->first();
+	qDeleteAll(*m_pDccWindowList);
 	delete m_pDccWindowList;
 	KviDccFileTransfer::done();
 }

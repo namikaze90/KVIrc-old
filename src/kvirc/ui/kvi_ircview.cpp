@@ -4912,11 +4912,12 @@ void KviIrcView::mouseReleaseEvent(QMouseEvent *)
 		m_bMouseIsDown = false;
 		m_bShiftPressed = false;
 		// Insert the lines blocked while selecting
-		while(KviIrcViewLine * l = m_pMessagesStoppedWhileSelecting->first())
+		foreach(KviIrcViewLine * l,*m_pMessagesStoppedWhileSelecting)
 		{
 			m_pMessagesStoppedWhileSelecting->removeFirst();
 			appendLine(l,false);
 		}
+		m_pMessagesStoppedWhileSelecting->clear();
 
 				#if defined(COMPILE_USE_QT4) && defined(COMPILE_ON_WINDOWS) 
 				repaint(0);

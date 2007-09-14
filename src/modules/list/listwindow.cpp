@@ -463,9 +463,9 @@ void KviListWindow::processData(KviIrcMessage *msg)
 void KviListWindow::flush()
 {
 	m_pListView->setUpdatesEnabled(true); /* for v_scroolbar */
-	while(KviChannelListViewItemData * d = m_pItemList->first())
+	while(!m_pItemList->isEmpty())
 	{
-		(void)new KviChannelListViewItem(m_pListView,d);
+		(void)new KviChannelListViewItem(m_pListView,m_pItemList->first());
 		m_pItemList->removeFirst();
 	}
 	m_pListView->setUpdatesEnabled(true);

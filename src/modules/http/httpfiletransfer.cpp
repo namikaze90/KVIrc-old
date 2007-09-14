@@ -347,8 +347,7 @@ void KviHttpFileTransfer::init()
 void KviHttpFileTransfer::done()
 {
 	if(!g_pHttpFileTransfers)return;
-	while(KviHttpFileTransfer * t = g_pHttpFileTransfers->first())
-		delete t;
+	qDeleteAll(*g_pHttpFileTransfers);
 	delete g_pHttpFileTransfers;
 	g_pHttpFileTransfers = 0;
 	delete g_pHttpIcon;

@@ -48,9 +48,13 @@ KviKvsObjectController::KviKvsObjectController()
 KviKvsObjectController::~KviKvsObjectController()
 {
 	flushUserClasses();
-	while(m_pTopLevelObjectList->first())delete m_pTopLevelObjectList->first();
+	while(!m_pTopLevelObjectList->isEmpty())
+	{
+//		debug("%i",m_pTopLevelObjectList->first());
+		delete m_pTopLevelObjectList->first();
+	}
 	delete m_pTopLevelObjectList; // empty list
-	foreach(KviKvsObject*o,*m_pObjectDict)
+	foreach(KviKvsObject *o,*m_pObjectDict)
 	{
 		delete o;
 	}

@@ -143,7 +143,7 @@ static bool term_module_init(KviModule * m)
 static bool term_module_cleanup(KviModule *m)
 {
 #ifdef COMPILE_KDE_SUPPORT
-	while(g_pTermWidgetList->first())delete g_pTermWidgetList->first();
+	qDeleteAll(*g_pTermWidgetList);
 	delete g_pTermWidgetList;
     g_pTermWidgetList = 0;
 	while(g_pTermWindowList->first())g_pTermWindowList->first()->close();

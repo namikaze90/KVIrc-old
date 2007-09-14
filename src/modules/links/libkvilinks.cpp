@@ -92,7 +92,7 @@ static bool links_module_init(KviModule * m)
 
 static bool links_module_cleanup(KviModule *m)
 {
-	while(g_pLinksWindowList->first())g_pLinksWindowList->first()->die();
+	while(!g_pLinksWindowList->isEmpty())g_pLinksWindowList->first()->die();
 	delete g_pLinksWindowList;
     g_pLinksWindowList = 0;
 	return true;

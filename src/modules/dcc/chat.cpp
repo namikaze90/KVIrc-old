@@ -751,8 +751,9 @@ bool KviDccChatThread::tryFlushOutBuffers()
 {
 	bool bRet = true;
 	m_pMutex->lock();
-	while(KviDataBuffer * b = m_pOutBuffers->first())
+	while(!m_pOutBuffers->isEmpty())
 	{
+		KviDataBuffer * b = m_pOutBuffers->first();
 		int sentLen;
 #ifdef COMPILE_SSL_SUPPORT
 		if(m_pSSL)

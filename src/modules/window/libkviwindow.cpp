@@ -1485,8 +1485,11 @@ static bool window_module_init(KviModule *m)
 
 static bool window_module_cleanup(KviModule *m)
 {
-	while(KviUserWindow * w = g_pUserWindowList->first())
+	while(!g_pUserWindowList->isEmpty())
+	{
+		KviUserWindow * w = g_pUserWindowList->first();
 		w->close();
+	}
 	delete g_pUserWindowList;
 	return true;
 }

@@ -69,10 +69,11 @@ static bool codetester_module_can_unload(KviModule * m)
 
 static bool codetester_module_cleanup(KviModule *m)
 {
-	while(KviCodeTesterWindow * w = g_pCodeTesterWindowList->first())
+	foreach(KviCodeTesterWindow * w,*g_pCodeTesterWindowList)
 	{
 		w->close(); // deleted path!
 	}
+	delete g_pCodeTesterWindowList;
 	return true;
 }
 

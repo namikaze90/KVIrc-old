@@ -193,7 +193,7 @@ KviFrame::~KviFrame()
 	// Now start killing stuff
 
 	// Explicitly kill all the module extension toolbars: qt has NOT to delete them: we must call their "die" method
-	while(KviMexToolBar * t = m_pModuleExtensionToolBarList->first())t->die();
+	foreach(KviMexToolBar * t,*m_pModuleExtensionToolBarList)t->die();
 	delete m_pModuleExtensionToolBarList;
 
 	KVI_OPTION_BOOL(KviOption_boolShowDockExtension) = m_pDockExtension;
@@ -205,7 +205,7 @@ KviFrame::~KviFrame()
 	}
 
 	// the really last thing to do : close all the windows
-	while(m_pWinList->first())closeWindow(m_pWinList->first());
+	while(!m_pWinList->isEmpty())closeWindow(m_pWinList->first());
 	delete m_pWinList;
 	
 	delete m_pAccel;

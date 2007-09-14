@@ -48,7 +48,7 @@ KviModuleExtensionDescriptor::KviModuleExtensionDescriptor(KviModule * m,const Q
 
 KviModuleExtensionDescriptor::~KviModuleExtensionDescriptor()
 {
-	while(KviModuleExtension * e = m_pObjectList->first())e->die();
+	foreach(KviModuleExtension * e,*m_pObjectList)e->die();
 	delete m_pObjectList;
 	if(m_pIcon)delete m_pIcon;
 }
