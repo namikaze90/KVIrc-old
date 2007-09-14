@@ -1089,8 +1089,9 @@ void KviFrame::fillToolBarsPopup(KviTalPopupMenu * p)
 	if(it2 != KviCustomToolBarManager::instance()->descriptors()->end())
 	{
 		if(cnt > 0)p->insertSeparator();
-		while(KviCustomToolBarDescriptor * d = it2.value())
+		while(it2 != KviCustomToolBarManager::instance()->descriptors()->end())
 		{
+			KviCustomToolBarDescriptor * d = it2.value();
 			QString label = __tr2qs("Show %1").arg(d->label());
 			QString ico = d->iconId();
 			// use the icon only if there is no check

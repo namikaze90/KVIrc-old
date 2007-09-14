@@ -137,7 +137,7 @@ namespace KviKvsParameterProcessor
 	
 	bool process(KviKvsVariantList * pVariantList,KviKvsRunTimeContext * pContext,KviKvsParameterProcessor::ParameterFormat * pFmtArray)
 	{
-		KviKvsVariant * v = pVariantList->first();
+		KviKvsVariant * v = pVariantList->list()->isEmpty() ? 0 : pVariantList->first();
 		
 		int i = 0;
 		while(pFmtArray->szName)
@@ -357,7 +357,7 @@ namespace KviKvsParameterProcessor
 			}
 			pFmtArray++;
 			i++;
-			v = pVariantList->at(i);
+			v = i < pVariantList->count() ? pVariantList->at(i) : 0;
 		}
 		return true;
 	}

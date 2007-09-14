@@ -3551,7 +3551,7 @@ end_of_function_parameter:
 		return p;
 	} else {
 		// a single parameter in the list, or no params at all
-		KviKvsTreeNodeData * p = l->first();
+		KviKvsTreeNodeData * p = l->isEmpty() ? 0 : l->first();
 		delete l;
 		if(!p)p = new KviKvsTreeNodeConstantData(KVSP_curCharPointer,new KviKvsVariant());
 		p->setEndingLocation(KVSP_curCharPointer);
