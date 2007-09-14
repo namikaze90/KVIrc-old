@@ -1064,10 +1064,10 @@ void KviFrame::fillToolBarsPopup(KviTalPopupMenu * p)
 {
 	p->clear();
 
-	disconnect(p,SIGNAL(activated(int)),this,SLOT(toolbarsPopupSelected(int))); // just to be sure
-	connect(p,SIGNAL(activated(int)),this,SLOT(toolbarsPopupSelected(int)));
+	disconnect(p,SIGNAL(triggered(QAction*)),this,SLOT(toolbarsPopupSelected(QAction*))); // just to be sure
+	connect(p,SIGNAL(triggered(QAction*)),this,SLOT(toolbarsPopupSelected(QAction*)));
 
-	int id;
+	QAction * action;
 	int cnt = 0;
 
 	KviModuleExtensionDescriptorList * l = g_pModuleExtensionManager->getExtensionList("toolbar");
@@ -1076,10 +1076,10 @@ void KviFrame::fillToolBarsPopup(KviTalPopupMenu * p)
 		foreach(KviModuleExtensionDescriptor * d,*l)
 		{
 			QString label = __tr2qs("Show %1").arg(d->visibleName());
-			if(d->icon())id = p->insertItem(*(d->icon()),label);
-			else id = p->insertItem(label);
-			p->setItemChecked(id,moduleExtensionToolBar(d->id()));
-			p->setItemParameter(id,d->id());
+			if(d->icon()) action = p->insertItem(*(d->icon()),label);
+			else action = p->insertItem(label);
+			action->setChecked(moduleExtensionToolBar(d->id()));
+			action->setData(QVariant(d->id()));
 			cnt++;
 		}
 	}
@@ -1097,23 +1097,23 @@ void KviFrame::fillToolBarsPopup(KviTalPopupMenu * p)
 			// use the icon only if there is no check
 			if(d->toolBar())
 			{
-				id = p->insertItem(label);
-				p->setItemChecked(id,true);
+				action = p->insertItem(label);
+				action->setChecked(true);
 			} else {
 				if(!ico.isEmpty())
 				{
 					QPixmap * pix = g_pIconManager->getImage(d->iconId());
 					if(pix)
 					{
-						id = p->insertItem(*pix,label);
+						action = p->insertItem(*pix,label);
 					} else {
-						id = p->insertItem(label);
+						action = p->insertItem(label);
 					}
 				} else {
-					id = p->insertItem(label);
+					action = p->insertItem(label);
 				}
 			}
-			p->setItemParameter(id,d->internalId());
+			action->setData(QVariant(d->internalId()));
 			++it2;
 			cnt++;
 		}
@@ -1128,13 +1128,17 @@ void KviFrame::customizeToolBars()
 	KviKvsScript::run("toolbareditor.open",g_pActiveWindow);
 }
 
-void KviFrame::toolbarsPopupSelected(int id)
+void KviFrame::toolbarsPopupSelected(QAction * action)
 {
-	const QObject * o = sender();
+	/*const QObject * o = sender();
 	if(!o)return;
 	if(!o->inherits("KviTalPopupMenu"))return;
 	const KviTalPopupMenu * p = (const KviTalPopupMenu *)o;
 	int idext = p->itemParameter(id);
+	*/
+	bool ok = false;
+	int idext = action->data().toInt(&ok);
+	if (!ok) return;
 	
 	KviCustomToolBarDescriptor * dd = KviCustomToolBarManager::instance()->findDescriptorByInternalId(idext);
 	if(dd)

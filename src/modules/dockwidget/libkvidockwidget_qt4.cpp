@@ -89,27 +89,34 @@ KviDockWidget::KviDockWidget(KviFrame * frm)
 
 	m_pTip = new KviDynamicToolTip(frm,"dock_tooltip");
 	m_pAwayPopup = new KviTalPopupMenu(0);
+	connect(m_pAwayPopup,SIGNAL(triggered(QAction*)),this,SLOT(doAway(QAction)));
 	
+	// FIXME: THEXCEPTION > Qt4 does not supports labels > another way?
+	/*
 	QLabel * l = new QLabel(__tr2qs("KVIrc"),m_pContextPopup);
 	l->setFrameStyle(QFrame::Raised | QFrame::StyledPanel);
 	m_pContextPopup->insertItem(l);
+	*/
+	
 	m_pContextPopup->setCaption(__tr2qs("Context"));
 	m_iAwayMenuId = m_pContextPopup->insertItem ( __tr2qs("Away"), m_pAwayPopup);
-	m_pContextPopup->changeItem(m_iAwayMenuId,*(g_pIconManager->getSmallIcon(KVI_SMALLICON_AWAY)),__tr2qs("Away"));
+
+	m_iAwayMenuId->setIcon(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_AWAY)));
+	m_iAwayMenuId->setText(__tr2qs("Away"));
 	
-	int id = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_OPTIONS)),__tr2qs("&Configure KVIrc..."),m_pFrm,SLOT(executeInternalCommand(int)));
-	m_pContextPopup->setItemParameter(id,KVI_INTERNALCOMMAND_OPTIONS_DIALOG);
-	id = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_KVIRC)),__tr2qs("&About KVIrc"),m_pFrm,SLOT(executeInternalCommand(int)));
-	m_pContextPopup->setItemParameter(id,KVI_INTERNALCOMMAND_ABOUT_ABOUTKVIRC);
+	QAction * action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_OPTIONS)),__tr2qs("&Configure KVIrc..."));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_OPTIONS_DIALOG));
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_KVIRC)),__tr2qs("&About KVIrc"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_ABOUT_ABOUTKVIRC));
 	m_pContextPopup->insertSeparator();
-	m_iToggleFrame = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_RAW)),QString(""),this,SLOT(toggleParentFrame()));
+	m_iToggleFrame = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_RAW)),QString(""));
 	m_pContextPopup->insertSeparator();
-	id = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCKWIDGET)),__tr2qs("Un&dock"),m_pFrm,SLOT(executeInternalCommand(int)));
-	m_pContextPopup->setItemParameter(id,KVI_INTERNALCOMMAND_DOCKWIDGET_HIDE);
-	id = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUITAPP)),__tr2qs("&Quit"),g_pApp,SLOT(quit()));
-	m_pContextPopup->setAccel(__tr2qs("Ctrl+Q"),id);
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCKWIDGET)),__tr2qs("Un&dock"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_DOCKWIDGET_HIDE));
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUITAPP)),__tr2qs("&Quit"),g_pApp,SLOT(quit()));
+	action->setShortcut(__tr2qs("Ctrl+Q"));
 	connect(m_pContextPopup,SIGNAL(aboutToShow()),this,SLOT(fillContextPopup()));
-	
+	connect(m_pContextPopup,SIGNAL(triggered(QAction*)),m_pFrm,SLOT(executeInternalCommand(QAction*)));
 	QIcon icon(*g_pDock1);
 	setIcon(icon);
 
@@ -213,8 +220,12 @@ void KviDockWidget::tipRequest(KviDynamicToolTip *tip,const QPoint &pnt)
 		m_pContextPopup->popup(mapToGlobal(e->pos()));
 }*/
 
-void KviDockWidget::doAway(int id)
+void KviDockWidget::doAway(QAction * action)
 {
+	bool ok = false;
+	int id = action->data().toInt(&ok);
+	if (!ok) return;
+	
 	if(id<0)
 	{
 		foreach(KviWindow * wnd,*g_pGlobalWindowDict)
@@ -246,19 +257,19 @@ void KviDockWidget::doAway(int id)
 
 void KviDockWidget::fillContextPopup()
 {
-	m_pContextPopup->changeItem(m_iToggleFrame,m_pFrm->isVisible() ? __tr2qs("Hide Window") : __tr2qs("Show Window"));
+	m_iToggleFrame->setText(m_pFrm->isVisible() ? __tr2qs("Hide Window") : __tr2qs("Show Window"));
 	if(g_pApp->topmostConnectedConsole())
 	{
-		m_pContextPopup->setItemVisible(m_iAwayMenuId,true);
+		m_iAwayMenuId->setVisible(true);
 		m_pAwayPopup->clear();
 		
-		int iAllAway=m_pAwayPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CONSOLE)),__tr2qs("Away on all"),this,SLOT(doAway(int)));
-		m_pAwayPopup->setItemParameter(iAllAway,-1);
+		QAction * qaAllAway=m_pAwayPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CONSOLE)),__tr2qs("Away on all"));
+		qaAllAway->setData(QVariant(-1));
 		
-		int iAllUnaway=m_pAwayPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CONSOLE)),__tr2qs("Back on all"),this,SLOT(doAway(int)));
-		m_pAwayPopup->setItemParameter(iAllUnaway,-2);
+		QAction * qaAllUnaway=m_pAwayPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CONSOLE)),__tr2qs("Back on all"));
+		qaAllUnaway->setData(QVariant(-2));
 		
-		int iSeparator=m_pAwayPopup->insertSeparator();
+		QAction * iSeparator = m_pAwayPopup->addSeparator();
 		
 		bool bAllAway=1;
 		bool bAllUnaway=1;
@@ -270,31 +281,31 @@ void KviDockWidget::fillContextPopup()
 				KviConsole* pConsole=(KviConsole*)wnd;
 				if(pConsole->isConnected())
 				{
-					int id;
+					QAction * action;
 					if(pConsole->connection()->userInfo()->isAway())
 					{
-						id=m_pAwayPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CONSOLE)),__tr2qs("Back on %1").arg(pConsole->currentNetworkName()),this,SLOT(doAway(int)));
+						action = m_pAwayPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CONSOLE)),__tr2qs("Back on %1").arg(pConsole->currentNetworkName()));
 						bAllUnaway=0;
 					} else {
-						id=m_pAwayPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CONSOLE)),__tr2qs("Away on %1").arg(pConsole->currentNetworkName()),this,SLOT(doAway(int)));
+						action = m_pAwayPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CONSOLE)),__tr2qs("Away on %1").arg(pConsole->currentNetworkName()));
 						bAllAway=0;
 					}
-					m_pAwayPopup->setItemParameter(id,pConsole->ircContextId());
+					action->setData(QVariant(pConsole->ircContextId()));
 					iNetCount++;
 				}
 			}
 		}
 		if(iNetCount==1)
 		{
-			m_pAwayPopup->setItemVisible(iAllAway,false);
-			m_pAwayPopup->setItemVisible(iAllUnaway,false);
-			m_pAwayPopup->setItemVisible(iSeparator,false);
+			qaAllAway->setVisible(false);
+			qaAllUnaway->setVisible(false);
+			iSeparator->setVisible(false);
 		} else {
-			m_pAwayPopup->setItemVisible(iAllAway,!bAllAway);
-			m_pAwayPopup->setItemVisible(iAllUnaway,!bAllUnaway);
+			qaAllAway->setVisible(!bAllAway);
+			qaAllUnaway->setVisible(!bAllUnaway);
 		}
 	} else {
-		m_pContextPopup->setItemVisible(m_iAwayMenuId,false);
+		m_iAwayMenuId->setVisible(false);
 	}
 }
 

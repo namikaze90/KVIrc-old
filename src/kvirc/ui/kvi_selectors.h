@@ -308,8 +308,8 @@ public:
 	virtual void setEnabled(bool bEnabled);
 protected slots:
 	void buttonClicked();
-	void foreSelected(int);
-	void backSelected(int);
+	void foreSelected(QAction * action);
+	void backSelected(QAction * action);
 protected:
 	void setButtonPalette();
 };

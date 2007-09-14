@@ -54,12 +54,13 @@ KviTextIconEditor::~KviTextIconEditor()
 
 void KviTextIconEditor::doPopup()
 {
+	// FIXME: THEXCEPTION  > Qt4 does not allow widgets in popups
 	if(!m_pPopup)
 	{
 		m_pPopup = new KviTalPopupMenu(this);
-		KviIconWidget * iw = new KviIconWidget(m_pPopup);
+		/*KviIconWidget * iw = new KviIconWidget(m_pPopup);
 		connect(iw,SIGNAL(selected(int)),this,SLOT(iconSelected(int)));
-		m_pPopup->insertItem(iw);
+		m_pPopup->insertItem(iw);*/
 	}
 	m_pPopup->popup(QCursor::pos());
 }

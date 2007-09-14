@@ -768,8 +768,8 @@ void KviWindow::createSystemTextEncodingPopup()
 		tmp += ")";
 	}
 
-	int id = g_pMdiWindowSystemTextEncodingPopup->insertItem(tmp,this,SLOT(systemTextEncodingPopupDefault()));
-	if(m_szTextEncoding.isEmpty())g_pMdiWindowSystemTextEncodingPopup->setItemChecked(id,true);
+	QAction * action = g_pMdiWindowSystemTextEncodingPopup->insertItem(tmp,this,SLOT(systemTextEncodingPopupDefault()));
+	if(m_szTextEncoding.isEmpty())action->setChecked(true);
 	g_pMdiWindowSystemTextEncodingPopup->insertSeparator();
 
 	g_pMdiWindowSystemTextEncodingPopup->insertItem(__tr2qs("Standard"),g_pMdiWindowSystemTextEncodingPopupStandard);
@@ -782,9 +782,9 @@ void KviWindow::createSystemTextEncodingPopup()
 	{
 		KviQString::sprintf(tmp,"%s (%s)",d->szName,d->szDescription);
 		KviTalPopupMenu * ppp = d->bSmart ? (d->bSendUtf8 ? g_pMdiWindowSystemTextEncodingPopupSmartUtf8 : g_pMdiWindowSystemTextEncodingPopupSmart) : g_pMdiWindowSystemTextEncodingPopupStandard;
-		id = ppp->insertItem(tmp);
+		action = ppp->insertItem(tmp);
 		if(KviQString::equalCI(m_szTextEncoding,d->szName))
-			ppp->setItemChecked(id,true);
+			action->setChecked(true);
 		i = i + 1;
 		d = KviLocale::encodingDescription(i);
 	}
@@ -814,15 +814,15 @@ void KviWindow::systemPopupRequest(const QPoint &pnt)
 
 	g_pMdiWindowSystemMainPopup->insertSeparator();
 
-	int id = g_pMdiWindowSystemMainPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MINIMIZE)),
+	QAction * action = g_pMdiWindowSystemMainPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MINIMIZE)),
 		                                        __tr2qs("Mi&nimize"),this,SLOT(minimize()));
-	g_pMdiWindowSystemMainPopup->setItemEnabled(id,!isMinimized());
-	id = g_pMdiWindowSystemMainPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MAXIMIZE)),
+	action->setEnabled(!isMinimized());
+	action = g_pMdiWindowSystemMainPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MAXIMIZE)),
 		                                        __tr2qs("Ma&ximize"),this,SLOT(maximize()));
-	g_pMdiWindowSystemMainPopup->setItemEnabled(id,!isMaximized());
-	id = g_pMdiWindowSystemMainPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_RESTORE)),
+	action->setEnabled(!isMaximized());
+	action = g_pMdiWindowSystemMainPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_RESTORE)),
 		                                        __tr2qs("&Restore"),this,SLOT(restore()));
-	g_pMdiWindowSystemMainPopup->setItemEnabled(id,isMinimized()||isMaximized());
+	action->setEnabled(isMinimized()||isMaximized());
 
 	g_pMdiWindowSystemMainPopup->insertSeparator();
 

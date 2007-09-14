@@ -24,7 +24,7 @@ HEADERS += tal/kvi_tal_application_kde.h \
     tal/kvi_tal_listview_qt4.h \
     tal/kvi_tal_mainwindow_qt4.h \
     tal/kvi_tal_menubar_qt.h \
-    tal/kvi_tal_popupmenu_qt4.h \
+    tal/kvi_tal_popupmenu.h \
     tal/kvi_tal_scrollview_qt4.h \
     tal/kvi_tal_tabdialog_qt4.h \
     tal/kvi_tal_textedit_qt4.h \

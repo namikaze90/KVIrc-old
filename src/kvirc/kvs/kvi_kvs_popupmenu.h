@@ -291,7 +291,7 @@ private slots:
 protected:
 	void clearMenuContents();
 protected slots:
-	void itemClicked(int itemId);
+	void itemClicked(QAction * action);
 signals:
 	void testModeItemClicked(KviKvsPopupMenuItem * it);
 };

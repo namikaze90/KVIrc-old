@@ -58,6 +58,7 @@ protected:
 	QList<KviScriptMenuBarItem*> * m_pScriptItemList;
 	int                                m_iNumDefaultItems;
 	int                              * m_pDefaultItemId;
+	QAction * gaction;
 protected:
 	KviScriptMenuBarItem * findMenu(const QString &text);
 	KviScriptMenuBarItem * findMenu(KviKvsPopupMenu * p);
@@ -77,7 +78,9 @@ protected slots:
 	void newConnectionToServer(int id);
 	void setupToolbarsPopup();
 	void setupToolsPopup();
-	void toolsPopupSelected(int id);
+	void toolsPopupSelected(QAction * action);
+	void actionSelected(QAction * action);
+	void quitSlotSelected(bool checked);
 };
 
 #endif //_KVI_MENUBAR_H_

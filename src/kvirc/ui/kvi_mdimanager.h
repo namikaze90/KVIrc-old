@@ -122,8 +122,8 @@ protected slots:
 	void restoreActiveChild();
 	void closeActiveChild();
 	void activeChildSystemPopup();
-	void menuActivated(int id);
-	void tileMethodMenuActivated(int id);
+	void menuActivated(QAction * action);
+	void tileMethodMenuActivated(QAction * action);
 	void fillWindowPopup();
 	void sdiMinimizeButtonDestroyed();
 	void sdiRestoreButtonDestroyed();

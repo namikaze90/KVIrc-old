@@ -936,8 +936,8 @@ void KviDccFileTransfer::fillContextPopup(KviTalPopupMenu * m,int column)
 	/* FIX ME credo che il problema sia che se riavvio un trasferimento, a sua volta gia'
 		   avviato, questo non ha irc contex, perche' la finestra "in cui e' nato"e' sta
 	   quella della dcc. Conservarsi l'id della finestra? */
-	int id = m->insertItem(__tr2qs_ctx("Abort","dcc"),this,SLOT(abort()));
-	if(!active())m->setItemEnabled(id,false);
+	QAction * action = m->insertItem(__tr2qs_ctx("Abort","dcc"),this,SLOT(abort()));
+	if(!active())action->setEnabled(false);
 }
 
 void KviDccFileTransfer::configureBandwidth()

@@ -86,7 +86,7 @@ protected slots:
 	void findtext();
 	void dblclk_url(KviTalListViewItem *item);
 	void popup(KviTalListViewItem *item, const QPoint &p, int col);
-	void sayToWin(int);
+	void sayToWin(QAction * action);
 };
 
 class BanFrame : public QFrame

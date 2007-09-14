@@ -1030,7 +1030,7 @@ KviServerOptionsWidget::KviServerOptionsWidget(QWidget * parent)
 	m_pImportPopup = new KviTalPopupMenu(this);
 
 	connect(m_pImportPopup,SIGNAL(aboutToShow()),this,SLOT(importPopupAboutToShow()));
-	connect(m_pImportPopup,SIGNAL(activated(int)),this,SLOT(importPopupActivated(int)));
+	connect(m_pImportPopup,SIGNAL(triggered(QAction*)),this,SLOT(importPopupActivated(QAction*)));
 
 	m_pServerDetailsDialog = 0;
 	m_pNetworkDetailsDialog = 0;
@@ -1422,20 +1422,20 @@ void KviServerOptionsWidget::commit()
 
 void KviServerOptionsWidget::listViewRightButtonPressed(KviTalListViewItem *it,const QPoint &pnt,int col)
 {
-	int id;
+	QAction * action;
 	bool bServer = (it && ((KviServerOptionsListViewItem *)it)->m_pServerData);
 	m_pContextPopup->clear();
 	m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_WORLD)),__tr2qs_ctx("New Network","options"),this,SLOT(newNetwork()));
-	id = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CUT)),__tr2qs_ctx("Remove Network","options"),this,SLOT(removeCurrent()));
-	m_pContextPopup->setItemEnabled(id,!bServer);
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CUT)),__tr2qs_ctx("Remove Network","options"),this,SLOT(removeCurrent()));
+	action->setEnabled(!bServer);
 	m_pContextPopup->insertSeparator();
-	id = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SERVER)),__tr2qs_ctx("&New Server","options"),this,SLOT(newServer()));
-	id = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CUT)),__tr2qs_ctx("Re&move Server","options"),this,SLOT(removeCurrent()));
-	m_pContextPopup->setItemEnabled(id,bServer);
-	id = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_COPY)),__tr2qs_ctx("&Copy Server","options"),this,SLOT(copyServer()));
-	m_pContextPopup->setItemEnabled(id,bServer);
-	id = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PASTE)),__tr2qs_ctx("&Paste Server","options"),this,SLOT(pasteServer()));
-	m_pContextPopup->setItemEnabled(id,m_pClipboard);
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SERVER)),__tr2qs_ctx("&New Server","options"),this,SLOT(newServer()));
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CUT)),__tr2qs_ctx("Re&move Server","options"),this,SLOT(removeCurrent()));
+	action->setEnabled(bServer);
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_COPY)),__tr2qs_ctx("&Copy Server","options"),this,SLOT(copyServer()));
+	action->setEnabled(bServer);
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PASTE)),__tr2qs_ctx("&Paste Server","options"),this,SLOT(pasteServer()));
+	action->setEnabled(m_pClipboard);
 
 	m_pContextPopup->insertSeparator();
 	//	m_pContextPopup->insertItem(__c2q(__tr("Merge list from server.ini","options")),this,SLOT(importFromIni()));
@@ -1454,20 +1454,24 @@ void KviServerOptionsWidget::importPopupAboutToShow()
 
 	if(!l)return;
 
-	int id;
+	QAction * action;
 
 	for(KviModuleExtensionDescriptor * d = l->first();d;d = l->next())
 	{
 		if(d->icon())
-			id = m_pImportPopup->insertItem(*(d->icon()),d->visibleName());
+			action = m_pImportPopup->insertItem(*(d->icon()),d->visibleName());
 		else
-			id = m_pImportPopup->insertItem(d->visibleName());
-		m_pImportPopup->setItemParameter(id,d->id());
+			action = m_pImportPopup->insertItem(d->visibleName());
+		action->setData(QVariant(d->id()));
 	}
 }
 
-void KviServerOptionsWidget::importPopupActivated(int id)
+void KviServerOptionsWidget::importPopupActivated(QAction * action)
 {
+	bool ok = false;
+	int id = action->data().toInt(&ok);
+	if (!ok) return;
+	
 	// ensure that we have all the modules : they could have been unloaded while the popup was displayed
 	g_pModuleManager->loadModulesByCaps("serverimport");
 
@@ -1488,8 +1492,6 @@ void KviServerOptionsWidget::importPopupActivated(int id)
 		m_pImportFilter->die();
 		m_pImportFilter = 0;
 	}
-
-	id = m_pImportPopup->itemParameter(id);
 
 	m_pImportFilter = (KviMexServerImport *)KviModuleExtensionManager::instance()->allocateExtension("serverimport",id,0);
 

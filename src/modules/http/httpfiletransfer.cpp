@@ -104,8 +104,8 @@ void KviHttpFileTransfer::abort()
 
 void KviHttpFileTransfer::fillContextPopup(KviTalPopupMenu * m,int column)
 {
-	int id = m->insertItem(__tr2qs_ctx("Abort","http"),this,SLOT(abort()));
-	if(!active())m->setItemEnabled(id,false);
+	QAction * action = m->insertItem(__tr2qs_ctx("Abort","http"),this,SLOT(abort()));
+	if(!active())action->setEnabled(false);
 }
 
 bool KviHttpFileTransfer::active()

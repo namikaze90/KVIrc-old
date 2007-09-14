@@ -380,83 +380,75 @@ void KviSinglePopupEditor::itemPressed(KviTalListViewItem *it,const QPoint &pnt,
 		bIsMenu = ((KviPopupListViewItem *)it)->m_type == KviPopupListViewItem::Menu;
 	}
 
+		
+	QAction * action;
+	
 	m_pContextPopup->insertItem(__tr2qs("New Separator Below"),this,SLOT(contextNewSeparatorBelow()));
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New Separator Above"),this,SLOT(contextNewSeparatorAbove())),
-		it);
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New Separator Inside"),this,SLOT(contextNewSeparatorInside())),
-		it && bIsMenu);
+	
+	action = m_pContextPopup->insertItem(__tr2qs("New Separator Above"),this,SLOT(contextNewSeparatorAbove()));
+	action->setEnabled(it);
+	
+	action = m_pContextPopup->insertItem(__tr2qs("New Separator Inside"),this,SLOT(contextNewSeparatorInside()));
+	action->setEnabled(it && bIsMenu);
 
 	m_pContextPopup->insertSeparator();
 
 	m_pContextPopup->insertItem(__tr2qs("New Label Below"),this,SLOT(contextNewLabelBelow()));
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New Label Above"),this,SLOT(contextNewLabelAbove())),
-		it);
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New Label Inside"),this,SLOT(contextNewLabelInside())),
-		it && bIsMenu);
+		
+	action = m_pContextPopup->insertItem(__tr2qs("New Label Above"),this,SLOT(contextNewLabelAbove()));
+	action->setEnabled(it);
+		
+	action = m_pContextPopup->insertItem(__tr2qs("New Label Inside"),this,SLOT(contextNewLabelInside()));
+	action->setEnabled(it && bIsMenu);
 
 	m_pContextPopup->insertSeparator();
 
 	m_pContextPopup->insertItem(__tr2qs("New Item Below"),this,SLOT(contextNewItemBelow()));
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New Item Above"),this,SLOT(contextNewItemAbove())),
-		it);
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New Item Inside"),this,SLOT(contextNewItemInside())),
-		it && bIsMenu);
+	
+	action = m_pContextPopup->insertItem(__tr2qs("New Item Above"),this,SLOT(contextNewItemAbove()));
+	action->setEnabled(it);
+	
+	action = m_pContextPopup->insertItem(__tr2qs("New Item Inside"),this,SLOT(contextNewItemInside()));
+	action->setEnabled(it && bIsMenu);
 
 	m_pContextPopup->insertSeparator();
 
 	m_pContextPopup->insertItem(__tr2qs("New Menu Below"),this,SLOT(contextNewMenuBelow()));
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New Menu Above"),this,SLOT(contextNewMenuAbove())),
-		it);
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New Menu Inside"),this,SLOT(contextNewMenuInside())),
-		it && bIsMenu);
-
-		m_pContextPopup->insertSeparator();
-
-	m_pContextPopup->insertItem(__tr2qs("New External Menu Below"),this,SLOT(contextNewExtMenuBelow()));
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New External Menu Above"),this,SLOT(contextNewExtMenuAbove())),
-		it);
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(__tr2qs("New External Menu Inside"),this,SLOT(contextNewExtMenuInside())),
-		it && bIsMenu);
+	
+	
+	action = m_pContextPopup->insertItem(__tr2qs("New Menu Above"),this,SLOT(contextNewMenuAbove()));
+	action->setEnabled(it);
+	
+	
+	action = m_pContextPopup->insertItem(__tr2qs("New Menu Inside"),this,SLOT(contextNewMenuInside())),
+	action->setEnabled(it && bIsMenu);
 
 	m_pContextPopup->insertSeparator();
 
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(
-			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CUT)),
-			__tr2qs("Cu&t"),
-			this,SLOT(contextCut())),
-		it);
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(
-			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_COPY)),
-			__tr2qs("&Copy"),
-			this,SLOT(contextCopy())),
-		it);
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(
-			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PASTE)),
-			__tr2qs("&Paste Below"),this,SLOT(contextPasteBelow())),
-		m_pClipboard);
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(
-			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PASTE)),
-			__tr2qs("Paste Above"),this,SLOT(contextPasteAbove())),
-		it && m_pClipboard);
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(
-			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PASTE)),
-			__tr2qs("Paste Inside"),this,SLOT(contextPasteInside())),
-		it && bIsMenu && m_pClipboard);
+	m_pContextPopup->insertItem(__tr2qs("New External Menu Below"),this,SLOT(contextNewExtMenuBelow()));
+	
+	action = m_pContextPopup->insertItem(__tr2qs("New External Menu Above"),this,SLOT(contextNewExtMenuAbove()));
+	action->setEnabled(it);
+	
+	action = m_pContextPopup->insertItem(__tr2qs("New External Menu Inside"),this,SLOT(contextNewExtMenuInside())),
+	action->setEnabled(it && bIsMenu);
+
+	m_pContextPopup->insertSeparator();
+
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CUT)),__tr2qs("Cu&t"),this,SLOT(contextCut()));
+	action->setEnabled(it);
+	
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_COPY)),__tr2qs("&Copy"),this,SLOT(contextCopy()));
+	action->setEnabled(it);
+	
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PASTE)),	__tr2qs("&Paste Below"),this,SLOT(contextPasteBelow()));
+	action->setEnabled(m_pClipboard);
+	
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PASTE)),__tr2qs("Paste Above"),this,SLOT(contextPasteAbove()));
+	action->setEnabled(it && m_pClipboard);
+		
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PASTE)),__tr2qs("Paste Inside"),this,SLOT(contextPasteInside()));
+	action->setEnabled(it && bIsMenu && m_pClipboard);
 
 
 	bool bSeparatorInserted = false;
@@ -1083,24 +1075,19 @@ void KviPopupEditor::itemPressed(KviTalListViewItem *it,const QPoint &pnt,int co
 	__range_valid(m_bOneTimeSetupDone);
 	m_pContextPopup->clear();
 
+	QAction * action;
+	
 	m_pContextPopup->insertItem(
 		*(g_pIconManager->getSmallIcon(KVI_SMALLICON_POPUP)),
 		__tr2qs("&New Popup"),
 		this,SLOT(newPopup()));
 
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(
-				*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUIT)),
-				__tr2qs("Re&move Popup"),
-				this,SLOT(removeCurrentPopup())),
-	it);
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUIT)),__tr2qs("Re&move Popup"),this,SLOT(removeCurrentPopup()));
+	action->setEnabled(it);
 	
-	m_pContextPopup->setItemEnabled(
-		m_pContextPopup->insertItem(
-				*(g_pIconManager->getSmallIcon(KVI_SMALLICON_FOLDER)),
-				__tr2qs("&Export Popup To..."),
-				this,SLOT(exportCurrentPopup())),
-	it);
+	
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_FOLDER)),__tr2qs("&Export Popup To..."),this,SLOT(exportCurrentPopup()));
+	action->setEnabled(it);
 
 	m_pContextPopup->popup(pnt);
 }

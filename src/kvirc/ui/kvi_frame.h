@@ -228,7 +228,7 @@ protected slots:
 	void accelActivated(int id);
 	void enteredSdiMode();
 	void leftSdiMode();
-	void toolbarsPopupSelected(int id);
+	void toolbarsPopupSelected(QAction * action);
 
 signals:
 	void activeWindowChanged();       // almost never 0.. but may be

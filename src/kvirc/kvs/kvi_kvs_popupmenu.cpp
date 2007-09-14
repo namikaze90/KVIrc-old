@@ -360,10 +360,10 @@ void KviKvsPopupMenuItemItem::fill(KviKvsPopupMenu * pMenu,KviKvsPopupMenuTopLev
 	if(!evaluateCondition(pData))return;
 	QString szText = evaluateText(pData);
 	QPixmap * pPix = evaluateIcon(pData);
-	int id;
-	if(pPix)id = pMenu->insertItem(*pPix,szText);
-	else id = pMenu->insertItem(szText);
-	pMenu->setItemParameter(id,iIdx);
+	QAction * action;
+	if(pPix) action = pMenu->insertItem(*pPix,szText);
+	else action = pMenu->insertItem(szText);
+	action->setData(QVariant(iIdx));
 }
 
 KviKvsPopupMenuItem * KviKvsPopupMenuItemItem::clone() const
@@ -410,11 +410,11 @@ void KviKvsPopupMenuItemMenu::fill(KviKvsPopupMenu * pMenu,KviKvsPopupMenuTopLev
 	if(!evaluateCondition(pData))return;
 	QString szText = evaluateText(pData);
 	QPixmap * pPix = evaluateIcon(pData);
-	int id;
+	QAction * action;
 	m_pMenu->setParentPopup(pMenu);
-	if(pPix)id = pMenu->insertItem(*pPix,szText,m_pMenu);
-	else id = pMenu->insertItem(szText,m_pMenu);
-	pMenu->setItemParameter(id,iIdx);
+	if(pPix)action = pMenu->insertItem(*pPix,szText,m_pMenu);
+	else action = pMenu->insertItem(szText,m_pMenu);
+	action->setData(QVariant(iIdx));
 }
 
 void KviKvsPopupMenuItemMenu::clear()
@@ -492,10 +492,10 @@ void KviKvsPopupMenuItemExtMenu::fill(KviKvsPopupMenu * pMenu,KviKvsPopupMenuTop
 		m_pMenu = new KviKvsPopupMenu(tmp);
 		m_pMenu->copyFrom(source);
 		m_pMenu->setParentPopup(pMenu);
-		int id;
-		if(pPix)id = pMenu->insertItem(*pPix,szText,m_pMenu);
-		else id = pMenu->insertItem(szText,m_pMenu);
-		pMenu->setItemParameter(id,iIdx);
+		QAction * action;
+		if(pPix)action = pMenu->insertItem(*pPix,szText,m_pMenu);
+		else action = pMenu->insertItem(szText,m_pMenu);
+		action->setData(QVariant(iIdx));
 	} else {
 		pData->window()->output(KVI_OUT_PARSERWARNING,__tr2qs("Can't find the external popup '%Q'; ignoring"),&m_szMenuName);
 	}
@@ -538,7 +538,7 @@ KviKvsPopupMenu::KviKvsPopupMenu(const QString &szName)
 	m_pTopLevelData = 0;
 	m_pTempTopLevelData = 0;
 	m_bSetupDone = false;
-	connect(this,SIGNAL(activated(int)),this,SLOT(itemClicked(int)));
+	connect(this,SIGNAL(triggered(QAction*)),this,SLOT(itemClicked(QAction*)));
 	connect(this,SIGNAL(aboutToShow()),this,SLOT(setupMenuContents()));
 }
 
@@ -874,9 +874,12 @@ void KviKvsPopupMenu::executeEpilogues(KviKvsPopupMenuTopLevelData * pData)
 }
 
 
-void KviKvsPopupMenu::itemClicked(int itemId)
+void KviKvsPopupMenu::itemClicked(QAction * action)
 {
-	int param = itemParameter(itemId);
+	bool ok = false;
+	int param = action->data().toInt(&ok);
+	if (!ok) return;
+
 	KviKvsPopupMenuItem * it = m_pItemList->at(param);
 	KviKvsPopupMenuTopLevelData * d = topLevelData();
 	if(it && d)

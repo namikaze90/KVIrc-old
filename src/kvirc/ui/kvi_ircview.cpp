@@ -3977,8 +3977,8 @@ void KviIrcView::showToolsPopup()
 	m_pToolsPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MINUS)),__tr2qs("Zoom Out"),this,SLOT(decreaseFontSize()));
 	m_pToolsPopup->insertItem(__tr2qs("Choose Temporary Font..."),this,SLOT(chooseFont()));
 	m_pToolsPopup->insertItem(__tr2qs("Choose Temporary Background..."),this,SLOT(chooseBackground()));
-	int id = m_pToolsPopup->insertItem(__tr2qs("Reset Temporary Background"),this,SLOT(resetBackground()));
-	m_pToolsPopup->setItemEnabled(id,m_pPrivateBackgroundPixmap != 0);
+	QAction * action = m_pToolsPopup->insertItem(__tr2qs("Reset Temporary Background"),this,SLOT(resetBackground()));
+	action->setEnabled(m_pPrivateBackgroundPixmap != 0);
 	m_pToolsPopup->insertSeparator();
 	m_pToolsPopup->insertItem(__tr2qs("Clear Buffer"),this,SLOT(clearBuffer()));
 	

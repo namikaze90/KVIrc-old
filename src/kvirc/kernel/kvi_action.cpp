@@ -372,16 +372,16 @@ bool KviAction::addToPopupMenu(KviTalPopupMenu *pMenu)
 {
 	if(!setupDone())setup();
 	QPixmap * p = smallIcon();
-	int id;
+	QAction * action;
 	QString t = visibleName();
 	if(!m_szKeySequence.isEmpty())t += '\t' + m_szKeySequence;
 	if(p)
 	{
-		id = pMenu->insertItem(*p,t,this,SLOT(activate()));
+		action = pMenu->insertItem(*p,t,this,SLOT(activate()));
 	} else {
-		id = pMenu->insertItem(t,this,SLOT(activate()));
+		action = pMenu->insertItem(t,this,SLOT(activate()));
 	}
-	if(!isEnabled())pMenu->setItemEnabled(id,false);
+	if(!isEnabled())action->setEnabled(false);
 	return true;
 }
 

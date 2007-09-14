@@ -387,11 +387,11 @@ void KviStatusBar::appletsPopupAboutToShow()
 	
 	foreach(KviStatusBarAppletDescriptor * d,*m_pAppletDescriptors)
 	{
-		int id;
+		QAction * action;
 		QPixmap * pix = d->icon();
-		if(pix)id = m_pAppletsPopup->insertItem(*pix,d->visibleName());
-		else id = m_pAppletsPopup->insertItem(d->visibleName());
-		m_pAppletsPopup->setItemParameter(id,d->id());
+		if(pix)action = m_pAppletsPopup->insertItem(*pix,d->visibleName());
+		else action = m_pAppletsPopup->insertItem(d->visibleName());
+		action->setData(QVariant(d->id()));
 	}
 }
 
@@ -406,14 +406,18 @@ void KviStatusBar::showLayoutHelp()
 	queueMessage(new KviStatusBarMessage(__tr2qs("Drag the applet while holding the Shift or Ctrl key to move it to the desired position")));
 }
 
-void KviStatusBar::appletsPopupActivated(int id)
+void KviStatusBar::appletsPopupActivated(QAction * action)
 {
 	// FIXME: In fact the applet descriptors in modules could
 	//        have been unloaded while the popup was being shown...
 	//        For now we just assume that this never happens :D
 
 	if(!m_pAppletsPopup)return;
-	int par = m_pAppletsPopup->itemParameter(id);
+	
+	bool ok = false;
+	int par = action->data().toInt(&ok);
+	if (!ok) return;
+
 	foreach(KviStatusBarAppletDescriptor * d,*m_pAppletDescriptors)
 	{
 		if(par == d->id())

@@ -285,12 +285,12 @@ void KviFileTransferWindow::rightButtonPressed(KviTalListViewItem *it,const QPoi
 	if(!m_pOpenFilePopup)
 	{
 		m_pOpenFilePopup= new KviTalPopupMenu(this);
-		connect(m_pOpenFilePopup,SIGNAL(activated(int)),this,SLOT(openFilePopupActivated(int)));
+		connect(m_pOpenFilePopup,SIGNAL(triggered(QAction*)),this,SLOT(openFilePopupActivated(QAction*)));
 	}
 
 	m_pContextPopup->clear();
 
-	int id;
+	QAction * action;
 
 
 	if(it)
@@ -322,34 +322,38 @@ void KviFileTransferWindow::rightButtonPressed(KviTalListViewItem *it,const QPoi
 				tmp += "</nobr>";
 #endif //COMPILE_KDE_SUPPORT
 
+				// FIXME: THEXCEPTION > Qt4 does not allow widgets in popups
+				/*
 				QLabel * l = new QLabel(tmp,m_pLocalFilePopup);
 				l->setFrameStyle(QFrame::Raised | QFrame::Panel);
+				
 				m_pLocalFilePopup->insertItem(l);
+				*/
 
 #ifdef COMPILE_KDE_SUPPORT
 				QString mimetype = KMimeType::findByPath(szFile)->name();
 				KServiceTypeProfile::OfferList offers = KServiceTypeProfile::offers(mimetype,"Application");
 
-				id = m_pLocalFilePopup->insertItem(__tr2qs_ctx("&Open","filetransferwindow"),this,SLOT(openLocalFile()));
-				m_pLocalFilePopup->setItemParameter(id,-1);
+				action = m_pLocalFilePopup->insertItem(__tr2qs_ctx("&Open","filetransferwindow"),this,SLOT(openLocalFile()));
+				action->setData(QVariant(-1));
 
 				m_pOpenFilePopup->clear();
 
-				int id;
+				QAction * action;
 				int idx = 0;
 
 				for(KServiceTypeProfile::OfferList::Iterator itOffers = offers.begin();
 	   				itOffers != offers.end(); ++itOffers)
 				{
-					id = m_pOpenFilePopup->insertItem((*itOffers).service()->pixmap(KIcon::Small),(*itOffers).service()->name());
-					m_pOpenFilePopup->setItemParameter(id,idx);
+					action = m_pOpenFilePopup->insertItem((*itOffers).service()->pixmap(KIcon::Small),(*itOffers).service()->name());
+					action->setData(QVariant(idx));
 					idx++;
 				}
 
 				m_pOpenFilePopup->insertSeparator();
 
-				id = m_pOpenFilePopup->insertItem(__tr2qs_ctx("&Other...","filetransferwindow"),this,SLOT(openLocalFileWith()));
-				m_pOpenFilePopup->setItemParameter(id,-1);
+				action = m_pOpenFilePopup->insertItem(__tr2qs_ctx("&Other...","filetransferwindow"),this,SLOT(openLocalFileWith()));
+				action->setData(QVariant(-1));
 
 				m_pLocalFilePopup->insertItem(__tr2qs_ctx("Open &With","filetransferwindow"),m_pOpenFilePopup);
 				m_pLocalFilePopup->insertSeparator();
@@ -360,8 +364,8 @@ void KviFileTransferWindow::rightButtonPressed(KviTalListViewItem *it,const QPoi
 
 //-| Grifisx & Noldor |-
 #ifdef COMPILE_ON_WINDOWS
-				id = m_pLocalFilePopup->insertItem(__tr2qs_ctx("&Open","filetransferwindow"),this,SLOT(openLocalFile()));
-				m_pLocalFilePopup->setItemParameter(id,-1);
+				action = m_pLocalFilePopup->insertItem(__tr2qs_ctx("&Open","filetransferwindow"),this,SLOT(openLocalFile()));
+				action->setData(QVariant(-1));
 				m_pOpenFilePopup->insertSeparator();
 				m_pLocalFilePopup->insertItem(__tr2qs_ctx("Open &With","filetransferwindow"),this,SLOT(openLocalFileWith()));
 				m_pLocalFilePopup->insertSeparator();
@@ -373,8 +377,8 @@ void KviFileTransferWindow::rightButtonPressed(KviTalListViewItem *it,const QPoi
 
 				m_pLocalFilePopup->insertItem(__tr2qs_ctx("&Copy Path to Clipboard","filetransferwindow"),this,SLOT(copyLocalFileToClipboard()));
 
-				id = m_pLocalFilePopup->insertItem(__tr2qs_ctx("&Delete file","filetransferwindow"),this,SLOT(deleteLocalFile()));
-				m_pLocalFilePopup->setItemEnabled(id,i->transfer()->terminated());
+				action = m_pLocalFilePopup->insertItem(__tr2qs_ctx("&Delete file","filetransferwindow"),this,SLOT(deleteLocalFile()));
+				action->setEnabled(i->transfer()->terminated());
 				m_pContextPopup->insertItem(__tr2qs_ctx("Local &File","filetransferwindow"),m_pLocalFilePopup);
 
 
@@ -398,15 +402,15 @@ void KviFileTransferWindow::rightButtonPressed(KviTalListViewItem *it,const QPoi
 		item = (KviFileTransferItem *)item->nextSibling();
 	}
 
-	id = m_pContextPopup->insertItem(__tr2qs_ctx("&Clear Terminated","filetransferwindow"),this,SLOT(clearTerminated()));
-	m_pContextPopup->setItemEnabled(id,bHaveTerminated);
+	action = m_pContextPopup->insertItem(__tr2qs_ctx("&Clear Terminated","filetransferwindow"),this,SLOT(clearTerminated()));
+	action->setEnabled(bHaveTerminated);
 
 	bool bAreTransfersActive = false;
 	if(m_pListView->childCount() >= 1)
 		bAreTransfersActive = true;
 
-	id = m_pContextPopup->insertItem(__tr2qs_ctx("Clear &All","filetransferwindow"),this,SLOT(clearAll()));
-	m_pContextPopup->setItemEnabled(id,bAreTransfersActive);
+	action = m_pContextPopup->insertItem(__tr2qs_ctx("Clear &All","filetransferwindow"),this,SLOT(clearAll()));
+	action->setEnabled(bAreTransfersActive);
 
 	m_pContextPopup->popup(pnt);
 }
@@ -420,10 +424,13 @@ KviFileTransfer * KviFileTransferWindow::selectedTransfer()
 	return i->transfer();
 }
 
-void KviFileTransferWindow::openFilePopupActivated(int id)
+void KviFileTransferWindow::openFilePopupActivated(QAction * action)
 {
 #ifdef COMPILE_KDE_SUPPORT
-	int ip = m_pOpenFilePopup->itemParameter(id);
+	bool ok = false;
+	int ip = action->data().toInt(&ok);
+	if (!ok) return;
+	
 	if(ip < 0)return;
 	QString txt = m_pOpenFilePopup->text(id);
 

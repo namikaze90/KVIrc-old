@@ -76,12 +76,13 @@ KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)
 	m_pSdiControls = 0;
 
 	m_pWindowPopup = new KviTalPopupMenu(this);
-	connect(m_pWindowPopup,SIGNAL(activated(int)),this,SLOT(menuActivated(int)));
+	connect(m_pWindowPopup,SIGNAL(triggered(QAction*)),this,SLOT(menuActivated(QAction*)));
 	connect(m_pWindowPopup,SIGNAL(aboutToShow()),this,SLOT(fillWindowPopup()));
 	m_pTileMethodPopup = new KviTalPopupMenu(this);
-	connect(m_pTileMethodPopup,SIGNAL(activated(int)),this,SLOT(tileMethodMenuActivated(int)));
+	connect(m_pTileMethodPopup,SIGNAL(triggered(QAction*)),this,SLOT(tileMethodMenuActivated(QAction*)));
 
 	viewport()->setAutoFillBackground(false);
+
 	setStaticBackground(true);
 	resizeContents(width(),height());
 
@@ -677,28 +678,28 @@ void KviMdiManager::fillWindowPopup()
 	m_pWindowPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TILEWINDOWS)),(__tr2qs("&Tile Windows")),this,SLOT(tile()));
 
 	m_pTileMethodPopup->clear();
-	int id = m_pTileMethodPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_AUTOTILEWINDOWS)),(__tr2qs("&Auto Tile")),this,SLOT(toggleAutoTile()));
-	m_pTileMethodPopup->setItemChecked(id,KVI_OPTION_BOOL(KviOption_boolAutoTileWindows));
-	m_pTileMethodPopup->setItemParameter(id,-1);
+	QAction * action = m_pTileMethodPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_AUTOTILEWINDOWS)),(__tr2qs("&Auto Tile")),this,SLOT(toggleAutoTile()));
+	action->setChecked(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows));
+	action->setData(QVariant(-1));
 	m_pTileMethodPopup->insertSeparator();
-	int ids[KVI_NUM_TILE_METHODS];
+	QAction * ids[KVI_NUM_TILE_METHODS];
 	ids[KVI_TILE_METHOD_ANODINE] = m_pTileMethodPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TILEWINDOWS)),(__tr2qs("Anodine's Full Grid")));
-	m_pTileMethodPopup->setItemParameter(ids[KVI_TILE_METHOD_ANODINE],KVI_TILE_METHOD_ANODINE);
+	ids[KVI_TILE_METHOD_ANODINE]->setData(QVariant(KVI_TILE_METHOD_ANODINE));
 	ids[KVI_TILE_METHOD_PRAGMA4HOR] = m_pTileMethodPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TILEWINDOWS)),(__tr2qs("Pragma's Horizontal 4-Grid")));
-	m_pTileMethodPopup->setItemParameter(ids[KVI_TILE_METHOD_PRAGMA4HOR],KVI_TILE_METHOD_PRAGMA4HOR);
+	ids[KVI_TILE_METHOD_PRAGMA4HOR]->setData(QVariant(KVI_TILE_METHOD_PRAGMA4HOR));
 	ids[KVI_TILE_METHOD_PRAGMA4VER] = m_pTileMethodPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TILEWINDOWS)),(__tr2qs("Pragma's Vertical 4-Grid")));
-	m_pTileMethodPopup->setItemParameter(ids[KVI_TILE_METHOD_PRAGMA4VER],KVI_TILE_METHOD_PRAGMA4VER);
+	ids[KVI_TILE_METHOD_PRAGMA4VER]->setData(QVariant(KVI_TILE_METHOD_PRAGMA4VER));
 	ids[KVI_TILE_METHOD_PRAGMA6HOR] = m_pTileMethodPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TILEWINDOWS)),(__tr2qs("Pragma's Horizontal 6-Grid")));
-	m_pTileMethodPopup->setItemParameter(ids[KVI_TILE_METHOD_PRAGMA6HOR],KVI_TILE_METHOD_PRAGMA6HOR);
+	ids[KVI_TILE_METHOD_PRAGMA6HOR]->setData(QVariant(KVI_TILE_METHOD_PRAGMA6HOR));
 	ids[KVI_TILE_METHOD_PRAGMA6VER] = m_pTileMethodPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TILEWINDOWS)),(__tr2qs("Pragma's Vertical 6-Grid")));
-	m_pTileMethodPopup->setItemParameter(ids[KVI_TILE_METHOD_PRAGMA6VER],KVI_TILE_METHOD_PRAGMA6VER);
+	ids[KVI_TILE_METHOD_PRAGMA6VER]->setData(QVariant(KVI_TILE_METHOD_PRAGMA6VER));
 	ids[KVI_TILE_METHOD_PRAGMA9HOR] = m_pTileMethodPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TILEWINDOWS)),(__tr2qs("Pragma's Horizontal 9-Grid")));
-	m_pTileMethodPopup->setItemParameter(ids[KVI_TILE_METHOD_PRAGMA9HOR],KVI_TILE_METHOD_PRAGMA9HOR);
+	ids[KVI_TILE_METHOD_PRAGMA9HOR]->setData(QVariant(KVI_TILE_METHOD_PRAGMA9HOR));
 	ids[KVI_TILE_METHOD_PRAGMA9VER] = m_pTileMethodPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TILEWINDOWS)),(__tr2qs("Pragma's Vertical 9-Grid")));
-	m_pTileMethodPopup->setItemParameter(ids[KVI_TILE_METHOD_PRAGMA9VER],KVI_TILE_METHOD_PRAGMA9VER);
+	ids[KVI_TILE_METHOD_PRAGMA9VER]->setData(QVariant(KVI_TILE_METHOD_PRAGMA9VER));
 
 	if(KVI_OPTION_UINT(KviOption_uintTileMethod) >= KVI_NUM_TILE_METHODS)KVI_OPTION_UINT(KviOption_uintTileMethod) = KVI_TILE_METHOD_PRAGMA9HOR;
-	m_pTileMethodPopup->setItemChecked(ids[KVI_OPTION_UINT(KviOption_uintTileMethod)],true);
+	ids[KVI_OPTION_UINT(KviOption_uintTileMethod)]->setChecked(true);
 
 	m_pWindowPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TILEWINDOWS)),(__tr2qs("Tile Met&hod")),m_pTileMethodPopup);
 
@@ -734,16 +735,21 @@ void KviMdiManager::fillWindowPopup()
 			szItem+=szCaption;
 			szItem+=")";
 		} else szItem+=szCaption;
+		QAction * a;
 		const QPixmap * pix = lpC->icon();
-		if(pix && !(pix->isNull()))m_pWindowPopup->insertItem(*pix,szItem,i);
-		else m_pWindowPopup->insertItem(szItem,i);
-		m_pWindowPopup->setItemChecked(i,((uint)i)==(m_pZ->count()+99));
+		if(pix && !(pix->isNull())) a = m_pWindowPopup->insertItem(*pix,szItem);
+		else a = m_pWindowPopup->insertItem(szItem);
+		a->setChecked(((uint)i)==(m_pZ->count()+99));
+		a->setData(QVariant(i));
 		i++;
 	}
 }
 
-void KviMdiManager::menuActivated(int id)
+void KviMdiManager::menuActivated(QAction * action)
 {
+	bool ok = false;
+	int id = action->data().toInt(&ok);
+	if (!ok) return;
 	if(id<100)return;
 	id-=100;
 	__range_valid(((uint)id) < m_pZ->count());
@@ -763,9 +769,12 @@ void KviMdiManager::ensureNoMaximized()
 	}
 }
 
-void KviMdiManager::tileMethodMenuActivated(int id)
+void KviMdiManager::tileMethodMenuActivated(QAction * action)
 {
-	int idx = m_pTileMethodPopup->itemParameter(id);
+	bool ok = false;
+	int idx = action->data().toInt(&ok);
+	if (!ok) return;
+	
 	if(idx < 0)idx = 0;
 	if(idx >= KVI_NUM_TILE_METHODS)idx = KVI_TILE_METHOD_PRAGMA9VER;
 	KVI_OPTION_UINT(KviOption_uintTileMethod) = idx;

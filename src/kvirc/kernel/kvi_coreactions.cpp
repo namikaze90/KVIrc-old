@@ -636,7 +636,7 @@ bool KviConnectAction::addToPopupMenu(KviTalPopupMenu *p)
 {
 	if(!setupDone())setup();
 	KviIrcContext * c = g_pFrame->activeContext();
-	int id;
+	QAction * action;
 	
 
 	QString t;
@@ -663,15 +663,15 @@ bool KviConnectAction::addToPopupMenu(KviTalPopupMenu *p)
 			default:
 				t = m_szConnectString;
 				if(!m_szKeySequence.isEmpty())t += '\t' + m_szKeySequence;
-				id = p->insertItem(t,this,SLOT(activate()));
-				p->setItemEnabled(id,false);
+				action = p->insertItem(t,this,SLOT(activate()));
+				action->setEnabled(false);
 			break;
 		}
 	} else {
 		t = m_szConnectString;
 		if(!m_szKeySequence.isEmpty())t += '\t' + m_szKeySequence;
-		id = p->insertItem(t,this,SLOT(activate()));
-		p->setItemEnabled(id,false);
+		action = p->insertItem(t,this,SLOT(activate()));
+		action->setEnabled(false);
 	}
 	return true;
 }
@@ -744,8 +744,8 @@ void KviSubmenuAction::popupActivated(int)
 bool KviSubmenuAction::addToPopupMenu(KviTalPopupMenu *p)
 {
 	if(!setupDone())setup();
-	int id = p->insertItem(*(smallIcon()),visibleName(),m_pPopup);
-	if(!isEnabled())p->setItemEnabled(id,false);
+	QAction * action = p->insertItem(*(smallIcon()),visibleName(),m_pPopup);
+	if(!isEnabled())action->setEnabled(false);
 	return true;
 }
 
@@ -929,15 +929,15 @@ void KviChangeUserModeAction::popupAboutToShow()
 	if(!c)return;
 
 	m_pPopup->clear();
-	int id;
+	QAction * action;
 	QString szModes = g_pActiveWindow->console()->connection()->serverInfo()->supportedUserModes();
 	
-	id = m_pPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_WALLOPS)),__tr2qs("Wallops (+w)"));
-	m_pPopup->setItemChecked(id,c->connection()->userInfo()->hasUserMode('w'));
-	id = m_pPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SERVERNOTICE)),__tr2qs("Server Notices (+s)"));
-	m_pPopup->setItemChecked(id,c->connection()->userInfo()->hasUserMode('s'));
-	id = m_pPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_INVISIBLE)),__tr2qs("Invisible (+i)"));
-	m_pPopup->setItemChecked(id,c->connection()->userInfo()->hasUserMode('i'));
+	action = m_pPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_WALLOPS)),__tr2qs("Wallops (+w)"));
+	action->setChecked(c->connection()->userInfo()->hasUserMode('w'));
+	action = m_pPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SERVERNOTICE)),__tr2qs("Server Notices (+s)"));
+	action->setChecked(c->connection()->userInfo()->hasUserMode('s'));
+	action = m_pPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_INVISIBLE)),__tr2qs("Invisible (+i)"));
+	action->setChecked(c->connection()->userInfo()->hasUserMode('i'));
 	
 	szModes.replace("w","");
 	szModes.replace("s","");
@@ -946,8 +946,8 @@ void KviChangeUserModeAction::popupAboutToShow()
 	{
 		QChar ccc = szModes[0];
 		szModes.remove(0,1);
-		id = m_pPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MODE)),QString("+%1 Mode").arg(ccc));
-		m_pPopup->setItemChecked(id,c->connection()->userInfo()->hasUserMode(ccc.latin1()));
+		action = m_pPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MODE)),QString("+%1 Mode").arg(ccc));
+		action->setChecked(c->connection()->userInfo()->hasUserMode(ccc.latin1()));
 	}
 }
 
@@ -1061,7 +1061,7 @@ bool KviGoAwayAction::addToPopupMenu(KviTalPopupMenu *p)
 {
 	if(!setupDone())setup();
 	KviIrcContext * c = g_pFrame->activeContext();
-	int id;
+	QAction * action;
 	QString t;
 	if(c)
 	{
@@ -1080,14 +1080,14 @@ bool KviGoAwayAction::addToPopupMenu(KviTalPopupMenu *p)
 		} else {
 			t = m_szAwayString;
 			if(!m_szKeySequence.isEmpty())t += '\t' + m_szKeySequence;
-			id = p->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NOTAWAY)),t,this,SLOT(activate()));
-			p->setItemEnabled(id,false);
+			action = p->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NOTAWAY)),t,this,SLOT(activate()));
+			action->setEnabled(false);
 		}
 	} else {
 		t = m_szAwayString;
 		if(!m_szKeySequence.isEmpty())t += '\t' + m_szKeySequence;
-		id = p->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NOTAWAY)),t,this,SLOT(activate()));
-		p->setItemEnabled(id,false);
+		action = p->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NOTAWAY)),t,this,SLOT(activate()));
+		action->setEnabled(false);
 	}
 	return true;
 }

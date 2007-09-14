@@ -44,8 +44,8 @@ protected:
 	KviTalPopupMenu        * m_pContextPopup;
 	KviTalPopupMenu        * m_pAwayPopup;
 
-	int m_iToggleFrame;
-	int m_iAwayMenuId;
+	QAction * m_iToggleFrame;
+	QAction * m_iAwayMenuId;
 
 	bool m_bFlashed;
 	
@@ -68,7 +68,7 @@ protected slots:
 	void fillContextPopup();
 	void toggleParentFrame();
 	void tipRequest(KviDynamicToolTip *tip,const QPoint &pnt);
-	void doAway(int);
+	void doAway(QAction * action);
 	void flashingTimerShot();
 
 	void activatedSlot( QSystemTrayIcon::ActivationReason reason );

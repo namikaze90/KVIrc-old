@@ -428,9 +428,12 @@ KviMessageColorsOptionsWidget::KviMessageColorsOptionsWidget(QWidget * parent)
 	connect(m_pIconButton,SIGNAL(clicked()),this,SLOT(iconButtonClicked()));
 
 	m_pIconPopup = new KviTalPopupMenu(this);
+	// FIXME: THEXCEPTION > Qt4 does not allow widgets in popups
+	/*
 	KviIconWidget * iw = new KviIconWidget(m_pIconPopup);
 	connect(iw,SIGNAL(selected(int)),this,SLOT(newIconSelected(int)));
 	m_pIconPopup->insertItem(iw);
+	*/
 
 
 	m_pEnableLogging = new KviStyledCheckBox(__tr2qs_ctx("Log this","options"),box);

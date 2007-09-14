@@ -623,35 +623,28 @@ KviMircTextColorSelector::KviMircTextColorSelector(QWidget * par,const QString &
 	m_pContextPopup = new KviTalPopupMenu(this);
 	
 	m_pForePopup = new KviTalPopupMenu(this);
-	connect(m_pForePopup,SIGNAL(activated(int)),this,SLOT(foreSelected(int)));
+	connect(m_pForePopup,SIGNAL(triggered(QAction*)),this,SLOT(foreSelected(QAction*)));
 	int i;
 	for(i=0;i<KVI_MIRCCOLOR_MAX_FOREGROUND;i++)
 	{
 		QPixmap tmp(120,16);
 		tmp.fill(KVI_OPTION_MIRCCOLOR(i));
-#ifdef COMPILE_USE_QT4
-		int id = m_pForePopup->insertItem(tmp,QString("x"));
-#else
-		int id = m_pForePopup->insertItem(tmp);
-#endif
-		m_pForePopup->setItemParameter(id,i);
+
+		QAction * action = m_pForePopup->insertItem(tmp,QString("x"));
+		action->setData(QVariant(i));
 	}
 	m_pContextPopup->insertItem(__tr2qs("Foreground"),m_pForePopup);
 
 	m_pBackPopup = new KviTalPopupMenu(this);
-	connect(m_pBackPopup,SIGNAL(activated(int)),this,SLOT(backSelected(int)));
-	i = m_pBackPopup->insertItem(__tr2qs("Transparent"));
-	m_pBackPopup->setItemParameter(i,KVI_TRANSPARENT);
+	connect(m_pBackPopup,SIGNAL(activated(QAction*)),this,SLOT(backSelected(QAction*)));
+	QAction * a = m_pBackPopup->insertItem(__tr2qs("Transparent"));
+	a->setData(QVariant(KVI_TRANSPARENT));
 	for(i=0;i<KVI_MIRCCOLOR_MAX_BACKGROUND;i++)
 	{
 		QPixmap tmp(120,16);
 		tmp.fill(KVI_OPTION_MIRCCOLOR(i));
-#ifdef COMPILE_USE_QT4
-		int id = m_pForePopup->insertItem(tmp,QString("x"));
-#else
-		int id = m_pBackPopup->insertItem(tmp);
-#endif
-		m_pBackPopup->setItemParameter(id,i);
+		QAction * action = m_pForePopup->insertItem(tmp,QString("x"));
+		action->setData(i);
 	}
 	m_pContextPopup->insertItem(__tr2qs("Background"),m_pBackPopup);
 }
@@ -699,17 +692,23 @@ void KviMircTextColorSelector::buttonClicked()
 	m_pContextPopup->popup(p);
 }
 
-void KviMircTextColorSelector::foreSelected(int id)
+void KviMircTextColorSelector::foreSelected(QAction * action)
 {
+	bool ok = false;
+	int id = action->data().toInt(&ok);
+	if (!ok) return;
 	if(m_pForePopup)
-		m_uFore = m_pForePopup->itemParameter(id);
+		m_uFore = id;
 	setButtonPalette();
 }
 
-void KviMircTextColorSelector::backSelected(int id)
+void KviMircTextColorSelector::backSelected(QAction * action)
 {
+	bool ok = false;
+	int id = action->data().toInt(&ok);
+	if (!ok) return;
 	if(m_pBackPopup)
-		m_uBack = m_pBackPopup->itemParameter(id);
+		m_uBack = id;
 	setButtonPalette();
 }
 

@@ -52,6 +52,7 @@ KviMenuBar::KviMenuBar(KviFrame * par,const char * name)
 	
 	KviTalPopupMenu * pop = new KviTalPopupMenu(this,"KVIrc");
 	connect(pop,SIGNAL(aboutToShow()),this,SLOT(setupMainPopup()));
+	connect(pop,SIGNAL(triggered(QAction*)),this,SLOT(actionSelected(QAction*)));
 #ifndef Q_OS_MACX
 	addDefaultItem("&KVIrc",pop);
 #else
@@ -70,7 +71,7 @@ KviMenuBar::KviMenuBar(KviFrame * par,const char * name)
 
 	pop = new KviTalPopupMenu(this,"tools");
 	connect(pop,SIGNAL(aboutToShow()),this,SLOT(setupToolsPopup()));
-	connect(pop,SIGNAL(activated(int)),this,SLOT(toolsPopupSelected(int)));
+	connect(pop,SIGNAL(triggered(QAction*)),this,SLOT(toolsPopupSelected(QAction*)));
 	addDefaultItem(__tr2qs("&Tools"),pop);
 
 	m_pToolbarsPopup = new KviTalPopupMenu(this,"toolbars");
@@ -84,6 +85,7 @@ KviMenuBar::KviMenuBar(KviFrame * par,const char * name)
 
 	pop = new KviTalPopupMenu(this,"help");
 	connect(pop,SIGNAL(aboutToShow()),this,SLOT(setupHelpPopup()));
+	connect(pop,SIGNAL(triggered(QAction*)),this,SLOT(actionSelected(QAction*)));
 	addDefaultItem(__tr2qs("&Help"),pop);
 }
 
@@ -101,12 +103,10 @@ KviMenuBar::~KviMenuBar()
 
 void KviMenuBar::showEvent(QShowEvent *e)
 {
-#ifdef COMPILE_USE_QT4
 	debug("menubar show");
 	// force a re-layout of the menubar in Qt4 (see the note in enterSDIMode())
 	// by resetting the corner widget
 	m_pFrm->mdiManager()->relayoutMenuButtons();
-#endif
 }
 
 void KviMenuBar::addDefaultItem(const QString &text,KviTalPopupMenu * pop)
@@ -121,69 +121,79 @@ void KviMenuBar::setupHelpPopup()
 	KviTalPopupMenu * help = (KviTalPopupMenu *)sender();
 	help->clear();
 
-	// FIXME: Convert these to actions!
-	int id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_HELP)),__tr2qs("&Help Browser (Panel)"),m_pFrm,SLOT(executeInternalCommand(int)));
-	help->setItemParameter(id,KVI_INTERNALCOMMAND_HELP_NEWSTATICWINDOW);
-	id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MDIHELP)),__tr2qs("Help Browser (&Window)"),m_pFrm,SLOT(executeInternalCommand(int)));
-	help->setItemParameter(id,KVI_INTERNALCOMMAND_HELP_NEWMDIWINDOW);
+	QAction * action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_HELP)),__tr2qs("&Help Browser (Panel)"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_HELP_NEWSTATICWINDOW));
+	
+	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MDIHELP)),__tr2qs("Help Browser (&Window)"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_HELP_NEWMDIWINDOW));
+	
 	help->insertSeparator();
-	id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_IDEA)),__tr2qs("&Tip of the Day"),m_pFrm,SLOT(executeInternalCommand(int)));
-	help->setItemParameter(id,KVI_INTERNALCOMMAND_TIP_OPEN);
+	
+	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_IDEA)),__tr2qs("&Tip of the Day"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_TIP_OPEN));
+	
 	help->insertSeparator();
-	id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_KVIRC)),__tr2qs("About &KVIrc"),m_pFrm,SLOT(executeInternalCommand(int)));
-	help->setItemParameter(id,KVI_INTERNALCOMMAND_ABOUT_ABOUTKVIRC);
+	
+	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_KVIRC)),__tr2qs("About &KVIrc"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_ABOUT_ABOUTKVIRC));
+	
 	help->insertSeparator();
-	id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_HOMEPAGE)),__tr2qs("KVIrc Home&page"),m_pFrm,SLOT(executeInternalCommand(int)));
-	help->setItemParameter(id,KVI_INTERNALCOMMAND_KVIRC_HOMEPAGE);
+	
+	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_HOMEPAGE)),__tr2qs("KVIrc Home&page"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_KVIRC_HOMEPAGE));
+	
 	if(kvi_strEqualCIN(KviLocale::localeName(),"ru",2))
 	{
-		id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_HOMEPAGE)),__tr2qs("KVIrc Russian Home&page"),m_pFrm,SLOT(executeInternalCommand(int)));
-		help->setItemParameter(id,KVI_INTERNALCOMMAND_KVIRC_HOMEPAGE_RU);
+		action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_HOMEPAGE)),__tr2qs("KVIrc Russian Home&page"));
+		action->setData(QVariant(KVI_INTERNALCOMMAND_KVIRC_HOMEPAGE_RU));
 	}
 	if(kvi_strEqualCIN(KviLocale::localeName(),"fr",2))
 	{
-		id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_HOMEPAGE)),__tr2qs("KVIrc French Home&page"),m_pFrm,SLOT(executeInternalCommand(int)));
-		help->setItemParameter(id,KVI_INTERNALCOMMAND_KVIRC_HOMEPAGE_FR);
+		action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_HOMEPAGE)),__tr2qs("KVIrc French Home&page"));
+		action->setData(QVariant(KVI_INTERNALCOMMAND_KVIRC_HOMEPAGE_FR));
 	}
 	help->insertSeparator();
-	id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MESSAGE)),__tr2qs("Subscribe to the Mailing List"),m_pFrm,SLOT(executeInternalCommand(int)));
-	help->setItemParameter(id,KVI_INTERNALCOMMAND_OPENURL_KVIRC_MAILINGLIST);
-	id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_BOMB)),__tr2qs("Report a Bug"),m_pFrm,SLOT(executeInternalCommand(int)));
-	help->setItemParameter(id,KVI_INTERNALCOMMAND_OPENURL_KVIRC_BUGTRACK);
+	
+	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MESSAGE)),__tr2qs("Subscribe to the Mailing List"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_OPENURL_KVIRC_MAILINGLIST));
+	
+	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_BOMB)),__tr2qs("Report a Bug"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_OPENURL_KVIRC_BUGTRACK));
+	
 	help->insertSeparator();
-	id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc International Channel on Freenode"),m_pFrm,SLOT(executeInternalCommand(int)));
-	help->setItemParameter(id,KVI_INTERNALCOMMAND_OPENURL_KVIRC_ON_FREENODE);
-	id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc International Channel on IRCNet"),m_pFrm,SLOT(executeInternalCommand(int)));
-	help->setItemParameter(id,KVI_INTERNALCOMMAND_OPENURL_KVIRC_ON_IRCNET);
+	
+	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc International Channel on Freenode"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_OPENURL_KVIRC_ON_FREENODE));
+	
+	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc International Channel on IRCNet"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_OPENURL_KVIRC_ON_IRCNET));
 	if(kvi_strEqualCIN(KviLocale::localeName(),"it",2))
 	{
 		// join #kvirc.net on azzurra
-		id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc Italian Channel on AzzurraNet"),m_pFrm,SLOT(executeInternalCommand(int)));
-		help->setItemParameter(id,KVI_INTERNALCOMMAND_OPENURL_KVIRC_IT_ON_AZZURRA);
+		action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc Italian Channel on AzzurraNet"));
+		action->setData(QVariant(KVI_INTERNALCOMMAND_OPENURL_KVIRC_IT_ON_AZZURRA));
 	}
 	if(kvi_strEqualCIN(KviLocale::localeName(),"fr",2))
 	{
 		// join #kvirc-fr on freenode
-		id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc French Channel on Freenode"),m_pFrm,SLOT(executeInternalCommand(int)));
-		help->setItemParameter(id,KVI_INTERNALCOMMAND_OPENURL_KVIRC_FR_ON_FREENODE);
+		action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc French Channel on Freenode"));
+		action->setData(QVariant(KVI_INTERNALCOMMAND_OPENURL_KVIRC_FR_ON_FREENODE));
 		// join #kvirc on europnet
-		id = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc French Channel on EuropNet"),m_pFrm,SLOT(executeInternalCommand(int)));
-		help->setItemParameter(id,KVI_INTERNALCOMMAND_OPENURL_KVIRC_FR_ON_EUROPNET);
+		action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),__tr2qs("Join KVIrc French Channel on EuropNet"));
+		action->setData(QVariant(KVI_INTERNALCOMMAND_OPENURL_KVIRC_FR_ON_EUROPNET));
 	}
 	// add your localized #kvirc channels here...
 }
 
 void KviMenuBar::setupSettingsPopup()
 {
-	// FIXME: Move everything to actions!
-
 	KviTalPopupMenu * opt = (KviTalPopupMenu *)sender();
 	opt->clear();
 	
 	opt->insertItem(__tr2qs("Toolbars"),m_pToolbarsPopup);
 
-	int id = opt->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_STATUSBAR)),__tr2qs("Show StatusBar"),m_pFrm,SLOT(toggleStatusBar()));
-	opt->setItemChecked(id,m_pFrm->mainStatusBar());
+	QAction * action = opt->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_STATUSBAR)),__tr2qs("Show StatusBar"),m_pFrm,SLOT(toggleStatusBar()));
+	action->setChecked(m_pFrm->mainStatusBar());
 
 	
 	opt->insertSeparator();
@@ -228,8 +238,8 @@ void KviMenuBar::setupMainPopup()
 	if(m_pFrm->activeContext())
 		if(m_pFrm->activeContext()->state()==KviIrcContext::Connected)
 		{
-			int id = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUIT)),__tr2qs("Disconnect"),m_pFrm,SLOT(executeInternalCommand(int)));
-			main->setItemParameter(id,KVI_INTERNALCOMMAND_QUIT);
+			QAction * action = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUIT)),__tr2qs("Disconnect"));
+			action->setData(QVariant(KVI_INTERNALCOMMAND_QUIT));
 		}
 	main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_WORLD)),__tr2qs("New &Connection To"),m_pRecentServersPopup);
 
@@ -237,18 +247,17 @@ void KviMenuBar::setupMainPopup()
 
 	if(m_pFrm->dockExtension())
 	{
-		int id = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCKWIDGET)),__tr2qs("Hide &Dock Icon"),m_pFrm,SLOT(executeInternalCommand(int)));
-		main->setItemParameter(id,KVI_INTERNALCOMMAND_DOCKWIDGET_HIDE);
+		QAction * action = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCKWIDGET)),__tr2qs("Hide &Dock Icon"));
+		action->setData(QVariant(KVI_INTERNALCOMMAND_DOCKWIDGET_HIDE));
 	} else {
-		int id = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCKWIDGET)),__tr2qs("Show &Dock Icon"),m_pFrm,SLOT(executeInternalCommand(int)));
-		main->setItemParameter(id,KVI_INTERNALCOMMAND_DOCKWIDGET_SHOW);
+		QAction * action = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCKWIDGET)),__tr2qs("Show &Dock Icon"));
+		action->setData(QVariant(KVI_INTERNALCOMMAND_DOCKWIDGET_SHOW));
 	}
 	
 // Qt/Mac creates a Quit item on its own
 #ifndef Q_OS_MACX
 	main->insertSeparator();
-
-	main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUITAPP)),__tr2qs("&Quit"),g_pApp,SLOT(quit()));
+	QAction * action = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUITAPP)),__tr2qs("&Quit"),this,SLOT(quitSlotSelected(bool)));
 #endif //Q_OS_MACX
 }
 
@@ -292,11 +301,11 @@ void KviMenuBar::setupToolsPopup()
 	{
 		foreach(KviModuleExtensionDescriptor * d,*l)
 		{
-			int id;
-			if(d->icon())id = m->insertItem(*(d->icon()),d->visibleName());
-			else id = m->insertItem(d->visibleName());
-			//m->setItemChecked(id,(m_pFrm->moduleExtensionToolBar(d->id())));
-			m->setItemParameter(id,d->id());
+			QAction * action;
+			if(d->icon())action = m->insertItem(*(d->icon()),d->visibleName());
+			else action = m->insertItem(d->visibleName());
+			action->setChecked(m_pFrm->moduleExtensionToolBar(d->id()));
+			action->setData(QVariant(d->id()));
 		}
 	}
 	m->insertSeparator();
@@ -310,9 +319,9 @@ void KviMenuBar::setupToolsPopup()
 	// moved the old tools here
 	m->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_ICONMANAGER)),__tr2qs("Show &Icon Table"),g_pIconManager,SLOT(showIconWidget()));
 #ifdef COMPILE_KDE_SUPPORT
-	int id;
-	id = m->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TERMINAL)),__tr2qs("Open &Terminal"),m_pFrm,SLOT(executeInternalCommand(int)));
-	m->setItemParameter(id,KVI_INTERNALCOMMAND_TERM_OPEN);
+	QAction * action
+	action = m->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TERMINAL)),__tr2qs("Open &Terminal"),m_pFrm,SLOT(executeInternalCommand(int)));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_TERM_OPEN));
 #endif
 
 	
@@ -326,14 +335,28 @@ void KviMenuBar::setupToolsPopup()
 	}
 }
 
-void KviMenuBar::toolsPopupSelected(int id)
+void KviMenuBar::toolsPopupSelected(QAction * action)
 {
-   KviTalPopupMenu * m = (KviTalPopupMenu *)sender();
-   if(!m)return;
-   int idext = m->itemParameter(id);
-   g_pModuleExtensionManager->allocateExtension("tool",idext,m_pFrm->firstConsole());
+	bool ok = false;
+	int idext = action->data().toInt(&ok);
+	if (!ok) return;
+	g_pModuleExtensionManager->allocateExtension("tool",idext,m_pFrm->firstConsole());
+	
 }
 
+void KviMenuBar::actionSelected(QAction * action)
+{
+	bool ok = false;
+	int id = action->data().toInt(&ok);
+	if (!ok) return;
+	m_pFrm->executeInternalCommand(id);
+}
+
+void KviMenuBar::quitSlotSelected(bool checked)
+{
+		g_pApp->quit();
+		return;
+}
 
 void KviMenuBar::setupToolbarsPopup()
 {

@@ -202,8 +202,8 @@ void KviStatusBarAwayIndicator::toggleContext()
 
 void KviStatusBarAwayIndicator::fillContextPopup(KviTalPopupMenu *p)
 {
-	int id = p->insertItem(__tr2qs("Apply to all IRC Contexts"),this,SLOT(toggleContext()));
-	p->setItemChecked(id,m_bAwayOnAllContexts);	
+	QAction * action = p->insertItem(__tr2qs("Apply to all IRC Contexts"),this,SLOT(toggleContext()));
+	action->setChecked(m_bAwayOnAllContexts);	
 }
 
 void KviStatusBarAwayIndicator::loadState(const char * prefix,KviConfig *cfg)
@@ -430,8 +430,8 @@ void KviStatusBarClock::timerEvent(QTimerEvent *)
 
 void KviStatusBarClock::fillContextPopup(KviTalPopupMenu * p)
 {
-	int id = p->insertItem("UTC",this,SLOT(toggleUtc()));
-	p->setItemChecked(id,m_bUtc);
+	QAction * action = p->insertItem("UTC",this,SLOT(toggleUtc()));
+	action->setChecked(m_bUtc);
 }
 
 void KviStatusBarClock::toggleUtc()
@@ -511,8 +511,8 @@ void KviStatusBarConnectionTimer::toggleTotal()
 
 void KviStatusBarConnectionTimer::fillContextPopup(KviTalPopupMenu *p)
 {
-	int id = p->insertItem(__tr2qs("Show total connection time"),this,SLOT(toggleTotal()));
-	p->setItemChecked(id,m_bTotal);	
+	QAction * action = p->insertItem(__tr2qs("Show total connection time"),this,SLOT(toggleTotal()));
+	action->setChecked(m_bTotal);
 }
 
 void KviStatusBarConnectionTimer::loadState(const char * prefix,KviConfig *cfg)

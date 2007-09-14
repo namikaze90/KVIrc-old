@@ -262,12 +262,12 @@ void UrlDialog::popup(KviTalListViewItem *item, const QPoint &point, int col)
 		p.insertItem(__tr2qs("&Find Text"),this,SLOT(findtext()));
 		p.insertSeparator();
 		m_pListPopup = new KviTalPopupMenu(0,"list");
-		int i=0;
+		connect(m_pListPopup,SIGNAL(triggered(QAction*)),this,SLOT(sayToWin(QAction*)));
+		QAction * action;
+
 		for(KviWindow *w=g_pFrame->windowList()->first();w;w=g_pFrame->windowList()->next()){
 			if ((w->type() <= 2) || (w->type() == 2) || (w->type() == 6)) {	// values defined in kvi_define.h (console,channel,query,chat,uwindow)
-				m_pListPopup->insertItem(QString(w->plainTextCaption()),i);
-				m_pListPopup->connectItem(i,this,SLOT(sayToWin(int)));
-				i++;
+				action = m_pListPopup->insertItem(QString(w->plainTextCaption()));
 			}
 		}
 		p.insertItem(__tr2qs("&Say to Window"),m_pListPopup);
@@ -275,9 +275,9 @@ void UrlDialog::popup(KviTalListViewItem *item, const QPoint &point, int col)
 	}
 }
 
-void UrlDialog::sayToWin(int itemID)
+void UrlDialog::sayToWin(QAction * action)
 {
-	KviWindow *wnd = g_pApp->findWindowByCaption(m_pListPopup->text(itemID).utf8().data());
+	KviWindow *wnd = g_pApp->findWindowByCaption(action->text().utf8().data());
 	QString say=QString("PRIVMSG %1 %2").arg(wnd->windowName()).arg(m_szUrl.ptr());
 	if (wnd) {
 		KviKvsScript::run(say,wnd);

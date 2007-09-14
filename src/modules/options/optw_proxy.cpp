@@ -334,7 +334,7 @@ void KviProxyOptionsWidget::listViewRightButtonPressed(KviTalListViewItem *it,co
 {
 	m_pContextPopup->clear();
 	m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PROXY)),__tr2qs_ctx("&New Proxy","options"),this,SLOT(newProxy()));
-	m_pContextPopup->setItemEnabled(m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CUT)),__tr2qs_ctx("Re&move Proxy","options"),this,SLOT(removeCurrent())),it);
+	m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CUT)),__tr2qs_ctx("Re&move Proxy","options"),this,SLOT(removeCurrent()))->setEnabled(it);
 	m_pContextPopup->popup(QCursor::pos());
 }
 

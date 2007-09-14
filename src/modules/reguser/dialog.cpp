@@ -427,8 +427,9 @@ void KviRegisteredUsersDialog::listViewRightButtonClicked ( KviTalListViewItem *
 			m_TmpDict.clear();
 			while(git!=pGroups->end())
 			{
-				int id=groups->insertItem(git.key());
-				m_TmpDict.insert(id,git.value());
+				QAction * action = groups->insertItem(git.key());
+				//FIXME: THEXCEPTION
+				//m_TmpDict.insert(id,git.value());
 				++git;
 			}
 			

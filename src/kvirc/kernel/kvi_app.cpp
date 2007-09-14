@@ -1857,17 +1857,17 @@ void KviApp::fillRecentServersPopup(KviTalPopupMenu * m)
 void KviApp::fillRecentNicknamesPopup(KviTalPopupMenu * m,KviConsole * pConsole)
 {
 	m->clear();
-	int id;
+	QAction * action;
 	bool bAlreadyFound = false;
 	for(QStringList::Iterator it = KVI_OPTION_STRINGLIST(KviOption_stringlistRecentNicknames).begin(); it != KVI_OPTION_STRINGLIST(KviOption_stringlistRecentNicknames).end(); ++it)
 	{
-		id = m->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NICK)),*it);
-		if(!pConsole->isConnected())m->setItemEnabled(id,false);
+		action = m->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NICK)),*it);
+		if(!pConsole->isConnected())action->setEnabled(false);
 		else {
 			if(!bAlreadyFound)
 			{
 				bool bIsCurrent = KviQString::equalCS(pConsole->connection()->currentNickName(),*it);
-				m->setItemEnabled(id,!bIsCurrent);
+				action->setEnabled(!bIsCurrent);
 				if(bIsCurrent)bAlreadyFound = true;
 			}
 		}
@@ -1877,16 +1877,16 @@ void KviApp::fillRecentNicknamesPopup(KviTalPopupMenu * m,KviConsole * pConsole)
 void KviApp::fillRecentChannelsPopup(KviTalPopupMenu * m,KviConsole * pConsole)
 {
 	m->clear();
-	int id;
+	QAction * action;
 	QStringList* pList=getRecentChannels(pConsole->currentNetworkName());
 	if(pList)
 	{
 		for(QStringList::Iterator it = pList->begin(); it != pList->end(); ++it)
 		{
-			id = m->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),*it);
-			if(!pConsole->isConnected())m->setItemEnabled(id,false);
+			action = m->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CHANNEL)),*it);
+			if(!pConsole->isConnected())action->setEnabled(false);
 			else {
-				m->setItemEnabled(id,!(pConsole->connection()->findChannel(*it)));
+				action->setEnabled(!(pConsole->connection()->findChannel(*it)));
 			}
 		}
 	}

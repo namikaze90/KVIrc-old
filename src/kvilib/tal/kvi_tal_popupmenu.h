@@ -27,6 +27,68 @@
 
 #include "kvi_settings.h"
 
-#include "kvi_tal_popupmenu_qt4.h"
+#include "kvi_settings.h"
+#include "kvi_qstring.h"
+
+#include <qmenu.h>
+#include <qaction.h>
+#include <qwidgetaction.h>
+
+class KVILIB_API KviTalPopupMenu : public QMenu
+{
+	Q_OBJECT
+public:
+	KviTalPopupMenu(QWidget * pParent=0,const QString &szName = KviQString::empty)
+	: QMenu(pParent)
+	{
+		setName(szName);
+	};
+	virtual ~KviTalPopupMenu() {};
+
+	QAction * insertItem(const QString &szText)
+	{
+		return QMenu::addAction(szText);
+	}
+	QAction * insertItem(const QPixmap &pix,const QString &szText)
+	{
+		return QMenu::addAction(QIcon(pix),szText);
+	}
+	QAction * insertItem(const QString &szText, QObject * pReceiver,const char * szSlot)
+	{
+		QAction * action = insertItem(szText);
+		action->setParent(pReceiver);
+		connect(action,SIGNAL(triggered(bool)),pReceiver,szSlot);
+		return action;
+	}
+	QAction * insertItem(const QPixmap &pix,const QString &szText, QObject * pReceiver,const char * szSlot)
+	{
+		QAction * action = insertItem(pix,szText);
+		action->setParent(pReceiver);
+		connect(action,SIGNAL(triggered(bool)),pReceiver,szSlot);
+		return action;
+	}
+	QAction * insertItem(const QPixmap &pix,const QString &szText,QMenu *pMenu)
+	{
+		QAction * action = QMenu::addMenu(pMenu);
+		action->setText(szText);
+		action->setIcon(QIcon(pix));
+		return action;
+	}
+	QAction * insertItem(const QString &szText,QMenu *pMenu)
+	{
+		QAction * action = QMenu::addMenu(pMenu);
+		action->setText(szText);
+		return action;
+	}
+// FIXME: THEXCEPTION
+/*	int insertItem(QWidget * pWidget)
+	{
+		// needs Qt 4.2
+		QWidgetAction * pAct = new QWidgetAction(this);
+		pAct->setDefaultWidget(pWidget);
+		addAction(pAct);
+		return 0;
+	}*/
+};
 
 #endif // _KVI_TAL_POPUPMENU_H_

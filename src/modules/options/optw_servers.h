@@ -202,7 +202,7 @@ protected slots:
 	void connectCurrentClicked();
 	void recentServersPopupAboutToShow();
 	void recentServersPopupClicked(int id);
-	void importPopupActivated(int id);
+	void importPopupActivated(QAction * action);
 public:
 	virtual void commit();
 };

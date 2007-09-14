@@ -838,31 +838,31 @@ void KviInputEditor::mousePressEvent(QMouseEvent *e)
 			}
 		}
 		
-		int id = g_pInputPopup->insertItem(__tr2qs("Cu&t") + ACCEL_KEY(X),this,SLOT(cut()));
-		g_pInputPopup->setItemEnabled(id,hasSelection());
-		id = g_pInputPopup->insertItem(__tr2qs("&Copy") + ACCEL_KEY(C),this,SLOT(copyToClipboard()));
-		g_pInputPopup->setItemEnabled(id,hasSelection());
-		id = g_pInputPopup->insertItem(__tr2qs("&Paste") + ACCEL_KEY(V),this,SLOT(pasteClipboardWithConfirmation()));
-		g_pInputPopup->setItemEnabled(id,!szClip.isEmpty() && !m_bReadOnly);
-		id = g_pInputPopup->insertItem(__tr2qs("Paste (Slowly)"),this,SLOT(pasteSlow()));
+		QAction * action = g_pInputPopup->insertItem(__tr2qs("Cu&t") + ACCEL_KEY(X),this,SLOT(cut()));
+		action->setEnabled(hasSelection());
+		action = g_pInputPopup->insertItem(__tr2qs("&Copy") + ACCEL_KEY(C),this,SLOT(copyToClipboard()));
+		action->setEnabled(hasSelection());
+		action = g_pInputPopup->insertItem(__tr2qs("&Paste") + ACCEL_KEY(V),this,SLOT(pasteClipboardWithConfirmation()));
+		action->setEnabled(!szClip.isEmpty() && !m_bReadOnly);
+		action = g_pInputPopup->insertItem(__tr2qs("Paste (Slowly)"),this,SLOT(pasteSlow()));
 		if ((type == KVI_WINDOW_TYPE_CHANNEL) || (type == KVI_WINDOW_TYPE_QUERY) || (type == KVI_WINDOW_TYPE_DCCCHAT))
-			g_pInputPopup->setItemEnabled(id,!szClip.isEmpty() && !m_bReadOnly);
+			action->setEnabled(!szClip.isEmpty() && !m_bReadOnly);
 		else 
-			g_pInputPopup->setItemEnabled(id,false);
-		id = g_pInputPopup->insertItem(__tr2qs("Paste &File") + ACCEL_KEY(F),this,SLOT(pasteFile()));
+			action->setEnabled(false);
+		action = g_pInputPopup->insertItem(__tr2qs("Paste &File") + ACCEL_KEY(F),this,SLOT(pasteFile()));
 		if ((type != KVI_WINDOW_TYPE_CHANNEL) && (type != KVI_WINDOW_TYPE_QUERY) && (type != KVI_WINDOW_TYPE_DCCCHAT))
-			g_pInputPopup->setItemEnabled(id,false);
+			action->setEnabled(false);
 		else
-			g_pInputPopup->setItemEnabled(id,!m_bReadOnly);
+			action->setEnabled(!m_bReadOnly);
 		if(m_bSpSlowFlag ==true)
 		{
-			id = g_pInputPopup->insertItem(__tr2qs("Stop Paste"),this,SLOT(stopPasteSlow())); /*G&N 2005*/
+			action = g_pInputPopup->insertItem(__tr2qs("Stop Paste"),this,SLOT(stopPasteSlow())); /*G&N 2005*/
 		}
-		id = g_pInputPopup->insertItem(__tr2qs("Clear"),this,SLOT(clear()));
-		g_pInputPopup->setItemEnabled(id,!m_szTextBuffer.isEmpty() && !m_bReadOnly);
+		action = g_pInputPopup->insertItem(__tr2qs("Clear"),this,SLOT(clear()));
+		action->setEnabled(!m_szTextBuffer.isEmpty() && !m_bReadOnly);
 		g_pInputPopup->insertSeparator();
-		id = g_pInputPopup->insertItem(__tr2qs("Select All"),this,SLOT(selectAll()));
-		g_pInputPopup->setItemEnabled(id,(!m_szTextBuffer.isEmpty()));
+		action = g_pInputPopup->insertItem(__tr2qs("Select All"),this,SLOT(selectAll()));
+		action->setEnabled((!m_szTextBuffer.isEmpty()));
 		
 		
 		g_pInputPopup->insertSeparator();

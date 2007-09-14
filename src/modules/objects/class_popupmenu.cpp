@@ -199,17 +199,18 @@ bool KviKvsObject_popupmenu::functioninsertItem(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_END(c)
 	if(!widget())return true;
 	QPixmap *pix = 0;
-	int id=0;
+	QAction * action;
     if(!szIcon.isEmpty())
 	{
 		pix = g_pIconManager->getImage(szIcon);
-        if (pix) id=((KviTalPopupMenu *)widget())->insertItem(*pix,szItem);
+        if (pix) action = ((KviTalPopupMenu *)widget())->insertItem(*pix,szItem);
 		else c->warning(__tr2qs("pix '%Q' doesn't exists"),&szIcon);
 
 	}
 	else
-		id=((KviTalPopupMenu *)widget())->insertItem(szItem);
-	c->returnValue()->setInteger(id);
+		action = ((KviTalPopupMenu *)widget())->insertItem(szItem);
+	//FIXME: THEXCEPTION
+	c->returnValue()->setInteger(0); //return id
 	return true;
 }
 bool KviKvsObject_popupmenu::functioninsertWidget(KviKvsObjectFunctionCall *c)
@@ -235,7 +236,8 @@ bool KviKvsObject_popupmenu::functioninsertWidget(KviKvsObjectFunctionCall *c)
 		c->warning(__tr2qs("Can't add a non-widget object"));
         return TRUE;
     }
-	if (widget()) ((KviTalPopupMenu *)widget())->insertItem(((KviTalPopupMenu  *)(pObject->object())));
+	//FIXME: THEXCEPTION
+	//if (widget()) ((KviTalPopupMenu *)widget())->insertItem(((KviTalPopupMenu  *)(pObject->object())));
 	return true;
 }
 bool KviKvsObject_popupmenu::functioninsertHandle(KviKvsObjectFunctionCall *c)
@@ -256,17 +258,18 @@ bool KviKvsObject_popupmenu::functioninsertHandle(KviKvsObjectFunctionCall *c)
     }
 	if(!widget())return true;
 	QPixmap *pix = 0;
-	int id=0;
+	QAction * action;
     if(!szIcon.isEmpty())
 	{
 		pix = g_pIconManager->getImage(szIcon);
-        if (pix) id=((KviTalPopupMenu *)widget())->insertItem(*pix,szLabel,((KviTalPopupMenu  *)(ob->object())));
+        if (pix) action=((KviTalPopupMenu *)widget())->insertItem(*pix,szLabel,((KviTalPopupMenu  *)(ob->object())));
 		else c->warning(__tr2qs("pix '%Q' doesn't exists"),&szIcon);
 
 	}
 	else
-		id=((KviTalPopupMenu *)widget())->insertItem(szLabel,((KviTalPopupMenu  *)(ob->object())));
-	c->returnValue()->setInteger(id);
+		action = ((KviTalPopupMenu *)widget())->insertItem(szLabel,((KviTalPopupMenu  *)(ob->object())));
+	//FIXME: THEXCEPTION
+	c->returnValue()->setInteger(0); //return id
 	return true;
 }
 bool KviKvsObject_popupmenu::functionexec(KviKvsObjectFunctionCall *c)

@@ -121,7 +121,7 @@ public:
 protected slots:
 	void contextPopupAboutToShow();
 	void appletsPopupAboutToShow();
-	void appletsPopupActivated(int id);
+	void appletsPopupActivated(QAction * action);
 	void removeClickedApplet();
 	void setPermanentMessage();
 	void tipRequest(KviDynamicToolTip *pTip,const QPoint &pnt);

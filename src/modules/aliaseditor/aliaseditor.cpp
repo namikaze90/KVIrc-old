@@ -408,7 +408,7 @@ void KviAliasEditor::itemPressed(KviTalListViewItem *it,const QPoint &pnt,int co
 	
 	m_pLastClickedItem = (KviAliasEditorListViewItem *)it;
 	
-	int id;
+	QAction * action;
 
 	m_pContextPopup->insertItem(
 			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_ALIAS)),
@@ -426,48 +426,46 @@ void KviAliasEditor::itemPressed(KviTalListViewItem *it,const QPoint &pnt,int co
 
 	m_pContextPopup->insertSeparator();
 	
-	id = m_pContextPopup->insertItem(
+	action = m_pContextPopup->insertItem(
 			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUIT)),
 			__tr2qs("Remove Selected"),
 			this,SLOT(removeSelectedItems()));
-	m_pContextPopup->setItemEnabled(id,bHasSelected);
+	action->setEnabled(bHasSelected);
 
 
 	m_pContextPopup->insertSeparator();
 
-	m_pContextPopup->insertItem(
+	action = m_pContextPopup->insertItem(
 			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_FOLDER)),
 			__tr2qs("Export Selected..."),
 			this,SLOT(exportSelected()));
-	m_pContextPopup->setItemEnabled(id,bHasSelected);
+	action->setEnabled(bHasSelected);
 
-	m_pContextPopup->insertItem(
+	action = m_pContextPopup->insertItem(
 			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_FOLDER)),
 			__tr2qs("Export Selected in singles files..."),
 			this,SLOT(exportSelectedSepFiles()));
+	action->setEnabled(bHasSelected);
 
-	m_pContextPopup->setItemEnabled(id,bHasSelected);
-
-	m_pContextPopup->insertItem(
+	action = m_pContextPopup->insertItem(
 			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_FOLDER)),
 			__tr2qs("Export All..."),
 			this,SLOT(exportAll()));
-	m_pContextPopup->setItemEnabled(id,bHasItems);
+	action->setEnabled(bHasItems);
 
 	m_pContextPopup->insertSeparator();
 
-	m_pContextPopup->insertItem(
+	action = m_pContextPopup->insertItem(
 			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SEARCH)),
 			__tr2qs("Find In Aliases..."),
 			this,SLOT(slotFind()));
-	m_pContextPopup->setItemEnabled(id,bHasItems);
+	action->setEnabled(bHasItems);
 
-	m_pContextPopup->insertItem(
+	action = m_pContextPopup->insertItem(
 			*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NAMESPACE)),
 			__tr2qs("Collapse All Namespaces"),
 			this,SLOT(slotCollapseNamespaces()));
-
-	m_pContextPopup->setItemEnabled(id,bHasItems);
+	action->setEnabled(bHasItems);
 
 
 	m_pContextPopup->popup(pnt);
