@@ -611,8 +611,8 @@ void KviSetupWizard::oldDirClicked()
 //	if(m_pTheme) setAppropriate(m_pTheme,false);
 	if(m_pServers) setAppropriate(m_pServers,false);
 	
-	if(m_pOldDataPathEdit->text().isEmpty()) setNextEnabled(m_pDirectory,false);
-	else setNextEnabled(m_pDirectory,true);
+	if(m_pOldDataPathEdit->text().isEmpty()) setFinishEnabled(m_pDirectory,false);
+	else setFinishEnabled(m_pDirectory,true);
 }
 
 void KviSetupWizard::oldDataTextChanged ( const QString & str)

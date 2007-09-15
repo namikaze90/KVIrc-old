@@ -455,7 +455,7 @@ mac {
 
 unix:LIBS += -lpthread -lssl -lcrypto -lz
 unix:DEFINES += COMPILE_THREADS_USE_POSIX COMPILE_USE_QT4
-
+unix:QMAKE_LFLAGS_SHAPP += -rdynamic
 
 include( ../kvilib/using_kvilib.pri )
 include( using_kvirc.pri )

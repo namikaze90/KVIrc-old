@@ -1227,6 +1227,7 @@ void KviChannel::channelAction(const QString &nick,unsigned int uActionType,int 
 void KviChannel::fixActionHistory()
 {
 	while(m_pActionHistory->count() > KVI_CHANNEL_ACTION_HISTORY_MAX_COUNT)m_pActionHistory->removeFirst();
+  if (m_pActionHistory->isEmpty())return;
 	KviChannelAction * a = m_pActionHistory->last();
 	if(!a)return;
 
@@ -1312,6 +1313,7 @@ void KviChannel::getChannelActivityStats(KviChannelActivityStats * s)
 	QList<KviChannelAction*>::const_iterator it(m_pActionHistory->constEnd());
 	while(it!=m_pActionHistory->constBegin())
 	{
+		--it;
 		a = *it;
 		if(a->tTime >= tNow)s->uActionsInTheLastMinute++;
 
@@ -1332,7 +1334,6 @@ void KviChannel::getChannelActivityStats(KviChannelActivityStats * s)
 				}
 			}
 		}
-		--it;
 	}
 
 	s->iAverageActionTemperature = s->iAverageActionTemperature / (int)s->uActionCount;

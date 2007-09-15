@@ -151,7 +151,7 @@ void KviProxyDataBase::load(const char * filename)
 		m_pProxyList->append(p);
 	}
 
-	if(!m_pCurrentProxy)m_pCurrentProxy = m_pProxyList->first();
+	if(!m_pCurrentProxy && !m_pProxyList->isEmpty())m_pCurrentProxy = m_pProxyList->first();
 }
 
 void KviProxyDataBase::save(const char * filename)

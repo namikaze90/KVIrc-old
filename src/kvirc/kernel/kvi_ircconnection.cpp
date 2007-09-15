@@ -488,7 +488,8 @@ void KviIrcConnection::unregisterQuery(KviQuery * c)
 
 void KviIrcConnection::keepChannelsOpenAfterDisconnect()
 {
-	while(KviChannel * c = m_pChannelList->first())
+  KviChannel * c;
+  while(!m_pChannelList->isEmpty() && (c = m_pChannelList->first()))
 	{
 		c->outputNoFmt(KVI_OUT_SOCKETERROR,__tr2qs("Connection to server lost"));
 		c->setDeadChan();
@@ -497,7 +498,8 @@ void KviIrcConnection::keepChannelsOpenAfterDisconnect()
 
 void KviIrcConnection::keepQueriesOpenAfterDisconnect()
 {
-	while(KviQuery * q = m_pQueryList->first())
+  KviQuery * q;
+	while(!m_pQueryList->isEmpty() && (q = m_pQueryList->first()))
 	{
 		q->outputNoFmt(KVI_OUT_SOCKETERROR,__tr2qs("Connection to server lost"));
 		q->setDeadQuery();
