@@ -1702,9 +1702,9 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 				delete pPopup;
 				return 0;
 			}
-			QString szIcon = pParameters->at(1);
+			QString szIcon = pParameters->value(1);
 			if(KVSP_curCharUnicode == ';')KVSP_skipChar;
-			QString szItemName = pParameters->at(2);
+			QString szItemName = pParameters->value(2);
 			pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelLabel(pLabelBegin,szCondition,szText,szIcon,szItemName));
 			delete pParameters;
 		} else if(szLabelLow == "popup")
@@ -1721,8 +1721,8 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 				delete pPopup;
 				return 0;
 			}
-			QString szIcon = pParameters->at(1);
-			QString szItemName = pParameters->at(2);
+			QString szIcon = pParameters->value(1);
+			QString szItemName = pParameters->value(2);
 
 			KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * pSubPopup = parseSpecialCommandDefpopupLabelPopup();
 			if(!pSubPopup)
@@ -1752,8 +1752,8 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 				delete pPopup;
 				return 0;
 			}
-			QString szIcon = pParameters->at(1);
-			QString szItemName = pParameters->at(2);
+			QString szIcon = pParameters->value(1);
+			QString szItemName = pParameters->value(2);
 
 			const QChar * pBegin = KVSP_curCharPointer;
 			KviKvsTreeNodeInstruction * pInstruction = parseInstruction();
@@ -1802,7 +1802,7 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 				delete pPopup;
 				return 0;
 			}
-			QString szName = pParameters->at(1);
+			QString szName = pParameters->value(1);
 			if(szName.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <name> field in extpopup parameters. See /help defpopup for the syntax"));
@@ -1810,8 +1810,8 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 				delete pPopup;
 				return 0;
 			}
-			QString szIcon = pParameters->at(2);
-			QString szItemName = pParameters->at(2);
+			QString szIcon = pParameters->value(2);
+			QString szItemName = pParameters->value(2);
 			if(KVSP_curCharUnicode == ';')KVSP_skipChar;
 			pPopup->addLabel(new KviKvsTreeNodeSpecialCommandDefpopupLabelExtpopup(pLabelBegin,szCondition,szText,szIcon,
 					szName,szItemName));

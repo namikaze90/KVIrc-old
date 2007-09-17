@@ -922,7 +922,7 @@ static bool file_kvs_cmd_writeLines(KviKvsModuleCommandCall * c)
 	unsigned int u = 0;
 	while(u < a.array()->size())
 	{
-		KviKvsVariant * v = a.array()->at(u);
+		KviKvsVariant * v = a.array()->value(u);
 		KviQCString dat;
 		if(v)
 		{

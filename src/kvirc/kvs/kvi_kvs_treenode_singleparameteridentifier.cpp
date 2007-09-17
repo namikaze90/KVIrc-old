@@ -58,7 +58,7 @@ bool KviKvsTreeNodeSingleParameterIdentifier::canEvaluateToObjectReference()
 
 bool KviKvsTreeNodeSingleParameterIdentifier::evaluateReadOnly(KviKvsRunTimeContext * c,KviKvsVariant * pBuffer)
 {
-	KviKvsVariant * v = c->parameterList()->at(m_iStart);
+	KviKvsVariant * v = c->parameterList()->value(m_iStart);
 	if(!v)pBuffer->setNothing();
 	else pBuffer->copyFrom(v);
 	return true;

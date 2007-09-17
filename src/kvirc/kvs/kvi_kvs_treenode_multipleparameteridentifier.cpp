@@ -56,7 +56,7 @@ void KviKvsTreeNodeMultipleParameterIdentifier::dump(const char * prefix)
 
 bool KviKvsTreeNodeMultipleParameterIdentifier::evaluateReadOnly(KviKvsRunTimeContext * c,KviKvsVariant * pBuffer)
 {
-	KviKvsVariant * v = c->parameterList()->at(m_iStart);
+	KviKvsVariant * v = c->parameterList()->value(m_iStart);
 	if(!v)
 	{
 		pBuffer->setNothing();
@@ -72,7 +72,7 @@ bool KviKvsTreeNodeMultipleParameterIdentifier::evaluateReadOnly(KviKvsRunTimeCo
 		int idx = m_iStart;
 		for(int i=m_iStart;i<c->parameterList()->count() && (idx < m_iEnd);i++)
 		{
-			v = c->parameterList()->at(i);
+			v = c->parameterList()->value(i);
 			sz += QChar(' ');
 			v->appendAsString(sz);
 			idx++;
@@ -81,7 +81,7 @@ bool KviKvsTreeNodeMultipleParameterIdentifier::evaluateReadOnly(KviKvsRunTimeCo
 		// all up to the end of the list
 		for(int i=m_iStart;i<c->parameterList()->count();i++)
 		{
-			v = c->parameterList()->at(i);
+			v = c->parameterList()->value(i);
 			sz += QChar(' ');
 			v->appendAsString(sz);
 		}

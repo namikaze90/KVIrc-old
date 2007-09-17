@@ -1600,7 +1600,7 @@ static bool str_kvs_fnc_join(KviKvsModuleFunctionCall * c)
 		kvs_uint_t uSize = a->size();
 		while(uIdx < uSize)
 		{
-			KviKvsVariant * v = a->at(uIdx);
+			KviKvsVariant * v = a->value(uIdx);
 			if(v)
 			{
 				QString tmp;
@@ -1695,7 +1695,7 @@ static bool str_kvs_fnc_grep(KviKvsModuleFunctionCall * c)
 		QRegExp re(szMatch,bCaseSensitive,bWild);
 		while(idx < cnt)
 		{
-			KviKvsVariant * v = a->at(idx);
+			KviKvsVariant * v = a->value(idx);
 			if(v)
 			{
 				QString sz;
@@ -1711,7 +1711,7 @@ static bool str_kvs_fnc_grep(KviKvsModuleFunctionCall * c)
 	} else {
 		while(idx < cnt)
 		{
-			KviKvsVariant * v = a->at(idx);
+			KviKvsVariant * v = a->value(idx);
 			if(v)
 			{
 				QString sz;

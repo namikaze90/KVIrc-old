@@ -126,7 +126,7 @@ bool KviKvsObject_wrapper::init(KviKvsRunTimeContext * pContext,KviKvsVariantLis
 		QString szClass;
 		QString szName;
 		QString s=0;
-		pParams->at(i)->asString(s);
+		pParams->value(i)->asString(s);
 		if (!s.isEmpty())
 		{
 		int idx = s.find("::");

@@ -793,9 +793,9 @@ bool KviKvsObject_mledit::functionsetColor(KviKvsObjectFunctionCall *c)
 			c->error(__tr2qs("The array passed as parameter must contain at least 3 elements"));
 			return false;
 		}
-		KviKvsVariant * pColR = pColArray->array()->at(0);
-		KviKvsVariant * pColG = pColArray->array()->at(1);
-		KviKvsVariant * pColB = pColArray->array()->at(2);
+		KviKvsVariant * pColR = pColArray->array()->value(0);
+		KviKvsVariant * pColG = pColArray->array()->value(1);
+		KviKvsVariant * pColB = pColArray->array()->value(2);
 
 		if(!(pColR && pColG && pColB))
 		{
@@ -982,9 +982,9 @@ bool KviKvsObject_mledit::functionsetParagraphBackgroundColor(KviKvsObjectFuncti
 			c->error(__tr2qs("The array passed as parameter must contain at least 3 elements"));
 			return false;
 		}
-		KviKvsVariant * pColR = pColArray->array()->at(0);
-		KviKvsVariant * pColG = pColArray->array()->at(1);
-		KviKvsVariant * pColB = pColArray->array()->at(2);
+		KviKvsVariant * pColR = pColArray->array()->value(0);
+		KviKvsVariant * pColG = pColArray->array()->value(1);
+		KviKvsVariant * pColB = pColArray->array()->value(2);
 
 		if(!(pColR && pColG && pColB))
 		{

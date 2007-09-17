@@ -744,7 +744,7 @@ void KviNotifierWindow::redrawText()
 				p.drawPixmap(m_pWndBody->textRect().x() + 1,y + 1,*(m->image()),0,0,16,16);
 		}
 		idx--;
-		m = l->at(idx);
+		m = l->value(idx);
 	}
 
 	p.setPen(QPen(m_clrTitle));

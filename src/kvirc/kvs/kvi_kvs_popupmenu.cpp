@@ -880,7 +880,7 @@ void KviKvsPopupMenu::itemClicked(QAction * action)
 	int param = action->data().toInt(&ok);
 	if (!ok) return;
 
-	KviKvsPopupMenuItem * it = m_pItemList->at(param);
+	KviKvsPopupMenuItem * it = m_pItemList->value(param);
 	KviKvsPopupMenuTopLevelData * d = topLevelData();
 	if(it && d)
 	{

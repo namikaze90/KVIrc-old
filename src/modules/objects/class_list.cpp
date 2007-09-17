@@ -308,7 +308,7 @@ bool KviKvsObject_list::function_at(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setNothing();
 		return true;
 	}
-	KviKvsVariant * v = m_pDataList->at(uIndex);
+	KviKvsVariant * v = m_pDataList->value(uIndex);
 	if(v)c->returnValue()->copyFrom(*v);
 	else c->returnValue()->setNothing();
 	return true;

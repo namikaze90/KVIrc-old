@@ -1093,7 +1093,7 @@ namespace KviKvsCoreFunctions
 					unsigned int uIdx2 = 0;
 					while(uIdx2 < uSize)
 					{
-						KviKvsVariant * pInternal = z->at(uIdx2);
+						KviKvsVariant * pInternal = z->value(uIdx2);
 						if(pInternal)
 							a->set(uIdx,new KviKvsVariant(*pInternal));
 						// else

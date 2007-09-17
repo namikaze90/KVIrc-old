@@ -267,7 +267,7 @@ bool KviPluginManager::pluginCall(KviKvsModuleFunctionCall *c)
 		//Calculate buffer size
 		while (i < (iArgc + 2) )
 		{
-			c->params()->at(i)->asString(tmp);
+			c->params()->value(i)->asString(tmp);
 			iSize += tmp.length()+1; //+1 for the \0 characters
 			i++;
 		}
@@ -282,7 +282,7 @@ bool KviPluginManager::pluginCall(KviKvsModuleFunctionCall *c)
 		while (i < (iArgc + 2) )
 		{
 			ppArgv[i-2] = x;
-			c->params()->at(i)->asString(tmp);
+			c->params()->value(i)->asString(tmp);
 			strcpy(x,tmp.local8Bit());
 			x += tmp.length();
 

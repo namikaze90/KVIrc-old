@@ -171,7 +171,7 @@ namespace KviKvsParameterProcessor
 					{
 						for(i++;i<pVariantList->list()->count();i++)
 						{
-							v = pVariantList->at(i);
+							v = pVariantList->value(i);
 							*((QString *)(pFmtArray->pContainer)) += QChar(' ');
 							v->appendAsString(*((QString *)(pFmtArray->pContainer)));
 						}
@@ -186,7 +186,7 @@ namespace KviKvsParameterProcessor
 					((QStringList *)(pFmtArray->pContainer))->append(pSz);
 					for(i++;i<pVariantList->list()->count();i++)
 					{
-						v = pVariantList->at(i);
+						v = pVariantList->value(i);
 						v->asString(pSz);
 						((QStringList *)(pFmtArray->pContainer))->append(pSz);
 					}
@@ -200,7 +200,7 @@ namespace KviKvsParameterProcessor
 					((KviKvsVariantList *)(pFmtArray->pContainer))->append(v);
 					for(i++;i<pVariantList->list()->count();i++)
 					{
-						v = pVariantList->at(i);
+						v = pVariantList->value(i);
 						((KviKvsVariantList *)(pFmtArray->pContainer))->append(v);
 					}
 					return true;
@@ -214,7 +214,7 @@ namespace KviKvsParameterProcessor
 					{
 						for(i++;i<pVariantList->list()->count();i++)
 						{
-							v = pVariantList->at(i);
+							v = pVariantList->value(i);
 							*((QString *)(pFmtArray->pContainer)) += QChar(' ');
 							v->appendAsString(*((QString *)(pFmtArray->pContainer)));
 						}
@@ -240,7 +240,7 @@ namespace KviKvsParameterProcessor
 					{
 						for(i++;i<pVariantList->list()->count();i++)
 						{
-							v = pVariantList->at(i);
+							v = pVariantList->value(i);
 							*((KviQCString *)(pFmtArray->pContainer)) += ' ';
 							v->appendAsString(tmp);
 						}
@@ -259,7 +259,7 @@ namespace KviKvsParameterProcessor
 					{
 						for(i++;i<pVariantList->list()->count();i++)
 						{
-							v = pVariantList->at(i);
+							v = pVariantList->value(i);
 							*((KviQCString *)(pFmtArray->pContainer)) += ' ';
 							v->appendAsString(tmp);
 						}
@@ -357,7 +357,7 @@ namespace KviKvsParameterProcessor
 			}
 			pFmtArray++;
 			i++;
-			v = i < pVariantList->count() ? pVariantList->at(i) : 0;
+			v = i < pVariantList->count() ? pVariantList->value(i) : 0;
 		}
 		return true;
 	}

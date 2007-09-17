@@ -980,10 +980,10 @@ bool KviKvsObject_widget::function_setGeometry(KviKvsObjectFunctionCall *c)
 			return false;
 		}
 		// we must also manually extract the data from the array
-		KviKvsVariant * pX = pXOrArray->array()->at(0);
-		KviKvsVariant * pY = pXOrArray->array()->at(1);
-		KviKvsVariant * pW = pXOrArray->array()->at(2);
-		KviKvsVariant * pH = pXOrArray->array()->at(3);
+		KviKvsVariant * pX = pXOrArray->array()->value(0);
+		KviKvsVariant * pY = pXOrArray->array()->value(1);
+		KviKvsVariant * pW = pXOrArray->array()->value(2);
+		KviKvsVariant * pH = pXOrArray->array()->value(3);
 		// note that some of the array elements may be empty in fact
 		// a null value returned by KviKvsArray::at() means that
 		// no parameter was set in that place
@@ -1076,9 +1076,9 @@ bool KviKvsObject_widget::function_setPaletteForeground(KviKvsObjectFunctionCall
 			c->error(__tr2qs("The array passed as parameter must contain at least 3 elements"));
 			return false;
 		}
-		KviKvsVariant * pColR = pColArray->array()->at(0);
-		KviKvsVariant * pColG = pColArray->array()->at(1);
-		KviKvsVariant * pColB = pColArray->array()->at(2);
+		KviKvsVariant * pColR = pColArray->array()->value(0);
+		KviKvsVariant * pColG = pColArray->array()->value(1);
+		KviKvsVariant * pColB = pColArray->array()->value(2);
 
 		if(!(pColR && pColG && pColB))
 		{
@@ -1151,9 +1151,9 @@ bool KviKvsObject_widget::function_setBackgroundColor(KviKvsObjectFunctionCall *
 			c->error(__tr2qs("The array passed as parameter must contain at least 3 elements"));
 			return false;
 		}
-		KviKvsVariant * pColR = pColArray->array()->at(0);
-		KviKvsVariant * pColG = pColArray->array()->at(1);
-		KviKvsVariant * pColB = pColArray->array()->at(2);
+		KviKvsVariant * pColR = pColArray->array()->value(0);
+		KviKvsVariant * pColG = pColArray->array()->value(1);
+		KviKvsVariant * pColB = pColArray->array()->value(2);
 
 		if(!(pColR && pColG && pColB))
 		{
@@ -1399,8 +1399,8 @@ bool KviKvsObject_widget::function_move(KviKvsObjectFunctionCall *c)
 			c->error(__tr2qs("The array passed as parameter must contain at least 2 elements"));
 			return false;
 		}
-		KviKvsVariant * pX = pXOrArray->array()->at(0);
-		KviKvsVariant * pY = pXOrArray->array()->at(1);
+		KviKvsVariant * pX = pXOrArray->array()->value(0);
+		KviKvsVariant * pY = pXOrArray->array()->value(1);
 		if(!(pX && pY))
 		{
 			c->error(__tr2qs("One of the move array parameters is empty"));
@@ -1456,8 +1456,8 @@ bool KviKvsObject_widget::function_resize(KviKvsObjectFunctionCall *c)
 			c->error(__tr2qs("The array passed as parameter must contain at least 2 elements"));
 			return false;
 		}
-		KviKvsVariant * pW = pWOrArray->array()->at(0);
-		KviKvsVariant * pH = pWOrArray->array()->at(1);
+		KviKvsVariant * pW = pWOrArray->array()->value(0);
+		KviKvsVariant * pH = pWOrArray->array()->value(1);
 		if(!(pW && pH))
 		{
 			c->error(__tr2qs("One of the resize array parameters is empty"));

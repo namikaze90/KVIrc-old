@@ -753,7 +753,7 @@ void KviMdiManager::menuActivated(QAction * action)
 	if(id<100)return;
 	id-=100;
 	__range_valid(((uint)id) < m_pZ->count());
-	KviMdiChild *lpC=m_pZ->at(id);
+	KviMdiChild *lpC=m_pZ->value(id);
 	if(!lpC)return;
 	if(lpC->state()==KviMdiChild::Minimized)lpC->restore();
 	setTopChild(lpC,true);

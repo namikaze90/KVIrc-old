@@ -84,9 +84,9 @@ namespace KviKvsCoreFunctions
 
 		for (int i = 0; i < KVSCF_pParams->list()->size(); ++i)
 		{
-			KviKvsVariant * key = KVSCF_pParams->list()->at(i);
+			KviKvsVariant * key = KVSCF_pParams->list()->value(i);
 			i++;
-			KviKvsVariant * val = KVSCF_pParams->list()->at(i);
+			KviKvsVariant * val = KVSCF_pParams->list()->value(i);
 			if(!val)break;
 			QString sz;
 			key->asString(sz);

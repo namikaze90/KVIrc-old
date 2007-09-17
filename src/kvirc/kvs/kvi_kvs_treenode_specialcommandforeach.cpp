@@ -95,7 +95,7 @@ bool KviKvsTreeNodeSpecialCommandForeach::execute(KviKvsRunTimeContext * c)
 				unsigned int idx = 0;
 				while(idx < uCnt)
 				{
-					KviKvsVariant * pOne = pArg->array()->at(idx);
+					KviKvsVariant * pOne = pArg->array()->value(idx);
 					if(pOne)
 					{
 						v->result()->copyFrom(*pOne);

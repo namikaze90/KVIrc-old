@@ -1189,8 +1189,8 @@ bool KviKvsObject::function_setProperty(KviKvsObjectFunctionCall * c)
 		{
 			if(!v->isArray())WRONG_TYPE("array(integer,integer)")
 			KviKvsArray * a = v->array();
-			KviKvsVariant * x = a->at(0);
-			KviKvsVariant * y = a->at(1);
+			KviKvsVariant * x = a->value(0);
+			KviKvsVariant * y = a->value(1);
 			if(!x || !y)WRONG_TYPE("array(integer,integer)")
 			kvs_int_t iX,iY;
 			if(!x->asInteger(iX) || !y->asInteger(iY))WRONG_TYPE("array(integer,integer)")
@@ -1201,8 +1201,8 @@ bool KviKvsObject::function_setProperty(KviKvsObjectFunctionCall * c)
 		{
 			if(!v->isArray())WRONG_TYPE("array(integer,integer)")
 			KviKvsArray * a = v->array();
-			KviKvsVariant * w = a->at(0);
-			KviKvsVariant * h = a->at(1);
+			KviKvsVariant * w = a->value(0);
+			KviKvsVariant * h = a->value(1);
 			if(!w || !h)WRONG_TYPE("array(integer,integer)")
 			kvs_int_t iW,iH;
 			if(!w->asInteger(iW) || !h->asInteger(iH))WRONG_TYPE("array(integer,integer)")
@@ -1213,10 +1213,10 @@ bool KviKvsObject::function_setProperty(KviKvsObjectFunctionCall * c)
 		{
 			if(!v->isArray())WRONG_TYPE("array(integer,integer,integer,integer)")
 			KviKvsArray * a = v->array();
-			KviKvsVariant * x = a->at(0);
-			KviKvsVariant * y = a->at(1);
-			KviKvsVariant * w = a->at(2);
-			KviKvsVariant * h = a->at(3);
+			KviKvsVariant * x = a->value(0);
+			KviKvsVariant * y = a->value(1);
+			KviKvsVariant * w = a->value(2);
+			KviKvsVariant * h = a->value(3);
 			if(!x || !y || !w || !h)WRONG_TYPE("array(integer,integer,integer,integer)")
 			kvs_int_t iX,iY,iW,iH;
 			if(!x->asInteger(iX) || !y->asInteger(iY) || !w->asInteger(iW) || !h->asInteger(iH))WRONG_TYPE("array(integer,integer,integer,integer)")
@@ -1229,9 +1229,9 @@ bool KviKvsObject::function_setProperty(KviKvsObjectFunctionCall * c)
 		{
 			if(!v->isArray())WRONG_TYPE("array(integer,integer,integer)")
 			KviKvsArray * a = v->array();
-			KviKvsVariant * r = a->at(0);
-			KviKvsVariant * g = a->at(1);
-			KviKvsVariant * b = a->at(3);
+			KviKvsVariant * r = a->value(0);
+			KviKvsVariant * g = a->value(1);
+			KviKvsVariant * b = a->value(3);
 			if(!r || !g || !b)WRONG_TYPE("array(integer,integer,integer)")
 			kvs_int_t iR,iG,iB;
 			if(!r->asInteger(iR) || !g->asInteger(iG) || !b->asInteger(iB))WRONG_TYPE("array(integer,integer,integer)")
@@ -1242,9 +1242,9 @@ bool KviKvsObject::function_setProperty(KviKvsObjectFunctionCall * c)
 		{
 			if(!v->isArray())WRONG_TYPE("array(string,integer,string)")
 			KviKvsArray * a = v->array();
-			KviKvsVariant * ff = a->at(0);
-			KviKvsVariant * ps = a->at(1);
-			KviKvsVariant * fl = a->at(3);
+			KviKvsVariant * ff = a->value(0);
+			KviKvsVariant * ps = a->value(1);
+			KviKvsVariant * fl = a->value(3);
 			if(!ff || !ps)WRONG_TYPE("array(string,integer,string)")
 			kvs_int_t iPs;
 			if(!ps->asInteger(iPs))WRONG_TYPE("array(string,integer,string)")

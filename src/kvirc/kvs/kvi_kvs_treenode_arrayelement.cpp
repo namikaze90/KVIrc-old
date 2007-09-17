@@ -102,7 +102,7 @@ bool KviKvsTreeNodeArrayElement::evaluateReadOnlyInObjectScope(KviKvsObject * o,
 		return true;
 	}
 
-	KviKvsVariant * v = val.array()->at(iVal);
+	KviKvsVariant * v = val.array()->value(iVal);
 	if(!v)
 	{
 		pBuffer->setNothing();

@@ -1245,14 +1245,14 @@ void KviWindow::updateBackgrounds(QObject * obj)
 	{
 		for(unsigned int i=0;i<list->count();i++)
 		{
-			QObject * child = list->at(i);
+			QObject * child = list->value(i);
 #if QT_VERSION >= 300
 			// FIXME: check if this code can work with qt < 3.0.0 too
 			if(child->metaObject()->findProperty("TransparencyCapable",true) != -1)
 				((QWidget *)child)->update();
 #else
 
-			QVariant v = list->at(i)->property("TransparencyCapable");
+			QVariant v = list->value(i)->property("TransparencyCapable");
 			if(v.isValid())
 				((QWidget *)child)->update();
 #endif

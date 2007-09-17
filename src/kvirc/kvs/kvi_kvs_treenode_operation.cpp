@@ -1019,7 +1019,7 @@ bool KviKvsTreeNodeOperationArrayAppend::execute(KviKvsRunTimeContext * c)
 			unsigned int uSize = s->size();
 			while(uIdx < uSize)
 			{
-				KviKvsVariant * pInternal = s->at(uIdx);
+				KviKvsVariant * pInternal = s->value(uIdx);
 				if(pInternal)
 					a->set(a->size(),new KviKvsVariant(*pInternal));
 				// else

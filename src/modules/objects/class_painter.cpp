@@ -406,10 +406,10 @@ if(__pXOrArray->isArray())\
 			c->error(__tr2qs("The array passed as parameter must contain at least 4 elements"));\
 			return false;\
 		}\
-		KviKvsVariant * pX = __pXOrArray->array()->at(0);\
-		KviKvsVariant * pY = __pXOrArray->array()->at(1);\
-		KviKvsVariant * pW = __pXOrArray->array()->at(2);\
-		KviKvsVariant * pH = __pXOrArray->array()->at(3);\
+		KviKvsVariant * pX = __pXOrArray->array()->value(0);\
+		KviKvsVariant * pY = __pXOrArray->array()->value(1);\
+		KviKvsVariant * pW = __pXOrArray->array()->value(2);\
+		KviKvsVariant * pH = __pXOrArray->array()->value(3);\
 		if(!(pX && pY && pW && pH))\
 		{\
 			c->error(__tr2qs("One of the geometry array parameters is empty"));\
@@ -442,8 +442,8 @@ if(__pXOrArray->isArray())\
 			c->error(__tr2qs("The array passed as parameter must contain at least 2 elements"));\
 			return false;\
 		}\
-		KviKvsVariant * pX = __pXOrArray->array()->at(0);\
-		KviKvsVariant * pY = __pXOrArray->array()->at(1);\
+		KviKvsVariant * pX = __pXOrArray->array()->value(0);\
+		KviKvsVariant * pY = __pXOrArray->array()->value(1);\
 		if(!(pX && pY ))\
 		{\
 			c->error(__tr2qs("One of the array parameters is empty"));\
@@ -476,9 +476,9 @@ if(__pCol1OrArray->isArray())\
 			c->error(__tr2qs("The array passed as parameter must contain at least 3 elements"));\
 			return false;\
 		}\
-		KviKvsVariant * c1 = __pCol1OrArray->array()->at(0);\
-		KviKvsVariant * c2 = __pCol1OrArray->array()->at(1);\
-		KviKvsVariant * c3 = __pCol1OrArray->array()->at(2);\
+		KviKvsVariant * c1 = __pCol1OrArray->array()->value(0);\
+		KviKvsVariant * c2 = __pCol1OrArray->array()->value(1);\
+		KviKvsVariant * c3 = __pCol1OrArray->array()->value(2);\
 		if(!(c1 && c2 && c3))\
 		{\
 			c->error(__tr2qs("One of the array parameters is empty"));\

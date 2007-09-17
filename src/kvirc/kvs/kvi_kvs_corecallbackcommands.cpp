@@ -1106,7 +1106,7 @@ namespace KviKvsCoreCallbackCommands
 	KVSCCC(timer)
 	{
 		KviKvsVariant * vName = KVSCCC_pParams->first();
-		KviKvsVariant * vDelay = KVSCCC_pParams->at(1);
+		KviKvsVariant * vDelay = KVSCCC_pParams->value(1);
 
 		if(!vName || vName->isEmpty())
 		{

@@ -135,7 +135,7 @@ void KviDccRecvThread::updateStats()
 	m_pMutex->lock();
 	unsigned long uElapsedTime = uCurTime - m_uStartTime;
 	if(uElapsedTime < 1)uElapsedTime = 1;
-	m_iFilePosition = m_pFile->at();
+	m_iFilePosition = m_pFile->value();
 	m_iAverageSpeed = m_iTotalReceivedBytes / uElapsedTime;
 	if(m_uInstantSpeedInterval > INSTANT_BANDWIDTH_CHECK_INTERVAL_IN_MSECS)
 	{
@@ -208,7 +208,7 @@ void KviDccRecvThread::run()
 
 	if(m_pOpt->bSendZeroAck && (!m_pOpt->bNoAcks))
 	{
-		if(!sendAck(m_pFile->at()))goto exit_dcc;
+		if(!sendAck(m_pFile->value()))goto exit_dcc;
 	}
 
 	for(;;)
@@ -253,12 +253,12 @@ void KviDccRecvThread::run()
 					if(readLen > 0)
 					{
 						// Readed something useful...write back
-						if((m_pOpt->iTotalFileSize > -1) && ((readLen + (int)m_pFile->at()) > m_pOpt->iTotalFileSize))
+						if((m_pOpt->iTotalFileSize > -1) && ((readLen + (int)m_pFile->value()) > m_pOpt->iTotalFileSize))
 						{
 							postMessageEvent(__tr2qs_ctx("WARNING: The peer is sending garbage data past the end of the file","dcc"));
 							postMessageEvent(__tr2qs_ctx("WARNING: Ignoring data past the declared end of file and closing the connection","dcc"));
 
-							readLen = m_pOpt->iTotalFileSize - m_pFile->at();
+							readLen = m_pOpt->iTotalFileSize - m_pFile->value();
 							if(readLen > 0)
 							{
 								if(m_pFile->writeBlock(buffer,readLen) != readLen)
@@ -286,7 +286,7 @@ void KviDccRecvThread::run()
 							// Interrupt if the whole file has been received
 							if(m_pOpt->iTotalFileSize > 0)
 							{
-								if(((int)(m_pFile->at())) == m_pOpt->iTotalFileSize)
+								if(((int)(m_pFile->value())) == m_pOpt->iTotalFileSize)
 								{
 									// Received the whole file...die
 									KviThreadEvent * e = new KviThreadEvent(KVI_DCC_THREAD_EVENT_SUCCESS);
@@ -296,7 +296,7 @@ void KviDccRecvThread::run()
 							}
 						} else {
 							// Must send the ack... the peer must close the connection
-							if(!sendAck(m_pFile->at()))break;
+							if(!sendAck(m_pFile->value()))break;
 						}
 
 						// now take care of short reads
@@ -321,7 +321,7 @@ void KviDccRecvThread::run()
 						if(readLen == 0)
 						{
 							// readed EOF..
-							if((((int)(m_pFile->at())) == m_pOpt->iTotalFileSize) || (m_pOpt->iTotalFileSize < 0))
+							if((((int)(m_pFile->value())) == m_pOpt->iTotalFileSize) || (m_pOpt->iTotalFileSize < 0))
 							{
 								// success if we got the whole file or if we don't know the file size (we trust the peer)
 								KviThreadEvent * e = new KviThreadEvent(KVI_DCC_THREAD_EVENT_SUCCESS);
@@ -348,7 +348,7 @@ void KviDccRecvThread::run()
 				if(iFailedSelects > 3)
 					msleep(3 * iFailedSelects);
 
-				if(((int)(m_pFile->at())) == m_pOpt->iTotalFileSize)
+				if(((int)(m_pFile->value())) == m_pOpt->iTotalFileSize)
 				{
 					// Wait for the peer to close the connection
 					if(iProbableTerminationTime == 0)
@@ -503,7 +503,7 @@ void KviDccSendThread::run()
 	if(m_pOpt->iStartPosition > 0)
 	{
 		// seek
-		if(!(pFile->at(m_pOpt->iStartPosition)))
+		if(!(pFile->value(m_pOpt->iStartPosition)))
 		{
 			postErrorEvent(KviError_fileIOError);
 			goto exit_dcc;
@@ -546,7 +546,7 @@ void KviDccSendThread::run()
 						if(iBytesInAckBuffer == 4)
 						{
 							Q_UINT32 iNewAck = ntohl(*((Q_UINT32 *)ackbuffer));
-							if((iNewAck > pFile->at()) || (iNewAck < iLastAck))
+							if((iNewAck > pFile->value()) || (iNewAck < iLastAck))
 							{
 								// the peer is drunk or is trying to fool us
 								postErrorEvent(KviError_acknowledgeError);
@@ -604,10 +604,10 @@ void KviDccSendThread::run()
 			{
 				if(!pFile->atEnd())
 				{
-					if(m_pOpt->bFastSend || m_pOpt->bNoAcks || (iLastAck == pFile->at()))
+					if(m_pOpt->bFastSend || m_pOpt->bNoAcks || (iLastAck == pFile->value()))
 					{
 						// maximum readable size
-						int toRead = pFile->size() - pFile->at();
+						int toRead = pFile->size() - pFile->value();
 						// the max number of bytes we can send in this interval (bandwidth limit)
 						m_pMutex->lock(); // FIXME: how to remove this lock ?
 						int iMaxPossible = m_pOpt->uMaxBandwidth < MAX_DCC_BANDWIDTH_LIMIT ? m_pOpt->uMaxBandwidth * INSTANT_BANDWIDTH_CHECK_INTERVAL_IN_SECS : MAX_DCC_BANDWIDTH_LIMIT * INSTANT_BANDWIDTH_CHECK_INTERVAL_IN_SECS;
@@ -640,7 +640,7 @@ void KviDccSendThread::run()
 									if(!handleInvalidSocketRead(written))break;
 								} else {
 									// seek back to the right position
-									pFile->at(pFile->at() - (toRead - written));
+									pFile->value(pFile->value() - (toRead - written));
 								}
 							}
 						} else {
@@ -657,7 +657,7 @@ void KviDccSendThread::run()
 
 						m_iTotalSentBytes += written;
 						m_iInstantSentBytes += written;
-						m_iFilePosition = pFile->at();
+						m_iFilePosition = pFile->value();
 						updateStats();
 					}
 				} else {

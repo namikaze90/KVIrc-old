@@ -57,6 +57,7 @@ public:
 	QList<KviKvsVariant*> * list() { return m_pList; };
 	KviKvsVariant * first(){ return m_pList->first(); };
 	KviKvsVariant * at(int iIdx){ return m_pList->at(iIdx); };
+	KviKvsVariant * value(int iIdx){ return m_pList->value(iIdx); };
 	unsigned int count(){ return m_pList->count(); };
 	
 	void clear(){ m_pList->clear(); };

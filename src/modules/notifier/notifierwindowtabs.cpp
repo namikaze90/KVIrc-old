@@ -79,7 +79,7 @@ void KviNotifierWindowTab::setNextMessageAsCurrent()
 	int iId = m_pMessageList->indexOf(m_pCurrentMessage);
 	if(iId == m_pMessageList->count()-1) return;
 	iId++;
-	m_pCurrentMessage = m_pMessageList->at(iId);
+	m_pCurrentMessage = m_pMessageList->value(iId);
 	if(!m_pCurrentMessage)m_pCurrentMessage = m_pMessageList->last();
 }
 
@@ -89,7 +89,7 @@ void KviNotifierWindowTab::setPrevMessageAsCurrent()
 	int iId = m_pMessageList->indexOf(m_pCurrentMessage);
 	if(!iId) return;
 	iId--;
-	m_pCurrentMessage = m_pMessageList->at(iId);
+	m_pCurrentMessage = m_pMessageList->value(iId);
 	if(!m_pCurrentMessage)m_pCurrentMessage = m_pMessageList->first();
 }
 

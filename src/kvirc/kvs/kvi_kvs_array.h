@@ -34,29 +34,20 @@
 // This class must not have virtual funcitons nor destructor
 // Otherwise it will happily crash on windows when it is
 // allocated in modules and destroyed anywhere else around...
-class KVIRC_API KviKvsArray : public KviHeapObject
+class KVIRC_API KviKvsArray : public KviHeapObject, public QList<KviKvsVariant *>
 {
 public:
 	KviKvsArray();
 	KviKvsArray(const KviKvsArray &a);
 	~KviKvsArray();
-protected:
-	KviKvsVariant ** m_pData;
-	kvs_uint_t       m_uSize;
-	kvs_uint_t       m_uAllocSize;
 public:
 	void unset(kvs_uint_t uIdx);
 	void set(kvs_uint_t uIdx,KviKvsVariant * pVal);
-	KviKvsVariant * at(kvs_uint_t uIdx) const { return (uIdx < m_uSize) ? m_pData[uIdx] : 0; };
 	KviKvsVariant * getAt(kvs_uint_t uIdx);
-	bool isEmpty(){ return m_uSize == 0; };
-	kvs_uint_t size(){ return m_uSize; };
 	void appendAsString(QString &szBuffer);
 	void serialize(QString& result);
 	void sort();
 	void rsort();
-protected:
-	void findNewSize();
 };
 
 
