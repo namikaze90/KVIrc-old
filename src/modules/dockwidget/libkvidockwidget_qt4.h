@@ -59,7 +59,6 @@ public:
 	KviFrame * frame(){ return m_pFrm; };
 public:
 	virtual void refresh();
-	virtual void die();
 	void updateIcon();
 protected:
 	void grabActivityInfo();

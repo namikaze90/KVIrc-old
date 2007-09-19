@@ -78,6 +78,7 @@ public:
     void setDictionaryFile( const QString& );
     void setDocListFile( const QString& );
     void setDocList( const QStringList & );
+    void writeDocumentList();
 
 signals:
     void indexingProgress( int );
@@ -89,7 +90,6 @@ private:
     void setupDocumentList();
     void parseDocument( const QString&, int );
     void insertInDict( const QString&, int );
-    void writeDocumentList();
     void readDocumentList();
     QStringList getWildcardTerms( const QString& );
     QStringList split( const QString& );

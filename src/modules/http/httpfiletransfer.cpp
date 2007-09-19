@@ -82,16 +82,6 @@ KviHttpFileTransfer::~KviHttpFileTransfer()
 	}
 }
 
-void KviHttpFileTransfer::autoClean()
-{
-	die();
-}
-
-void KviHttpFileTransfer::die()
-{
-	delete this;
-}
-
 QString KviHttpFileTransfer::localFileName()
 {
 	return m_pHttpRequest->fileName();

@@ -81,7 +81,6 @@ public:
 	virtual int displayHeight(int iLineSpacing);
 	virtual void fillContextPopup(KviTalPopupMenu * m,int column);
 	virtual bool active();
-	virtual void die();
 	virtual QString tipText();
 	virtual QString localFileName();
 protected slots:

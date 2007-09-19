@@ -123,11 +123,6 @@ void KviMircServersIniImport::start()
 	delete this;
 }
 
-void KviMircServersIniImport::die()
-{
-	delete this;
-}
-
 
 
 
@@ -198,12 +193,14 @@ void KviRemoteMircServerImportWizard::pageSelected(const QString &title)
 
 void KviRemoteMircServerImportWizard::closeEvent(QCloseEvent *)
 {
-	m_pFilter->die();
+	delete m_pFilter;
+	m_pFilter = 0;
 }
 
 void KviRemoteMircServerImportWizard::done(int r)
 {
-	m_pFilter->die();
+	delete m_pFilter;
+	m_pFilter = 0;
 }
 
 
@@ -284,12 +281,6 @@ void KviRemoteMircServersIniImport::start()
 	m_pWizard = new KviRemoteMircServerImportWizard(this);
 	m_pWizard->show();
 }
-
-void KviRemoteMircServersIniImport::die()
-{
-	delete this;
-}
-
 
 static KviModuleExtension * mircimport_local_filter_alloc(KviModuleExtensionAllocStruct * s)
 {

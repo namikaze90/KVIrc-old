@@ -722,11 +722,6 @@ void KviFileTransferWindow::fillCaptionBuffers()
 	m_szHtmlInactiveCaption += "</b></font></nobr>";
 }
 
-void KviFileTransferWindow::die()
-{
-	close();
-}
-
 
 
 //#warning "Load & save properties of this kind of window"

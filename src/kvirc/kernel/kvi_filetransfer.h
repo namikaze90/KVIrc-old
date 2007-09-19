@@ -31,6 +31,7 @@
 
 
 #include "kvi_tal_listview.h"
+#include "kvi_heapobject.h"
 
 class KviFileTransfer;
 class KviWindow;
@@ -76,7 +77,7 @@ signals:
 #define COLUMN_PROGRESS 2
 
 
-class KVIRC_API KviFileTransfer : public QObject
+class KVIRC_API KviFileTransfer : public QObject, public KviHeapObject
 {
 	Q_OBJECT
 public:
@@ -110,7 +111,6 @@ public:
 	virtual QString retryCommand();
 	virtual int displayHeight(int iLineSpacing);
 	virtual void fillContextPopup(KviTalPopupMenu * m,int column) = 0;
-	virtual void die() = 0;
 };
 
 #endif //! _KVI_FILETRANSFER_H_

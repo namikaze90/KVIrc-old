@@ -63,7 +63,6 @@ protected:
 public: // Methods
 	virtual void control(int msg);
 	virtual void processData(KviIrcMessage * msg);
-	virtual void die();
 protected:
 	virtual QPixmap * myIconPtr();
 	virtual void fillCaptionBuffers();

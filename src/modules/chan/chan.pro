@@ -1,5 +1,4 @@
-TARGET = kvichan
- 
+TARGET = kvichan 
 
 SOURCES += libkvichan.cpp
  						

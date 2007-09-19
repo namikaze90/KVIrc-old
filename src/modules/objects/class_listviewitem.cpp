@@ -160,7 +160,6 @@ void KviKvsObject_listviewitem::childDestroyed()
 {
 	if(m_pListViewItem == 0)return;
 	m_pListViewItem = 0;
-	die();
 }
 
 KviKvsMdmStandardListViewItem::KviKvsMdmStandardListViewItem(KviKvsObject_listviewitem * ob,KviTalListView * par)

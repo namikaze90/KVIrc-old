@@ -73,7 +73,6 @@ protected:
 	QPixmap             * m_pMemPixmap;
 	int                   m_iLineSpacing; // cached fm value
 public: // Methods
-	virtual void die();
 protected:
 	QPixmap * memPixmap(){ return m_pMemPixmap; };
 	virtual QPixmap * myIconPtr();

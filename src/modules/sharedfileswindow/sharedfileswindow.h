@@ -93,7 +93,6 @@ protected:
 	QPushButton         * m_pEditButton;
 	QPushButton         * m_pAddButton;
 public: // Methods
-	virtual void die();
 protected:
 	virtual QPixmap * myIconPtr();
 	virtual void fillCaptionBuffers();

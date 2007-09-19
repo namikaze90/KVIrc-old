@@ -193,7 +193,7 @@ KviFrame::~KviFrame()
 	// Now start killing stuff
 
 	// Explicitly kill all the module extension toolbars: qt has NOT to delete them: we must call their "die" method
-	foreach(KviMexToolBar * t,*m_pModuleExtensionToolBarList)t->die();
+	qDeleteAll(*m_pModuleExtensionToolBarList);
 	delete m_pModuleExtensionToolBarList;
 
 	KVI_OPTION_BOOL(KviOption_boolShowDockExtension) = m_pDockExtension;
@@ -1149,7 +1149,8 @@ void KviFrame::toolbarsPopupSelected(QAction * action)
 
 	if(KviMexToolBar * t = moduleExtensionToolBar(idext))
 	{
-		t->die();
+		m_pModuleExtensionToolBarList->removeAll(t);
+		delete t;
 	} else {
 		g_pModuleExtensionManager->allocateExtension("toolbar",idext,firstConsole());
 	}

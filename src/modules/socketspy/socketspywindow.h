@@ -47,7 +47,6 @@ public:
 	virtual void outgoingMessage(const char * message,int len);
 	virtual void connectionInitiated();
 	virtual void connectionTerminated();
-	virtual void die();
 };
 
 #endif //_KVI_SOCKETSPYWINDOW_H_

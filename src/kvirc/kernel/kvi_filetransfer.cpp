@@ -61,11 +61,8 @@ void KviFileTransferManager::cleanup()
 
 void KviFileTransferManager::killAllTransfers()
 {
-	while(m_pTransferList)
-	{
-		KviFileTransfer * t = m_pTransferList->first();
-		t->die();
-	}
+	qDeleteAll(*m_pTransferList);
+	m_pTransferList->clear();
 }
 
 void KviFileTransferManager::killTerminatedTransfers()
@@ -79,8 +76,7 @@ void KviFileTransferManager::killTerminatedTransfers()
 		if(f->terminated())l.append(f);
 	}
 
-	foreach(KviFileTransfer * d,l)
-		d->die();
+	qDeleteAll(l);
 }
 
 void KviFileTransferManager::invokeTransferWindow(KviWindow * pWnd,bool bCreateMinimized,bool bNoRaise)

@@ -50,11 +50,6 @@ KviSocketSpyWindow::~KviSocketSpyWindow()
 	g_pSocketSpyWindowList->removeAll(this);
 }
 
-void KviSocketSpyWindow::die()
-{
-	close();
-}
-
 QPixmap * KviSocketSpyWindow::myIconPtr()
 {
 	return g_pIconManager->getSmallIcon(KVI_SMALLICON_SPY);

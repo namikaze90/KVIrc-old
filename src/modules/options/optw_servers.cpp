@@ -1204,7 +1204,7 @@ KviServerOptionsWidget::~KviServerOptionsWidget()
 	if(m_pImportFilter)
 	{
 		disconnect(m_pImportFilter,0,this,0);
-		m_pImportFilter->die();
+		delete m_pImportFilter;
 		m_pImportFilter = 0;
 	}
 

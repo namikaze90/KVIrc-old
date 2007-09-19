@@ -135,8 +135,6 @@ private:
 public:
 	static KviModuleExtensionManager * manager(){ return g_pModuleExtensionManager; };
 	KviModuleExtensionDescriptor * descriptor(){ return m_pDescriptor; };
-	// A module extension MUST implement die() as "delete this" <-- FIXME: this should be no longer necessary with KviHeapObject
-	virtual void die() = 0;
 };
 
 

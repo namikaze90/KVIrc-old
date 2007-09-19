@@ -37,7 +37,6 @@ public:
 	~KviMexServerImport();
 public:
 	virtual void start() = 0;
-	virtual void die() = 0;
 signals:
 	void server(const KviIrcServer &s,const char * network);
 };

@@ -695,12 +695,6 @@ void KviSharedFilesWindow::fillCaptionBuffers()
 
 }
 
-void KviSharedFilesWindow::die()
-{
-	close();
-}
-
-
 
 //#warning "Load & save properties of this kind of window"
 

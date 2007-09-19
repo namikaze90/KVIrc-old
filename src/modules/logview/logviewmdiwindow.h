@@ -112,7 +112,6 @@ protected:
 	virtual QPixmap * myIconPtr();
 	virtual void resizeEvent(QResizeEvent *e);
 	virtual void fillCaptionBuffers();
-	virtual void die();
 	virtual QSize sizeHint() const;
 protected slots:
 	void rightButtonClicked ( KviTalListViewItem *, const QPoint &, int );

@@ -39,8 +39,8 @@
 
 #include <qsplitter.h>
 Index        * g_pDocIndex = 0;
-KviPtrList<KviHelpWidget> * g_pHelpWidgetList = 0;
-KviPtrList<KviHelpWindow> * g_pHelpWindowList = 0;
+QList<KviHelpWidget*> * g_pHelpWidgetList = 0;
+QList<KviHelpWindow*> * g_pHelpWindowList = 0;
 
 /*
 	@doc: help.search
@@ -197,10 +197,8 @@ static bool help_module_init(KviModule * m)
 	
 
 	
-	g_pHelpWidgetList = new KviPtrList<KviHelpWidget>;
-	g_pHelpWidgetList->setAutoDelete(false);
-	g_pHelpWindowList = new KviPtrList<KviHelpWindow>;
-	g_pHelpWindowList->setAutoDelete(false);
+	g_pHelpWidgetList = new QList<KviHelpWidget*>;
+	g_pHelpWindowList = new QList<KviHelpWindow*>;
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"open",help_kvs_cmd_open);
 
@@ -211,10 +209,10 @@ static bool help_module_init(KviModule * m)
 static bool help_module_cleanup(KviModule *m)
 {
 	if(g_pDocIndex) delete g_pDocIndex;
-	while(g_pHelpWidgetList->first())delete g_pHelpWidgetList->first();
+	qDeleteAll(*g_pHelpWidgetList);
 	delete g_pHelpWidgetList;
     g_pHelpWidgetList = 0;
-	while(g_pHelpWindowList->first())g_pHelpWindowList->first()->close();
+    qDeleteAll(*g_pHelpWindowList);
 	delete g_pHelpWindowList;
     g_pHelpWindowList = 0;
 	return true;

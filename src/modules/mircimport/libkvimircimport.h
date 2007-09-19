@@ -25,6 +25,7 @@
 #include "kvi_mexserverimport.h"
 #include "kvi_string.h"
 #include "kvi_http.h"
+#include "kvi_heapobject.h"
 
 #include <kvi_tal_wizard.h>
 #include <qlineedit.h>
@@ -39,7 +40,6 @@ public:
 public:
 	int doImport(const QString& filename);
 	virtual void start();
-	virtual void die();
 };
 
 class KviRemoteMircServerImportWizard;
@@ -54,10 +54,9 @@ protected:
 	KviRemoteMircServerImportWizard * m_pWizard;
 public:
 	virtual void start();
-	virtual void die();
 };
 
-class KviRemoteMircServerImportWizard : public KviTalWizard
+class KviRemoteMircServerImportWizard : public KviTalWizard, public KviHeapObject
 {
 	Q_OBJECT
 public:

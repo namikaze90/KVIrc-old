@@ -59,6 +59,7 @@ class KviTalWidgetStack;
 #include "kvi_tal_hbox.h"
 #include "kvi_tal_widgetstack.h"
 #include "kvi_accel.h"
+#include "kvi_heapobject.h"
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	class KviCryptController;
@@ -132,7 +133,7 @@ class KviTalWidgetStack;
 #endif
 
 
-class KVIRC_API KviWindow : public QWidget
+class KVIRC_API KviWindow : public QWidget, public KviHeapObject
 {
 	friend class KviInput;
 	friend class KviFrame;

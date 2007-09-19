@@ -107,7 +107,7 @@ void KviIrcLink::destroySocket()
 	{
 		QObject::disconnect(m_pLinkFilter,0,this,0);
 		// the module extension server links must be destroyed in the module that provided it
-		m_pLinkFilter->die();
+		delete m_pLinkFilter;
 		m_pLinkFilter = 0;
 	}
 

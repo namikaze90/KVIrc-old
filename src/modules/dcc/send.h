@@ -44,7 +44,7 @@
 
 #include "kvi_filetransfer.h"
 #include "kvi_time.h"
-
+#include "kvi_heapobject.h"
 
 typedef struct _KviDccSendThreadOptions
 {
@@ -223,7 +223,6 @@ public:
 	virtual void fillContextPopup(KviTalPopupMenu * m,int column);
 	virtual void fillStatusString(QString &szBuffer);
 	virtual bool active();
-	virtual void die();
 	virtual QString tipText();
 	virtual QString localFileName();
 	

@@ -77,7 +77,7 @@ static bool list_module_init(KviModule * m)
 
 static bool list_module_cleanup(KviModule *m)
 {
-	while(!g_pListWindowList->isEmpty())g_pListWindowList->first()->die();
+	qDeleteAll(*g_pListWindowList);
 	delete g_pListWindowList;
     g_pListWindowList = 0;
 	return true;

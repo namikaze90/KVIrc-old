@@ -130,10 +130,6 @@ KviDockWidget::~KviDockWidget()
 	g_pDockWidgetList->removeAll(this);
 }
 
-void KviDockWidget::die()
-{
-	delete this;
-}
 void KviDockWidget::flashingTimerShot()
 {
 	m_bFlashed=!m_bFlashed;

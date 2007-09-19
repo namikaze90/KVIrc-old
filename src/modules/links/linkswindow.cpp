@@ -169,11 +169,6 @@ void KviLinksWindow::fillCaptionBuffers()
 		m_pConsole->ircContextId());
 }
 
-void KviLinksWindow::die()
-{
-	close();
-}
-
 void KviLinksWindow::control(int message)
 {
 	switch(message)

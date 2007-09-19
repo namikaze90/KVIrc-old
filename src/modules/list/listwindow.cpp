@@ -319,11 +319,6 @@ void KviListWindow::fillCaptionBuffers()
 		m_pConsole->ircContextId());
 }
 
-void KviListWindow::die()
-{
-	close();
-}
-
 void KviListWindow::exportList()
 {
 	if(!m_pListView->firstChild())

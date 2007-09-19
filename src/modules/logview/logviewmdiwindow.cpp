@@ -206,10 +206,6 @@ void KviLogViewMDIWindow::fillCaptionBuffers()
 	m_szHtmlInactiveCaption.append("</b></font></nobr>");
 }
 
-void KviLogViewMDIWindow::die()
-{
-	close();
-}
 
 QSize KviLogViewMDIWindow::sizeHint() const
 {
