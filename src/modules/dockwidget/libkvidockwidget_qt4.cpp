@@ -91,7 +91,7 @@ KviDockWidget::KviDockWidget(KviFrame * frm)
 	m_pAwayPopup = new KviTalPopupMenu(0);
 	connect(m_pAwayPopup,SIGNAL(triggered(QAction*)),this,SLOT(doAway(QAction)));
 	
-	// FIXME: THEXCEPTION > Qt4 does not supports labels > another way?
+	// Qt4 does not supports labels > another way?
 	/*
 	QLabel * l = new QLabel(__tr2qs("KVIrc"),m_pContextPopup);
 	l->setFrameStyle(QFrame::Raised | QFrame::StyledPanel);

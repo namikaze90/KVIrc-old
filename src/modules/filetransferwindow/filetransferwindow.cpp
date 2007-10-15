@@ -322,7 +322,7 @@ void KviFileTransferWindow::rightButtonPressed(KviTalListViewItem *it,const QPoi
 				tmp += "</nobr>";
 #endif //COMPILE_KDE_SUPPORT
 
-				// FIXME: THEXCEPTION > Qt4 does not allow widgets in popups
+				//  Qt4 does not allow widgets in popups
 				/*
 				QLabel * l = new QLabel(tmp,m_pLocalFilePopup);
 				l->setFrameStyle(QFrame::Raised | QFrame::Panel);

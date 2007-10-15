@@ -111,7 +111,7 @@ public:
 	QPushButton * m_pImportButton;
 	QPushButton * m_pExportButton;
 	QPushButton * m_pAddGroupButton;
-	QHash<int,KviRegisteredUserGroup*> m_TmpDict;
+	QHash<QAction*,KviRegisteredUserGroup*> m_TmpDict;
 
 	protected slots:
 	void itemPressed(KviTalListViewItem *it,const QPoint &pnt,int c);
@@ -134,7 +134,7 @@ protected slots:
 	void addWizardClicked();
 	void addGroupClicked();
 	void listViewRightButtonClicked ( KviTalListViewItem *, const QPoint &, int );
-	void moveToGroupMenuClicked(int);
+	void moveToGroupMenuClicked(QAction * action);
 };
 
 #endif

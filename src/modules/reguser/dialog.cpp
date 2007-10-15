@@ -428,12 +428,11 @@ void KviRegisteredUsersDialog::listViewRightButtonClicked ( KviTalListViewItem *
 			while(git!=pGroups->end())
 			{
 				QAction * action = groups->insertItem(git.key());
-				//FIXME: THEXCEPTION
-				//m_TmpDict.insert(id,git.value());
+				m_TmpDict.insert(action,git.value());
 				++git;
 			}
 			
-			connect(groups,SIGNAL(activated ( int )),this,SLOT(moveToGroupMenuClicked(int)));
+			connect(groups,SIGNAL(triggered(QAction*)),this,SLOT(moveToGroupMenuClicked(QAction*)));
 			
 			KviTalPopupMenu *mainPopup = new KviTalPopupMenu;
 			mainPopup->insertItem(__tr("Move to group"),groups);
@@ -442,9 +441,9 @@ void KviRegisteredUsersDialog::listViewRightButtonClicked ( KviTalListViewItem *
 	}
 }
 
-void KviRegisteredUsersDialog::moveToGroupMenuClicked(int id)
+void KviRegisteredUsersDialog::moveToGroupMenuClicked(QAction * action)
 {
-	QString szGroup=m_TmpDict.value(id)->name();
+	QString szGroup=m_TmpDict.value(action)->name();
 	KviTalListViewItemIterator it( m_pListView,  KviTalListViewItemIterator::Selected );
 	while ( it.current() ) {
 		KviRegisteredUsersDialogItemBase* b=(KviRegisteredUsersDialogItemBase*)(it.current());
