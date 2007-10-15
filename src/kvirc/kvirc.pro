@@ -453,7 +453,7 @@ mac {
 	LIBS += -lpthread -lssl -lcrypto -lz -lkvilib 
 }
 
-unix:LIBS += -lpthread -lssl -lcrypto -lz
+unix:LIBS += -lpthread -lssl -lcrypto -lz -lkvilib
 unix:DEFINES += COMPILE_THREADS_USE_POSIX COMPILE_USE_QT4
 unix:QMAKE_LFLAGS_SHAPP += -rdynamic
 
