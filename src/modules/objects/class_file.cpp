@@ -276,7 +276,7 @@ bool KviKvsObject_file::functionatEnd(KviKvsObjectFunctionCall *c)
 bool KviKvsObject_file::functionwhere(KviKvsObjectFunctionCall *c)
 {
 	if (!m_pFile->isOpen()) c->warning(__tr2qs("File is not open!"));
-	else c->returnValue()->setInteger((kvs_int_t)(m_pFile->value()));
+	else c->returnValue()->setInteger((kvs_int_t)(m_pFile->pos()));
 	return true;
 }
 bool KviKvsObject_file::functionseek(KviKvsObjectFunctionCall *c)
@@ -288,7 +288,7 @@ bool KviKvsObject_file::functionseek(KviKvsObjectFunctionCall *c)
 	if (!m_pFile) return true;
 	if(!m_pFile->isOpen())
 		c->warning(__tr("File is not open !"));
-	else m_pFile->value(uIndex);
+	else m_pFile->seek(uIndex);
 	return true;
 }
 
