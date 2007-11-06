@@ -95,8 +95,6 @@ protected slots:
 	void connectionEstabilished();
 
 	void abort();
-	
-	void autoClean();
 };
 
 
