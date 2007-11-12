@@ -30,6 +30,8 @@
 #include "kvi_kvs_variant.h"
 #include "object_macros.h"
 
+#include <QList>
+
 
 class KviKvsObject_list : public KviKvsObject
 {
@@ -37,6 +39,7 @@ public:
 	KVSO_DECLARE_OBJECT(KviKvsObject_list)
 protected:
 	QList<KviKvsVariant*> * m_pDataList;
+	int m_iPosition;
 protected:
 	QList<KviKvsVariant*> * dataList() const { return m_pDataList; };
 public:

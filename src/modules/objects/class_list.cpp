@@ -31,7 +31,6 @@
 
 #include <stdlib.h>
 
-
 /*
 	@doc: list
 	@keyterms:
@@ -166,6 +165,7 @@ KVSO_END_REGISTERCLASS(KviKvsObject_list)
 
 KVSO_BEGIN_CONSTRUCTOR(KviKvsObject_list,KviKvsObject)
 	m_pDataList = new QList<KviKvsVariant*>;
+	m_iPosition = 0;
 KVSO_END_CONSTRUCTOR(KviKvsObject_list)
 
 
@@ -182,7 +182,12 @@ bool KviKvsObject_list::function_current(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setNothing();
 		return true;
 	}
-	KviKvsVariant * v = m_pDataList->current();
+	KviKvsVariant * v = m_pDataList->at(m_iPosition);
+	if (v == 0) 
+	{
+		c->returnValue()->setNothing();
+		return true;
+	}
 	if(v)c->returnValue()->copyFrom(*v);
 	else c->returnValue()->setNothing();
 	return true;
@@ -195,7 +200,7 @@ bool KviKvsObject_list::function_eof(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setBoolean(true);
 		return true;
 	}
-	c->returnValue()->setBoolean(m_pDataList->current() != 0);
+	c->returnValue()->setBoolean(m_pDataList->at(m_iPosition) != 0);
 	return true;
 }
 
@@ -206,7 +211,13 @@ bool KviKvsObject_list::function_moveLast(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setBoolean(false);
 		return true;
 	}
-	c->returnValue()->setBoolean(m_pDataList->last() != 0);
+	m_iPosition = m_pDataList->count() - 1;
+	if (m_iPosition < 0)
+	{
+		c->returnValue()->setBoolean(false);
+		return true;
+	}
+	c->returnValue()->setBoolean(m_pDataList->at(m_iPosition) != 0);
 	return true;
 }
 
@@ -217,7 +228,13 @@ bool KviKvsObject_list::function_movePrev(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setBoolean(false);
 		return true;
 	}
-	c->returnValue()->setBoolean(m_pDataList->prev() != 0);
+	if (m_iPosition - 1 < 0)
+	{
+		c->returnValue()->setBoolean(false);
+		return true;
+	}
+	m_iPosition--;
+	c->returnValue()->setBoolean(m_pDataList->at(m_iPosition) != 0);
 	return true;
 }
 
@@ -228,7 +245,13 @@ bool KviKvsObject_list::function_moveNext(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setBoolean(false);
 		return true;
 	}
-	c->returnValue()->setBoolean(m_pDataList->next() != 0);
+	if (m_iPosition >= m_pDataList->count())
+	{
+		c->returnValue()->setBoolean(false);
+		return true;
+	}
+	m_iPosition--;
+	c->returnValue()->setBoolean(m_pDataList->at(m_iPosition) != 0);
 	return true;
 }
 
@@ -239,7 +262,14 @@ bool KviKvsObject_list::function_moveFirst(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setBoolean(false);
 		return true;
 	}
-	c->returnValue()->setBoolean(m_pDataList->first() != 0);
+	
+	if (m_pDataList->at(0) != 0)
+	{
+		c->returnValue()->setBoolean(m_pDataList->at(m_iPosition) != 0);
+		m_iPosition = 0;
+		return true;
+	}
+	c->returnValue()->setBoolean(false);
 	return true;
 }
 
@@ -250,7 +280,12 @@ bool KviKvsObject_list::function_removeLast(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setBoolean(false);
 		return true;
 	}
-	c->returnValue()->setBoolean(m_pDataList->removeLast());
+	m_pDataList->removeLast();
+	c->returnValue()->setBoolean(true);
+	if(m_iPosition >= m_pDataList->count())
+	{
+		if (m_iPosition > 0) m_iPosition = m_pDataList->count() - 1;
+	}
 	return true;
 }
 
@@ -261,9 +296,10 @@ bool KviKvsObject_list::function_removeCurrent(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setBoolean(false);
 		return true;
 	}
-	if(m_pDataList->currentNode())
+	if(m_pDataList->at(m_iPosition) != 0)
 	{
-		m_pDataList->removeNode(m_pDataList->currentNode());
+		m_pDataList->removeAt(m_iPosition);
+		m_iPosition--;
 		c->returnValue()->setBoolean(true);
 	} else {
 		c->returnValue()->setBoolean(false);
@@ -278,7 +314,14 @@ bool KviKvsObject_list::function_removeFirst(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setBoolean(false);
 		return true;
 	}
-	c->returnValue()->setBoolean(m_pDataList->removeFirst());
+	m_pDataList->removeFirst();
+	
+	if(m_iPosition >= m_pDataList->count())
+	{
+		if (m_iPosition > 0) m_iPosition = m_pDataList->count() - 1;
+	}
+	
+	c->returnValue()->setBoolean(true);
 	return true;
 }
 
@@ -293,7 +336,16 @@ bool KviKvsObject_list::function_remove(KviKvsObjectFunctionCall *c)
 		c->returnValue()->setBoolean(false);
 		return true;
 	}
-	c->returnValue()->setBoolean(m_pDataList->remove(uIndex));
+	if (uIndex >= 0 && uIndex < m_pDataList->count())
+	{
+		m_pDataList->removeAt(uIndex);
+		c->returnValue()->setBoolean(true);
+	} else c->returnValue()->setBoolean(false);
+	
+	if(m_iPosition >= m_pDataList->count())
+	{
+		if (m_iPosition > 0) m_iPosition = m_pDataList->count() - 1;
+	}
 	return true;
 }
 
@@ -358,7 +410,7 @@ bool KviKvsObject_list::function_clear(KviKvsObjectFunctionCall *c)
 bool KviKvsObject_list::function_sort(KviKvsObjectFunctionCall *c)
 {
 	if(!m_pDataList)return true;
-	m_pDataList->sort();
+	//m_pDataList->sort();
 	return true;
 }
 
