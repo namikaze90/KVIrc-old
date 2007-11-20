@@ -25,7 +25,8 @@
 
 
 #include "kvi_tal_popupmenu.h"
-#include <qcursor.h>
+#include <QCursor>
+#include <QList>
 #include "class_widget.h"
 #include "object_macros.h"
 
@@ -50,8 +51,10 @@ protected:
 	bool functionhighlightedEvent(KviKvsObjectFunctionCall *c);
 
 protected slots:
-	void slotactivated(int);
-	void slothighlighted(int);
+	void slotactivated(QAction * action);
+	void slothighlighted(QAction * action);
+private:
+	QList<QAction*> m_ActionList;
 };
 
 #endif	// !_CLASS_POPUPMENU_H_
