@@ -1572,7 +1572,7 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 		QString szLabel(pLabelBegin,KVSP_curCharPointer - pLabelBegin);
 		QString szLabelLow = szLabel.lower();
 
-		QStringList* pParameters =0;
+		QStringList * pParameters = 0;
 		
 		QString szCondition;
 
@@ -1695,7 +1695,8 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			EXTRACT_POPUP_LABEL_CONDITION
 
 			QString szText = pParameters->first();
-			if(!szText.isEmpty())
+			
+			if(szText.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <text> field in label parameters. See /help defpopup for the syntax"));
 				delete pParameters;
@@ -1714,7 +1715,7 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			EXTRACT_POPUP_LABEL_CONDITION
 
 			QString szText = pParameters->first();
-			if(!szText.isEmpty())
+			if(szText.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <text> field in extpopup parameters. See /help defpopup for the syntax"));
 				delete pParameters;
@@ -1745,7 +1746,8 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			EXTRACT_POPUP_LABEL_CONDITION
 
 			QString szText = pParameters->first();
-			if(!szText.isEmpty())
+			debug("Parameters: " + szText);
+			if(szText.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <text> field in extpopup parameters. See /help defpopup for the syntax"));
 				delete pParameters;
@@ -1795,7 +1797,7 @@ KviKvsTreeNodeSpecialCommandDefpopupLabelPopup * KviKvsParser::parseSpecialComma
 			EXTRACT_POPUP_LABEL_CONDITION
 
 			QString szText = pParameters->first();
-			if(!szText.isEmpty())
+			if(szText.isEmpty())
 			{
 				error(pLabelBegin,__tr2qs("Unexpected empty <text> field in extpopup parameters. See /help defpopup for the syntax"));
 				delete pParameters;
