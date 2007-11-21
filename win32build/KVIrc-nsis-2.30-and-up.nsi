@@ -5,7 +5,7 @@
 
 Name "KVIrc"
 !define VERSION '3.9.99'
-!define RELEASE_NAME 'Anomalies'
+!define RELEASE_NAME 'Insomnia'
 !define /date RELEASE_VERSION '%Y%m%d'
 !define URL_ABOUT 'http://www.kvirc.net/'
 !define URL_SUPPORT 'http://www.kvirc.net/'
