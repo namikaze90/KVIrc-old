@@ -71,17 +71,27 @@ extern KviAboutDialog * g_pAboutDialog;
 #include "abouttext.inc"
 
 KviAboutDialog::KviAboutDialog()
-: KviTalTabDialog(0)
+: QDialog()
 {
-	setCaption(__tr2qs_ctx("About KVIrc...","about"));
-	setOkButton(__tr2qs_ctx("Close","about"));
-
+	_tabs = new QTabWidget();
+	_buttons = new QDialogButtonBox();
+	QPushButton * btnOk = _buttons->addButton(__tr2qs_ctx("Close","about"),QDialogButtonBox::AcceptRole);
+		
+	setModal(false);
+	setWindowTitle(__tr2qs_ctx("About KVIrc...","about"));
+		
+	QVBoxLayout * mainLayout = new QVBoxLayout();
+	mainLayout->addWidget(_tabs);
+	mainLayout->addWidget(_buttons);
+	setLayout(mainLayout);
+	debug("created");
+	
 	QString buffer;
 	g_pApp->findImage(buffer,"kvi_splash.png");
 
 	QPixmap pix(buffer);
 
-	QWidget * w = new QWidget(this);
+	QWidget * w = new QWidget(_tabs);
 	QGridLayout * g = new QGridLayout(w,2,1,4,8);
 
 	QLabel * l = new QLabel(w);
@@ -103,11 +113,11 @@ KviAboutDialog::KviAboutDialog()
 	l->setAlignment(Qt::AlignCenter);
 	g->addWidget(l,1,0);
 
-	addTab(w,__tr2qs_ctx("About","about"));
+	_tabs->addTab(w,__tr2qs_ctx("About","about"));
 	
 
 
-	w = new QWidget(this);
+	w = new QWidget(_tabs);
 	g = new QGridLayout(w,1,1,4,8);
 
 	KviTalTextEdit * v = new KviTalTextEdit(w);
@@ -116,11 +126,11 @@ KviAboutDialog::KviAboutDialog()
 
 	v->setText(g_szAboutText);
 
-	addTab(w,__tr2qs_ctx("Honor && Glory","about"));
+	_tabs->addTab(w,__tr2qs_ctx("Honor && Glory","about"));
 
 
 
-	w = new QWidget(this);
+	w = new QWidget(_tabs);
 	g = new QGridLayout(w,1,1,4,8);
 
 	v = new KviTalTextEdit(w);
@@ -142,15 +152,17 @@ KviAboutDialog::KviAboutDialog()
 
 	v->setText(szLicense);
 
-	addTab(w,__tr2qs_ctx("License","about"));
+	_tabs->addTab(w,__tr2qs_ctx("License","about"));
 
 
-	connect(this,SIGNAL(applyButtonPressed()),this,SLOT(closeButtonPressed()));
+	connect(btnOk,SIGNAL(clicked(bool)),this,SLOT(closeButtonPressed(bool)));
 }
 
 KviAboutDialog::~KviAboutDialog()
 {
 	g_pAboutDialog = 0;
+	delete _tabs;
+	delete _buttons;
 }
 
 void KviAboutDialog::closeEvent(QCloseEvent * e)
@@ -159,7 +171,7 @@ void KviAboutDialog::closeEvent(QCloseEvent * e)
 	delete this;
 }
 
-void KviAboutDialog::closeButtonPressed()
+void KviAboutDialog::closeButtonPressed(bool checked)
 {
 	delete this;
 }

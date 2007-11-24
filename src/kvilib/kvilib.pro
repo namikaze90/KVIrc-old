@@ -26,7 +26,6 @@ HEADERS += tal/kvi_tal_application_kde.h \
     tal/kvi_tal_menubar_qt.h \
     tal/kvi_tal_popupmenu.h \
     tal/kvi_tal_scrollview_qt4.h \
-    tal/kvi_tal_tabdialog_qt4.h \
     tal/kvi_tal_textedit_qt4.h \
     tal/kvi_tal_toolbar_qt4.h \
     tal/kvi_tal_vbox_qt4.h \
@@ -44,7 +43,6 @@ HEADERS += tal/kvi_tal_application_kde.h \
     tal/kvi_tal_menubar.h \
     tal/kvi_tal_popupmenu.h \
     tal/kvi_tal_scrollview.h \
-    tal/kvi_tal_tabdialog.h \
     tal/kvi_tal_textedit.h \
     tal/kvi_tal_toolbar.h \
     tal/kvi_tal_toolbardocktype.h \
@@ -132,7 +130,6 @@ SOURCES += tal/kvi_tal_application.cpp \
     tal/kvi_tal_menubar.cpp \
     tal/kvi_tal_popupmenu.cpp \
     tal/kvi_tal_scrollview.cpp \
-    tal/kvi_tal_tabdialog.cpp \
     tal/kvi_tal_textedit.cpp \
     tal/kvi_tal_toolbar.cpp \
     tal/kvi_tal_tooltip.cpp \

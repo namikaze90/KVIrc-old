@@ -22,18 +22,24 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include <kvi_tal_tabdialog.h>
+//include <kvi_tal_tabdialog.h>
 
-class KviAboutDialog : public KviTalTabDialog
+#include <QDialog>
+#include <QtGui>
+
+class KviAboutDialog : public QDialog
 {
 	Q_OBJECT
+private:
+	QTabWidget * _tabs;
+	QDialogButtonBox * _buttons;
 public:
 	KviAboutDialog();
 	~KviAboutDialog();
 protected:
 	virtual void closeEvent(QCloseEvent *e);
 protected slots:
-	void closeButtonPressed();
+	void closeButtonPressed(bool checked);
 };
 
 #endif //_ABOUTDIALOG_H_
