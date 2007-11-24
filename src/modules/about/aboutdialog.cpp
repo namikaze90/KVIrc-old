@@ -30,13 +30,14 @@
 #include "kvi_app.h"
 #include "kvi_fileutils.h"
 #include "kvi_sourcesdate.h"
-
-#include <qwidget.h>
-#include <qlayout.h>
 #include <kvi_tal_textedit.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qevent.h>
+
+#include <QWidget>
+#include <QLayout>
+#include <QLabel>
+#include <QPixmap>
+#include <QCloseEvent>
+
 
 extern KviAboutDialog * g_pAboutDialog;
 /*
@@ -152,7 +153,7 @@ KviAboutDialog::~KviAboutDialog()
 	g_pAboutDialog = 0;
 }
 
-void KviAboutDialog::closeEvent(QCloseEvent *e)
+void KviAboutDialog::closeEvent(QCloseEvent * e)
 {
 	e->ignore();
 	delete this;
@@ -162,3 +163,4 @@ void KviAboutDialog::closeButtonPressed()
 {
 	delete this;
 }
+
