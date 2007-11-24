@@ -26,7 +26,7 @@
 
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
-#include <qdialog.h>
+#include <QDialog>
 
 class QLineEdit;
 class KviIrcConnection;

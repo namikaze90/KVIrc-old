@@ -46,13 +46,12 @@
 #include "kvi_ircmask.h"
 #include "kvi_qcstring.h"
 
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qmessagebox.h>
-#include <qtimer.h>
-#include <qlabel.h>
-#include "kvi_tal_hbox.h"
-#include <qlayout.h>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QMessageBox>
+#include <QTimer>
+#include <QLabel>
+#include <QLayout>
 
 static QList<KviAsyncAvatarSelectionDialog*> * g_pAvatarSelectionDialogList = 0;
 extern KVIRC_API KviSharedFilesManager * g_pSharedFilesManager;
@@ -90,15 +89,27 @@ KviAsyncAvatarSelectionDialog::KviAsyncAvatarSelectionDialog(QWidget * par,const
 	QPushButton * b = new QPushButton(__tr2qs("&Browse..."),this);
 	connect(b,SIGNAL(clicked()),this,SLOT(chooseFileClicked()));
 	g->addWidget(b,1,2);
-	KviTalHBox * h = new KviTalHBox(this);h->setSpacing(8);g->addMultiCellWidget(h,2,2,1,2);
+	
+	QWidget * h = new QWidget;
+
+	QHBoxLayout * layout = new QHBoxLayout;
+	layout->setSpacing(8);
+	h->setLayout(layout);
+	
+	g->addMultiCellWidget(h,2,2,1,2);
 	b = new QPushButton(__tr2qs("&OK"),h);
+	layout->addWidget(b);
+	
 	b->setMinimumWidth(80);
 	b->setDefault(true);
 	connect(b,SIGNAL(clicked()),this,SLOT(okClicked()));
 
 	b = new QPushButton(__tr2qs("Cancel"),h);
 	b->setMinimumWidth(80);
+	layout->addWidget(b);
 	connect(b,SIGNAL(clicked()),this,SLOT(cancelClicked()));
+	
+	h->setLayout(layout);
 	
 	g->setRowStretch(0,1);
 	g->setColStretch(0,1);
