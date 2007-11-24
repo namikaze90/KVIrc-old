@@ -1,3 +1,43 @@
+24 Nov 2007
+	[TheXception]
+	- more bugfixes
+	- more porting to Qt4
+	- fixed (kvs) popupmenus
+	- ported about module
+	[Pragma]
+	- translation
+	[Losko]
+	- changed a bit on default script
+29 Oct 2007
+	[Alexey]
+	- many bugfixes
+	- more porting to Qt4
+	[TheXception]
+	- ported popupmenus to Qt4
+	- some bugfixes
+
+01-11 Sep 2007
+	[Alexey]
+	- complete removal of KviAsciiDicts
+	- many bugfixes
+
+20-25 Aug 2007
+	[TheXception]
+	- removed old Qt3 code where Qt4 code exists
+	- bugfixes
+	[Pragma]
+	- fixed unix qmake projects
+	[Alexey]
+	- KVIrc kernel interface ported to Qt4
+
+02 Jul 2007 - 19 Aug 2007
+	[Alexey]
+	- Created qmake branch
+	- Created qmake project files
+	- Started Qt4 porting
+	- Many Qt4 fixes
+	(- to be completed .........)
+
 02 May 2007
    [Alexey]
    - New KVS functions: $serialize and $unserialize to deal with JSON-serialized strings
