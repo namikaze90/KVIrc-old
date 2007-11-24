@@ -35,10 +35,10 @@
 #include "kvi_kvs_script.h"
 #include "kvi_kvs_variantlist.h"
 
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qtoolbutton.h>
+#include <QPushButton>
+#include <QLayout>
+#include <QLabel>
+#include <QToolButton>
 #include "kvi_tal_popupmenu.h"
 
 extern QList<KviCodeTesterWindow*> * g_pCodeTesterWindowList;

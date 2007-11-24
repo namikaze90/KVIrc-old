@@ -27,7 +27,7 @@
 #include "kvi_string.h"
 #include "kvi_tal_groupbox.h"
 
-#include <qdialog.h>
+#include <QDialog>
 
 class KviConsole;
 class KviTalGroupBox;

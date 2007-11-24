@@ -35,18 +35,18 @@
 #include "kvi_regchan.h"
 #include "kvi_kvs_script.h"
 
-#include <qlabel.h>
-#include <qlineedit.h>
-#include "kvi_tal_listview.h"
-#include <kvi_tal_groupbox.h>
-#include <qlayout.h>
-#include <qcheckbox.h>
-#include <qpushbutton.h>
+#include <QLabel>
+#include <QLineEdit>
+#include <QLayout>
+#include <QCheckBox>
+#include <QPushButton>
+#include <QCloseEvent>
 
 // TODO: Qt4
 #include <q3header.h>
-
-#include <qevent.h>
+#include "kvi_tal_listview.h"
+#include <kvi_tal_groupbox.h>
+// end TODO
 
 extern KviChannelsJoinWindow * g_pChannelsWindow;
 extern QRect                   g_rectChannelsJoinGeometry;

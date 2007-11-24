@@ -30,7 +30,7 @@
 #include "kvi_locale.h"
 #include "kvi_config.h"
 
-#include <qsplitter.h>
+#include <QSplitter>
 
 KviChannelsJoinWindow * g_pChannelsWindow = 0;
 QRect                   g_rectChannelsJoinGeometry;
