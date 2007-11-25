@@ -38,6 +38,8 @@
 // TODO: Qt4
 #include <q3mimefactory.h>
 
+extern QStringList * g_pHelpPaths;
+
 
 namespace KviKvsCoreSimpleCommands
 {
@@ -135,7 +137,7 @@ namespace KviKvsCoreSimpleCommands
 			QString szOriginal = szTopic;
 	
 			QString topik = szTopic;
-			QStringList pl = Q3MimeSourceFactory::defaultFactory()->filePath();
+			QStringList pl = *g_pHelpPaths;
 
 			bool bLowCaseTried = false;
 			bool bFound = KviFileUtils::fileExists(szTopic);

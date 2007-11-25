@@ -86,26 +86,22 @@
 #include "kvi_sourcesdate.h"
 
 #include "kvi_tal_popupmenu.h"
-#include <qsplitter.h>
-#include <qstringlist.h>
-
-#include <qmime.h>
-
-// TODO: Qt4
-#include <q3mimefactory.h>
+#include <QSplitter>
+#include <QStringList>
 
 #include "kvi_tal_listbox.h"
-#include <qclipboard.h>
-#include <qmessagebox.h>
-#include <qtextcodec.h>
-#include <qmetaobject.h>
+
+#include <QClipboard>
+#include <QMessageBox>
+#include <QTextCodec>
+#include <QMetaObject>
 
 #ifdef COMPILE_SSL_SUPPORT
 	#include "kvi_ssl.h"
 #endif
 
 #ifdef COMPILE_ON_WINDOWS
-#include <QPluginLoader>
+	#include <QPluginLoader>
 #endif
 
 KVIRC_API KviApp                       * g_pApp                    = 0; // global application pointer
@@ -138,6 +134,9 @@ KVIRC_API int                            g_iIdentDaemonRunningUsers   = 0; // th
 
 KVIRC_API KviSplashScreen       * g_pSplashScreen           = 0;
 
+// global help directories:
+
+KVIRC_API QStringList	* g_pHelpPaths	= 0;
 
 // Loaded and destroyed by KviIconManager
 QPixmap                             * g_pUserChanStatePixmap    = 0;
@@ -173,6 +172,7 @@ KviApp::KviApp(int &argc,char ** argv)
 {
 	// Ok...everything begins here
 	g_pApp                  = this;
+	g_pHelpPaths			= new QStringList();
 	m_szConfigFile          = QString::null;
 	m_bCreateConfig         = false;
 	m_bShowSplashScreen     = true;
@@ -246,22 +246,20 @@ void KviApp::setup()
 	QTextCodec::setCodecForCStrings(KviLocale::codecForName("UTF-8"));
 
 	// Set the default help files search path
-	QStringList list;
 	QString tmp;
 	getLocalKvircDirectory(tmp,Help); // localized help/lang or help if help/lang doesn't exist
-	list.append(tmp);
+	g_pHelpPaths->append(tmp);
 	getLocalKvircDirectory(tmp,HelpEN); // help/en
-	list.append(tmp);
+	g_pHelpPaths->append(tmp);
 	getLocalKvircDirectory(tmp,HelpNoIntl); // just help/
-	list.append(tmp);
+	g_pHelpPaths->append(tmp);
 	getGlobalKvircDirectory(tmp,Help);
-	list.append(tmp);
+	g_pHelpPaths->append(tmp);
 	getGlobalKvircDirectory(tmp,HelpEN);
-	list.append(tmp);
+	g_pHelpPaths->append(tmp);
 	getGlobalKvircDirectory(tmp,HelpNoIntl);
-	list.append(tmp);
+	g_pHelpPaths->append(tmp);
 
-	Q3MimeSourceFactory::defaultFactory()->setFilePath(list);
 
 	KVI_SPLASH_SET_PROGRESS(1)
 
@@ -637,6 +635,8 @@ KviApp::~KviApp()
 	WSACleanup();
 #endif
 
+	if (g_pHelpPaths) delete g_pHelpPaths;
+	
 	KviLocale::done(this);
 
 	// goodbye cruel world...
