@@ -51,23 +51,24 @@
 #include <q3vbox.h>
 
 
-#include <qimage.h>
-#include <qstring.h>
-#include <qcombobox.h>
+#include <QImage>
+#include <QString>
+#include <QComboBox>
 
+#include <QtGui>
 
-#include <qstyle.h>
-#include <qpainter.h>
+#include <QStyle>
+#include <QPainter>
 #include "kvi_tal_hbox.h"
 #include "kvi_tal_vbox.h"
-#include <qinputdialog.h>
+#include <QInputdialog>
 
 #include "wizard.h"
 #include "dialog.h"
 
 
 #ifdef COMPILE_INFO_TIPS
-	#include <qtooltip.h>
+	#include <QToolTip>
 #endif // COMPILE_INFO_TIPS
 
 // kvi_app.cpp
@@ -309,8 +310,18 @@ void KviReguserMaskDialog::okClicked()
 
 
 KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegisteredUser * r,bool bModal)
-: KviTalTabDialog(p,"reguser_entry_editor",bModal)
 {
+	m_pTabs = new QTabWidget();
+	m_pButtons = new QDialogButtonBox();
+	QPushButton * btnOk = m_pButtons->addButton(__tr2qs("&OK"),QDialogButtonBox::AcceptRole);
+	QPushButton * btnCancel = m_pButtons->addButton(__tr2qs("Cancel"),QDialogButtonBox::RejectRole);
+
+	connect(btnOk,SIGNAL(clicked(bool)),this,SLOT(okClicked(bool)));
+	connect(btnCancel,SIGNAL(clicked(bool)),this,SLOT(reject(bool)));
+	
+	setModal(false);
+	setWindowTitle(__tr2qs("Registered User Entry"));
+	
 	m_pUser = r;
 	m_pCustomColor = new QColor();
 	
@@ -325,7 +336,6 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 	//setMinimumSize(400,450);
 
 	setIcon(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_LINUX)));
-	setCaption(__tr2qs("Registered User Entry"));
 
 	QWidget * p1 = new QWidget(this);
 
@@ -377,7 +387,7 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 	g->setRowStretch(4,1);
 	g->setColStretch(1,1);
 
-	addTab(p1,__tr2qs("Identity"));
+	m_pTabs->addTab(p1,__tr2qs("Identity"));
 
 
 
@@ -440,7 +450,7 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 	g->setColStretch(1,1);
 	g->setRowStretch(3,1);
 
-	addTab(p2,__tr2qs("Properties"));
+	m_pTabs->addTab(p2,__tr2qs("Properties"));
 
 	// Ignore TAB
 	Q3VBox * vb = new Q3VBox(this);
@@ -475,12 +485,7 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 	QWidget *w = new QWidget(vb);
 	w->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
 
-	addTab(vb,__tr2qs("Ignore"));
-
-	setCancelButton(__tr2qs("Cancel"));
-	setOkButton(__tr2qs("&OK"));
-	connect(this,SIGNAL(applyButtonPressed()),this,SLOT(okClicked()));
-	connect(this,SIGNAL(cancelButtonPressed()),this,SLOT(reject()));
+	m_pTabs->addTab(vb,__tr2qs("Ignore"));
 
 	if(r)
 	{
@@ -531,7 +536,7 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 void KviRegisteredUserEntryDialog::closeEvent(QCloseEvent *e)
 {
 	e->accept();
-	okClicked();
+	okClicked(false);
 	//delete this;
 }
 
@@ -540,6 +545,8 @@ KviRegisteredUserEntryDialog::~KviRegisteredUserEntryDialog()
 	delete m_pAvatar;
 	delete m_pPropertyDict;
 	delete m_pCustomColor;
+	delete m_pTabs;
+	delete m_pButtons;
 }
 
 void KviRegisteredUserEntryDialog::maskCurrentChanged(KviTalListBoxItem *it)
@@ -548,7 +555,7 @@ void KviRegisteredUserEntryDialog::maskCurrentChanged(KviTalListBoxItem *it)
 	m_pEditMaskButton->setEnabled(it);
 }
 
-void KviRegisteredUserEntryDialog::okClicked()
+void KviRegisteredUserEntryDialog::okClicked(bool checked)
 {
 	QString szGroup;
 	if(m_pUser)

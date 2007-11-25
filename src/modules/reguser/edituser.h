@@ -28,13 +28,13 @@
 #include "kvi_regusersdb.h"
 #include "kvi_selectors.h"
 
-#include <qwidget.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
+#include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QDialog>
+#include <QtGui>
 #include "kvi_tal_listview.h"
 #include "kvi_tal_listbox.h"
-
-#include <kvi_tal_tabdialog.h>
 
 // TODO: Qt4
 #include <q3table.h>
@@ -90,9 +90,12 @@ protected slots:
 };
 
 
-class KviRegisteredUserEntryDialog : public KviTalTabDialog
+class KviRegisteredUserEntryDialog : public QDialog
 {
 	Q_OBJECT
+private:
+	QTabWidget * m_pTabs;
+	QDialogButtonBox * m_pButtons;
 public:
 	KviRegisteredUserEntryDialog(QWidget * p,KviRegisteredUser * r,bool bModal = true);
 	virtual ~KviRegisteredUserEntryDialog();
@@ -131,7 +134,7 @@ protected:
 
 	virtual void closeEvent(QCloseEvent *);
 protected slots:
-	void okClicked();
+	void okClicked(bool checked);
 	void addMaskClicked();
 	void delMaskClicked();
 	void editMaskClicked();
