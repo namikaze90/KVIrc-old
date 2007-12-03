@@ -31,127 +31,54 @@
 #include "kvi_options.h"
 #include "kvi_fileutils.h"
 
-#include <qpushbutton.h>
-
-// TODO: Qt4
-#include <q3simplerichtext.h>
+#include <QPushButton>
 #include <QDesktopWidget>
 #include <QCloseEvent>
-#define KviTalSimpleRichText Q3SimpleRichText
-
-#include <qfont.h>
-#include <qtextcodec.h>
-#include <qpainter.h>
+#include <QFont>
+#include <QTextCodec>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 KviTipWindow * g_pTipWindow = 0;
 
-#define KVI_TIP_WINDOW_HEIGHT 200
-#define KVI_TIP_WINDOW_WIDTH 500
-#define KVI_TIP_WINDOW_BUTTON_WIDTH 80
-#define KVI_TIP_WINDOW_BUTTON_HEIGHT 30
-#define KVI_TIP_WINDOW_BORDER 5
-#define KVI_TIP_WINDOW_DOUBLE_BORDER 10
-#define KVI_TIP_WINDOW_SPACING 2
-
-
-KviTipFrame::KviTipFrame(QWidget * par)
-: QFrame(par)
-{
-	QString buffer;
-	g_pApp->findImage(buffer,"kvi_tip.png");
-	m_pTipPixmap = new QPixmap(buffer);
-	setBackgroundMode(Qt::NoBackground);
-	setFrameStyle(QFrame::Sunken | QFrame::WinPanel);
-}
-
-KviTipFrame::~KviTipFrame()
-{
-	delete m_pTipPixmap;
-}
-
-void KviTipFrame::setText(const QString &text)
-{
-	m_szText = "<center><font color=\"#FFFFFF\">";
-	m_szText += text;
-	m_szText += "</font></center>";
-	update();
-}
-
-void KviTipFrame::drawContents(QPainter *p)
-{
-	p->fillRect(contentsRect(),QColor(0,0,0));
-	p->drawPixmap(5,(height() - m_pTipPixmap->height()) / 2,*m_pTipPixmap);
-
-	QFont f = QFont();
-	f.setStyleHint(QFont::SansSerif);
-	f.setPointSize(12);
-
-	KviTalSimpleRichText doc(m_szText,f);
-	doc.setWidth(width() - 80);
-
-	QRegion reg(0,0,1000,20000);
-
-#if QT_VERSION >= 300
-	doc.draw(p,70,10,reg,colorGroup());
-#else
-	doc.draw(p,70,10,reg,palette());
-#endif
-}
-
 KviTipWindow::KviTipWindow()
-: QWidget(0,"kvirc_tip_window" /*,WStyle_Customize | WStyle_Title | WStyle_DialogBorder | WStyle_StaysOnTop*/ )
+: QDialog(0)
 {
 	m_pConfig = 0;
+	
+	QDialogButtonBox * buttonBox = new QDialogButtonBox();
+	buttonBox->addButton(__tr2qs(">>"),QDialogButtonBox::AcceptRole);
+	buttonBox->addButton(__tr2qs("Close"),QDialogButtonBox::RejectRole)->setDefault(true);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(nextTip()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
+	m_pInfoBrowser = new QTextBrowser();
+	
+	QVBoxLayout * mainLayout = new QVBoxLayout();
 
-	m_pTipFrame = new KviTipFrame(this);
-	m_pTipFrame->setGeometry(
-		KVI_TIP_WINDOW_BORDER,
-		KVI_TIP_WINDOW_BORDER,
-		KVI_TIP_WINDOW_WIDTH - KVI_TIP_WINDOW_DOUBLE_BORDER,
-		KVI_TIP_WINDOW_HEIGHT - (KVI_TIP_WINDOW_DOUBLE_BORDER + KVI_TIP_WINDOW_BUTTON_HEIGHT + KVI_TIP_WINDOW_SPACING));
-
-	QPushButton * pb = new QPushButton(">>",this);
-	pb->setGeometry(
-		KVI_TIP_WINDOW_WIDTH - ((KVI_TIP_WINDOW_BUTTON_WIDTH * 2)+ KVI_TIP_WINDOW_BORDER + KVI_TIP_WINDOW_SPACING),
-		KVI_TIP_WINDOW_HEIGHT - (KVI_TIP_WINDOW_BUTTON_HEIGHT + KVI_TIP_WINDOW_BORDER),
-		KVI_TIP_WINDOW_BUTTON_WIDTH,
-		KVI_TIP_WINDOW_BUTTON_HEIGHT
-		);
-	connect(pb,SIGNAL(clicked()),this,SLOT(nextTip()));
-
-	pb = new QPushButton(__tr2qs("Close"),this);
-	pb->setGeometry(
-		KVI_TIP_WINDOW_WIDTH - (KVI_TIP_WINDOW_BUTTON_WIDTH + KVI_TIP_WINDOW_BORDER),
-		KVI_TIP_WINDOW_HEIGHT - (KVI_TIP_WINDOW_BUTTON_HEIGHT + KVI_TIP_WINDOW_BORDER),
-		KVI_TIP_WINDOW_BUTTON_WIDTH,
-		KVI_TIP_WINDOW_BUTTON_HEIGHT
-		);
-	connect(pb,SIGNAL(clicked()),this,SLOT(close()));
-	pb->setDefault(true);
-
-	m_pShowAtStartupCheck = new KviStyledCheckBox(__tr2qs("Show at startup"),this);
+	/*
+	decide at startup event in kvs to show hide/tip?
+	*/
+	m_pShowAtStartupCheck = new QCheckBox(__tr2qs("Show at startup"),buttonBox);
 	m_pShowAtStartupCheck->setChecked(KVI_OPTION_BOOL(KviOption_boolShowTipAtStartup));
-	m_pShowAtStartupCheck->setGeometry(
-		KVI_TIP_WINDOW_BORDER,
-		KVI_TIP_WINDOW_HEIGHT - (KVI_TIP_WINDOW_BUTTON_HEIGHT + KVI_TIP_WINDOW_BORDER),
-		KVI_TIP_WINDOW_WIDTH - ((KVI_TIP_WINDOW_BORDER + KVI_TIP_WINDOW_BUTTON_WIDTH + KVI_TIP_WINDOW_SPACING) * 2),
-		KVI_TIP_WINDOW_BUTTON_HEIGHT
-		);
-
-	setFixedSize(KVI_TIP_WINDOW_WIDTH,KVI_TIP_WINDOW_HEIGHT);
-
+	
+	mainLayout->addWidget(m_pInfoBrowser);
+	mainLayout->addWidget(buttonBox);
+	
+	setMinimumSize(500,200);
+	resize(500,200);
+	move(g_pApp->desktop()->width()/2 - 250, g_pApp->desktop()->height()/2 - 100);
+	
+	setLayout(mainLayout);
+	
 	setIcon(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_IDEA)));
 
 	setCaption(__tr2qs("Did you know..."));
-
-	pb->setFocus();
-
+	nextTip();
 }
 
 KviTipWindow::~KviTipWindow()
 {
-	KVI_OPTION_BOOL(KviOption_boolShowTipAtStartup) = m_pShowAtStartupCheck->isChecked();
 	if(m_pConfig)closeConfig();
 }
 
@@ -160,7 +87,6 @@ bool KviTipWindow::openConfig(const QString& filename,bool bEnsureExists)
 	if(m_pConfig)closeConfig();
 
 	m_szConfigFileName = filename;
-//	m_szConfigFileName.cutToLast('/');
 
 	QString buffer;
 	g_pApp->getReadOnlyConfigPath(buffer,m_szConfigFileName,KviApp::ConfigPlugins,true);
@@ -207,29 +133,20 @@ void KviTipWindow::nextTip()
 	unsigned int uNumTips = m_pConfig->readUIntEntry("uNumTips",0);
 	unsigned int uNextTip = m_pConfig->readUIntEntry("uNextTip",0);
 
-
 	KviStr tmp(KviStr::Format,"%u",uNextTip);
 	QString szTip = m_pConfig->readEntry(tmp.ptr(),__tr2qs("<b>Can't find any tip... :(</b>"));
-
-	//debug("REDECODED=%s",szTip.utf8().data());
 
 	uNextTip++;
 	if(uNextTip >= uNumTips)uNextTip = 0;
 	m_pConfig->writeEntry("uNextTip",uNextTip);
 
-	m_pTipFrame->setText(szTip);
-}
-
-void KviTipWindow::showEvent(QShowEvent *e)
-{
-	resize(KVI_TIP_WINDOW_WIDTH,KVI_TIP_WINDOW_HEIGHT);
-	move((g_pApp->desktop()->width() - KVI_TIP_WINDOW_WIDTH) / 2,
-		(g_pApp->desktop()->height() - KVI_TIP_WINDOW_HEIGHT) / 2);
-	QWidget::showEvent(e);
+	QString html = "<html><body><font size=\"4\">" + szTip + "</font></body></html>";
+	m_pInfoBrowser->setHtml(html);
 }
 
 void KviTipWindow::closeEvent(QCloseEvent *e)
 {
+	KVI_OPTION_BOOL(KviOption_boolShowTipAtStartup) = m_pShowAtStartupCheck->isChecked();
 	e->ignore();
 	delete this;
 	g_pTipWindow = 0;
@@ -289,7 +206,7 @@ static bool tip_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"Tip",                                              // module name
-	"1.0.0",                                                // module version
+	"1.1.0",                                                // module version
 	"Copyright (C) 2000 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"\"Did you know...\" tip",
 	tip_module_init,

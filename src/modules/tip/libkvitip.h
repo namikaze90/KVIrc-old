@@ -23,43 +23,26 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include <qwidget.h>
-#include <qframe.h>
-#include <qpixmap.h>
-#include <qcheckbox.h>
+#include <QDialog>
+#include <QCheckBox>
+#include <QTextBrowser>
 
 #include "kvi_styled_controls.h"
 #include "kvi_string.h"
 #include "kvi_config.h"
 
-class KviTipFrame : public QFrame
-{
-	Q_OBJECT
-public:
-	KviTipFrame(QWidget * par);
-	~KviTipFrame();
-protected:
-	QString m_szText;
-	QPixmap * m_pTipPixmap;
-protected:
-	virtual void drawContents(QPainter *p);
-public:
-	void setText(const QString &text);
-};
-
-class KviTipWindow : public QWidget
+class KviTipWindow : public QDialog
 {
 	Q_OBJECT
 public:
 	KviTipWindow();
 	~KviTipWindow();
 protected:
-	KviTipFrame * m_pTipFrame;
-	KviStyledCheckBox   * m_pShowAtStartupCheck;
+	QCheckBox   * m_pShowAtStartupCheck;
 	KviConfig   * m_pConfig;
 	QString       m_szConfigFileName; // no path!
+	QTextBrowser * m_pInfoBrowser;
 protected:
-	virtual void showEvent(QShowEvent *e);
 	virtual void closeEvent(QCloseEvent *e);
 public:
 	bool openConfig(const QString& filename,bool bEnsureExists = true);
