@@ -15,22 +15,10 @@ CONFIG(debug, debug|release):DESTDIR = ../../bin/debug/
 else:DESTDIR = ../../bin/release/
 HEADERS += tal/kvi_tal_application_kde.h \
     tal/kvi_tal_application_qt.h \
-    tal/kvi_tal_filedialog_qt4.h \
-    tal/kvi_tal_grid_qt4.h \
-    tal/kvi_tal_groupbox_qt4.h \
-    tal/kvi_tal_hbox_qt4.h \
-    tal/kvi_tal_iconview_qt4.h \
-    tal/kvi_tal_listbox_qt4.h \
-    tal/kvi_tal_listview_qt4.h \
     tal/kvi_tal_mainwindow_qt4.h \
     tal/kvi_tal_menubar_qt.h \
     tal/kvi_tal_popupmenu.h \
-    tal/kvi_tal_scrollview_qt4.h \
-    tal/kvi_tal_textedit_qt4.h \
     tal/kvi_tal_toolbar_qt4.h \
-    tal/kvi_tal_vbox_qt4.h \
-    tal/kvi_tal_widgetstack_qt4.h \
-    tal/kvi_tal_wizard_qt4.h \
     tal/kvi_tal_application.h \
     tal/kvi_tal_filedialog.h \
     tal/kvi_tal_grid.h \
