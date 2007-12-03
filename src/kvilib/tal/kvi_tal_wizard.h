@@ -27,6 +27,14 @@
 
 #include "kvi_settings.h"
 
-#include "kvi_tal_wizard_qt4.h"
+#include <q3wizard.h>
+class KVILIB_API KviTalWizard : public Q3Wizard
+{
+	Q_OBJECT
+public:
+	KviTalWizard(QWidget * pParent = 0,const char * name = 0,bool bModal = false)
+	: Q3Wizard(pParent,name,bModal) {};
+	~KviTalWizard() {};
+};
 
 #endif // _KVI_TAL_WIZARD_H_

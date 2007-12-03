@@ -26,7 +26,8 @@
 //=============================================================================
 
 #include "kvi_settings.h"
+#include <q3groupbox.h>
 
-#include "kvi_tal_groupbox_qt4.h"
+#define KviTalGroupBox Q3GroupBox
 
 #endif // _KVI_TAL_GROUPBOX_H_

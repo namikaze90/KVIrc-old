@@ -26,7 +26,15 @@
 //=============================================================================
 
 #include "kvi_settings.h"
+#include <q3scrollview.h>
 
-#include "kvi_tal_scrollview_qt4.h"
+class KVILIB_API KviTalScrollView : public Q3ScrollView
+{
+	Q_OBJECT
+public:
+	KviTalScrollView(QWidget * pParent)
+	: Q3ScrollView(pParent) {};
+	virtual ~KviTalScrollView() {};
+};
 
 #endif // _KVI_TAL_SCROLLVIEW_H_

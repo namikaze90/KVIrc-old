@@ -27,6 +27,16 @@
 
 #include "kvi_settings.h"
 
-#include "kvi_tal_vbox_qt4.h"
+#include <q3vbox.h>
+
+class KVILIB_API KviTalVBox : public Q3VBox
+{
+	Q_OBJECT
+public:
+	KviTalVBox(QWidget * pParent)
+	: Q3VBox(pParent) {};
+	virtual ~KviTalVBox() {};
+};
+
 
 #endif // _KVI_TAL_VBOX_H_

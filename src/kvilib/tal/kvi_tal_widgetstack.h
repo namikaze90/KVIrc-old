@@ -26,7 +26,15 @@
 //=============================================================================
 
 #include "kvi_settings.h"
+#include <q3widgetstack.h>
 
-#include "kvi_tal_widgetstack_qt4.h"
+class KVILIB_API KviTalWidgetStack : public Q3WidgetStack
+{
+	Q_OBJECT
+public:
+	KviTalWidgetStack(QWidget * pParent)
+	: Q3WidgetStack(pParent) {};
+	virtual ~KviTalWidgetStack() {};
+};
 
 #endif // _KVI_TAL_WIDGETSTACK_H_

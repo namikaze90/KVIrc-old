@@ -27,6 +27,22 @@
 
 #include "kvi_settings.h"
 
-#include "kvi_tal_filedialog_qt4.h"
+#include <QFileDialog>
+
+class KVILIB_API KviTalFileDialog : public QFileDialog
+{
+	Q_OBJECT
+public:
+	KviTalFileDialog(const QString &dirName,const QString &filter = QString::null,QWidget *parent = 0,const char *name = 0,bool modal = FALSE);
+	~KviTalFileDialog();
+public:
+	enum FileMode { AnyFile, ExistingFile, ExistingFiles, Directory, DirectoryOnly };
+
+	void setFileMode(FileMode m);
+	void setDirectory(const QString &szDirectory);
+
+	static QString getExistingDirectoryPath(const QString &dir = QString::null,const QString &caption = QString::null,QWidget *parent = 0)
+		{ return getExistingDirectory(parent,caption,dir); };
+};
 
 #endif // _KVI_TAL_FILEDIALOG_H_

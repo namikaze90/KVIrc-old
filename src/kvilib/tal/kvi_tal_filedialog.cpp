@@ -29,7 +29,7 @@
 #include "kvi_tal_filedialog.h"
 
 
-#include <qdir.h>
+#include <QDir>
 
 KviTalFileDialog::KviTalFileDialog(const QString &dirName,const QString &filter,QWidget *parent,const char *name,bool modal)
 : QFileDialog(parent,"",dirName,filter)

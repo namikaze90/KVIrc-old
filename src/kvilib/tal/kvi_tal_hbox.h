@@ -26,7 +26,8 @@
 //=============================================================================
 
 #include "kvi_settings.h"
+#include <Q3HBox>
 
-#include "kvi_tal_hbox_qt4.h"
+#define KviTalHBox  Q3HBox
 
 #endif // _KVI_TAL_HBOX_H_
