@@ -41,12 +41,12 @@
 #include "kvi_stringconversion.h"
 #include "kvi_options.h"
 
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qgroupbox.h>
+#include <QLayout>
+#include <QLabel>
+#include <QGroupBox>
 
 // TODO: Qt4
-#include <qevent.h>
+#include <QEvent>
 #include <q3header.h>
 #include <q3vbox.h>
 
@@ -61,7 +61,7 @@
 #include <QPainter>
 #include "kvi_tal_hbox.h"
 #include "kvi_tal_vbox.h"
-#include <QInputdialog>
+#include <QInputDialog>
 
 #include "wizard.h"
 #include "dialog.h"
