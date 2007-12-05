@@ -38,7 +38,7 @@ unix {
 	doc.path = $${KVI_INSTALL_PREFIX}/doc/$${KVI_PACKAGE}-$${KVI_VERSION_BRANCH}/
 	doc.files = doc/*.txt
 
-	license.path = $${KVI_INSTALL_PREFIX}/doc/$${KVI_PACKAGE}-$${KVI_VERSION_BRANCH}/
+	license.path = $${KVI_INSTALL_PREFIX}/share/$${KVI_PACKAGE}/$${KVI_VERSION_BRANCH}/license
 	license.files = doc/COPYING
 
 	stuff.path = $${KVI_INSTALL_PREFIX}/doc/$${KVI_PACKAGE}-$${KVI_VERSION_BRANCH}/

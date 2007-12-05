@@ -50,8 +50,18 @@ win32 {
 unix:LIBS += -lpthread -lssl -lcrypto -lz
 unix:DEFINES += COMPILE_THREADS_USE_POSIX COMPILE_USE_QT4
 
+unix {
+	target.path = $${KVI_INSTALL_PREFIX}/share/$${KVI_PACKAGE}/$${KVI_VERSION_BRANCH}/modules/
+}
 
-target.path = ../../../bin/image/modules/
+win32 {
+	target.path = ../../../bin/image/modules/
+}
+
+mac {
+	target.path = ../../../bin/image/modules/
+}
+
 INSTALLS += target 
 
 CONFIG(debug, debug|release) {
@@ -61,4 +71,5 @@ CONFIG(debug, debug|release) {
 	MOC_DIR      = ../../../build/modules/$$replace(TARGET,kvi,)/release/moc
 	OBJECTS_DIR  = ../../../build/modules/$$replace(TARGET,kvi,)/release/obj
 }
+
 

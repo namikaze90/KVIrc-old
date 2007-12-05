@@ -193,7 +193,19 @@ unix:LIBS += -lpthread \
 unix:DEFINES += COMPILE_THREADS_USE_POSIX \
     COMPILE_USE_QT4
 include( using_kvilib.pri )
-target.path = ../../bin/image/
+
+unix {
+	target.path = $${KVI_INSTALL_PREFIX}/lib
+}
+
+win32 {
+	target.path = ../../bin/image/
+}
+
+mac {
+	target.path = ../../bin/image/
+}
+
 INSTALLS += target
 CONFIG(debug, debug|release) { 
     MOC_DIR = ../../build/$$TARGET/debug/moc
