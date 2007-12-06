@@ -66,8 +66,8 @@
 #include "kvi_mirccntrl.h"
 #include "kvi_useridentity.h"
 
-#include <qtimer.h>
-#include <qtextcodec.h>
+#include <QTimer>
+#include <QTextCodec>
 
 extern KVIRC_API KviIrcServerDataBase           * g_pIrcServerDataBase;
 extern KVIRC_API KviProxyDataBase               * g_pProxyDataBase;

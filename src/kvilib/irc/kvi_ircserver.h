@@ -30,7 +30,7 @@
 #include "kvi_qstring.h"
 
 
-#include <qstringlist.h>
+#include <QStringList>
 
 class KviConfig;
 class KviNickServRuleSet;

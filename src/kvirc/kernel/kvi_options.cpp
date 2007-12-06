@@ -42,8 +42,8 @@
 #include "kvi_frame.h"
 #include "kvi_internalcmd.h"
 #include "kvi_theme.h"
-#include <qmessagebox.h>
-#include <qregexp.h>
+#include <QMessageBox>
+#include <QRegExp>
 //#include "kvi_textencoding.h"
 
 //xml parser
@@ -51,12 +51,12 @@
 //!xml parser
 
 #include <zlib.h>
-#include <qtextcodec.h>
+#include <QTextCodec>
 
 #include "kvi_fileutils.h"
 
-#include <qdir.h>
-#include <qstringlist.h>
+#include <QDir>
+#include <QStringList>
 
 // kvi_app.cpp
 extern KVIRC_API int g_iIdentDaemonRunningUsers;

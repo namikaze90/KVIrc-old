@@ -24,9 +24,8 @@
 
 #include "kvi_settings.h"
 
-#include <qobject.h>
-
-#include <qtimer.h>
+#include <QObject>
+#include <QTimer>
 #include <QSet>
 
 

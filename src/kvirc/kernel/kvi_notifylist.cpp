@@ -46,7 +46,7 @@
 #include "kvi_kvs_eventtriggers.h"
 #include "kvi_qcstring.h"
 
-#include <qstringlist.h>
+#include <QStringList>
 
 // FIXME: #warning "Finish this doc!"
 

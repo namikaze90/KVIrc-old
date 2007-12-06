@@ -30,7 +30,7 @@
 #include "kvi_config.h"
 #include "kvi_fileutils.h"
 
-#include <qfileinfo.h>
+#include <QFileInfo>
 
 // TODO: Match servers that the file requests come from
 // TODO: Max number of downloads ?

@@ -29,7 +29,7 @@
 #include "kvi_qcstring.h"
 
 #include "kvi_time.h"
-#include <qobject.h>
+#include <QObject>
 
 class KviConsole;
 class KviIrcNetworkData;

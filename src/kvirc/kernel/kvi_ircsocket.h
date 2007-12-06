@@ -29,8 +29,7 @@
 #include "kvi_sockettype.h"
 #include "kvi_time.h"
 
-
-#include <qobject.h>
+#include <QObject>
 
 class KviIrcServer;
 class KviProxy;

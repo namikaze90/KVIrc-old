@@ -27,7 +27,7 @@
 #include "kvi_settings.h"
 #include "kvi_action.h"
 
-#include <qobject.h>
+#include <QObject>
 #include <QHash>
 
 class KviActionDrawer;

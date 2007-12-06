@@ -34,10 +34,9 @@
 #include "kvi_locale.h"
 
 #include <qglobal.h> //for debug()
-#include <qtextcodec.h>
-#include <qdir.h>
-
-#include <qlocale.h>
+#include <QTextCodec>
+#include <QDir>
+#include <QLocale>
 
 #include "kvi_string.h"
 #include "kvi_qcstring.h"

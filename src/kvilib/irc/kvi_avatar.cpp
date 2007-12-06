@@ -27,7 +27,7 @@
 #include "kvi_avatar.h"
 #include "kvi_qstring.h"
 
-#include <qimage.h>
+#include <QImage>
 
 
 /*

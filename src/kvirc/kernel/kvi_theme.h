@@ -31,7 +31,7 @@
 
 #include "kvi_fileextensions.h"
 
-#include <qpixmap.h>
+#include <QPixmap>
 
 #define KVI_THEMEINFO_FILE_NAME "themeinfo." KVI_FILEEXTENSION_CONFIG
 #define KVI_THEMEDATA_FILE_NAME "themedata." KVI_FILEEXTENSION_CONFIG

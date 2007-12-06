@@ -36,16 +36,16 @@
 #include "kvi_fileutils.h"
 #include "kvi_options.h"
 
-#include <qlayout.h>
-#include <qlabel.h>
+#include <QLayout>
+#include <QLabel>
 
 #ifndef COMPILE_USE_QT4
 	// In Qt.4 we need to use QMimeData ?
 	#include <qdragobject.h>
 #endif
-#include <qcursor.h>
+#include <QCursor>
 
-#include <qevent.h>
+#include <QEvent>
 
 // kvi_app.cpp
 extern QPixmap * g_pUserChanStatePixmap;

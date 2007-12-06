@@ -25,7 +25,7 @@
 
 #include "kvi_miscutils.h"
 
-#include <qstringlist.h>
+#include <QStringList>
 
 namespace KviMiscUtils
 {

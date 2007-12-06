@@ -30,10 +30,9 @@
 #include "kvi_locale.h"
 #include "kvi_inttypes.h"
 
-#include <qprogressdialog.h>
-#include <qlabel.h>
-
-#include <qdir.h>
+#include <QProgressDialog>
+#include <QLabel>
+#include <QDir>
 
 #ifdef COMPILE_ZLIB_SUPPORT
 	#include <zlib.h>

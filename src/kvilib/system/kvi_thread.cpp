@@ -39,7 +39,7 @@
 #include "kvi_error.h"
 
 
-#include <qapplication.h>
+#include <QApplication>
 
 
 static KviThreadManager * g_pThreadManager = 0;

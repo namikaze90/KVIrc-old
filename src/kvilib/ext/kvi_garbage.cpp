@@ -24,7 +24,7 @@
 
 #include "kvi_garbage.h"
 
-#include <qvariant.h>
+#include <QVariant>
 
 KviGarbageCollector::KviGarbageCollector()
 : QObject(0)

@@ -26,9 +26,9 @@
 #include "kvi_tal_listbox.h"
 
 
-#include <qpainter.h>
-#include <qstyle.h>
-#include <qapplication.h>
+#include <QPainter>
+#include <QStyle>
+#include <QApplication>
 	
 KviTalListBox::KviTalListBox(QWidget * pParent,Qt::WFlags f)
 : Q3ListBox(pParent,0,f)

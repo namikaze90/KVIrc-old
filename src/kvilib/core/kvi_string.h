@@ -31,11 +31,11 @@
 #include <ctype.h>
 
 #ifdef HAVE_STRINGS_H
-	#include <strings.h> // useless ?
+	#include <strings> // useless ?
 #endif
 
 #include <qglobal.h>
-#include <qstring.h>
+#include <QString>
 
 
 #include "kvi_qcstring.h"

@@ -47,8 +47,8 @@
 	#include "kvi_sslmaster.h"
 #endif
 
-#include <qtimer.h>
-#include <qsocketnotifier.h>
+#include <QTimer>
+#include <QSocketNotifier>
 
 #ifndef COMPILE_ON_WINDOWS
 	#include <unistd.h> //for gettimeofday()

@@ -35,8 +35,8 @@
 #include "kvi_app.h"
 #include "kvi_confignames.h"
 
-#include <qpixmap.h>
-#include <qfile.h>
+#include <QPixmap>
+#include <QFile>
 
 KVIRC_API KviTextIconManager * g_pTextIconManager = 0;
 

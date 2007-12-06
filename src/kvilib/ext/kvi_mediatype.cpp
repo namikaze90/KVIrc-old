@@ -35,8 +35,8 @@
 
 #include "kvi_settings.h"
 
-#include <qregexp.h>
-#include <qdir.h>
+#include <QRegExp>
+#include <QDir>
 
 #include <sys/types.h>
 #include <sys/stat.h>

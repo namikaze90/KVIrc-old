@@ -47,7 +47,7 @@
 
 #include "kvi_settings.h"
 
-#include <qimage.h>
+#include <QImage>
 
 class KVILIB_API KviImageLibrary
 {

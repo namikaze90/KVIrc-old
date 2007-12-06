@@ -27,7 +27,7 @@
 #include "kvi_settings.h"
 
 // TODO: Qt4
-#include <q3process.h>
+#include <Q3Process>
 #define KviProcess Q3Process
 
 

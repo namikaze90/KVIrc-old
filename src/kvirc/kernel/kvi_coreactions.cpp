@@ -47,7 +47,7 @@
 #include "kvi_kvs_script.h"
 
 #include "kvi_tal_popupmenu.h"
-#include <qobject.h>
+#include <QObject>
 
 
 // Ctrl+Alt+A : KviGoAwayAction

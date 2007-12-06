@@ -26,7 +26,7 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-#include <qstring.h>
+#include <QString>
 
 
 #include <time.h> // for time()

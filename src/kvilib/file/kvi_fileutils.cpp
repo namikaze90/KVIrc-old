@@ -31,11 +31,11 @@
 #include "kvi_file.h"
 #include "kvi_malloc.h"
 
-#include <qdir.h>
-#include <qfileinfo.h>
+#include <QDir>
+#include <QFileInfo>
 #include <qglobal.h>
-#include <qtextcodec.h>
-#include <qtextstream.h>
+#include <QTextCodec>
+#include <QTextStream>
 
 
 namespace KviFileUtils

@@ -36,7 +36,7 @@
 #include "kvi_ircmask.h"
 #include "kvi_debug.h"
 
-#include <qobject.h>
+#include <QObject>
 #include <QHash>
 #include <QSet>
 

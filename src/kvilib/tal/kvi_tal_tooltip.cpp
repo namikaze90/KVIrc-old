@@ -24,7 +24,8 @@
 
 #include "kvi_tal_tooltip.h"
 
-#include <qevent.h>
+#include <QEvent>
+#include <QHelpEvent>
 
 KviTalToolTipHelper::KviTalToolTipHelper(KviTalToolTip * pToolTip,QWidget * pWidget)
 : QObject(pWidget)

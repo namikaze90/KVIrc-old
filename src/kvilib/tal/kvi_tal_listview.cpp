@@ -28,13 +28,13 @@
 
 
 
-#include <qpainter.h>
-#include <qstyle.h>
+#include <QPainter>
+#include <QStyle>
 #include <q3header.h>
-#include <qapplication.h>
-#include <qhash.h>
-#include <qstyleoption.h>
-#include <qaccessible.h>
+#include <QApplication>
+#include <QHash>
+#include <QStyleOption>
+#include <QAccessible>
 
 static QStyleOptionQ3ListView getStyleOption(const Q3ListView *lv, const Q3ListViewItem *item)
 {

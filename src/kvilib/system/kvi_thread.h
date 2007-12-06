@@ -27,10 +27,10 @@
 #include "kvi_string.h"
 
 #include <qnamespace.h>
-#include <qobject.h>
-#include <qsocketnotifier.h>
+#include <QObject>
+#include <QSocketNotifier>
 
-#include <qevent.h>
+#include <QEvent>
 #include <QList>
 #include <QQueue>
 #include <QThread>

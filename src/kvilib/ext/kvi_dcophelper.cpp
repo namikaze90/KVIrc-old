@@ -23,6 +23,8 @@
 //
 //=============================================================================
 
+
+// Should be dropped since KDE4 will not use DCOP anymore in favour of dbus
 #include "kvi_dcophelper.h"
 
 #ifdef COMPILE_KDE_SUPPORT

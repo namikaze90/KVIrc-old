@@ -27,7 +27,7 @@
 
 #include "kvi_settings.h"
 
-#include <qpixmap.h>
+#include <QPixmap>
 
 
 

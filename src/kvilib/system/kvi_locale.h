@@ -31,9 +31,7 @@
 #include "kvi_string.h"
 
 
-#include <qapplication.h>
-
-
+#include <QApplication>
 #include <QHash>
 #include <QByteArray>
 

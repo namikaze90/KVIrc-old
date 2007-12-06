@@ -25,10 +25,10 @@
 
 
 
-#include <qapplication.h>
-#include <qlayout.h>
-#include <qmessagebox.h>
-#include <qcheckbox.h>
+#include <QApplication>
+#include <QLayout>
+#include <QMessageBox>
+#include <QCheckBox>
 
 #include "kvi_ircserverdb.h"
 #include "kvi_config.h"

@@ -28,7 +28,7 @@
 
 #include "kvi_settings.h"
 #include "kvi_string.h"
-#include <qpixmap.h>
+#include <QPixmap>
 
 class KVILIB_API KviPixmap
 {

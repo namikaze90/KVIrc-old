@@ -31,7 +31,7 @@
 
 	#include "kvi_string.h"
 
-	#include <qwidget.h>
+	#include <QWidget>
 
 #ifdef COMPILE_ON_WINDOWS
  #include <winsock2.h>

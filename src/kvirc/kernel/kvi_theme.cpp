@@ -30,7 +30,7 @@
 #include "kvi_miscutils.h"
 #include "kvi_sourcesdate.h"
 
-#include <qimage.h>
+#include <QImage>
 
 #define KVI_THEME_SMALL_SCREENSHOT_NAME "screenshot_small.png"
 #define KVI_THEME_MEDIUM_SCREENSHOT_NAME "screenshot_medium.png"

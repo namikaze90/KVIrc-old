@@ -31,7 +31,7 @@
 #include "kvi_qstring.h"
 
 #include <time.h>
-#include <qtimer.h>
+#include <QTimer>
 #include <QSet>
 #include <QHash>
 

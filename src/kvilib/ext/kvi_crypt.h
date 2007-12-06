@@ -42,7 +42,7 @@
 #include "kvi_heapobject.h"
 #include <QHash>
 
-#include <qobject.h>
+#include <QObject>
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	class KviCryptEngine;

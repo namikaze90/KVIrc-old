@@ -31,10 +31,10 @@
 
 
 
-#include <qcolor.h>
-#include <qfont.h>
-#include <qrect.h>
-#include <qstringlist.h>
+#include <QColor>
+#include <QFont>
+#include <QRect>
+#include <QStringList>
 #include <QTextCharFormat>
 #include <QHash>
 

@@ -31,11 +31,10 @@
 #include "kvi_sockettype.h"
 #include "kvi_databuffer.h"
 #include "kvi_inttypes.h"
-
-#include <qobject.h>
-
 #include "kvi_file.h"
-#include <qstringlist.h>
+
+#include <QObject>
+#include <QStringList>
 #include <QUrl>
 
 class KviDns;

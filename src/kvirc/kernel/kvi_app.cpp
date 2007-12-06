@@ -150,13 +150,13 @@ QPixmap                             * g_pActivityMeterPixmap    = 0;
 		#include <netwm.h>
 		#include <kimageeffect.h>
 		#include <dcopclient.h>
-		#include <qdatastream.h>
+		#include <QDataStream>
 		#include <qcstring.h>
 
 		KSharedPixmap         * g_pKdeDesktopBackground             = 0; // the shared pixmap that we get from KWin
 	#endif
 
-	#include <qimage.h>
+	#include <QImage>
 
 	KVIRC_API QPixmap               * g_pShadedParentGlobalDesktopBackground = 0; // the pixmap that we use for MdiManager
 	KVIRC_API QPixmap               * g_pShadedChildGlobalDesktopBackground  = 0; // the pixmap that we use for MdiChild

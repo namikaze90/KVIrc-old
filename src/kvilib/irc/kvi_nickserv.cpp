@@ -29,7 +29,7 @@
 #include "kvi_config.h"
 #include "kvi_ircmask.h"
 
-#include <qregexp.h>
+#include <QRegExp>
 
 
 

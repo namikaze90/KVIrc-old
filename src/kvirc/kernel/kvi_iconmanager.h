@@ -30,9 +30,9 @@
 #include "kvi_avatar.h"
 #include "kvi_time.h"
 
-#include <qpixmap.h>
-#include <qobject.h>
-#include <qwidget.h>
+#include <QPixmap>
+#include <QObject>
+#include <QWidget>
 #include <QHash>
 
 

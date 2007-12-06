@@ -30,9 +30,9 @@
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
 
-#include <qmenu.h>
-#include <qaction.h>
-#include <qwidgetaction.h>
+#include <QMenu>
+#include <QAction>
+#include <QWidgetAction>
 
 class KVILIB_API KviTalPopupMenu : public QMenu
 {

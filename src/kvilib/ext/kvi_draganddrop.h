@@ -28,7 +28,7 @@
 #include "kvi_settings.h"
 
 // TODO: Qt4
-#include <q3dragobject.h>
+#include <Q3DragObject>
 #define KviDragObject Q3DragObject
 #define KviUriDrag Q3UriDrag
 #define KviTextDrag Q3TextDrag

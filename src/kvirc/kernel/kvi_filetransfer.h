@@ -27,7 +27,7 @@
 
 #include "kvi_settings.h"
 
-#include <qobject.h>
+#include <QObject>
 
 
 #include "kvi_tal_listview.h"

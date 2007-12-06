@@ -27,7 +27,7 @@
 //#define _KVI_DEBUG_CHECK_RANGE_
 //#include "kvi_debug.h"
 
-#include <qtextcodec.h>
+#include <QTextCodec>
 
 #include "kvi_settings.h"
 #include "kvi_defaults.h"
@@ -62,9 +62,9 @@
 
 #endif //COMPILE_ON_WINDOWS
 
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qdir.h>
+#include <QFile>
+#include <QTextStream>
+#include <QDir>
 
 
 

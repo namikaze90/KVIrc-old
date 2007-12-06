@@ -22,16 +22,13 @@
 //
 //=============================================================================
 
-
-#include <qnamespace.h>
-
 #include "kvi_imagelib.h"
 #include "kvi_fileutils.h"
 #include "kvi_locale.h"
 #include "kvi_memmove.h"
 
-#include <qpixmap.h>
-
+#include <QPixmap>
+#include <qnamespace.h>
 
 //KviImageLibrary::KviImageLibrary(const QPixmap &pixmap,int imageWidth,int imageHeight)
 //{

@@ -36,7 +36,7 @@
 
 #include <ctype.h> // for tolower()
 #include <stdio.h> // for sprintf()
-#include <qregexp.h> 
+#include <QRegExp> 
 
 // kvi_string.cpp
 extern unsigned char iso88591_toLower_map[256];

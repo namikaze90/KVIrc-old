@@ -37,7 +37,7 @@
 #include "kvi_query.h"
 #include "kvi_styled_controls.h"
 
-#include <qtoolbutton.h>
+#include <QToolButton>
 #include "kvi_tal_popupmenu.h"
 
 

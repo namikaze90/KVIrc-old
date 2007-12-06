@@ -28,7 +28,7 @@
 #include "kvi_settings.h"
 
 // TODO: Qt4
-#include <q3accel.h>
+#include <Q3Accel>
 #define KviAccel Q3Accel
 
 

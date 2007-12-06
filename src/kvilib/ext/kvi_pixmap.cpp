@@ -23,14 +23,11 @@
 //=============================================================================
 
 
-
-
-
 #include "kvi_debug.h"
 #include "kvi_pixmap.h"
 #include "kvi_qstring.h"
 
-#include <qpainter.h>
+#include <QPainter>
 
 KviPixmap::KviPixmap()
 {

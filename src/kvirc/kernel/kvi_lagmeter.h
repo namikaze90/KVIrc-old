@@ -27,8 +27,7 @@
 #include "kvi_settings.h"
 #include "kvi_string.h"
 
-
-#include <qobject.h>
+#include <QObject>
 
 class KviIrcConnection;
 

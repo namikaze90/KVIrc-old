@@ -55,12 +55,10 @@
 
 #define _KVI_NETUTILS_CPP_
 
-
-
 #include "kvi_netutils.h"
-
 #include "kvi_memmove.h"
-#include <qstringlist.h>
+
+#include <QStringList>
 
 
 #ifndef COMPILE_ON_WINDOWS

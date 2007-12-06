@@ -28,7 +28,7 @@
 #include "kvi_string.h"
 #include "kvi_inttypes.h"
 
-#include <qstringlist.h>
+#include <QStringList>
 #include <QList>
 
 class KVILIB_API KviProxy
