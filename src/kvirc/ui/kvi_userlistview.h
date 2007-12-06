@@ -26,18 +26,17 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
 #include "kvi_string.h"
 #include "kvi_ircuserdb.h"
 #include "kvi_ircmask.h"
 #include "kvi_time.h"
+#include "kvi_tal_tooltip.h"
+#include "kvi_toolwindows_container.h"
+
+#include <QWidget>
+#include <QHash>
 
 #include <time.h>
-#include "kvi_tal_tooltip.h"
-#include <qwidget.h>
-
-#include <QHash>
-#include "kvi_toolwindows_container.h"
 
 class QLabel;
 class QScrollBar;

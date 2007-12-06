@@ -26,10 +26,11 @@
 
 #include "kvi_themedlabel.h"
 #include "kvi_channel.h"
-
-#include <qframe.h>
-#include <qlineedit.h>
 #include "kvi_tal_hbox.h" 
+
+#include <QFrame>
+#include <QLineEdit>
+
 
 class KVIRC_API KviModeWidget : public QFrame 
 {

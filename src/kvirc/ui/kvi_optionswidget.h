@@ -26,15 +26,16 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
-#include <qframe.h>
-#include <qlayout.h>
-
-#include <qlineedit.h>
-#include <kvi_tal_groupbox.h>
-#include <qtabwidget.h>
 #include "kvi_tal_groupbox.h"
 #include "kvi_selectors.h"
+
+#include <QFrame>
+#include <QLayout>
+#include <QTabWidget>
+#include <QLineEdit>
+#include <kvi_tal_groupbox.h>
+
+
 
 class KVIRC_API KviOptionsWidget : public QFrame, public KviSelectorInterface
 {

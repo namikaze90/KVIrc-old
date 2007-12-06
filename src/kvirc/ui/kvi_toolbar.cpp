@@ -28,12 +28,12 @@
 #include "kvi_frame.h"
 #include "kvi_locale.h"
 #include "kvi_app.h"
-
-#include <qcursor.h>
 #include "kvi_tal_popupmenu.h"
 
+#include <QCursor>
+
 #ifdef COMPILE_USE_QT4
-	#include <qevent.h>
+	#include <QEvent>
 #endif
 
 static KviTalPopupMenu * g_pToolBarContextPopup = 0;

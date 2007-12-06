@@ -47,13 +47,13 @@
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionserverinfo.h"
 
-#include <qlabel.h>
-#include <qscrollbar.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qfontmetrics.h>
-#include <qdatetime.h>
-#include <qmime.h>
+#include <QLabel>
+#include <QScrollbar>
+#include <QPainter>
+#include <QPixmap>
+#include <QFontMetrics>
+#include <QDateTime>
+#include <QMime>
 #include "kvi_styled_controls.h"
 #include <qevent.h>
 

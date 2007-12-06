@@ -26,14 +26,12 @@
 
 
 #include "kvi_settings.h"
-
-
-#include <qwidget.h>
-#include <qframe.h>
-#include <qpixmap.h>
-#include <qtoolbutton.h>
-
 #include "kvi_tal_scrollview.h"
+
+#include <QWidget>
+#include <QFrame>
+#include <QPixmap>
+#include <QToolButton>
 
 #define KVI_MDICHILD_BORDER 4
 #define KVI_MDICHILD_SPACING 2

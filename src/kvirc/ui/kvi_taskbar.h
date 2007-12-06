@@ -25,14 +25,12 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
 #include "kvi_toolbar.h"
-
-
-#include <qframe.h>
 #include "kvi_tal_tooltip.h"
 #include "kvi_tal_listview.h"
-#include <qpushbutton.h>
+
+#include <QFrame>
+#include <QPushButton>
 
 
 

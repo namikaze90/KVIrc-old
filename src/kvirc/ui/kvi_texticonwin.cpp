@@ -34,11 +34,10 @@
 #include "kvi_iconmanager.h"
 
 #include <qnamespace.h>
-#include <qlineedit.h>
+#include <QLineEdit>
+#include <QEvent>
+
 #include <ctype.h>
-#ifdef COMPILE_USE_QT4
-	#include <qevent.h>
-#endif
 
 KviTextIconWindow::KviTextIconWindow()
 #ifdef COMPILE_USE_QT4

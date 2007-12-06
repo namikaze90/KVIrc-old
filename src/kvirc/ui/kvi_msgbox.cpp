@@ -27,7 +27,7 @@
 #ifdef COMPILE_KDE_SUPPORT
 	#include <kmessagebox.h>
 #else
-	#include <qmessagebox.h>
+	#include <QMessageBox>
 #endif //!COMPILE_WITH_KDE
 
 #include "kvi_malloc.h"
@@ -84,6 +84,3 @@ namespace KviMessageBox
 		return bRet;
 	}
 };
-
-
-

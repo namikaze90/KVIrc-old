@@ -24,10 +24,10 @@
 //
 
 #include "kvi_settings.h"
-
-#include <qframe.h>
-
 #include "kvi_string.h"
+
+#include <QFrame>
+
 
 class KVIRC_API KviThemedLabel : public QFrame
 {

@@ -25,15 +25,13 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
 #include "kvi_heapobject.h"
 #include "kvi_statusbar.h"
 
-#include <qstring.h>
-
-#include <qstatusbar.h>
-#include <qlabel.h>
-#include <qpixmap.h>
+#include <QString>
+#include <QStatusBar>
+#include <QLabel>
+#include <QPixmap>
 
 class QTimer;
 class QLabel;

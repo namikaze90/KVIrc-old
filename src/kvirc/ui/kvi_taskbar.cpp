@@ -30,8 +30,8 @@
 #define KVI_NUM_STEPS 20
 #define KVI_TIMER_DELAY 18
 
-
 #define _KVI_DEBUG_CHECK_RANGE_
+
 #include "kvi_debug.h"
 #include "kvi_taskbar.h"
 #include "kvi_frame.h"
@@ -45,22 +45,22 @@
 #include "kvi_channel.h"
 #include "kvi_ircconnection.h"
 #include "kvi_doublebuffer.h"
+#include "kvi_tal_popupmenu.h"
 
 // FIXME: #warning "The tree taskbar min width should be configurable"
-#include <qtimer.h>
-#include <qfontmetrics.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qimage.h>
-#include "kvi_tal_popupmenu.h"
-#include <qcursor.h>
+#include <QTimer>
+#include <QFontMetrics>
+#include <QPainter>
+#include <QPixmap>
+#include <QImage>
+#include <QCursor>
+#include <QEvent>
 
 #ifdef COMPILE_USE_QT4
 	#include <q3header.h>
 #else
 	#include <qheader.h>
 #endif
-#include <qevent.h>
 
 #ifdef COMPILE_PSEUDO_TRANSPARENCY
 	extern QPixmap * g_pShadedChildGlobalDesktopBackground;

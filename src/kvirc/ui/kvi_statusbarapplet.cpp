@@ -22,7 +22,6 @@
 //=============================================================================
 
 
-
 #include "kvi_statusbarapplet.h"
 #include "kvi_frame.h"
 #include "kvi_iconmanager.h"
@@ -39,17 +38,18 @@
 #include "kvi_lagmeter.h"
 #include "kvi_options.h"
 #include "kvi_kvs_script.h"
-
-#include <qpainter.h>
-#include <qstyle.h>
-#include <qlayout.h>
-#include <qtimer.h>
-#include <qcursor.h>
+#include "kvi_time.h"
+#include "kvi_qstring.h"
 #include "kvi_tal_popupmenu.h"
-#include <qpixmap.h>
-#ifdef COMPILE_USE_QT4
-	#include <qevent.h>
-#endif
+
+#include <QPainter>
+#include <QStyle>
+#include <QLayout>
+#include <QTimer>
+#include <QCursor>
+#include <QPixmap>
+#include <QEvent>
+#include <QFont>
 
 // This class COULD be derived also from KStatusBar but in fact
 // it adds no graphic functionality and it has only useless methods for us.
@@ -58,10 +58,6 @@
 
 // FIXME: Applets in modules SHOULD be unregistered automatically on unload!
 
-#include "kvi_time.h"
-#include "kvi_qstring.h"
-
-#include <qfont.h>
 
 /*
 	IDEAS:
@@ -111,9 +107,6 @@ void KviStatusBarAppletDescriptor::unregisterApplet(KviStatusBarApplet * a)
 
 
 
-
-
-
 KviStatusBarApplet::KviStatusBarApplet(KviStatusBar * pParent,KviStatusBarAppletDescriptor *pDescriptor)
 : QLabel(pParent), m_pStatusBar(pParent), m_pDescriptor(pDescriptor)
 {
@@ -140,15 +133,9 @@ void KviStatusBarApplet::paintEvent(QPaintEvent * e)
 	if(m_bSelected)
 	{
 		QPainter p(this);
-#ifdef COMPILE_USE_QT4
 		p.setCompositionMode(QPainter::CompositionMode_SourceOut);
 		p.fillRect(rect(),Qt::black);
 		p.setCompositionMode(QPainter::CompositionMode_SourceOver);
-#else
-		p.setRasterOp(Qt::NotROP);
-		p.fillRect(rect(),Qt::black);
-		p.setRasterOp(Qt::CopyROP);
-#endif
 	}
 }
 
@@ -562,4 +549,3 @@ void KviStatusBarSeparator::selfRegister(KviStatusBar * pBar)
 		__tr2qs("Separator"),"separator",CreateStatusBarSeparator);
 	pBar->registerAppletDescriptor(d);
 }
-

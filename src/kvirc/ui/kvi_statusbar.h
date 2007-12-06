@@ -25,12 +25,11 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
 #include "kvi_heapobject.h"
 
-#include <qstring.h>
+#include <QString>
 #include <QHash>
-#include <qstatusbar.h>
+#include <QStatusBar>
 
 class KviFrame;
 

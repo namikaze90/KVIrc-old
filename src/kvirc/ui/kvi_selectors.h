@@ -27,25 +27,24 @@
 
 
 #include "kvi_settings.h"
-
-#include <qcheckbox.h>
-#include "kvi_tal_hbox.h"
-#include "kvi_tal_vbox.h"
-#include <qlineedit.h>
-#include <qlabel.h>
-#include "kvi_tal_scrollview.h"
-#include <qpushbutton.h>
-#include <qcolor.h>
-#include <qfont.h>
-#include "kvi_tal_listbox.h"
-#include "kvi_tal_listview.h"
-#include <qspinbox.h>
-#include <qstringlist.h>
-#include <qvalidator.h>
-
 #include "kvi_string.h"
 #include "kvi_pixmap.h"
 #include "kvi_styled_controls.h"
+#include "kvi_tal_hbox.h"
+#include "kvi_tal_vbox.h"
+#include "kvi_tal_scrollview.h"
+#include "kvi_tal_listbox.h"
+#include "kvi_tal_listview.h"
+
+#include <QCheckBox>
+#include <QLineEdit>
+#include <QLabel>
+#include <QPushButton>
+#include <QColor>
+#include <QFont>
+#include <QSpinBox>
+#include <QStringList>
+#include <QValidator>
 #include <QTextCharFormat>
 
 //#ifndef _KVI_SELECTORS_CPP_

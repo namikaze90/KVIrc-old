@@ -26,14 +26,13 @@
 //============================================================================
 
 #include "kvi_settings.h"
-
-#include <qframe.h>
-#include <qpushbutton.h>
 #include "kvi_tal_listbox.h" 
-
 #include "kvi_string.h"
 #include "kvi_app.h"
 #include "kvi_input.h"
+
+#include <QFrame>
+#include <QPushButton>
 
 class QComboBox;
 class KviChannel;

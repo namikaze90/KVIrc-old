@@ -32,14 +32,15 @@
 #include "kvi_mirccntrl.h"
 #include "kvi_filedialog.h"
 #include "kvi_kvs_script.h"
-
-#include <qlabel.h>
-#include <qpainter.h>
-#include <qlayout.h>
-#include <qcolordialog.h>
-#include <qpalette.h>
-#include <qfontdialog.h>
 #include "kvi_tal_popupmenu.h"
+
+#include <QLabel>
+#include <QPainter>
+#include <QLayout>
+#include <QColorDialog>
+#include <QPalette>
+#include <QFontDialog>
+
 
 KviBoolSelector::KviBoolSelector(QWidget * par,const QString & txt,bool *pOption,bool bEnabled)
 : KviStyledCheckBox(txt,par), KviSelectorInterface()

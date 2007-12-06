@@ -46,15 +46,16 @@ extern KviTextIconWindow * g_pTextIconWindow;
 extern KviColorWindow * g_pColorWindow;
 static int g_iInputFontCharWidth[256];
 
-#include <qpainter.h>
-#include <qfontmetrics.h>
 #include "kvi_tal_tooltip.h"
-#include <qlineedit.h>
 #include "kvi_tal_listbox.h"
-#include <qregexp.h>
-#include <qclipboard.h>
 #include "kvi_tal_popupmenu.h"
-#include <qevent.h>
+
+#include <QPainter>
+#include <QFontMetrics>
+#include <QLineEdit>
+#include <QRegExp>
+#include <QClipboard>
+#include <QEvent>
 
 // FIXME: #warning "The combo should disappear when it looses focus!...(how to do it ?)"
 

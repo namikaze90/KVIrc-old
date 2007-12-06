@@ -22,8 +22,6 @@
 //
 //=============================================================================
 
-
-
 #include "kvi_debug.h"
 #include "kvi_settings.h"
 #include "kvi_mdimanager.h"
@@ -35,26 +33,22 @@
 #include "kvi_menubar.h"
 #include "kvi_mdicaption.h"
 #include "kvi_app.h"
-
 #include "kvi_tal_popupmenu.h"
-#include <qmenubar.h>
-#include <qlayout.h>
-#include <qpainter.h>
-#include <math.h>
-#include <qcursor.h>
-#include <qdrawutil.h>
-#include <qevent.h>
+#include "kvi_tal_hbox.h"
 
-#ifdef COMPILE_USE_QT4
-	#include "kvi_tal_hbox.h"
-#endif
+#include <QMenuBar>
+#include <QLayout>
+#include <QPainter>
+#include <QCursor>
+#include <QEvent>
+#include <qdrawutil.h>
+
+#include <math.h>
 
 #ifdef COMPILE_PSEUDO_TRANSPARENCY
-	#include <qpixmap.h>
+	#include <QPixmap>
 	extern QPixmap * g_pShadedParentGlobalDesktopBackground;
 #endif
-
-
 
 
 KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)

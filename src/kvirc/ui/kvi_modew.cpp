@@ -28,11 +28,11 @@
 #include "kvi_ircconnectionserverinfo.h"
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_qcstring.h"
-
-#include <qframe.h>
-#include <qlineedit.h>
 #include "kvi_tal_hbox.h" 
-#include <qevent.h>
+
+#include <QFrame>
+#include <QLineEdit>
+#include <QEvent>
 
 KviModeWidget::KviModeWidget(QWidget * par,KviChannel* chan,const char * name)
 :QFrame(par,name)
@@ -40,11 +40,8 @@ KviModeWidget::KviModeWidget(QWidget * par,KviChannel* chan,const char * name)
 	m_pChannel=chan;
 	m_pLabel=0;
 	m_pLineEdit=0;
-#ifdef COMPILE_USE_QT4
+
 	setAutoFillBackground(false);
-#else
-	setBackgroundMode(QWidget::NoBackground);
-#endif
 	reset();
 }
 

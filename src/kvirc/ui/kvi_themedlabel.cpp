@@ -21,12 +21,12 @@
 //
 
 #include "kvi_themedlabel.h"
-
 #include "kvi_options.h"
 #include "kvi_settings.h"
 #include "kvi_app.h"
 #include "kvi_window.h"
-#include <qpainter.h>
+
+#include <QPainter>
 
 #ifdef COMPILE_PSEUDO_TRANSPARENCY
 	extern QPixmap * g_pShadedChildGlobalDesktopBackground;

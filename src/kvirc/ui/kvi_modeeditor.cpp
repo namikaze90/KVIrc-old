@@ -33,8 +33,8 @@
 #include "kvi_toolwindows_container.h"
 #include "kvi_tal_scrollview.h"
 
-#include <qlayout.h>
-#include <qlabel.h>
+#include <QLayout>
+#include <QLabel>
 
 
 //////////////////////////////////////////////////////////////////////
