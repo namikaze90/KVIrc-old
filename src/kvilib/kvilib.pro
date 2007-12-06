@@ -21,7 +21,6 @@ HEADERS += tal/kvi_tal_application_kde.h \
     tal/kvi_tal_toolbar_qt4.h \
     tal/kvi_tal_application.h \
     tal/kvi_tal_filedialog.h \
-    tal/kvi_tal_grid.h \
     tal/kvi_tal_groupbox.h \
     tal/kvi_tal_hbox.h \
     tal/kvi_tal_iconview.h \
@@ -108,7 +107,6 @@ HEADERS += tal/kvi_tal_application_kde.h \
     config/kvi_wincfg.h
 SOURCES += tal/kvi_tal_application.cpp \
     tal/kvi_tal_filedialog.cpp \
-    tal/kvi_tal_grid.cpp \
     tal/kvi_tal_groupbox.cpp \
     tal/kvi_tal_hbox.cpp \
     tal/kvi_tal_iconview.cpp \

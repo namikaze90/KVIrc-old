@@ -1,13 +1,10 @@
-
-
-
-#include <qlayout.h> 
-#include <qtoolbutton.h> 
-#include <qobjectcleanuphandler.h> 
-#include <qpushbutton.h> 
+#include <QLayout> 
+#include <QToolButton> 
+#include <QObjectCleanupHandler> 
+#include <QPushButton> 
 #include "kvi_tal_vbox.h"
-#include <qpainter.h>
-#include <qapplication.h>
+#include <QPainter>
+#include <QApplication>
 
 #include "kvi_toolwindows_container.h"
 #include "kvi_iconmanager.h"
@@ -78,19 +75,11 @@ void KviWindowToolWidget::unregisterSelf()
 }*/
 
 KviWindowToolPageButton::KviWindowToolPageButton ( int pixon,int pixoff, const QString & text, QWidget * parent,bool bOn, const char * name )
-:TOOL_PAGE_PARENT(parent)
+:QPushButton(parent)
 {
-#ifdef COMPILE_USE_QT4
 	setFlat(true);
 	setObjectName("kvi_window_tool_button");
 	setIcon(QIcon(*(g_pIconManager->getSmallIcon(pixon))));
-#else
-	QIconSet is1;
-	is1.setPixmap(*(g_pIconManager->getSmallIcon(pixon)),QIconSet::Small,QIconSet::Normal,QIconSet::On);
-	is1.setPixmap(*(g_pIconManager->getSmallIcon(pixoff)),QIconSet::Small,QIconSet::Normal,QIconSet::Off);
-	setIconSet(is1);
-	setUsesBigPixmap(false);
-#endif
 	setToggleButton(true);
 	setOn(bOn);
 

@@ -32,9 +32,8 @@
 
 #include <QCursor>
 
-#ifdef COMPILE_USE_QT4
-	#include <QEvent>
-#endif
+#include <QEvent>
+#include <QMouseEvent>
 
 static KviTalPopupMenu * g_pToolBarContextPopup = 0;
 static KviTalPopupMenu * g_pToolBarWindowsPopup = 0;

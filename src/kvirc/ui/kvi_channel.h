@@ -36,11 +36,10 @@
 #include "kvi_time.h"
 #include "kvi_modew.h"
 
-
 #include <QDateTime>
-
 #include <QStringList>
 #include <QHash>
+#include <QHBoxLayout>
 
 class KviConsole;
 class QSplitter;
@@ -146,7 +145,6 @@ protected:
 	QList<KviChannelAction*>            * m_pActionHistory;
 	kvi_time_t                            m_tLastReceivedWhoReply;
 	QList<int>                     m_VertSplitterSizesList;
-	KviTalHBox                          * m_pButtonContainer;
 protected:
 	bool eventFilter(QObject *, QEvent *);
 	virtual QPixmap * myIconPtr();
@@ -294,7 +292,7 @@ public:
 
 	void unhighlight();
 	
-	QFrame * buttonContainer() { return (QFrame*)m_pButtonContainer; };
+	QFrame * buttonContainer() { return (QFrame*)m_pButtonGrid; };
 private slots:
 	void toggleDoubleView();
 	void toggleListView();

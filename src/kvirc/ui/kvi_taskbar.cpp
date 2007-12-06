@@ -55,12 +55,10 @@
 #include <QImage>
 #include <QCursor>
 #include <QEvent>
+#include <QMouseEvent>
 
-#ifdef COMPILE_USE_QT4
-	#include <q3header.h>
-#else
-	#include <qheader.h>
-#endif
+#include <q3header.h>
+
 
 #ifdef COMPILE_PSEUDO_TRANSPARENCY
 	extern QPixmap * g_pShadedChildGlobalDesktopBackground;

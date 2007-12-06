@@ -31,9 +31,6 @@
 #include "kvi_userlistview.h"
 #include "kvi_themedlabel.h"
 
-
-#include "kvi_tal_grid.h"
-
 class KviConsole;
 class KviConfig;
 class QSplitter;
@@ -52,7 +49,7 @@ protected:
 	KviWindowToolPageButton             * m_pListViewButton;
 	int                                   m_iFlags;
 	KviThemedLabel                      * m_pLabel;
-	QFrame                              * m_pButtonGrid;
+	
 protected:
 	virtual QPixmap * myIconPtr();
 	virtual void fillCaptionBuffers();

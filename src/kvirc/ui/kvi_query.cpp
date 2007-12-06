@@ -54,11 +54,12 @@
 
 #include "kvi_kvs_eventtriggers.h"
 
-#include <qpixmap.h>
-#include <qsplitter.h>
-#include "kvi_tal_hbox.h"
-#include <qtoolbutton.h>
+#include <QPixmap>
+#include <QSplitter>
+#include <QToolButton>
 #include "kvi_draganddrop.h"
+#include <QBoxLayout>
+#include <QSizePolicy>
 
 
 KviQuery::KviQuery(KviFrame * lpFrm,KviConsole * lpConsole,const QString &nick)
@@ -69,33 +70,52 @@ KviQuery::KviQuery(KviFrame * lpFrm,KviConsole * lpConsole,const QString &nick)
 	connection()->registerQuery(this);
 
 	//m_pTopSplitter = new QSplitter(QSplitter::Horizontal,this,"top_splitter");
-	m_pButtonBox = new KviTalHBox(this);
+	QHBoxLayout * headerlayout = new QHBoxLayout();
+	
+	headerlayout->setSpacing(1);
+	headerlayout->setMargin(0);
+	
+	m_pButtonBox = new QWidget(this);
+	m_pButtonBox->setLayout(headerlayout);
+	QSizePolicy spbuttonbox(QSizePolicy::Minimum, QSizePolicy::Ignored);
+	m_pButtonBox->setSizePolicy(spbuttonbox);
+	
 	m_pLabel = new KviThemedLabel(m_pButtonBox,"query_label");
+	headerlayout->addWidget(m_pLabel);
+	
+	QSizePolicy sp(QSizePolicy::Expanding, QSizePolicy::Ignored);
+	m_pLabel->setSizePolicy(sp);
 	m_pLabel->setAutoHeight(1);
+	
 	updateLabelText();
-	m_pButtonBox->setStretchFactor(m_pLabel,1);
+	//m_pButtonBox->setStretchFactor(m_pLabel,1);
 
 	// The button box on the right
-	//KviTalHBox * box = new KviTalHBox(m_pTopSplitter,"button_box");
+	m_pButtonGrid = new QFrame(m_pButtonBox);
+	m_pButtonBox->layout()->addWidget(m_pButtonGrid);
+	QGridLayout * gridlayout;
 	if(KVI_OPTION_BOOL(KviOption_boolShowExtendedInfoInQueryLabel))
-		m_pButtonGrid= (QFrame*) new KviTalGrid(2,Qt::Horizontal,m_pButtonBox);
-	else
-		m_pButtonGrid= (QFrame*) new KviTalGrid(1,Qt::Horizontal,m_pButtonBox);
+	{
+		gridlayout = new QGridLayout(m_pButtonGrid,0,2);
+	} else {
+		gridlayout = new QGridLayout(m_pButtonGrid,0,1);
+	}
 
+	gridlayout->setSpacing(1);
+	gridlayout->setMargin(0);
+	m_pButtonGrid->setLayout(gridlayout);
+	
 	createTextEncodingButton(m_pButtonGrid);
 
-#ifdef COMPILE_USE_QT4
 	m_pSplitter = new QSplitter(Qt::Horizontal,this,"main_splitter");
-#else
-	m_pSplitter = new QSplitter(QSplitter::Horizontal,this,"main_splitter");
-#endif
+
 	m_pIrcView = new KviIrcView(m_pSplitter,lpFrm,this);
 	connect(m_pIrcView,SIGNAL(rightClicked()),this,SLOT(textViewRightClicked()));
 	//m_pEditorsContainer= new KviToolWindowsContainer(m_pSplitter);
 		
-		
 	m_pListViewButton = new KviWindowToolPageButton(KVI_SMALLICON_HIDELISTVIEW,KVI_SMALLICON_SHOWLISTVIEW,__tr2qs("Show User List"),buttonContainer(),true,"list_view_button");
 	connect(m_pListViewButton,SIGNAL(clicked()),this,SLOT(toggleListView()));
+	gridlayout->addWidget(m_pListViewButton);
 	
 #ifdef COMPILE_CRYPT_SUPPORT
 	createCryptControllerButton(m_pButtonGrid);

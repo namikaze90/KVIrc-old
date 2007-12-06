@@ -42,7 +42,9 @@
 #include "kvi_iconmanager.h"
 #include "kvi_locale.h"
 
-#include <QRegExp.h>
+#include <QRegExp>
+#include <QLayout>
+
 #include "kvi_tal_tooltip.h"
 
 namespace KviKvsCoreCallbackCommands
@@ -452,6 +454,7 @@ namespace KviKvsCoreCallbackCommands
 		if(!pButton)
 		{
 			pButton = new KviWindowScriptButton(KVSCCC_pWindow->buttonContainer(),KVSCCC_pWindow,szName);
+			if (KVSCCC_pWindow->buttonContainer()->layout())KVSCCC_pWindow->buttonContainer()->layout()->addWidget(pButton);
 			pButton->show();
 		}
 

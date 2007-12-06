@@ -53,7 +53,7 @@
 #include <QPixmap>
 #include <QFontMetrics>
 #include <QDateTime>
-#include <QMime>
+#include <qmime.h>
 #include "kvi_styled_controls.h"
 #include <qevent.h>
 

@@ -33,6 +33,8 @@
 
 #include <qnamespace.h>
 #include <QEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
 
 #include <ctype.h>
 

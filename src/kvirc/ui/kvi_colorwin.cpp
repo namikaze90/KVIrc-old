@@ -30,6 +30,9 @@
 #include <QPainter>
 #include <QString>
 #include <QEvent>
+#include <QKeyEvent>
+#include <QShowEvent>
+#include <QMouseEvent>
 
 
 KviColorWindow::KviColorWindow()

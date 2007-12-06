@@ -105,44 +105,54 @@ KviChannel::KviChannel(KviFrame * lpFrm,KviConsole * lpConsole,const char * name
 	// Register ourselves
 	connection()->registerChannel(this);
 	// And create the widgets layout
-	// Button box
-	m_pButtonBox = new KviTalHBox(this);
+	// headerbox
+	m_pButtonBox = new QWidget(this);
+	
+	QHBoxLayout * headerlayout = new QHBoxLayout();
+	m_pButtonBox->setLayout(headerlayout);
+	headerlayout->setSpacing(1);
+	headerlayout->setMargin(0);
+	QSizePolicy spbuttonbox(QSizePolicy::Minimum, QSizePolicy::Ignored);
+	m_pButtonBox->setSizePolicy(spbuttonbox);
+
+	// buttoncontainer
+	m_pButtonGrid = new QFrame(m_pButtonBox);
+	QHBoxLayout * hboxlayout = new QHBoxLayout(m_pButtonGrid);
+	hboxlayout->setSpacing(1);
+	hboxlayout->setMargin(0);
+	m_pButtonGrid->setLayout(hboxlayout);
 	
 	m_pTopSplitter = new QSplitter(Qt::Horizontal,m_pButtonBox);
+	headerlayout->addWidget(m_pTopSplitter);
 
-	m_pButtonBox->setStretchFactor(m_pTopSplitter,1);
-	
-	m_pButtonContainer = new KviTalHBox(m_pButtonBox);
-	
 	// Topic widget on the left
 	m_pTopicWidget = new KviTopicWidget(m_pTopSplitter,"topic_widget");
+	QSizePolicy sptopic(QSizePolicy::Expanding, QSizePolicy::Ignored);
+	m_pTopicWidget->setSizePolicy(sptopic);
 
 	connect(m_pTopicWidget,SIGNAL(topicSelected(const QString &)),
 		this,SLOT(topicSelected(const QString &)));
 	// mode label follows the topic widget
 	m_pModeWidget = new KviModeWidget(m_pTopSplitter,this,"mode_");
+	QSizePolicy spmode(QSizePolicy::Fixed, QSizePolicy::Ignored);
+	m_pModeWidget->setSizePolicy(spmode);
+	m_pModeWidget->setFixedWidth(32);
 	KviTalToolTip::add(m_pModeWidget,__tr2qs("Channel mode"));
 
-	createTextEncodingButton(m_pButtonContainer);
+	createTextEncodingButton(m_pButtonGrid);
 
 	// Central splitter
 	m_pSplitter = new QSplitter(Qt::Horizontal,this);
-	#ifdef COMPILE_USE_QT4
-		m_pSplitter->setObjectName(name);
-	#else
-		m_pSplitter->setName(name);
-	#endif
+
+	m_pSplitter->setObjectName(name);
+
 	m_pSplitter->setOpaqueResize(false);
 	// Spitted vertially on the left
 	m_pVertSplitter = new QSplitter(Qt::Vertical,m_pSplitter);
 	m_pVertSplitter->setOpaqueResize(false);
 	// With the IRC view over
 	m_pIrcView = new KviIrcView(m_pVertSplitter,lpFrm,this);
-	#ifdef COMPILE_USE_QT4
-		m_pIrcView->setObjectName(name);
-	#else
-		m_pIrcView->setName(name);
-	#endif
+	m_pIrcView->setObjectName(name);
 	connect(m_pIrcView,SIGNAL(rightClicked()),this,SLOT(textViewRightClicked()));
 	// And the double view (that may be unused)
 	m_pMessageView = 0;
@@ -151,43 +161,45 @@ KviChannel::KviChannel(KviFrame * lpFrm,KviConsole * lpConsole,const char * name
 	
 	
 	// and the related buttons
-	m_pDoubleViewButton = createToolButton(m_pButtonContainer,"double_view_button",KVI_SMALLICON_HIDEDOUBLEVIEW,KVI_SMALLICON_SHOWDOUBLEVIEW,__tr2qs("Split View"),false);
+	m_pDoubleViewButton = createToolButton(m_pButtonGrid,"double_view_button",KVI_SMALLICON_HIDEDOUBLEVIEW,KVI_SMALLICON_SHOWDOUBLEVIEW,__tr2qs("Split View"),false);
+	hboxlayout->addWidget(m_pDoubleViewButton);
 	connect(m_pDoubleViewButton,SIGNAL(clicked()),this,SLOT(toggleDoubleView()));
 	
-	m_pListViewButton = new KviWindowToolPageButton(KVI_SMALLICON_HIDELISTVIEW,KVI_SMALLICON_SHOWLISTVIEW,__tr2qs("User List"),buttonContainer(),true,"list_view_button");
+	m_pListViewButton = new KviWindowToolPageButton(KVI_SMALLICON_HIDELISTVIEW,KVI_SMALLICON_SHOWLISTVIEW,__tr2qs("User List"),m_pButtonGrid,true,"list_view_button");
+	hboxlayout->addWidget(m_pListViewButton);
 	connect(m_pListViewButton,SIGNAL(clicked()),this,SLOT(toggleListView()));
-	m_pBanEditorButton = new KviWindowToolPageButton(KVI_SMALLICON_UNBAN,KVI_SMALLICON_BAN,__tr2qs("Ban Editor"),buttonContainer(),false,"ban_editor_button");
+	m_pBanEditorButton = new KviWindowToolPageButton(KVI_SMALLICON_UNBAN,KVI_SMALLICON_BAN,__tr2qs("Ban Editor"),m_pButtonGrid,false,"ban_editor_button");
+	hboxlayout->addWidget(m_pBanEditorButton);
 	connect(m_pBanEditorButton,SIGNAL(clicked()),this,SLOT(toggleBanEditor()));
 	
 	if(m_pConsole->connection()->serverInfo()->supportedListModes().contains('e'))
 	{
-		m_pBanExceptionEditorButton =new KviWindowToolPageButton(KVI_SMALLICON_BANUNEXCEPT,KVI_SMALLICON_BANEXCEPT,__tr2qs("Ban Exception Editor"),buttonContainer(),false,"ban_exception_editor_button");
+		m_pBanExceptionEditorButton = new KviWindowToolPageButton(KVI_SMALLICON_BANUNEXCEPT,KVI_SMALLICON_BANEXCEPT,__tr2qs("Ban Exception Editor"),m_pButtonGrid,false,"ban_exception_editor_button");
+		hboxlayout->addWidget(m_pBanExceptionEditorButton);
 		connect(m_pBanExceptionEditorButton,SIGNAL(clicked()),this,SLOT(toggleBanExceptionEditor()));
 	} else {
 		m_pBanExceptionEditorButton=0;
 	}
 	if(m_pConsole->connection()->serverInfo()->supportedListModes().contains('I'))
 	{
-		m_pInviteEditorButton =new KviWindowToolPageButton(KVI_SMALLICON_INVITEUNEXCEPT,KVI_SMALLICON_INVITEEXCEPT,__tr2qs("Invite Exception Editor"),buttonContainer(),false,"invite_exception_editor_button");
+		m_pInviteEditorButton = new KviWindowToolPageButton(KVI_SMALLICON_INVITEUNEXCEPT,KVI_SMALLICON_INVITEEXCEPT,__tr2qs("Invite Exception Editor"),m_pButtonGrid,false,"invite_exception_editor_button");
+		hboxlayout->addWidget(m_pInviteEditorButton);
 		connect(m_pInviteEditorButton,SIGNAL(clicked()),this,SLOT(toggleInviteEditor()));
 	} else {
 		m_pInviteEditorButton = 0;
 	}
-	m_pModeEditorButton = new KviWindowToolPageButton(KVI_SMALLICON_CHANMODEHIDE,KVI_SMALLICON_CHANMODE,__tr2qs("Mode Editor"),buttonContainer(),false,"mode_editor_button");
+	m_pModeEditorButton = new KviWindowToolPageButton(KVI_SMALLICON_CHANMODEHIDE,KVI_SMALLICON_CHANMODE,__tr2qs("Mode Editor"),m_pButtonGrid,false,"mode_editor_button");
+	hboxlayout->addWidget(m_pModeEditorButton);
 	connect(m_pModeEditorButton,SIGNAL(clicked()),this,SLOT(toggleModeEditor()));
 	m_pModeEditor = 0;
 	
 #ifdef COMPILE_CRYPT_SUPPORT
-	createCryptControllerButton(m_pButtonContainer);
+	createCryptControllerButton(m_pButtonGrid);
 #endif
 
 	m_pHideToolsButton = new KviStyledToolButton(m_pButtonBox,"hide_container_button");
-
-#ifndef  COMPILE_USE_QT4
+	
 	m_pHideToolsButton->setUsesBigPixmap(false);
-#else
-	m_pHideToolsButton->setAutoRaise(true);
-#endif
 	m_pHideToolsButton->setFixedWidth(10);
 
 	if(g_pIconManager->getBigIcon("kvi_horizontal_left.png"))
@@ -208,6 +220,10 @@ KviChannel::KviChannel(KviFrame * lpFrm,KviConsole * lpConsole,const char * name
 	// Ensure proper focusing
 	//setFocusHandler(m_pInput,this);
 	// And turn on the secondary IRC view if needed
+	
+	// add ButtonGrid and hidebutton on the right
+	headerlayout->addWidget(m_pButtonGrid);
+	headerlayout->addWidget(m_pHideToolsButton);
 
 	if(KVI_OPTION_BOOL(KviOption_boolAutoLogChannels))m_pIrcView->startLogging();
 

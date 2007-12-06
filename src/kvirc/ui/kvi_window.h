@@ -36,7 +36,7 @@
 	class KviMdiChild;
 #endif
 
-#include <qframe.h>
+#include <QFrame>
 
 class KviFrame;
 class KviTaskBarItem;
@@ -162,7 +162,8 @@ protected: // almost private: don't touch :D
 	KviIrcView                          * m_pIrcView;
 	KviInput                            * m_pInput;
 	QSplitter                           * m_pSplitter;
-	KviTalHBox                               * m_pButtonBox;
+	QWidget								* m_pButtonBox;
+	QFrame                              * m_pButtonGrid;
 	unsigned long int                     m_uId;
 	QString                               m_szTextEncoding;
 #ifdef COMPILE_CRYPT_SUPPORT
@@ -218,7 +219,7 @@ public:
 	// The window has ALWAYS a taskbar item
 	KviTaskBarItem * taskBarItem(){ return m_pTaskBarItem; };
 	// The window *might* have a button container
-	virtual QFrame * buttonContainer(){ return (QFrame*)m_pButtonBox; };
+	virtual QFrame * buttonContainer(){ return (QFrame*)m_pButtonGrid; };
 	virtual void toggleButtonContainer();
 	// The window *might* have an output proxy: if it has no view() for example
 	virtual KviWindow * outputProxy();

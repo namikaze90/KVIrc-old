@@ -40,6 +40,7 @@
 #include <QStyle>
 
 #include <QEvent>
+#include <QDragEnterEvent>
 #include <q3dragobject.h>
 	
 #define QDragObject Q3DragObject

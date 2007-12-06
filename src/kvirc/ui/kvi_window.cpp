@@ -53,29 +53,25 @@
 #include "kvi_styled_controls.h"
 #include "kvi_kvs_script.h"
 
-#include <qpixmap.h>
+#include <QPixmap>
 #include "kvi_tal_popupmenu.h"
-#include <qcursor.h>
-#include <qtimer.h>
-#include <qsplitter.h>
-#include <qmetaobject.h>
-#include <qdatetime.h>
-#include <qtextcodec.h>
-#include <qevent.h>
+#include <QCursor>
+#include <QTimer>
+#include <QSplitter>
+#include <QMetaObject>
+#include <QDateTime>
+#include <QTextCodec>
+#include <QCloseEvent>
+#include <QResizeEvent>
 
-// it looks they can't decide :D
-#ifdef COMPILE_USE_QT4
-	#include <QPushButton>
-	#include <qdesktopwidget.h>
-#else
-        #include <qobjectlist.h>
-#endif
+#include <QPushButton>
+#include <QDesktopWidget>
 
 
-#include <qvariant.h>
-#include <qtoolbutton.h>
+#include <QVariant>
+#include <QToolButton>
 #include "kvi_tal_tooltip.h"
-#include <qmessagebox.h>
+#include <QMessageBox>
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	#include "kvi_crypt.h"
@@ -124,6 +120,7 @@ KviWindow::KviWindow(int type,KviFrame * lpFrm,const QString &name,KviConsole * 
 	m_pInput                = 0;
 	m_pSplitter             = 0;
 	m_pButtonBox            = 0;
+	m_pButtonGrid			= 0;
 	m_pConsole              = lpConsole;
 	m_pContext              = lpConsole ? lpConsole->context() : 0;
 	m_pLastFocusedChild     = 0;
@@ -427,23 +424,12 @@ void KviWindow::destroyTaskBarItem()
 	//	m_pTaskBarItem = 0; // actually the taskBarItem destructor sets it
 }
 
-BUTTON_CLASS * KviWindow::createToolButton(QWidget * par,const char * nam,int pixon,int pixoff,const QString & tooltip,bool bOn)
+QPushButton * KviWindow::createToolButton(QWidget * par,const char * nam,int pixon,int pixoff,const QString & tooltip,bool bOn)
 {
-#ifdef COMPILE_USE_QT4
-	BUTTON_CLASS * b = new BUTTON_CLASS(par);
+	QPushButton * b = new QPushButton(par);
 	b->setObjectName(nam);
 	b->setFlat(true);
 	b->setIcon(QIcon(*(g_pIconManager->getSmallIcon(pixon))));
-#else
-	BUTTON_CLASS * b = new BUTTON_CLASS(par,nam);
-	b->setToggleButton(true);
-	b->setUsesBigPixmap(false);
-	QIconSet is1;
-	is1.setPixmap(*(g_pIconManager->getSmallIcon(pixon)),QIconSet::Small,QIconSet::Normal,QIconSet::On);
-	is1.setPixmap(*(g_pIconManager->getSmallIcon(pixoff)),QIconSet::Small,QIconSet::Normal,QIconSet::Off);
-	b->setIconSet(is1);
-#endif
-
 
 	KviTalToolTip::add
 		(b,tooltip);
@@ -456,6 +442,7 @@ void KviWindow::createCryptControllerButton(QWidget * par)
 {
 #ifdef COMPILE_CRYPT_SUPPORT
 	m_pCryptControllerButton = new KviWindowToolPageButton(KVI_SMALLICON_UNLOCKEDOFF,KVI_SMALLICON_UNLOCKED,__tr2qs("Crypting"),buttonContainer(),false,"crypt_controller_button");
+	if(par->layout()) par->layout()->addWidget(m_pCryptControllerButton);
 	connect(m_pCryptControllerButton,SIGNAL(clicked()),this,SLOT(toggleCryptController()));
 #endif // COMPILE_CRYPT_SUPPORT
 }
@@ -464,6 +451,7 @@ void KviWindow::createTextEncodingButton(QWidget * par)
 {
 	if(m_pTextEncodingButton)delete m_pTextEncodingButton;
 	m_pTextEncodingButton = createToolButton(par,"text_encoding_button",KVI_SMALLICON_TEXTENCODING,KVI_SMALLICON_TEXTENCODING,__tr2qs("Private Text Encoding"),false);
+	if(par->layout()) par->layout()->addWidget(m_pTextEncodingButton);
 	connect(m_pTextEncodingButton,SIGNAL(clicked()),this,SLOT(textEncodingButtonClicked()));
 }
 

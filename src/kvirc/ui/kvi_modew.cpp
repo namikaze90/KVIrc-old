@@ -33,6 +33,7 @@
 #include <QFrame>
 #include <QLineEdit>
 #include <QEvent>
+#include <QResizeEvent>
 
 KviModeWidget::KviModeWidget(QWidget * par,KviChannel* chan,const char * name)
 :QFrame(par,name)

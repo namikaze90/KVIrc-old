@@ -117,11 +117,26 @@ KviConsole::KviConsole(KviFrame * lpFrm,int iFlags)
 		m_iFlags |= KVI_CONSOLE_FLAG_FIRSTINAPP;
 	}
 
-	m_pButtonBox = new KviTalHBox(this);
-	m_pButtonBox->setSpacing(0);
-	m_pButtonBox->setMargin(0);
-	new QLabel(__tr2qs("Address:"),m_pButtonBox,"url_label");
+	m_pButtonBox = new QWidget(this);
+	QHBoxLayout * mainlayout = new QHBoxLayout();
+	m_pButtonBox->setLayout(mainlayout);
+	mainlayout->setSpacing(1);
+	mainlayout->setMargin(0);
+	QSizePolicy spbuttonbox(QSizePolicy::Minimum, QSizePolicy::Ignored);
+	m_pButtonBox->setSizePolicy(spbuttonbox);
+	
+	m_pButtonGrid = new QFrame(m_pButtonBox);
+	QGridLayout * gridlayout = new QGridLayout(m_pButtonGrid,0,1);
+	gridlayout->setSpacing(1);
+	gridlayout->setMargin(0);
+	m_pButtonGrid->setLayout(gridlayout);
+	
+	QLabel * address = new QLabel(__tr2qs("Address:"),m_pButtonBox,"url_label");
+	mainlayout->addWidget(address);
 	m_pAddressEdit = new QComboBox(m_pButtonBox,"url_editor");
+	mainlayout->addWidget(m_pAddressEdit);
+	QSizePolicy spaddressedit(QSizePolicy::Expanding, QSizePolicy::Ignored);
+	m_pAddressEdit->setSizePolicy(spaddressedit);
 	m_pAddressEdit->setAutoCompletion(true);
 	m_pAddressEdit->setDuplicatesEnabled(false);
 	m_pAddressEdit->setEditable(true);
@@ -130,10 +145,8 @@ KviConsole::KviConsole(KviFrame * lpFrm,int iFlags)
 	m_pAddressEdit->setCurrentText("");
 	m_pAddressEdit->setInsertionPolicy(QComboBox::NoInsertion);
 	m_pAddressEdit->setMinimumHeight(24); //icon is 16px, + margins
-	m_pButtonBox->setStretchFactor(m_pAddressEdit,1);
-#ifdef COMPILE_USE_QT4
+	//m_pButtonBox->setStretchFactor(m_pAddressEdit,1);
 	m_pButtonBox->setObjectName( QLatin1String( "kvi_window_button_box" ) );
-#endif
 	KviTalToolTip::add(m_pAddressEdit,__tr2qs("Current IRC URI"));
 	connect(m_pAddressEdit,SIGNAL(activated(const QString & )),this,SLOT(ircUriChanged(const QString & )));
 	connect(g_pApp,SIGNAL(recentUrlsChanged()),this,SLOT(recentUrlsChanged()));
@@ -149,6 +162,9 @@ KviConsole::KviConsole(KviFrame * lpFrm,int iFlags)
 	//m_pEditorsContainer= new KviToolWindowsContainer(m_pSplitter);
 	m_pNotifyViewButton = new KviWindowToolPageButton(KVI_SMALLICON_HIDELISTVIEW,KVI_SMALLICON_SHOWLISTVIEW,__tr2qs("Notify List"),buttonContainer(),true,"list_view_button");
 	connect(m_pNotifyViewButton,SIGNAL(clicked()),this,SLOT(toggleNotifyView()));
+	gridlayout->addWidget(m_pNotifyViewButton);
+	
+	m_pButtonBox->layout()->addWidget(m_pButtonGrid);
 	
 	m_pNotifyListView  = new KviUserListView(m_pSplitter,m_pNotifyViewButton,0,this,19,__tr2qs("Notify List"),"notify_list_view");
 

@@ -28,6 +28,7 @@
 #include <QLabel>
 #include <QFrame>
 #include <QEvent>
+#include <QKeyEvent>
 
 #include <ctype.h>
 
