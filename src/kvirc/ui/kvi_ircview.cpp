@@ -120,7 +120,7 @@
 #include <QDateTime>
 #include <QEvent>
 #include <QClipboard>
-#include <QScrollbar>
+#include <QScrollBar>
 #include <QFontDialog>
 
 //#include <QColor>   // needed 

@@ -46,15 +46,15 @@
 #include "kvi_stringconversion.h"
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionserverinfo.h"
+#include "kvi_styled_controls.h"
 
 #include <QLabel>
-#include <QScrollbar>
+#include <QScrollBar>
 #include <QPainter>
 #include <QPixmap>
 #include <QFontMetrics>
 #include <QDateTime>
 #include <qmime.h>
-#include "kvi_styled_controls.h"
 #include <qevent.h>
 
 #ifdef COMPILE_PSEUDO_TRANSPARENCY
