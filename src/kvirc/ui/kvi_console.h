@@ -31,10 +31,8 @@
 #include "kvi_string.h"
 #include "kvi_irccontext.h"
 
-
-
 #include <time.h>
-#include <qcombobox.h>
+#include <QComboBox>
 
 
 class QToolBar;

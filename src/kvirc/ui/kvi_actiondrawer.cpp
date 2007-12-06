@@ -28,16 +28,16 @@
 #include "kvi_iconmanager.h"
 #include "kvi_locale.h"
 
-#include <qlayout.h>
-#include <qlabel.h>
+#include <QLayout>
+#include <QLabel>
 //#include <qscrollview.h>
-#include <qpainter.h>
-#include <qpixmap.h>
+#include <QPainter>
+#include <QPixmap>
 #ifdef COMPILE_USE_QT4
 	#include <q3header.h>
 	#include <q3simplerichtext.h>
 	#include <qmime.h>
-	#include <qevent.h>
+	#include <QEvent>
 #else
 	#include <qheader.h>
 	#include <qsimplerichtext.h>

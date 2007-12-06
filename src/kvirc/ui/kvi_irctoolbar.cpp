@@ -35,20 +35,16 @@
 #include "kvi_dynamictooltip.h"
 #include "kvi_ircurl.h"
 #include "kvi_internalcmd.h"
-
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_irccontext.h"
 #include "kvi_lagmeter.h"
-
-#include <qstyle.h>
-#include <qpainter.h>
 #include "kvi_tal_popupmenu.h"
-#include <qlayout.h>
 
-#ifdef COMPILE_USE_QT4
-	#include <qevent.h>
-#endif
+#include <QStyle>
+#include <QPainter>
+#include <QLayout>
+#include <QEvent>
 
 #ifdef COMPILE_PSEUDO_TRANSPARENCY
 	extern QPixmap * g_pShadedChildGlobalDesktopBackground;

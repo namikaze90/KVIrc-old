@@ -35,7 +35,6 @@
 #include "kvi_colorwin.h"
 #include "kvi_texticonwin.h"
 #include "kvi_window.h"
-
 #include "kvi_locale.h"
 #include "kvi_mirccntrl.h"
 #include "kvi_userlistview.h"
@@ -54,24 +53,22 @@
 #include "kvi_styled_controls.h"
 #include "kvi_texticonmanager.h"
 #include "kvi_draganddrop.h"
+#include "kvi_tal_hbox.h"
+#include "kvi_tal_popupmenu.h"
 
-#include <qlabel.h>
+#include <QLabel>
+#include <QFileDialog>
+#include <QPainter>
+#include <QStringList>
+#include <QApplication>
+#include <QClipboard>
+#include <QMessageBox>
+#include <QLayout> 
+#include <QStyle>
+#include <QEvent>
+
 #include <ctype.h>
 #include <stdlib.h>
-#include <qfiledialog.h>
-#include "kvi_tal_popupmenu.h"
-#include <qpainter.h>
-#include <qclipboard.h>
-#include <qstringlist.h>
-
-#include <qapplication.h>
-#include <qclipboard.h>
-#include <qmessagebox.h>
-#include "kvi_tal_hbox.h"
-#include <qlayout.h> 
-#include <qstyle.h>
-#include <qevent.h>
-
 
 #ifndef ACCEL_KEY
 #define ACCEL_KEY(k) "\t" + QString(QKeySequence( Qt::CTRL | Qt::Key_ ## k ))

@@ -27,9 +27,9 @@
 #include "kvi_locale.h"
 #include "kvi_tal_textedit.h"
 
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qlayout.h>
+#include <QLabel>
+#include <QPushButton>
+#include <QLayout>
 
 KviHtmlDialog::KviHtmlDialog(QWidget * pParent,KviHtmlDialogData * pData)
 : QDialog(pParent)
@@ -149,5 +149,3 @@ int KviHtmlDialog::display(QWidget * pParent,KviHtmlDialogData * pData)
 	delete pDialog;
 	return pData->iSelectedButton;
 }
-
-

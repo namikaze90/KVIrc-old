@@ -42,7 +42,7 @@
 #include "kvi_iconmanager.h"
 #include "kvi_locale.h"
 
-#include <qregexp.h>
+#include <QRegExp.h>
 #include "kvi_tal_tooltip.h"
 
 namespace KviKvsCoreCallbackCommands

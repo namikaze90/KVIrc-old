@@ -31,13 +31,11 @@
 #include "kvi_options.h"
 #include "kvi_locale.h"
 #include "kvi_config.h"
-
 #include "kvi_frame.h"
 
-
-#include <qpixmap.h>
-#include <qsplitter.h>
-#include <qtoolbutton.h>
+#include <QPixmap>
+#include <QSplitter>
+#include <QToolButton>
 
 KviDebugWindow * KviDebugWindow::m_pInstance = 0;
 
@@ -128,4 +126,3 @@ QSize KviDebugWindow::sizeHint() const
 	QSize ret(m_pSplitter->sizeHint().width(),m_pIrcView->sizeHint().height() + m_pInput->heightHint());
 	return ret;
 }
-

@@ -29,8 +29,8 @@
 
 #include <QHash>
 #include <QList>
-#include <qpixmap.h>
-#include <qvariant.h>
+#include <QPixmap>
+#include <QVariant>
 
 
 class KviWindow;

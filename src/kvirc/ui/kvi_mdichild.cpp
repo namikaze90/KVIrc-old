@@ -34,20 +34,20 @@
 #include "kvi_iconmanager.h"
 #include "kvi_window.h"
 #include "kvi_mdicaption.h"
-
-#include <qcursor.h>
-#include <qnamespace.h>
-#include <qapplication.h>
-#include <qfontmetrics.h>
-
-#include <qpixmap.h>
-#include <qstyle.h>
-#include <qpainter.h>
 #include "kvi_tal_popupmenu.h"
+
+#include <QCursor>
+#include <qnamespace.h>
+#include <QApplication>
+#include <QFontMetrics>
+#include <QPixmap>
+#include <QStyle>
+#include <QPainter>
+#include <QEvent>
+
 #ifndef COMPILE_USE_QT4
 	#include <qobjectlist.h>
 #endif
-#include <qevent.h>
 
 #ifdef Q_OS_MACX
 #include "kvi_app.h"  //Needed for g_pApp

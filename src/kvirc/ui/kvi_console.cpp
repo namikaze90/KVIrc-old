@@ -77,15 +77,15 @@
 
 #include "kvi_kvs_script.h"
 #include "kvi_kvs_eventtriggers.h"
-
-#include <qsplitter.h>
-#include <qtoolbar.h>
-#include <qtoolbutton.h>
-#include <qtimer.h>
 #include "kvi_tal_hbox.h"
 #include "kvi_tal_popupmenu.h"
-#include <qmessagebox.h>
-#include <qstringlist.h>
+
+#include <QSplitter>
+#include <QToolBar>
+#include <QToolButton>
+#include <QTimer>
+#include <QMessageBox>
+#include <QStringList>
 
 #ifdef COMPILE_USE_QT4
 	#include <q3mimefactory.h>

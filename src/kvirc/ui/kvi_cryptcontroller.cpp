@@ -40,7 +40,7 @@
 	#include "kvi_memmove.h"
 	#include "kvi_toolwindows_container.h"
 	
-	#include <qlayout.h>
+	#include <QLayout>
 	
 
 	// kvi_app.cpp

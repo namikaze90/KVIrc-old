@@ -106,21 +106,24 @@
 #include "kvi_draganddrop.h"
 #include "kvi_qcstring.h"
 // FIXME: #warning "There should be an option to preserve control codes in copied text (clipboard) (mIrc = CTRL+Copy->with colors)"
-
-#include <qbitmap.h>
-#include <qpainter.h>
-#include <qregexp.h>
-#include <qfile.h>
-#include <qtoolbutton.h>
-#include <qfontmetrics.h> // needed
-#include <qapplication.h>
 #include "kvi_tal_popupmenu.h"
-#include <qmessagebox.h>
-#include <qtextcodec.h>
-#include <qdatetime.h>
-#include <qevent.h>
 
-//#include <qcolor.h>   // needed 
+#include <QBitmap>
+#include <QPainter>
+#include <QRegExp>
+#include <QFile>
+#include <QToolButton>
+#include <QFontMetrics> // needed
+#include <QApplication>
+#include <QMessageBox>
+#include <QTextCodec>
+#include <QDateTime>
+#include <QEvent>
+#include <QClipboard>
+#include <QScrollbar>
+#include <QFontDialog>
+
+//#include <QColor>   // needed 
 
 // FIXME: #warning "There are problems with the selection and wrapped lines: you can select something on the first line and get the second highlighted"
 // FIXME: #warning "This hack is temporary...later remove it"
@@ -136,12 +139,6 @@
 #else
 	#include <qcursor.h>
 #endif
-
-#include <qclipboard.h>
-#include <qdatetime.h>
-#include <qmessagebox.h>
-#include <qscrollbar.h>
-#include <qfontdialog.h>
 
 #include <time.h>
 

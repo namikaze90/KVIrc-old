@@ -37,9 +37,9 @@
 #include "kvi_modew.h"
 
 
-#include <qdatetime.h>
+#include <QDateTime>
 
-#include <qstringlist.h>
+#include <QStringList>
 #include <QHash>
 
 class KviConsole;

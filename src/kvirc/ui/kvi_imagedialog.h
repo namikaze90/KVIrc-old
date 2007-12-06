@@ -23,18 +23,14 @@
 //
 
 #include "kvi_settings.h"
-
-
-
-
-#include <qdialog.h>
-#include <qcombobox.h>
 #include "kvi_tal_listbox.h"
-
-#include <qtimer.h>
-#include <qstringlist.h>
-
 #include "kvi_dynamictooltip.h"
+
+#include <QDialog>
+#include <QComboBox>
+#include <QTimer>
+#include <QStringList>
+
 
 class KviImageDialogItem : public KviTalListBoxPixmap
 {

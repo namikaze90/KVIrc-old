@@ -59,14 +59,13 @@
 #include "kvi_kvs_script.h"
 #include "kvi_kvs_eventtriggers.h"
 
-#include <qsplitter.h>
-#include <qvariant.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qcheckbox.h>
-
-#include <qtimer.h>
-#include <qlayout.h>
+#include <QSplitter>
+#include <QVariant>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QCheckBox>
+#include <QTimer>
+#include <QLayout>
 
 #if QT_VERSION >= 300
 	#include <qfile.h>
@@ -79,14 +78,9 @@
 	#endif
 #endif
 
-
-#ifdef COMPILE_USE_QT4
-	#include <qdesktopwidget.h>
-	#include <qevent.h>
-	#include <QShortcut>
-#else
-	#include <qaccel.h>
-#endif
+#include <QDesktopWidget>
+#include <QEvent>
+#include <QShortcut>
 
 #include <time.h>
 
@@ -1164,11 +1158,8 @@ bool KviFrame::focusNextPrevChild(bool next)
 	QWidget * w = focusWidget();
 	if(w)
 	{
-#ifdef COMPILE_USE_QT4
 		if(w->focusPolicy() == Qt::StrongFocus)return false;
-#else
-		if(w->focusPolicy() == QWidget::StrongFocus)return false;
-#endif
+
 		//QVariant v = w->property("KviProperty_FocusOwner");
 		//if(v.isValid())return false; // Do NOT change the focus widget!
 		
@@ -1389,6 +1380,5 @@ void KviFrame::hideEvent ( QHideEvent * e)
 		}
 			 QTimer::singleShot( 0, this, SLOT(hide()) );	
 		}
-		
 	}
 }

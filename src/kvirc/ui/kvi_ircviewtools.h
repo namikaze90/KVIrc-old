@@ -25,11 +25,11 @@
 //=========================================================================================================
 
 #include "kvi_settings.h"
-
 #include "kvi_tal_tooltip.h"
-#include <qframe.h>
 #include "kvi_tal_listview.h"
-#include <qstring.h>
+
+#include <QFrame>
+#include <QString>
 
 class QLabel;
 //class KviStyledCheckBox;

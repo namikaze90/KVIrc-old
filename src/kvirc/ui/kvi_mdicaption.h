@@ -25,10 +25,11 @@
 //=================================================================================================
 
 #include "kvi_settings.h"
-
-#include <qtoolbutton.h>
-#include <qlabel.h>
 #include "kvi_styled_controls.h"
+
+#include <QToolButton>
+#include <QLabel>
+
 
 class KviMdiManager;
 class KviMdiChild;
@@ -42,9 +43,7 @@ public:
 	~KviMdiCaptionButton();
 protected:
 	virtual void drawButton(QPainter * p);
-#ifdef COMPILE_USE_QT4
 	virtual void paintEvent(QPaintEvent *e);
-#endif
 };
 
 

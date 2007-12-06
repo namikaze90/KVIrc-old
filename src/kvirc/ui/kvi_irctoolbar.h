@@ -24,16 +24,14 @@
 //
 
 #include "kvi_settings.h"
-
 #include "kvi_string.h"
 #include "kvi_toolbar.h"
 #include "kvi_console.h"
-
-
-#include <qwidget.h>
-#include <qtoolbutton.h>
 #include "kvi_tal_widgetstack.h"
-#include <qlabel.h>
+
+#include <QWidget>
+#include <QToolButton>
+#include <QLabel>
 
 class KviTalPopupMenu;
 
@@ -86,10 +84,6 @@ protected:
 protected slots:
 	void tipRequest(KviDynamicToolTip * tip,const QPoint &);
 };
-
-
-
-
 
 
 #endif //_KVI_IRCTOOLBAR_H_

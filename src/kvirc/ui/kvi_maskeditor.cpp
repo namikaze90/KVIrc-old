@@ -32,9 +32,9 @@
 #include "kvi_toolwindows_container.h"
 #include "kvi_channel.h"
 
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qvalidator.h> 
+#include <QLayout>
+#include <QLabel>
+#include <QValidator>
 
 KviMaskItem::KviMaskItem(KviTalListView* parent,KviMaskEntry* entry)
 :KviTalListViewItem(parent), m_Mask(*entry)

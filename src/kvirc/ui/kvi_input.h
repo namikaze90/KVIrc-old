@@ -26,17 +26,13 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
-
-#include <qwidget.h>
 #include "kvi_tal_hbox.h"
-#include <qpixmap.h>
-
-
 #include "kvi_string.h"
 
-//#include <qdialog.h>
-#include <qtoolbutton.h>
+#include <QWidget>
+#include <QPixmap>
+//#include <QDialog>
+#include <QToolButton>
 
 class KviUserListView;
 class KviWindow;
@@ -71,9 +67,7 @@ public:
 	void load(const QString& filename);
 };
 
-#ifdef COMPILE_USE_QT4
-	#define QIMEvent QInputMethodEvent
-#endif
+#define QIMEvent QInputMethodEvent
 
 class KVIRC_API KviInputEditor : public QFrame
 {
@@ -209,9 +203,7 @@ protected:
 	virtual void imStartEvent(QIMEvent *e);
 	virtual void imComposeEvent(QIMEvent *e);
 	virtual void imEndEvent(QIMEvent *e);
-#ifdef COMPILE_USE_QT4
 	virtual void paintEvent(QPaintEvent *e);
-#endif
 };
 
 class KviScriptEditor;

@@ -33,12 +33,12 @@
 // And bails out hardly if COMPILE_CRYPT_SUPPORT is not defined...
 
 #if defined(COMPILE_CRYPT_SUPPORT)
-	#include <qwidget.h>
+	#include <QWidget>
 	#include "kvi_tal_listbox.h"
-	#include <qpushbutton.h>
-	#include <qcheckbox.h>
-	#include <qlabel.h>
-	#include <qlineedit.h>
+	#include <QPushButton>
+	#include <QCheckBox>
+	#include <QLabel>
+	#include <QLineEdit>
 	#include "kvi_styled_controls.h"
 	
 	#include "kvi_crypt.h"

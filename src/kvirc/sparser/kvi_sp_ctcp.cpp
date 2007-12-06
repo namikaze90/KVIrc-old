@@ -58,7 +58,7 @@
 
 #include <stdlib.h>
 
-#include <qdatetime.h>
+#include <QDateTime>
 
 #define QT4_TAG " (QT4) "
 

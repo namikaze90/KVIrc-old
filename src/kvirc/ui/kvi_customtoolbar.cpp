@@ -30,31 +30,23 @@
 #include "kvi_app.h"
 #include "kvi_actionmanager.h"
 #include "kvi_customtoolbardescriptor.h"
-
-#include <qcursor.h>
 #include "kvi_tal_popupmenu.h"
-#include <qlayout.h>
-#include <qpixmap.h>
-#include <qcursor.h>
-#include <qtoolbutton.h>
-#include <qpainter.h>
-#include <qstyle.h>
 
-#ifdef COMPILE_USE_QT4
-	#include <qevent.h>
-	#include <q3dragobject.h>
+#include <QCursor>
+#include <QLayout>
+#include <QPixmap>
+#include <QToolButton>
+#include <QPainter>
+#include <QStyle>
+
+#include <QEvent>
+#include <q3dragobject.h>
 	
-	#define QDragObject Q3DragObject
-	#define QTextDrag Q3TextDrag
-	#define QIconDrag Q3IconDrag
-	
-	#include <qstyleoption.h>
-#else
-	#include <qobjectlist.h>
-	#include <qdragobject.h>
-#endif
+#define QDragObject Q3DragObject
+#define QTextDrag Q3TextDrag
+#define QIconDrag Q3IconDrag
 
-
+#include <QStyleOption>
 
 KviCustomToolBarSeparator::KviCustomToolBarSeparator(KviCustomToolBar *pParent,const char * name)
 : QWidget(pParent,name)
@@ -67,13 +59,9 @@ KviCustomToolBarSeparator::KviCustomToolBarSeparator(KviCustomToolBar *pParent,c
 
 QSize KviCustomToolBarSeparator::sizeHint() const
 {
-#ifdef COMPILE_USE_QT4
 	QStyleOption opt;
 	opt.initFrom(this);
 	int extent = style()->pixelMetric(QStyle::PM_ToolBarSeparatorExtent,&opt,this);
-#else
-	int extent = style().pixelMetric(QStyle::PM_DockWindowSeparatorExtent,this);
-#endif
 	if(m_pToolBar->orientation() == Qt::Horizontal)return QSize(extent,0);
 	else return QSize(0,extent);
 }
@@ -81,15 +69,9 @@ QSize KviCustomToolBarSeparator::sizeHint() const
 void KviCustomToolBarSeparator::paintEvent(QPaintEvent *)
 {
 	QPainter p(this);
-#ifdef COMPILE_USE_QT4
 	QStyleOption opt;
 	opt.initFrom(this);
 	style()->drawPrimitive(QStyle::PE_Q3DockWindowSeparator,&opt,&p,this);
-#else
-	QStyle::SFlags flags = QStyle::Style_Default;
-	if(m_pToolBar->orientation() == Qt::Horizontal)flags |= QStyle::Style_Horizontal;
-	style().drawPrimitive(QStyle::PE_DockWindowSeparator,&p,rect(),colorGroup(),flags);
-#endif
 }
 
 
@@ -106,7 +88,7 @@ KviCustomToolBar::KviCustomToolBar(KviCustomToolBarDescriptor * d,const QString 
 	setMinimumSize(20,20);
 	d->registerToolBar(this);
 	if(KviActionManager::customizingToolBars())
-		beginCustomize(); // because we will not get the signal
+	beginCustomize(); // because we will not get the signal
 }
 
 KviCustomToolBar::~KviCustomToolBar()
@@ -168,45 +150,24 @@ void KviCustomToolBar::beginCustomize()
 	if(m_pFilteredChildren)delete m_pFilteredChildren;
 	m_pFilteredChildren = new QHash<QObject*,bool>;
 	// filter the events for all the children
-#ifdef COMPILE_USE_QT4
 	QList<QObject*> l = children();
 	for(QList<QObject*>::Iterator it = l.begin();it != l.end();++it)
 	{
 		if((*it)->isWidgetType())
 			filterChild(*it);
 	}
-#else
-	const QObjectList * l = children();
-	QObjectListIterator it(*l);
-	while(QObject * o = it.current())
-	{
-		if(o->isWidgetType())
-			filterChild(o);
-		++it;
-	}
-#endif
 }
 
 void KviCustomToolBar::endCustomize()
 {
 	// stop filtering events
-#ifdef COMPILE_USE_QT4
 	QList<QObject*> l = children();
 	for(QList<QObject*>::Iterator it = l.begin();it != l.end();++it)
 	{
 		if((*it)->isWidgetType())
 			unfilterChild(*it);
 	}
-#else
-	const QObjectList * l = children();
-	QObjectListIterator it(*l);
-	while(QObject * o = it.current())
-	{
-		if(o->isWidgetType())
-			unfilterChild(o);
-		++it;
-	}
-#endif
+
 	// FIXME: We SHOULD MAKE SURE that the children are re-enabled...
 	// this could be done by calling setEnabled(isEnabled()) on each action ?
 	if(m_pFilteredChildren)

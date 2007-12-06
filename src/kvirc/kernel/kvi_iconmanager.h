@@ -34,8 +34,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QHash>
-
-
+#include <QCloseEvent>
 
 #define KVI_SMALLICON_NONE 0
 #define KVI_SMALLICON_CLOSE 1

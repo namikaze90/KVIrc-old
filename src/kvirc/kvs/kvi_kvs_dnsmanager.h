@@ -25,9 +25,9 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-#include <qobject.h>
 
-#include <qstring.h>
+#include <QObject>
+#include <QString>
 
 class KviDns;
 class KviWindow;

@@ -26,11 +26,11 @@
 
 
 #include "kvi_listview.h"
-
-#include <qpainter.h>
-#include <qpixmap.h>
-
 #include "kvi_doublebuffer.h"
+
+#include <QPainter>
+#include <QPixmap>
+
 
 KviListView::KviListView( QWidget * parent, const char * name)
 :KviTalListView(parent)

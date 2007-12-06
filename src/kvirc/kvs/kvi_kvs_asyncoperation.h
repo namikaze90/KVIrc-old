@@ -26,7 +26,7 @@
 
 #include "kvi_settings.h"
 
-#include <qobject.h>
+#include <QObject>
 
 class KviWindow;
 

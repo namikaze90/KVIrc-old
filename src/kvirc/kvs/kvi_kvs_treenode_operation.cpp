@@ -29,7 +29,7 @@
 #include "kvi_kvs_runtimecontext.h"
 #include "kvi_locale.h"
 
-#include <qregexp.h>
+#include <QRegExp>
 
 #include <math.h>
 

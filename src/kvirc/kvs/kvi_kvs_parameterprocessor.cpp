@@ -36,9 +36,7 @@
 #include "kvi_qstring.h"
 #include "kvi_locale.h"
 
-
-
-#include <qstringlist.h>
+#include <QStringList>
 
 namespace KviKvsParameterProcessor
 {	

@@ -32,21 +32,14 @@
 #include "kvi_mirccntrl.h"
 
 #include <qnamespace.h>
-
-#ifdef COMPILE_USE_QT4
-	#include <qevent.h>
-#endif
+#include <QEvent>
 
 #include <ctype.h>
 
 extern KviInputHistory * g_pInputHistory;
 
 KviHistoryWindow::KviHistoryWindow()
-#ifdef COMPILE_USE_QT4
-: KviTalListBox(0,Qt::Popup)
-#else
-: KviTalListBox(0,Qt::WType_Popup)
-#endif
+	: KviTalListBox(0,Qt::Popup)
 {
 	m_pOwner = 0;
 #ifdef COMPILE_USE_QT4

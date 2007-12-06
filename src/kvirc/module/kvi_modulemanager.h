@@ -27,9 +27,9 @@
 
 #include "kvi_settings.h"
 
-#include <qobject.h>
+#include <QObject>
 #include <QHash>
-#include <qtimer.h>
+#include <QTimer>
 
 
 #include "kvi_module.h"

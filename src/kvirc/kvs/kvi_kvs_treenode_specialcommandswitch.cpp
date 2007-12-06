@@ -30,7 +30,7 @@
 #include "kvi_kvs_runtimecontext.h"
 #include "kvi_locale.h"
 
-#include <qregexp.h>
+#include <QRegExp>
 
 KviKvsTreeNodeSpecialCommandSwitchLabel::KviKvsTreeNodeSpecialCommandSwitchLabel(const QChar * pLocation)
 : KviKvsTreeNode(pLocation)

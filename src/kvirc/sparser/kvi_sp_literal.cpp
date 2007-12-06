@@ -69,7 +69,7 @@
 
 //#include "kvi_regusersdb.h"
 //#include "kvi_iconmanager.h"
-#include <qdatetime.h>
+#include <QDateTime>
 
 extern KviNickServRuleSet * g_pNickServRuleSet;
 

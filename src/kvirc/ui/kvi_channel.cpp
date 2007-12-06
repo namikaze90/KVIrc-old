@@ -66,15 +66,15 @@
 
 #include <time.h>
 
-#include <qsplitter.h>
-#include <qtoolbutton.h>
-#include <qlabel.h>
-#include <qevent.h>
+#include <QSplitter>
+#include <QToolButton>
+#include <QLabel>
+#include <QEvent>
 
-#include <qpalette.h>
+#include <QPalette>
 #include "kvi_tal_popupmenu.h"
 
-#include <qmessagebox.h>
+#include <QMessageBox>
 #include "kvi_tal_widgetstack.h" 
 
 #ifndef AVERAGE_CHANNEL_USERS

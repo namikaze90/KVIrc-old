@@ -50,10 +50,10 @@
 #include "kvi_lagmeter.h"
 #include "kvi_qcstring.h"
 
-#include <qpixmap.h>
-#include <qdatetime.h>
-#include <qtextcodec.h>
-#include <qregexp.h> 
+#include <QPixmap>
+#include <QDateTime>
+#include <QTextCodec>
+#include <QRegExp> 
 
 #include "kvi_kvs_eventtriggers.h"
 #include "kvi_kvs_script.h"

@@ -35,22 +35,24 @@
 #include "kvi_filedialog.h"
 #include "kvi_app.h"
 #include "kvi_memmove.h"
+#include "kvi_accel.h"
 
-#include <qtoolbutton.h>
-#include <qtabwidget.h>
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <qpushbutton.h>
+#include <QToolButton>
+#include <QTabWidget>
+#include <QLayout>
+#include <QLabel>
+#include <QCheckBox>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QCursor>
+#include <QEvent>
+
 #ifdef COMPILE_USE_QT4
 	#include <q3header.h>
 #else
 	#include <qheader.h>
 #endif
-#include <qlineedit.h>
-#include <qcursor.h>
-#include "kvi_accel.h"
-#include <qevent.h>
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //

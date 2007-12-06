@@ -24,15 +24,15 @@
 //
 
 #include "kvi_settings.h"
-#include <qdialog.h> 
-#include <qlineedit.h> 
-#include <qwidget.h>
 #include "kvi_tal_listview.h"
-#include <qpushbutton.h>
-
-
 #include "kvi_string.h"
 #include "kvi_toolwindows_container.h"
+
+#include <QDialog> 
+#include <QLineEdit> 
+#include <QWidget>
+#include <QPushButton>
+
 
 class KviMaskEditor;
 class KviChannel;

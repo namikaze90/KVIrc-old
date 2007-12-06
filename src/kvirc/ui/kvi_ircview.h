@@ -28,8 +28,8 @@
 #include "kvi_string.h"
 
 #include <QList>
-#include <qwidget.h>
-#include <qpixmap.h>      // needed
+#include <QWidget>
+#include <QPixmap>      // needed
 
 class QScrollBar;
 class QLineEdit;

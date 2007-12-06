@@ -27,8 +27,8 @@
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
 
-#include <qwidget.h>
-#include <qtabwidget.h>
+#include <QWidget>
+#include <QTabWidget>
 
 #include "kvi_listview.h"
 

@@ -48,9 +48,9 @@
 #include "kvi_kvs_popupmanager.h"
 #include "kvi_settings.h"
 
-#include <qcursor.h>
-#include <qprocess.h>
-#include <qtimer.h>
+#include <QCursor>
+#include <QProcess>
+#include <QTimer>
 
 //FIXME: should be #ifdef UNICODE here...
 /*#if defined(__GNUC__) && defined(COMPILE_USE_QT4) && defined(COMPILE_ON_WINDOWS)
