@@ -294,43 +294,6 @@ namespace KviKvsCoreFunctions
 		return true;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////
-
-	/*
-		@doc: split
-		@type:
-			function
-		@title:
-			$split
-		@short:
-			DEPRECATED: Use $str.split instead!
-		@description:
-			This function has been moved to the str module.
-			See [fnc]$str.split[/fnc]()
-	*/
-
-	KVSCF(split)
-	{
-		KviModule * m = g_pModuleManager->getModule("str");
-		if(!m)
-		{
-			KVSCF_pContext->error(__tr2qs("Module function call failed: can't load the module 'str'"));
-			return false;
-		}
-
-		KviKvsModuleFunctionExecRoutine * proc = m->kvsFindFunction("split");
-		if(!proc)
-		{
-			KVSCF_pContext->error(__tr2qs("Module function call failed: the module 'str' doesn't export a function named 'split'"));
-			return false;
-		}
-
-		KviKvsModuleFunctionCall call(m,KVSCF_pContext,KVSCF_pParams,KVSCF_pRetBuffer);
-
-		return (*proc)(&call);
-	}
-
-
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/*

@@ -120,7 +120,6 @@ namespace KviKvsCoreFunctions
 	KVSCF(serialize);
 	KVSCF(server);
 	KVSCF(sort);
-	KVSCF(split);
 	KVSCF(string);
 	KVSCF(sw);
 	KVSCF(target);

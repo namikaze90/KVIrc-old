@@ -118,7 +118,6 @@ namespace KviKvsCoreFunctions
 		_REGFNC("serialize",serialize)
 		_REGFNC("server",server)
 		_REGFNC("sort",sort)
-		_REGFNC("split",split)
 		_REGFNC("string",string)
 		_REGFNC("sw",sw)
 		_REGFNC("target",target)
