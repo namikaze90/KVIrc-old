@@ -25,9 +25,6 @@
 #define __KVILIB__
 #include "kvi_tal_listview.h"
 
-
-
-
 #include <QPainter>
 #include <QStyle>
 #include <q3header.h>

@@ -32,8 +32,8 @@
 #include "kvi_app.h"
 #include "kvi_fileutils.h"
 
-#include <qdir.h>
-#include <qfileinfo.h>
+#include <QDir>
+#include <QFileInfo>
 /*
 	@doc: easyplugins
 	@type:
