@@ -66,7 +66,7 @@ class KviTalWidgetStack;
 	class KviCryptSessionInfo;
 #endif
 
-#include <qwidget.h>
+#include <QWidget>
 
 //
 // Window types

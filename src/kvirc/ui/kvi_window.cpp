@@ -57,6 +57,7 @@
 #include "kvi_tal_popupmenu.h"
 #include <QCursor>
 #include <QTimer>
+#include <QLayout>
 #include <QSplitter>
 #include <QMetaObject>
 #include <QDateTime>
