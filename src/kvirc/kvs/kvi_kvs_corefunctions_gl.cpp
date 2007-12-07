@@ -41,7 +41,7 @@
 #include "kvi_time.h"
 #include "kvi_kvs_eventmanager.h"
 #include "kvi_kvs_eventhandler.h"
-#include <QRegExp.h>
+#include <QRegExp>
 
 namespace KviKvsCoreFunctions
 {
