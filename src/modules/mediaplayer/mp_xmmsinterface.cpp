@@ -43,8 +43,8 @@ MP_IMPLEMENT_DESCRIPTOR(
 )
 
 MP_IMPLEMENT_DESCRIPTOR(
-	KviAudaciousInterface,
-	"audacious",
+	KviAudaciousClassicInterface,
+	"audacious classic",
 	__tr2qs_ctx(
 		"An interface to the popular UNIX audacious media player.\n" \
 		"Download it from http://audacious-media-player.org\n"
@@ -94,14 +94,14 @@ KviXmmsInterface::~KviXmmsInterface()
 	}
 }
 
-KviAudaciousInterface::KviAudaciousInterface()
+KviAudaciousClassicInterface::KviAudaciousClassicInterface()
 : KviXmmsInterface()
 {
 	m_szPlayerLibraryName = "libaudacious.so";
 	m_pLibraryPaths = audacious_lib_names;
 }
 
-KviAudaciousInterface::~KviAudaciousInterface()
+KviAudaciousClassicInterface::~KviAudaciousClassicInterface()
 {
 }
 

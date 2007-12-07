@@ -10,3 +10,6 @@ INCLUDEPATH += ../kvilib/tal/ \
 !contains( DEFINES, __KVILIB__ ) {
       LIBS += -lkvilib
   } 
+
+CONFIG += qdbus
+

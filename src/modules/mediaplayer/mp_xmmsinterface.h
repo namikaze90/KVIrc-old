@@ -70,14 +70,14 @@
 	
 	MP_DECLARE_DESCRIPTOR(KviXmmsInterface)
 	
-	class KviAudaciousInterface : public KviXmmsInterface
+	class KviAudaciousClassicInterface : public KviXmmsInterface
 	{
 	public:
-		KviAudaciousInterface();
-		virtual ~KviAudaciousInterface();
+		KviAudaciousClassicInterface();
+		virtual ~KviAudaciousClassicInterface();
 	};
 	
-	MP_DECLARE_DESCRIPTOR(KviAudaciousInterface)
+	MP_DECLARE_DESCRIPTOR(KviAudaciousClassicInterface)
 	
 #endif //!COMPILE_ON_WINDOWS
 

@@ -7,6 +7,8 @@ TEMPLATE = lib
 QT += core \
     gui \
     qt3support
+
+CONFIG += qdbus
     
 DEFINES -= UNICODE
 

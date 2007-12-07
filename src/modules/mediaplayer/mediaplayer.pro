@@ -7,7 +7,8 @@ HEADERS += mp_amarokinterface.h \
 		mp_mp3.h \
 		mp_winampinterface.h \
 		mp_xmmsinterface.h  \
-		mp_amipinterface.h
+		mp_amipinterface.h \
+		mp_audaciousinterface.h
  						
 SOURCES += libkvimediaplayer.cpp \
 		mp_amarokinterface.cpp \
@@ -17,6 +18,7 @@ SOURCES += libkvimediaplayer.cpp \
 		mp_mp3.cpp \
 		mp_winampinterface.cpp \
 		mp_xmmsinterface.cpp \
-		mp_amipinterface.cpp
+		mp_amipinterface.cpp \
+		mp_audaciousinterface.cpp
  						
 include(../module.pri)

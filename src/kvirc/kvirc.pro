@@ -7,7 +7,7 @@ win32 {
 
 include(../../config.pri)
 
-CONFIG   += precompile_header thread
+CONFIG   += precompile_header thread qdbus
 LANGUAGE  = C++
 TEMPLATE = app
 TARGET = kvirc

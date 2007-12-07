@@ -7,3 +7,6 @@ INCLUDEPATH += kernel/ \
 !contains( DEFINES, __KVIRC__ ) {
       LIBS += -lkvirc
   } 
+
+CONFIG += qdbus
+

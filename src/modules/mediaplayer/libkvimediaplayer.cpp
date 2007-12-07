@@ -25,6 +25,7 @@
 
 #include "mp_interface.h"
 #include "mp_xmmsinterface.h"
+#include "mp_audaciousinterface.h"
 #include "mp_amarokinterface.h"
 #include "mp_winampinterface.h"
 #include "mp_amipinterface.h"
@@ -1556,6 +1557,7 @@ static bool mediaplayer_module_init( KviModule * m )
 
 #ifndef COMPILE_ON_WINDOWS
 	g_pDescriptorList->append(MP_CREATE_DESCRIPTOR(KviXmmsInterface));
+	g_pDescriptorList->append(MP_CREATE_DESCRIPTOR(KviAudaciousClassicInterface));
 	g_pDescriptorList->append(MP_CREATE_DESCRIPTOR(KviAudaciousInterface));
 #endif
 

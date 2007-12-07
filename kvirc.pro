@@ -68,3 +68,5 @@ mac {
 }
 
 INSTALLS += doc license stuff
+CONFIG += qdbus
+

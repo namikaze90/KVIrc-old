@@ -6,6 +6,8 @@
 # Uncomment the following line if you want a debug version
 CONFIG += debug
 
+CONFIG += qdbus
+
 # Do not touch :)
 KVI_PACKAGE = "kvirc"
 KVI_VERSION = "3.9.9"
