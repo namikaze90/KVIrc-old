@@ -4,6 +4,7 @@ CONFIG += precompile_header \
     dll
 LANGUAGE = C++
 TEMPLATE = lib
+VERSION = 4.0.0
 TARGET = kvilib
 QT += core \
     gui \
