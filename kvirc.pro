@@ -3,7 +3,6 @@ include(config.pri)
 TEMPLATE = subdirs
 SUBDIRS = src data
 
-
 win32 {
 
 	CONFIG(debug, debug|release) {
@@ -43,6 +42,11 @@ unix {
 
 	stuff.path = $${KVI_INSTALL_PREFIX}/doc/$${KVI_PACKAGE}-$${KVI_VERSION_BRANCH}/
 	stuff.files = ChangeLog FAQ
+
+	# generate help files
+	help.commands = admin/install-sh -d '$${KVI_INSTALL_PREFIX}/share/$${KVI_PACKAGE}/$${KVI_VERSION_BRANCH}/help/en' ; perl admin/gendoc.pl -v $${KVI_VERSION} '$${KVI_INSTALL_PREFIX}/share/$${KVI_PACKAGE}/$${KVI_VERSION_BRANCH}/help/en' data/doctemplates/*.template `find ./ -name "*.cpp" -print`
+
+	QMAKE_EXTRA_TARGETS += help
 }
 
 win32 {
@@ -69,4 +73,5 @@ mac {
 
 INSTALLS += doc license stuff
 CONFIG += qdbus
+
 
