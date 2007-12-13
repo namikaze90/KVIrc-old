@@ -157,7 +157,7 @@ void KviMenuBar::setupHelpPopup()
 	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MESSAGE)),__tr2qs("Subscribe to the Mailing List"));
 	action->setData(QVariant(KVI_INTERNALCOMMAND_OPENURL_KVIRC_MAILINGLIST));
 	
-	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_BOMB)),__tr2qs("Report a Bug / Propose enhancements"));
+	action = help->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_BOMB)),__tr2qs("Report a Bug / Propose Improvements"));
 	action->setData(QVariant(KVI_INTERNALCOMMAND_OPENURL_KVIRC_BUGTRACK));
 	
 	help->insertSeparator();
