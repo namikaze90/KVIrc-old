@@ -167,7 +167,7 @@ bool KviModuleManager::loadModule(const QString& modName)
 	QString tmp;
 	QString szName;
 #ifdef COMPILE_ON_WINDOWS
-	KviQString::appendFormatted(szName,"kvi%Q.dll",&modName);
+	KviQString::appendFormatted(szName,"kvi%Q4.dll",&modName);
 #else
 	KviQString::appendFormatted(szName,"libkvi%Q.so",&modName);
 #endif
