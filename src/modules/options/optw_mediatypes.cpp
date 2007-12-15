@@ -57,9 +57,9 @@ KviMediaTypeListViewItem::~KviMediaTypeListViewItem()
 void KviMediaTypeListViewItem::copyData(KviMediaType * t)
 {
 	copyMediaType(&m_data,t);
-	setText(0,m_data.szFileMask.ptr());
-	setText(1,m_data.szIanaType.ptr());
-	setText(2,m_data.szDescription.ptr());	
+	setText(0,m_data.szFileMask);
+	setText(1,m_data.szIanaType);
+	setText(2,m_data.szDescription);	
 }
 
 KviMediaTypesOptionsWidget::KviMediaTypesOptionsWidget(QWidget * parent)
@@ -157,9 +157,8 @@ void KviMediaTypesOptionsWidget::fillListView()
 {
 	m_pListView->clear();
 	g_pMediaManager->lock();
-	KviPtrList<KviMediaType> * l = g_pMediaManager->mediaTypeList();
 	KviMediaTypeListViewItem * it;
-	for(KviMediaType * t = l->first();t;t = l->next())
+	foreach(KviMediaType * t,*(g_pMediaManager->mediaTypeList()))
 	{
 		it = new KviMediaTypeListViewItem(m_pListView,t);
 	}
@@ -202,14 +201,14 @@ void KviMediaTypesOptionsWidget::enableOrDisable()
 
 void KviMediaTypesOptionsWidget::setLineEdits()
 {
-	m_pDescription->setText(m_pLastItem ? m_pLastItem->data()->szDescription.ptr() : "");
-	m_pIanaType->setText(m_pLastItem ? m_pLastItem->data()->szIanaType.ptr() : "");
-	m_pFileMask->setText(m_pLastItem ? m_pLastItem->data()->szFileMask.ptr() : "");
-	m_pSavePath->setText(m_pLastItem ? m_pLastItem->data()->szSavePath.ptr() : "");
-	m_pCommandline->setText(m_pLastItem ? m_pLastItem->data()->szCommandline.ptr() : "");
-	m_pMagicBytes->setText(m_pLastItem ? m_pLastItem->data()->szMagicBytes.ptr() : "");
-	m_pRemoteExecCommandline->setText(m_pLastItem ? m_pLastItem->data()->szRemoteExecCommandline.ptr() : "");
-	m_pIcon->setText(m_pLastItem ? m_pLastItem->data()->szIcon.ptr() : "");
+	m_pDescription->setText(m_pLastItem ? m_pLastItem->data()->szDescription : "");
+	m_pIanaType->setText(m_pLastItem ? m_pLastItem->data()->szIanaType : "");
+	m_pFileMask->setText(m_pLastItem ? m_pLastItem->data()->szFileMask : "");
+	m_pSavePath->setText(m_pLastItem ? m_pLastItem->data()->szSavePath : "");
+	m_pCommandline->setText(m_pLastItem ? m_pLastItem->data()->szCommandline : "");
+	m_pMagicBytes->setText(m_pLastItem ? m_pLastItem->data()->szMagicBytes : "");
+	m_pRemoteExecCommandline->setText(m_pLastItem ? m_pLastItem->data()->szRemoteExecCommandline : "");
+	m_pIcon->setText(m_pLastItem ? m_pLastItem->data()->szIcon : "");
 }
 
 void KviMediaTypesOptionsWidget::currentItemChanged(KviTalListViewItem *it)

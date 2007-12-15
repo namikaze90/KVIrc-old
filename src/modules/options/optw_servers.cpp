@@ -307,8 +307,7 @@ KviNetworkDetailsWidget::KviNetworkDetailsWidget(QWidget * par,KviIrcNetwork * n
 	
 	if(rs && rs->rules())
 	{
-		KviPtrList<KviNickServRule> * ll = rs->rules();
-		for(KviNickServRule * rule = ll->first();rule;rule = ll->next())
+		foreach(KviNickServRule * rule,*(rs->rules()))
 		{
 			(void)new KviTalListViewItem(m_pNickServListView,rule->registeredNick(),rule->nickServMask(),rule->messageRegexp(),rule->identifyCommand());
 		}
@@ -684,7 +683,7 @@ KviServerDetailsWidget::KviServerDetailsWidget(QWidget * par,KviIrcServer * s)
 
 	if(mexl)
 	{
-		for(KviModuleExtensionDescriptor * d = mexl->first();d;d = mexl->next())
+		foreach(KviModuleExtensionDescriptor * d,*mexl)
 			m_pLinkFilterEditor->insertItem(d->name());
 	} else {
 		if(!s->linkFilter().isEmpty())
@@ -729,8 +728,7 @@ KviServerDetailsWidget::KviServerDetailsWidget(QWidget * par,KviIrcServer * s)
 	m_pProxyEditor->insertItem(__tr2qs_ctx("Default","options"));
 	m_pProxyEditor->insertItem(__tr2qs_ctx("Direct connection","options"));	
 	
-	KviPtrList<KviProxy> * proxylist = g_pProxyDataBase->proxyList();
-	for(KviProxy * p = proxylist->first();p;p = proxylist->next())
+	foreach(KviProxy * p,*(g_pProxyDataBase->proxyList()))
 	{
 		m_pProxyEditor->insertItem(QString("%1:%2").arg(p->hostname()).arg(p->port()));
 	}
@@ -1293,10 +1291,9 @@ void KviServerOptionsWidget::fillServerList()
 	foreach(KviIrcServerDataBaseRecord * r, *(g_pIrcServerDataBase->recordDict()))
 	{
 		net = new KviServerOptionsListViewItem(m_pListView,*(g_pIconManager->getSmallIcon(KVI_SMALLICON_WORLD)),r->network());
-		KviPtrList<KviIrcServer> * sl = r->serverList();
-		bool bCurrent = r->network()->name() == g_pIrcServerDataBase->currentNetworkName().utf8().data();
+		bool bCurrent = r->network()->name() == g_pIrcServerDataBase->currentNetworkName();
 		net->setOpen(bCurrent);
-		for(KviIrcServer * s = sl->first();s;s = sl->next())
+		foreach(KviIrcServer * s,*(r->serverList()))
 		{
 			srv = new KviServerOptionsListViewItem(net,*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SERVER)),s);
 
@@ -1456,7 +1453,7 @@ void KviServerOptionsWidget::importPopupAboutToShow()
 
 	QAction * action;
 
-	for(KviModuleExtensionDescriptor * d = l->first();d;d = l->next())
+	foreach(KviModuleExtensionDescriptor * d,*l)
 	{
 		if(d->icon())
 			action = m_pImportPopup->insertItem(*(d->icon()),d->visibleName());
@@ -1489,7 +1486,7 @@ void KviServerOptionsWidget::importPopupActivated(QAction * action)
 	if(m_pImportFilter)
 	{
 		disconnect(m_pImportFilter,0,this,0);
-		m_pImportFilter->die();
+		delete m_pImportFilter;
 		m_pImportFilter = 0;
 	}
 

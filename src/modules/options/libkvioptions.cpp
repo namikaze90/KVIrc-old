@@ -43,10 +43,6 @@
 
 QHash<QString,KviOptionsDialog*> * g_pOptionsDialogDict = 0;
 
-KviOptionsInstanceManager * g_pOptionsInstanceManager = 0;
-
-extern int g_iOptionWidgetInstances;
-
 /*
 	@doc: options.save
 	@type:
@@ -144,24 +140,21 @@ static bool options_kvs_cmd_dialog(KviKvsModuleCommandCall * c)
 */
 
 
-static void options_kvs_module_print_pages(KviKvsModuleCommandCall * c,KviOptionsWidgetInstanceEntry * e,const char * prefix)
+static void options_kvs_module_print_pages(KviKvsModuleCommandCall * c,KviOptionsPageDescriptorBase * e,const QString& prefix)
 {
-	c->window()->output(KVI_OUT_SYSTEMMESSAGE,"%s%c%s%c  (%Q)",prefix,KVI_TEXT_BOLD,e->szClassName,KVI_TEXT_BOLD,&(e->szName));
-	KviStr szPre = prefix;
-	szPre.append("  ");
-	if(e->pChildList)
+	c->window()->output(KVI_OUT_SYSTEMMESSAGE,"%Q%c%Q%c",&prefix,KVI_TEXT_BOLD,&(e->name()),KVI_TEXT_BOLD);
+	QString szPre = prefix;
+	if(szPre.isEmpty()) szPre.append('|');
+	szPre.append('-');
+	foreach(KviOptionsPageDescriptorBase * ex,*(e->childs()))
 	{
-		for(KviOptionsWidgetInstanceEntry * ex = e->pChildList->first();ex;ex = e->pChildList->next())
-		{
-			options_kvs_module_print_pages(c,ex,szPre.ptr());
-		}
+		options_kvs_module_print_pages(c,ex,szPre);
 	}
 }
+
 static bool options_kvs_cmd_pages(KviKvsModuleCommandCall * c)
 {
-	KviPtrList<KviOptionsWidgetInstanceEntry> * l = g_pOptionsInstanceManager->instanceEntryTree();
-
-	for(KviOptionsWidgetInstanceEntry * e = l->first();e;e = l->next())
+	foreach(KviOptionsPageDescriptorBase * e,KviOptionsManager::instance()->instanceEntryTree())
 	{
 		options_kvs_module_print_pages(c,e,"");
 	}
@@ -193,19 +186,19 @@ static bool options_kvs_cmd_edit(KviKvsModuleCommandCall * c)
 	KVSM_PARAMETERS_BEGIN(c)
 		KVSM_PARAMETER("option",KVS_PT_STRING,0,szOption)
 	KVSM_PARAMETERS_END(c)
-	KviOptionsWidgetInstanceEntry * e = g_pOptionsInstanceManager->findInstanceEntry(szOption);
+	KviOptionsPageDescriptorBase* e = KviOptionsManager::instance()->findPage(szOption);
 	if(!e)
 	{
 		c->warning(__tr2qs_ctx("No such options page class name %Q","options"),&szOption);
 		return true;
 	}
 
-	if(e->pWidget)
+	if(e->instance())
 	{
 		//c->warning(__tr("The editor page is already open","options"));
-		e->pWidget->raise();
-		e->pWidget->setActiveWindow();
-		e->pWidget->setFocus();
+		e->instance()->raise();
+		e->instance()->setActiveWindow();
+		e->instance()->setFocus();
 		return true;
 	}
 
@@ -221,7 +214,8 @@ static bool options_kvs_cmd_edit(KviKvsModuleCommandCall * c)
 
 	KviOptionsWidgetContainer * wc = new KviOptionsWidgetContainer(w,c->hasSwitch('m',"modal"));
 
-	wc->setup(g_pOptionsInstanceManager->getInstance(e,wc));
+	e->createInstance(wc);
+	wc->setup(e->instance());
 
 	// a trick for the dialog covering the splash screen before the time (this is prolly a WM or Qt bug)
 	if(g_pSplashScreen)
@@ -271,7 +265,7 @@ static bool options_kvs_fnc_isdialog(KviKvsModuleFunctionCall * c)
 
 static bool options_module_init(KviModule * m)
 {
-	g_pOptionsInstanceManager = new KviOptionsInstanceManager();
+	new KviOptionsManager();
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"dialog",options_kvs_cmd_dialog);
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"save",options_kvs_cmd_save);
@@ -293,16 +287,14 @@ static bool options_module_cleanup(KviModule *m)
 	delete g_pOptionsDialogDict;
 	g_pOptionsDialogDict = 0;
     
-	g_pOptionsInstanceManager->cleanup(m);
-	delete g_pOptionsInstanceManager;
-    g_pOptionsInstanceManager = 0;
+	delete KviOptionsManager::instance();
 
 	return true;
 }
 
 static bool options_module_can_unload(KviModule *m)
 {
-	return ((g_pOptionsDialogDict->isEmpty()) && (g_iOptionWidgetInstances == 0));
+	return g_pOptionsDialogDict->isEmpty();
 }
 
 KVIRC_MODULE(

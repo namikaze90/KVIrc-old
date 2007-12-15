@@ -27,14 +27,16 @@
 
 
 #include <qdialog.h>
-#include "kvi_tal_listview.h"
 #include <qstringlist.h>
 #include "kvi_optionswidget.h"
 
 #include "instances.h"
 
+#include <QTreeWidgetItem>
+
+class QTreeWidget;
+class QStackedWidget;
 class QLabel;
-class KviTalWidgetStack;
 class QPushButton;
 class QLineEdit;
 class QToolButton;
@@ -47,20 +49,20 @@ public:
 	~KviGeneralOptionsFrontWidget();
 };
 
-class KviOptionsListViewItem : public KviTalListViewItem
+class KviOptionsItem : public QTreeWidgetItem
 {
 public:
-	KviOptionsListViewItem(KviTalListView *parent,KviOptionsWidgetInstanceEntry * e);
-	KviOptionsListViewItem(KviTalListViewItem *parent,KviOptionsWidgetInstanceEntry * e);
-	~KviOptionsListViewItem();
+	KviOptionsItem(QTreeWidget *parent,KviOptionsPageDescriptorBase * d);
+	KviOptionsItem(QTreeWidgetItem *parent,KviOptionsPageDescriptorBase * d);
+	~KviOptionsItem();
 public:
-	KviOptionsWidgetInstanceEntry * m_pInstanceEntry;
+	KviOptionsPageDescriptorBase  * m_pDescriptor;
 	KviOptionsWidget              * m_pOptionsWidget;
 	bool m_bHighlighted;
 public:
 	void setHighlighted(bool b){ m_bHighlighted = b; };
-protected:
-	virtual void paintCell(QPainter * p,const QColorGroup & cg,int column,int width,int align);
+//protected:
+//	virtual void paintCell(QPainter * p,const QColorGroup & cg,int column,int width,int align);
 };
 
 class KviOptionsDialog : public QDialog
@@ -70,30 +72,27 @@ public:
 	KviOptionsDialog(QWidget * par,const QString &szGroup); 
 	~KviOptionsDialog();
 private:
-	KviTalListView    * m_pListView;
-	QLabel       * m_pCategoryLabel;
-	KviTalWidgetStack * m_pWidgetStack;
-	KviGeneralOptionsFrontWidget* m_pFrontWidget;
-	QString        m_szGroup;
-	QLineEdit    * m_pSearchLineEdit;
-	QToolButton  * m_pSearchButton;
+	QTreeWidget                    * m_pTree;
+	QLabel                         * m_pCategoryLabel;
+	QStackedWidget                 * m_pWidgetStack;
+	KviGeneralOptionsFrontWidget   * m_pFrontWidget;
+	QString                          m_szGroup;
+	QLineEdit                      * m_pSearchLineEdit;
+	QToolButton                    * m_pSearchButton;
 private:
-	void recursiveCommit(KviOptionsListViewItem *it);
-	void fillListView(KviTalListViewItem * p,QList<KviOptionsWidgetInstanceEntry*> * l,const QString &szGroup,bool bNotContainedOnly = false);
-	KviOptionsListViewItem * findItemByPage(KviOptionsListViewItem *it,KviOptionsWidget * pPage);
+	//TODO: commit, fill
 private slots:
 	void listViewItemSelectionChanged(KviTalListViewItem *it);
 	void applyClicked();
 	void okClicked();
 	void cancelClicked();
-	void pageWantsToSwitchToAdvancedPage(KviOptionsWidget * pPage);
 	void searchClicked();
 	void searchLineEditTextChanged(const QString &);
 protected:
 	void apply(bool bDialogAboutToClose);
 	virtual void closeEvent(QCloseEvent *e);
 	virtual void keyPressEvent( QKeyEvent * e );
-	bool recursiveSearch(KviOptionsListViewItem * pItem,const QStringList &lKeywords);
+	bool recursiveSearch(KviOptionsItem * pItem,const QStringList &lKeywords);
 public:
 	void search(const QString &szKeywords);
 	void search(const QStringList &lKeywords);

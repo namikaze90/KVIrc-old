@@ -169,9 +169,7 @@ void KviProxyOptionsWidget::fillProxyList()
 {
 	KviProxyOptionsListViewItem * prx;
 
-	KviPtrList<KviProxy> * l = g_pProxyDataBase->proxyList();
-
-	for(KviProxy * p = l->first();p;p = l->next())
+	foreach(KviProxy * p,*(g_pProxyDataBase->proxyList()))
 	{
 		prx = new KviProxyOptionsListViewItem(m_pListView,*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PROXY)),p);
 		if(p == g_pProxyDataBase->currentProxy())

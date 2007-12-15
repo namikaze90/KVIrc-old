@@ -34,8 +34,6 @@
 
 #include <qdesktopwidget.h>
 
-extern KviOptionsInstanceManager * g_pOptionsInstanceManager;
-
 KviOptionsWidgetContainer::KviOptionsWidgetContainer(QWidget * par,bool bModal)
 : QDialog(par,"container","options")
 {
@@ -73,12 +71,12 @@ void KviOptionsWidgetContainer::setup(KviOptionsWidget * w)
 	g->setRowStretch(0,1);
 	g->setColStretch(0,1);
 
-	KviOptionsWidgetInstanceEntry * e = g_pOptionsInstanceManager->findInstanceEntry(w->className());
+	KviOptionsPageDescriptorBase * e = KviOptionsManager::instance()->findPage(w->className());
 	if(e)
 	{
 		//KviStr caption(KviStr::Format,"%s - KVIrc",e->szName);
-		setIcon(*(g_pIconManager->getSmallIcon(e->iIcon)));
-		setCaption(e->szName);
+		setIcon(*(g_pIconManager->getSmallIcon(e->icon())));
+		setCaption(e->name());
 	}
 	m_pOptionsWidget = w;
 

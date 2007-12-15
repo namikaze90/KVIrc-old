@@ -32,51 +32,78 @@
 //
 
 #include "kvi_optionswidget.h"
-#include "kvi_module.h"
+#include <QMap>
+#include <QMutex>
 
-#include "kvi_qstring.h"
+class KviOptionsManager;
 
-typedef struct _KviOptionsWidgetInstanceEntry KviOptionsWidgetInstanceEntry;
-
-
-typedef struct _KviOptionsWidgetInstanceEntry
+class KviOptionsPageDescriptorBase
 {
-	KviOptionsWidget                          * (*createProc)(QWidget *);
-	KviOptionsWidget                          * pWidget;   // singleton
-	int                                         iIcon;
-	QString                                     szName;
-	QString                                     szNameNoLocale;
-	const char                                * szClassName;
-	int                                         iPriority;
-	QString                                     szKeywords;
-	QString                                     szKeywordsNoLocale;
-	QString                                     szGroup;
-	bool                                        bIsContainer;
-	bool                                        bIsNotContained;
-	QList<KviOptionsWidgetInstanceEntry*>     * pChildList;
-	bool                                        bDoInsert; // a helper for KviOptionsDialog::fillListView()
-} KviOptionsWidgetInstanceEntry;
+	friend class KviOptionsManager;
+private:
+	KviOptionsWidget                         *m_pInstance;
+	QMap<int,KviOptionsPageDescriptorBase*>  *m_pChilds;
+	
+	QString                                   m_szName;
+	QString                                   m_szKeywords;
+	QString                                   m_szKeywordsNoLocale;
+	QString                                   m_szGroup;
+	QString                                   m_szParent;
+	int                                       m_iIcon;
+	int                                       m_iPriority;
+public:
+	KviOptionsPageDescriptorBase(
+				const QString& szName,
+				const QString& szKeywords,
+				const QString& szKeywordsNoLocale,
+				const QString& szGroup,
+				const QString& szParent,
+				int iIcon,
+				int iPriority
+				);
+	virtual ~KviOptionsPageDescriptorBase();
+	virtual KviOptionsWidget* createInstance(QWidget* pParent) = 0;
+	virtual KviOptionsWidget* instance() { return m_pInstance; };
+	
+	const QString& name() { return m_szName; };
+	const QString& group() { return m_szGroup; };
+	QMap<int,KviOptionsPageDescriptorBase*>* childs() { m_pChilds; };
+	int icon() { return m_iIcon; };
+};
 
-
-class KviOptionsInstanceManager : public QObject
+template <typename T> class KviOptionsPageDescriptor : public KviOptionsPageDescriptorBase 
 {
-	Q_OBJECT
 public:
-	KviOptionsInstanceManager();
-	virtual ~KviOptionsInstanceManager();
-protected:
-	QList<KviOptionsWidgetInstanceEntry*> *  m_pInstanceTree;
+	virtual KviOptionsWidget* createInstance(QWidget* pParent)
+	{
+		return new T(pParent);
+	}
+};
+
+
+class KviOptionsManager
+{
 public:
-	QList<KviOptionsWidgetInstanceEntry*> * instanceEntryTree(){ return m_pInstanceTree; };
-	KviOptionsWidget * getInstance(KviOptionsWidgetInstanceEntry * e,QWidget * par);
-	KviOptionsWidgetInstanceEntry * findInstanceEntry(const char * clName);
-	void cleanup(KviModule * m);
+	KviOptionsManager();
+	~KviOptionsManager();
 protected:
-	KviOptionsWidgetInstanceEntry * findInstanceEntry(const char * clName,QList<KviOptionsWidgetInstanceEntry*> * l);
-	KviOptionsWidgetInstanceEntry * findInstanceEntry(const QObject * ptr,QList<KviOptionsWidgetInstanceEntry*> * l);
-	void deleteInstanceTree(QList<KviOptionsWidgetInstanceEntry*> * l);
-protected slots:
-	void widgetDestroyed();
+	QMap<int,KviOptionsPageDescriptorBase*>        m_pages;
+	QHash<QString,KviOptionsPageDescriptorBase*>   m_pagesByName;
+	
+	// used only in setup phase
+	QHash<KviOptionsPageDescriptorBase*,QString>   m_groupAndWidgetCache;
+	
+	QMutex                                        *m_pRegistrationMutex;
+public:
+	const QMap<int,KviOptionsPageDescriptorBase*> & instanceEntryTree();
+	
+	KviOptionsPageDescriptorBase* findPage(const QString& name) { return m_pagesByName.value(name); };
+	
+	static KviOptionsManager* instance();
+	
+	static void registrationStarted(int approxNubberOfPages=0);
+	static void registerWidget(KviOptionsPageDescriptorBase* pDescriptor);
+	static void registrationFinished();
 };
 
 #endif //__OPTIONS_INSTANCES_H__

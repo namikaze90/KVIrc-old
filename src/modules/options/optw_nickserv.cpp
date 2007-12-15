@@ -289,8 +289,7 @@ KviNickServOptionsWidget::KviNickServOptionsWidget(QWidget * parent)
 
 	if(rs && rs->rules())
 	{
-		KviPtrList<KviNickServRule> * ll = rs->rules();
-		for(KviNickServRule * rule = ll->first();rule;rule = ll->next())
+		foreach(KviNickServRule * rule,*(rs->rules()))
 		{
 			(void)new KviTalListViewItem(m_pNickServListView,rule->registeredNick(),rule->serverMask(),rule->nickServMask(),rule->messageRegexp(),rule->identifyCommand());
 		}
