@@ -3,6 +3,7 @@
 [first port] No Qt3 code but perhaps through tal files
 about
 avatar
+http
 tip
 
 [no port needed] No Qt3 code at all
@@ -26,7 +27,6 @@ eventeditor
 file
 filetransferwindow
 help
-http
 ident
 iograph
 lag
