@@ -169,7 +169,7 @@ static const char * g_szIconNames[KVI_NUM_SMALL_ICONS]=
 	"linux", // 111
 	"links", // 112
 	"regusers", // 113
-	"dockwidget", // 114
+	"trayicon", // 114
 	"cascadewindows", // 115
 	"maxvertical", // 116
 	"maxhorizontal", // 117
