@@ -28,11 +28,9 @@
 #include "kvi_locale.h"
 #include "kvi_qstring.h"
 
-// TODO: Qt4
-#include <q3dockwindow.h>
-#define QT_DOCK_WINDOW Q3DockWindow
-
-#include <qlayout.h>
+#include <QDockWidget>
+#include <QLayout>
+#include <QBoxLayout>
 
 /*
 	@doc: dockwindow
@@ -64,8 +62,8 @@
 			Enabled or disabled resizing of this window.
 		!fn: $setAllowedDockAreas(<docks:string>)
 			Sets the allowed main window dock areas for this dock window.[br]
-			<docks> must be a combination of "l","r","t","b","f" and "m".[br]
-			"l" stands for left dock area, "r" stands for right dock area, "t" stands for the top dock areas, "b" stands for the bottom dock area, "f" stands for "floating" and "m" for "minimized".[br]
+			<docks> must be a combination of "l","r","t","b" and "f".[br]
+			"l" stands for left dock area, "r" stands for right dock area, "t" stands for the top dock areas, "b" stands for the bottom dock area and "f" stands for "floating"[br]
 			If a flag is present then the related block area is enabled,otherwise it is disabled.
 		!fn: $dock(<dockarea:string>)
 			Docks this dock window to the specified dockarea of the main KVIrc window which can be one of "l" (left dock area), "t" (top dock area), "r" (right dock area), "b" (bottom dock area), "f" (floating) and "m" (minimized).
@@ -90,12 +88,14 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_dockwindow)
 KVSO_BEGIN_DESTRUCTOR(KviKvsObject_dockwindow)
 KVSO_END_DESTRUCTOR(KviKvsObject_dockwindow)
 
-#define _pDockWindow ((QT_DOCK_WINDOW *)widget())
+#define _pDockWindow ((QDockWidget *)widget())
 
 bool KviKvsObject_dockwindow::init(KviKvsRunTimeContext * pContext,KviKvsVariantList * pParams)
 {
 	
-	setObject(new QT_DOCK_WINDOW(g_pFrame,getName()),true);
+	setObject(new QDockWidget(getName(),g_pFrame),true);
+	m_pLayout = new QBoxLayout(QBoxLayout::LeftToRight,_pDockWindow);
+	_pDockWindow->setLayout(m_pLayout);
 	return true;
 }
 
@@ -139,7 +139,7 @@ bool KviKvsObject_dockwindow::function_addWidget(KviKvsObjectFunctionCall *c)
 		c->warning(__tr2qs("The added widget is not a child of this dock window"));
 	}
 
-	_pDockWindow->boxLayout()->addWidget((QWidget *)(pWidget->object()));
+	m_pLayout->addWidget((QWidget *)(pWidget->object()));
 	((QWidget *)(pWidget->object()))->show();
 
 	return true;
@@ -148,7 +148,7 @@ bool KviKvsObject_dockwindow::function_addWidget(KviKvsObjectFunctionCall *c)
 bool KviKvsObject_dockwindow::function_orientation(KviKvsObjectFunctionCall * c)
 {
 	if(!widget())return true; // hum ? dead ?
-	c->returnValue()->setString(_pDockWindow->orientation() == Qt::Horizontal ? QString("horizontal") : QString("vertical"));
+	c->returnValue()->setString(m_pLayout->direction() == QBoxLayout::LeftToRight ? QString("horizontal") : QString("vertical"));
 	return true;
 }
 
@@ -161,7 +161,7 @@ bool KviKvsObject_dockwindow::function_setOrientation(KviKvsObjectFunctionCall *
 
 	if(!widget())return true; // hum ? dead ?
 
-	_pDockWindow->setOrientation(KviQString::equalCI(szOrientation,"vertical") ? Qt::Vertical : Qt::Horizontal);
+	m_pLayout->setDirection(KviQString::equalCI(szOrientation,"vertical") ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight);
 
 	return true;
 }
@@ -169,7 +169,7 @@ bool KviKvsObject_dockwindow::function_setOrientation(KviKvsObjectFunctionCall *
 bool KviKvsObject_dockwindow::function_resizeEnabled(KviKvsObjectFunctionCall * c)
 {
 	if(!widget())return true; // hum ? dead ?
-	c->returnValue()->setBoolean(_pDockWindow->isResizeEnabled());
+	c->returnValue()->setBoolean(true/*_pDockWindow->isResizeEnabled()*/);
 	return true;
 }
 
@@ -182,7 +182,7 @@ bool KviKvsObject_dockwindow::function_setResizeEnabled(KviKvsObjectFunctionCall
 
 	if(!widget())return true; // hum ? dead ?
 
-	_pDockWindow->setResizeEnabled(bResizeEnabled);
+	//_pDockWindow->setResizeEnabled(bResizeEnabled);
 
 	return true;
 }
@@ -196,12 +196,12 @@ bool KviKvsObject_dockwindow::function_setAllowedDockAreas(KviKvsObjectFunctionC
 
 	if(!widget())return true; // hum ? dead ?
 
-	g_pFrame->setDockEnabled(_pDockWindow,Qt::DockTop,szFlags.find('t',false) != -1);
-	g_pFrame->setDockEnabled(_pDockWindow,Qt::DockLeft,szFlags.find('l',false) != -1);
-	g_pFrame->setDockEnabled(_pDockWindow,Qt::DockRight,szFlags.find('r',false) != -1);
-	g_pFrame->setDockEnabled(_pDockWindow,Qt::DockBottom,szFlags.find('b',false) != -1);
-	g_pFrame->setDockEnabled(_pDockWindow,Qt::DockTornOff,szFlags.find('f',false) != -1);
-	g_pFrame->setDockEnabled(_pDockWindow,Qt::DockMinimized,szFlags.find('m',false) != -1);
+	Qt::DockWidgetAreas dockareas = 0;
+	if (szFlags.find('t',false) != -1) dockareas |= Qt::TopDockWidgetArea;
+	if (szFlags.find('l',false) != -1) dockareas |= Qt::LeftDockWidgetArea;
+	if (szFlags.find('r',false) != -1) dockareas |= Qt::RightDockWidgetArea;
+	if (szFlags.find('b',false) != -1) dockareas |= Qt::BottomDockWidgetArea;
+	_pDockWindow->setFloating(szFlags.find('f',false) != -1);
 
 	return true;
 }
@@ -216,12 +216,12 @@ bool KviKvsObject_dockwindow::function_dock(KviKvsObjectFunctionCall * c)
 
 	if(!widget())return true; // hum ? dead ?
 
-	if(szDock.find('t',false) != -1)g_pFrame->moveDockWindow(_pDockWindow,Qt::DockTop,false,100);
+	/*if(szDock.find('t',false) != -1)g_pFrame->moveDockWindow(_pDockWindow,Qt::DockTop,false,100);
 	else if(szDock.find('l',false) != -1)g_pFrame->moveDockWindow(_pDockWindow,Qt::DockLeft,false,100);
 	else if(szDock.find('r',false) != -1)g_pFrame->moveDockWindow(_pDockWindow,Qt::DockRight,false,100);
 	else if(szDock.find('b',false) != -1)g_pFrame->moveDockWindow(_pDockWindow,Qt::DockBottom,false,100);
 	else if(szDock.find('f',false) != -1)g_pFrame->moveDockWindow(_pDockWindow,Qt::DockTornOff,false,100);
 	else if(szDock.find('m',false) != -1)g_pFrame->moveDockWindow(_pDockWindow,Qt::DockMinimized,false,100);
-	else c->warning(__tr2qs("Invalid dock area specified"));
+	else c->warning(__tr2qs("Invalid dock area specified"));*/
 	return true;
 }

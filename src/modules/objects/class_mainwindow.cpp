@@ -108,7 +108,7 @@ bool KviKvsObject_mainwindow::functionsetDockEnabled(KviKvsObjectFunctionCall *c
 	KVSO_PARAMETERS_END(c)
 	if(widget())
 	{
-		if(KviQString::equalCI(szDockarea,"Top"))
+		/*if(KviQString::equalCI(szDockarea,"Top"))
 			((KviTalMainWindow *)widget())->setDockEnabled(Qt::DockTop,bFlag);
 		else if(KviQString::equalCI(szDockarea,"Left"))
 			((KviTalMainWindow *)widget())->setDockEnabled(Qt::DockLeft,bFlag);
@@ -122,7 +122,7 @@ bool KviKvsObject_mainwindow::functionsetDockEnabled(KviKvsObjectFunctionCall *c
 			((KviTalMainWindow *)widget())->setDockEnabled(Qt::DockTornOff,bFlag);
 		else if(KviQString::equalCI(szDockarea,"Unmanaged"))
 			((KviTalMainWindow *)widget())->setDockEnabled(Qt::DockUnmanaged,bFlag);
-		else c->warning(__tr2qs("Unknown dock area '%Q'"),&szDockarea);
+		else c->warning(__tr2qs("Unknown dock area '%Q'"),&szDockarea);*/
 	}
 	return true;
 
@@ -136,14 +136,14 @@ bool KviKvsObject_mainwindow::functionisDockEnabled(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("dock_area",KVS_PT_STRING,0,szDockarea)
 	KVSO_PARAMETERS_END(c)
     if(!widget()) return true;
-	if(KviQString::equalCI(szDockarea,"Top")) bFlag=((KviTalMainWindow *)widget())->isDockEnabled(Qt::DockTop);
+	/*if(KviQString::equalCI(szDockarea,"Top")) bFlag=((KviTalMainWindow *)widget())->isDockEnabled(Qt::DockTop);
 	else if(KviQString::equalCI(szDockarea,"Left")) bFlag=((KviTalMainWindow *)widget())->isDockEnabled(Qt::DockLeft);
 	else if(KviQString::equalCI(szDockarea,"Right")) bFlag=((KviTalMainWindow *)widget())->isDockEnabled(Qt::DockRight);
 	else if(KviQString::equalCI(szDockarea,"Bottom"))bFlag=((KviTalMainWindow *)widget())->isDockEnabled(Qt::DockBottom);
 	else if(KviQString::equalCI(szDockarea,"Minimized")) bFlag=((KviTalMainWindow *)widget())->isDockEnabled(Qt::DockMinimized);
 	else if(KviQString::equalCI(szDockarea,"TornOff")) bFlag=((KviTalMainWindow *)widget())->isDockEnabled(Qt::DockTornOff);
 	else if(KviQString::equalCI(szDockarea,"Unmanaged")) bFlag=((KviTalMainWindow *)widget())->isDockEnabled(Qt::DockUnmanaged);
-	else
+	else*/
 	{ 
 		c->warning(__tr2qs("Unknown dock area '%Q'"),&szDockarea);
 		return true;

@@ -139,7 +139,7 @@ bool KviKvsObject_toolbar::functionsetStretchableWidget(KviKvsObjectFunctionCall
 		c->warning(__tr2qs("Widget object required"));
         return TRUE;
     }
-	if(widget()) ((KviTalToolBar *)widget())->setStretchableWidget(((QWidget  *)(ob->object())));
+	//if(widget()) ((KviTalToolBar *)widget())->setStretchableWidget(((QWidget  *)(ob->object())));
 	return true;	
 }
 bool KviKvsObject_toolbar::functionclear(KviKvsObjectFunctionCall *c)

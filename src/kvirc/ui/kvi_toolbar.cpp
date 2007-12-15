@@ -31,7 +31,6 @@
 #include "kvi_tal_popupmenu.h"
 
 #include <QCursor>
-
 #include <QEvent>
 #include <QMouseEvent>
 
@@ -66,6 +65,7 @@ void KviToolBar::mousePressEvent(QMouseEvent *e)
 		KviTalToolBar::mousePressEvent(e);
 		return;
 	}
+	e->ignore();
 	
 	if(!g_pToolBarContextPopup)g_pToolBarContextPopup = new KviTalPopupMenu();
 	if(!g_pToolBarIconSizesPopup)g_pToolBarIconSizesPopup = new KviTalPopupMenu();
@@ -96,15 +96,13 @@ void KviToolBar::mousePressEvent(QMouseEvent *e)
 	g_pToolBarIconSizesPopup->insertItem(__tr2qs("Large (32x32)"),this,SLOT(setBigIcons()));
 
 	g_pToolBarContextPopup->popup(QCursor::pos());
+	
 }
 
 void KviToolBar::moveTo(QT_TOOLBARDOCK_TYPE dock)
 {
-#if QT_VERSION >= 300
-	g_pFrame->moveDockWindow(this,dock);
-#else
-	g_pFrame->moveToolBar(this,dock);
-#endif
+	g_pFrame->removeToolBar(this);
+	g_pFrame->addToolBar(dock,this);
 }
 
 void KviToolBar::moveToTop()

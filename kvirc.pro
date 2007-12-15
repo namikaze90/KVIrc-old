@@ -72,6 +72,9 @@ mac {
 }
 
 INSTALLS += doc license stuff
-CONFIG += qdbus
+
+unix {
+	CONFIG += qdbus
+}
 
 

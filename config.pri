@@ -6,8 +6,6 @@
 # Uncomment the following line if you want a debug version
 CONFIG += debug
 
-CONFIG += qdbus
-
 # Do not touch :)
 KVI_PACKAGE = "kvirc"
 KVI_VERSION = "4.0.0"
@@ -17,6 +15,7 @@ KVI_VERSION_BRANCH = "4.0"
 unix {
 	# Unix stuff installs in /usr/local by default
 	KVI_INSTALL_PREFIX = /usr/local
+	CONFIG += qdbus
 }
 
 win32 {

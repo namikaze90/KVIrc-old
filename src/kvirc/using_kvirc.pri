@@ -8,5 +8,7 @@ INCLUDEPATH += kernel/ \
       LIBS += -lkvirc
   } 
 
-CONFIG += qdbus
+unix {
+	CONFIG += qdbus
+}
 

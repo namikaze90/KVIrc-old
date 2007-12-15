@@ -8,7 +8,9 @@ QT += core \
     gui \
     qt3support
 
-CONFIG += qdbus
+unix {
+	CONFIG += qdbus
+}
     
 DEFINES -= UNICODE
 
@@ -38,14 +40,14 @@ INCLUDEPATH += ../../kvirc/kernel/ \
     ../../kvirc/ui/
     
 
-LIBS += -lkvilib
+LIBS += -lkvilib4
 	      
 mac {
 	LIBS += -Wl,-undefined,dynamic_lookup
 }
 
 win32 { 
-	LIBS += -lkvirc  
+	LIBS += -lkvirc4  
 	RC_FILE = ../../../data/resources/commctrl.rc
 }
 

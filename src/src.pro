@@ -1,5 +1,10 @@
 TEMPLATE = subdirs
-CONFIG += ordered qdbus
+CONFIG += ordered
+
+unix {
+	CONFIG += qdbus
+}
+
 SUBDIRS = kvilib \
     kvirc \
     modules

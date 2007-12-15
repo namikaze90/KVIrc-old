@@ -27,8 +27,6 @@
 
 #include "kvi_settings.h"
 
-// TODO: Qt4
-#include <Q3CString> // includes <QByteArray>
 #define KviQCString QByteArray
 
 #endif //!_KVI_QCSTRING_H_

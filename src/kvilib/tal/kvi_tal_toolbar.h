@@ -23,11 +23,25 @@
 //
 
 #include "kvi_settings.h"
+#include <QToolBar>
+#include <QMainWindow>
+#include <QFrame>
+#include <QBoxLayout>
 
-#ifdef COMPILE_KDE_SUPPORT
-	#include "kvi_tal_toolbar_kde.h"
-#else
-	#include "kvi_tal_toolbar_qt4.h"
-#endif
+#include "kvi_tal_toolbardocktype.h"
+
+class KVILIB_API KviTalToolBar : public QToolBar
+{
+	Q_OBJECT
+public:
+	KviTalToolBar(const QString &label,QMainWindow *w,QT_TOOLBARDOCK_TYPE dock = QT_DOCK_TOP,bool bNewLine = false,const char * nam = 0);
+	KviTalToolBar(QMainWindow *w,const char * name=0);
+	QBoxLayout * boxLayout();
+	void setBoxLayout(QBoxLayout *l);
+	~KviTalToolBar();
+	bool usesBigPixmaps();
+	void setUsesBigPixmaps(bool b);
+
+};
 
 #endif //_KVI_TAL_TOOLBAR_H_

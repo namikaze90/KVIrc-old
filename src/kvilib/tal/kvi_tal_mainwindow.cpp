@@ -20,36 +20,32 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#define __KVILIB__
-
+#ifndef __KVILIB__
+	#define __KVILIB__
+#endif
 
 #include "kvi_tal_mainwindow.h"
 
-#ifdef COMPILE_KDE_SUPPORT
-
-	KviTalMainWindow::KviTalMainWindow(QWidget * par,const char * nam)
-	: KMainWindow(par,nam)
-	{
-	}
-
-	KviTalMainWindow::~KviTalMainWindow()
-	{
-	}
-
-
-#else
-
-
-	KviTalMainWindow::KviTalMainWindow(QWidget * par,const char * nam)
-	: Q3MainWindow(par,nam)
-	{
-	}
+KviTalMainWindow::KviTalMainWindow(QWidget * par,const char * nam)
+: QMainWindow(par,nam)
+{
+}
 
 
 	
-	KviTalMainWindow::~KviTalMainWindow()
-	{
-	}
+KviTalMainWindow::~KviTalMainWindow()
+{
+}
+
+bool KviTalMainWindow::usesBigPixmaps()
+{
+	return (iconSize().width() > 40);
+}
+
+void KviTalMainWindow::setUsesBigPixmaps(bool b)
+{
+	if (b) setIconSize(QSize(48,48));
+		else setIconSize(QSize(24,24));
+}
 
 
-#endif

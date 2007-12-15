@@ -7,7 +7,11 @@ win32 {
 
 include(../../config.pri)
 
-CONFIG   += precompile_header thread qdbus
+CONFIG   += precompile_header thread
+
+unix {
+	CONFIG += qdbus
+}
 LANGUAGE  = C++
 TEMPLATE = app
 TARGET = kvirc
@@ -446,7 +450,7 @@ RESOURCES +=
 LIBS += -L$$DESTDIR
  
 win32 {
-	LIBS += -lshlwapi -lws2_32 -Wl,--out-implib,$$DESTDIR/libkvirc.a
+	LIBS += -lshlwapi -lws2_32 -Wl,--out-implib,$$DESTDIR/libkvirc4.a
 }
 
 mac {

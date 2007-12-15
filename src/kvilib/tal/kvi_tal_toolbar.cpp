@@ -25,34 +25,44 @@
 
 #include "kvi_tal_toolbar.h"
 
-#ifdef COMPILE_KDE_SUPPORT
 
-	KviTalToolBar::KviTalToolBar(const QString &label,QMainWindow *w,QT_TOOLBARDOCK_TYPE dock,bool bNewLine,const char * nam)
-	: KToolBar(w,dock,bNewLine,nam)
-	{
-		setLabel(label);
-	}
+KviTalToolBar::KviTalToolBar(const QString &label,QMainWindow *w,QT_TOOLBARDOCK_TYPE dock,bool bNewLine,const char * nam)
+: QToolBar(label,w)
+{
+	setObjectName(nam);
+	if (!layout()) this->setLayout(new QBoxLayout(QBoxLayout::LeftToRight));
+	w->addToolBar(this);
+}
+KviTalToolBar::KviTalToolBar(QMainWindow *w,const char * name)
+: QToolBar(name,w)
+{
+	setObjectName(name);
+	if (!layout()) this->setLayout(new QBoxLayout(QBoxLayout::LeftToRight));
+	w->addToolBar(this);
+}
 
-	KviTalToolBar::~KviTalToolBar()
-	{
-	}
+KviTalToolBar::~KviTalToolBar()
+{
+}
 
-#else
+QBoxLayout * KviTalToolBar::boxLayout()
+{
+	return (QBoxLayout*)this->layout();
+}
 
-	KviTalToolBar::KviTalToolBar(const QString &label,Q3MainWindow *w,QT_TOOLBARDOCK_TYPE dock,bool bNewLine,const char * nam)
-	: Q3ToolBar(label,w,dock,bNewLine,nam)
-	{
-		setFrameStyle(QFrame::NoFrame);
-	}
-	KviTalToolBar::KviTalToolBar(Q3MainWindow *w,const char * name)
-	: Q3ToolBar(w,name)
-	{
-		setFrameStyle(QFrame::NoFrame);
-	}
+void KviTalToolBar::setBoxLayout(QBoxLayout * l)
+{
+	this->setLayout(l);
+}
 
-	KviTalToolBar::~KviTalToolBar()
-	{
-	}
+bool KviTalToolBar::usesBigPixmaps()
+{
+	return (iconSize().width() > 40);
+}
 
+void KviTalToolBar::setUsesBigPixmaps(bool b)
+{
+	if (b) setIconSize(QSize(48,48));
+		else setIconSize(QSize(22,22));
+}
 
-#endif

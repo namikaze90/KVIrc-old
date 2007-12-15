@@ -13,12 +13,10 @@ QT += core \
 PRECOMPILED_HEADER = pch.h
 CONFIG(debug, debug|release):DESTDIR = ../../bin/debug/
 else:DESTDIR = ../../bin/release/
-HEADERS += tal/kvi_tal_application_kde.h \
+HEADERS += \
     tal/kvi_tal_application_qt.h \
-    tal/kvi_tal_mainwindow_qt4.h \
     tal/kvi_tal_menubar_qt.h \
     tal/kvi_tal_popupmenu.h \
-    tal/kvi_tal_toolbar_qt4.h \
     tal/kvi_tal_application.h \
     tal/kvi_tal_filedialog.h \
     tal/kvi_tal_groupbox.h \

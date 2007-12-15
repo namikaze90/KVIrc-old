@@ -88,9 +88,9 @@ void KviModuleManager::completeModuleNames(const QString &path,const QString &wo
 {
 	QDir d(path);
 #ifdef COMPILE_ON_WINDOWS
-	d.setNameFilter("kvi*.dll");
+	d.setNameFilter("kvi*4.dll");
 #else
-	d.setNameFilter("libkvi*.so");
+	d.setNameFilter("libkvi*.so.4");
 #endif
 	// FIXME: maybe check timestamps ? (old modules)
 
@@ -98,7 +98,11 @@ void KviModuleManager::completeModuleNames(const QString &path,const QString &wo
 	for(QStringList::Iterator it = sl.begin();it != sl.end();++it)
 	{
 		QString modname = *it;
-		KviQString::cutToLast(modname,KVI_PATH_SEPARATOR_CHAR);
+		#ifdef COMPILE_ON_WINDOWS
+			KviQString::cutToLast(modname,"4"+KVI_PATH_SEPARATOR_CHAR);
+		#else
+			KviQString::cutToLast(modname,KVI_PATH_SEPARATOR_CHAR);
+		#endif
 		KviQString::cutToFirst(modname,"kvi");
 		if(KviQString::equalCIN(word,modname,word.length()))
 		{

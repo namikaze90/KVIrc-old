@@ -11,5 +11,7 @@ INCLUDEPATH += ../kvilib/tal/ \
       LIBS += -lkvilib
   } 
 
-CONFIG += qdbus
+unix {
+	CONFIG += qdbus
+}
 

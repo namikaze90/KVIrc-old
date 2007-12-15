@@ -29,9 +29,13 @@
 
 #include "class_widget.h"
 
+#include <QBoxLayout>
+
 class KviKvsObject_dockwindow : public KviKvsObject_widget
 {
 	Q_OBJECT
+private:
+	QBoxLayout * m_pLayout;
 public:
 	KVSO_DECLARE_OBJECT(KviKvsObject_dockwindow)
 protected:

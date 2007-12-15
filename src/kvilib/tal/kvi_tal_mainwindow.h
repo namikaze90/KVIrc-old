@@ -24,11 +24,17 @@
 //
 
 #include "kvi_settings.h"
+#include <QMainWindow>
 
-#ifdef COMPILE_KDE_SUPPORT
-	#include "kvi_tal_mainwindow_kde.h"
-#else
-	#include "kvi_tal_mainwindow_qt4.h"
-#endif
+class KVILIB_API KviTalMainWindow : public QMainWindow
+{
+	Q_OBJECT
+public:
+	KviTalMainWindow(QWidget * par,const char * nam);
+	~KviTalMainWindow();
+	bool usesBigPixmaps();
+	void setUsesBigPixmaps(bool b);
+};
+
 
 #endif // _KVI_TAL_MAINWINDOW_H_

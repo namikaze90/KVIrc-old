@@ -31,6 +31,7 @@
 
 #include <QFrame>
 #include <QPushButton>
+#include <QDockWidget>
 
 
 
@@ -74,11 +75,11 @@ public:
 // This is the basic interface that all the external classes should see
 //
 
-class KVIRC_API KviTaskBarBase : public KviToolBar
+class KVIRC_API KviTaskBarBase : public QDockWidget
 {
 	Q_OBJECT
 public:
-	KviTaskBarBase();
+	KviTaskBarBase(QMainWindow * parent);
 	virtual ~KviTaskBarBase();
 protected:
 	KviFrame * m_pFrm;
@@ -142,7 +143,7 @@ class KVIRC_API KviClassicTaskBar : public KviTaskBarBase
 {
 	Q_OBJECT
 public:
-	KviClassicTaskBar();
+	KviClassicTaskBar(QMainWindow * parent);
 	~KviClassicTaskBar();
 protected:
 	QList<KviTaskBarButton*> * m_pButtonList;
@@ -190,11 +191,7 @@ protected:
 public:
 	virtual QString key(int column,bool) const;
 	virtual void paintCell(QPainter *p,const QColorGroup &cg,int column,int width,int alignment);
-#ifdef COMPILE_USE_QT4
 	virtual void paintBranches(QPainter *p,const QColorGroup &cg,int w,int y,int h);
-#else
-	virtual void paintBranches(QPainter *p,const QColorGroup &cg,int w,int y,int h,GUIStyle s);
-#endif
 	virtual void captionChanged();
 	virtual void highlight(int iLevel = 1);
 	virtual void unhighlight();
@@ -248,7 +245,7 @@ class KVIRC_API KviTreeTaskBar : public KviTaskBarBase
 {
 	Q_OBJECT
 public:
-	KviTreeTaskBar();
+	KviTreeTaskBar(QMainWindow * parent);
 	~KviTreeTaskBar();
 private:
 	KviTreeTaskBarListView * m_pListView;
