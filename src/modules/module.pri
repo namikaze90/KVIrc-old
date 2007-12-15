@@ -39,10 +39,18 @@ INCLUDEPATH += ../../kvirc/kernel/ \
     ../../kvirc/sparser/ \
     ../../kvirc/ui/
     
+windows {
+	LIBS += -lkvilib4
+}
 
-LIBS += -lkvilib4
+unix {
+	LIBS += -lkvilib
+}
+
+
 	      
 mac {
+	LIBS += -lkvilib
 	LIBS += -Wl,-undefined,dynamic_lookup
 }
 
