@@ -10,8 +10,8 @@ CONFIG += qdbus
 
 # Do not touch :)
 KVI_PACKAGE = "kvirc"
-KVI_VERSION = "3.9.9"
-KVI_VERSION_BRANCH = "3.9"
+KVI_VERSION = "4.0.0"
+KVI_VERSION_BRANCH = "4.0"
 
 # Platform specific sections
 unix {
@@ -31,3 +31,4 @@ mac {
 	KVI_INSTALL_PREFIX = .
 }
 
+VERSION = $${KVI_VERSION}
