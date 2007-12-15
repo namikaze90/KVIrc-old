@@ -1,5 +1,5 @@
 //
-//   File : libkvidockwidget.cpp
+//   File : libkvitrayicon.cpp
 //   Creation date : Tue Jan 02 20001 14:34:12 CEST by Szymon Stefanek
 //
 //   This file is part of the KVirc irc client distribution
@@ -43,33 +43,30 @@
 #include "kvi_imagelib.h"
 #include "kvi_options.h"
 #include "kvi_ircview.h"
-
-#include "libkvidockwidget.h"
 #include "kvi_doublebuffer.h"
-
-#include <qlabel.h>
-
 #include "kvi_tal_popupmenu.h"
 
-
-#include <qpixmap.h>
-#include <qpainter.h>
-#include <qtimer.h>
-#include <qevent.h>
-#include <qregexp.h>
+#include "libkvitrayicon.h"
 
 #include <stdlib.h>
 #include <time.h>
 
+#include <QLabel>
+#include <QPixmap>
+#include <QPainter>
+#include <QTimer>
+#include <QEvent>
+#include <QRegExp>
+
 
 extern KVIRC_API QHash<QString,KviWindow*> * g_pGlobalWindowDict;
-static QList<KviDockWidget*> * g_pDockWidgetList = 0;
+static QList<KviTrayIcon*> * g_pTrayIconList = 0;
 
-static QPixmap * g_pDock1 = 0;
-static QPixmap * g_pDock2 = 0;
-static QPixmap * g_pDock3 = 0;
+static QPixmap * g_pTray1 = 0;
+static QPixmap * g_pTray2 = 0;
+static QPixmap * g_pTray3 = 0;
 
-KviDockWidget::KviDockWidget(KviFrame * frm)
+KviTrayIcon::KviTrayIcon(KviFrame * frm)
 : QSystemTrayIcon(frm), m_CurrentPixmap(ICON_SIZE,ICON_SIZE)
 {
 	m_pContextPopup = new KviTalPopupMenu(0);
@@ -83,7 +80,7 @@ KviDockWidget::KviDockWidget(KviFrame * frm)
 	m_pFlashingTimer = new QTimer(this,"flashing_timer");
 	connect( m_pFlashingTimer, SIGNAL(timeout()), this, SLOT(flashingTimerShot()) );
 	m_bFlashed=0;
-	g_pDockWidgetList->append(this);
+	g_pTrayIconList->append(this);
 	m_pFrm = frm;
 	m_pFrm->setDockExtension(this);
 
@@ -111,26 +108,26 @@ KviDockWidget::KviDockWidget(KviFrame * frm)
 	m_pContextPopup->insertSeparator();
 	m_iToggleFrame = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_RAW)),QString(""));
 	m_pContextPopup->insertSeparator();
-	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCKWIDGET)),__tr2qs("Un&dock"));
-	action->setData(QVariant(KVI_INTERNALCOMMAND_DOCKWIDGET_HIDE));
+	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TRAYICON)),__tr2qs("Un&dock"));
+	action->setData(QVariant(KVI_INTERNALCOMMAND_TRAYICON_HIDE));
 	action = m_pContextPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_QUITAPP)),__tr2qs("&Quit"),g_pApp,SLOT(quit()));
 	action->setShortcut(__tr2qs("Ctrl+Q"));
 	connect(m_pContextPopup,SIGNAL(aboutToShow()),this,SLOT(fillContextPopup()));
 	connect(m_pContextPopup,SIGNAL(triggered(QAction*)),m_pFrm,SLOT(executeInternalCommand(QAction*)));
-	QIcon icon(*g_pDock1);
+	QIcon icon(*g_pTray1);
 	setIcon(icon);
 
 	connect(this,SIGNAL(activated ( QSystemTrayIcon::ActivationReason )),this,SLOT(activatedSlot ( QSystemTrayIcon::ActivationReason )));
 }
 
 
-KviDockWidget::~KviDockWidget()
+KviTrayIcon::~KviTrayIcon()
 {
 	m_pFrm->setDockExtension(0);
-	g_pDockWidgetList->removeAll(this);
+	g_pTrayIconList->removeAll(this);
 }
 
-void KviDockWidget::flashingTimerShot()
+void KviTrayIcon::flashingTimerShot()
 {
 	m_bFlashed=!m_bFlashed;
 	refresh();
@@ -160,7 +157,7 @@ static const char * idlemsgs[NIDLEMSGS]=
 	__tr("idle idle idle idle!")
 };
 
-void KviDockWidget::tipRequest(KviDynamicToolTip *tip,const QPoint &pnt)
+void KviTrayIcon::tipRequest(KviDynamicToolTip *tip,const QPoint &pnt)
 {
 	QString tmp;
 
@@ -201,7 +198,7 @@ void KviDockWidget::tipRequest(KviDynamicToolTip *tip,const QPoint &pnt)
 	//m_pTip->tip(rect(),tmp);
 }
 
-//int KviDockWidget::message(int,void *)
+//int KviTrayIcon::message(int,void *)
 //{
 //	debug("Message");
 //	update();
@@ -209,14 +206,14 @@ void KviDockWidget::tipRequest(KviDynamicToolTip *tip,const QPoint &pnt)
 //}
 
 //FIXME: Qt4 port
-/*void KviDockWidget::mousePressEvent(QMouseEvent *e)
+/*void KviTrayIcon::mousePressEvent(QMouseEvent *e)
 {
 	if(e->button() & Qt::LeftButton)toggleParentFrame();
 	else if(e->button() & Qt::RightButton)
 		m_pContextPopup->popup(mapToGlobal(e->pos()));
 }*/
 
-void KviDockWidget::doAway(QAction * action)
+void KviTrayIcon::doAway(QAction * action)
 {
 	bool ok = false;
 	int id = action->data().toInt(&ok);
@@ -251,7 +248,7 @@ void KviDockWidget::doAway(QAction * action)
 	}
 }
 
-void KviDockWidget::fillContextPopup()
+void KviTrayIcon::fillContextPopup()
 {
 	m_iToggleFrame->setText(m_pFrm->isVisible() ? __tr2qs("Hide Window") : __tr2qs("Show Window"));
 	if(g_pApp->topmostConnectedConsole())
@@ -305,7 +302,7 @@ void KviDockWidget::fillContextPopup()
 	}
 }
 
-void KviDockWidget::toggleParentFrame()
+void KviTrayIcon::toggleParentFrame()
 {
 	QWidget *top_widget = m_pFrm->topLevelWidget();
 
@@ -323,7 +320,7 @@ void KviDockWidget::toggleParentFrame()
 	}
 }
 
-void KviDockWidget::refresh()
+void KviTrayIcon::refresh()
 {
 	grabActivityInfo();
 
@@ -338,7 +335,7 @@ void KviDockWidget::refresh()
 
 	m_CurrentPixmap.fill(Qt::transparent);
 	QPainter thisRestrictionOfQt4IsNotNice(&m_CurrentPixmap);
-	//thisRestrictionOfQt4IsNotNice.drawPixmap(0,0,22,22,*g_pDock1,0,0,22,22);
+	//thisRestrictionOfQt4IsNotNice.drawPixmap(0,0,22,22,*g_pTray1,0,0,22,22);
 
 	if(m_bFlashed)
 	{
@@ -346,31 +343,31 @@ void KviDockWidget::refresh()
 	} else {
 		thisRestrictionOfQt4IsNotNice.drawPixmap(0,0,ICON_SIZE/2,ICON_SIZE/2,
 			m_iOther ? 
-				((m_iOther == 2) ? *g_pDock3 : *g_pDock2)
-				: *g_pDock1,0,0,ICON_SIZE/2,ICON_SIZE/2);
+				((m_iOther == 2) ? *g_pTray3 : *g_pTray2)
+				: *g_pTray1,0,0,ICON_SIZE/2,ICON_SIZE/2);
 
 		thisRestrictionOfQt4IsNotNice.drawPixmap(0,ICON_SIZE/2,ICON_SIZE/2,ICON_SIZE/2,
 			m_iConsoles ?
-				((m_iConsoles == 2) ? *g_pDock3 : *g_pDock2) 
-				: *g_pDock1,0,ICON_SIZE/2,ICON_SIZE/2,ICON_SIZE/2);
+				((m_iConsoles == 2) ? *g_pTray3 : *g_pTray2) 
+				: *g_pTray1,0,ICON_SIZE/2,ICON_SIZE/2,ICON_SIZE/2);
 
 		thisRestrictionOfQt4IsNotNice.drawPixmap(ICON_SIZE/2,0,ICON_SIZE/2,ICON_SIZE/2,
 			m_iQueries ?
 			((m_iQueries == 2) 
-			? *g_pDock3 : *g_pDock2) 
-			: *g_pDock1,ICON_SIZE/2,0,ICON_SIZE/2,ICON_SIZE/2);
+			? *g_pTray3 : *g_pTray2) 
+			: *g_pTray1,ICON_SIZE/2,0,ICON_SIZE/2,ICON_SIZE/2);
 
 		thisRestrictionOfQt4IsNotNice.drawPixmap(ICON_SIZE/2,ICON_SIZE/2,ICON_SIZE/2,ICON_SIZE/2,
 			m_iChannels ?
-			((m_iChannels == 2) ? *g_pDock3 : *g_pDock2) 
-			: *g_pDock1
+			((m_iChannels == 2) ? *g_pTray3 : *g_pTray2) 
+			: *g_pTray1
 			,ICON_SIZE/2,ICON_SIZE/2,ICON_SIZE/2,ICON_SIZE/2);
 
 	}
 	updateIcon();
 }
 
-void KviDockWidget::activatedSlot( QSystemTrayIcon::ActivationReason reason )
+void KviTrayIcon::activatedSlot( QSystemTrayIcon::ActivationReason reason )
 {
 	if(reason==QSystemTrayIcon::Trigger)
 	{
@@ -378,7 +375,7 @@ void KviDockWidget::activatedSlot( QSystemTrayIcon::ActivationReason reason )
 	}
 }
 
-void KviDockWidget::grabActivityInfo()
+void KviTrayIcon::grabActivityInfo()
 {
 	KviTaskBarBase * t = m_pFrm->taskBar();
 	
@@ -470,16 +467,16 @@ void KviDockWidget::grabActivityInfo()
 	}
 }
 
-void KviDockWidget::updateIcon()
+void KviTrayIcon::updateIcon()
 {
 	setIcon(QIcon(m_CurrentPixmap));
 }
 
 
-static KviDockWidget * dockwidget_find(KviFrame *f)
+static KviTrayIcon * dockwidget_find(KviFrame *f)
 {
-	if(!g_pDockWidgetList)return 0;
-	foreach(KviDockWidget * w,*g_pDockWidgetList)
+	if(!g_pTrayIconList)return 0;
+	foreach(KviTrayIcon * w,*g_pTrayIconList)
 	{
 		if(w->frame() == f)return w;
 	}
@@ -524,7 +521,7 @@ static bool dockwidget_kvs_cmd_show(KviKvsModuleCommandCall * c)
 { 
 	if(!(dockwidget_find(c->window()->frame())))
 	{
-		KviDockWidget * w = new KviDockWidget(c->window()->frame());
+		KviTrayIcon * w = new KviTrayIcon(c->window()->frame());
 		w->show();
 	}
 	return true;
@@ -548,7 +545,7 @@ static bool dockwidget_kvs_cmd_show(KviKvsModuleCommandCall * c)
 
 static bool dockwidget_kvs_cmd_hide(KviKvsModuleCommandCall * c)
 { 
-	KviDockWidget * w= dockwidget_find(c->window()->frame());
+	KviTrayIcon * w= dockwidget_find(c->window()->frame());
 	if(w)delete w;
 	// show the parent frame.. otherwise there will be no way to get it back
 	if(!c->window()->frame()->isVisible())
@@ -576,7 +573,7 @@ static bool dockwidget_kvs_cmd_hide(KviKvsModuleCommandCall * c)
 
 static bool dockwidget_kvs_cmd_hidewindow(KviKvsModuleCommandCall * c)
 { 
-	KviDockWidget * w= dockwidget_find(c->window()->frame());
+	KviTrayIcon * w= dockwidget_find(c->window()->frame());
 	if(w)
 	{
 		c->window()->frame()->hide();
@@ -619,25 +616,25 @@ static bool dockwidget_module_init(KviModule * m)
 #else
 	g_pApp->findImage(buffer,"kvi_dock_part-0.png");
 #endif
-	g_pDock1 = new QPixmap(buffer);
+	g_pTray1 = new QPixmap(buffer);
 
 #ifdef COMPILE_ON_WINDOWS
 	g_pApp->findImage(buffer,"kvi_dock_win32-1.png");
 #else
 	g_pApp->findImage(buffer,"kvi_dock_part-1.png");
 #endif
-	g_pDock2 = new QPixmap(buffer);
+	g_pTray2 = new QPixmap(buffer);
 
 #ifdef COMPILE_ON_WINDOWS
 	g_pApp->findImage(buffer,"kvi_dock_win32-2.png");
 #else
 	g_pApp->findImage(buffer,"kvi_dock_part-2.png");
-#endif	
-	
-	g_pDock3 = new QPixmap(buffer);
+#endif
+
+	g_pTray3 = new QPixmap(buffer);
 
 
-	g_pDockWidgetList = new QList<KviDockWidget*>;
+	g_pTrayIconList = new QList<KviTrayIcon*>;
 
 
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"hide",dockwidget_kvs_cmd_hide);
@@ -650,37 +647,37 @@ static bool dockwidget_module_init(KviModule * m)
 
 static bool dockwidget_module_cleanup(KviModule *m)
 {
-	qDeleteAll(*g_pDockWidgetList);
-	delete g_pDockWidgetList;
-    g_pDockWidgetList = 0;
+	qDeleteAll(*g_pTrayIconList);
+	delete g_pTrayIconList;
+	g_pTrayIconList = 0;
 
-	delete g_pDock1;
-	g_pDock1 = 0;
+	delete g_pTray1;
+	g_pTray1 = 0;
 	
-	delete g_pDock2;
-	g_pDock2 = 0;
+	delete g_pTray2;
+	g_pTray2 = 0;
 	
-	delete g_pDock3;
-	g_pDock3 = 0;
+	delete g_pTray3;
+	g_pTray3 = 0;
 
 	return true;
 }
 
 static bool dockwidget_module_can_unload(KviModule *)
 {
-	return g_pDockWidgetList->isEmpty();
+	return g_pTrayIconList->isEmpty();
 }
 
 // =======================================
 // plugin definition structure
 // =======================================
 KVIRC_MODULE(
-    "KVIrc dock widget implementation",
+	"KVIrc dock widget implementation",
 	"4.0.0",
 	"Szymon Stefanek <pragma at kvirc dot net> and Alexey Uzhva <alexey at kvirc dot ru>" ,
 	"exports the /dockwidget.* interface\n",
-    dockwidget_module_init ,
-    dockwidget_module_can_unload,
+	dockwidget_module_init ,
+	dockwidget_module_can_unload,
 	0,
 	dockwidget_module_cleanup
 )

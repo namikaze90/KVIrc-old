@@ -26,19 +26,21 @@
 #include "kvi_string.h"
 #include "kvi_regusersdb.h"
 #include "kvi_selectors.h"
-
-#include <qwidget.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
 #include "kvi_tal_listview.h"
 #include "kvi_tal_listbox.h"
-
 #include "kvi_tal_popupmenu.h"
+
+#include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
 
 // TODO: Qt4
 #include <q3intdict.h>
-#include <q3simplerichtext.h>
-#define QSimpleRichText Q3SimpleRichText
+//#include <q3simplerichtext.h>
+#include <QTextDocument>
+#include <QTextEdit>
+
+//#define QSimpleRichText Q3SimpleRichText
 
 
 class KviRegisteredUsersDialogItemBase : public KviTalListViewItem
@@ -84,7 +86,9 @@ class KviRegisteredUsersDialogItem : public KviRegisteredUsersDialogItemBase
 {
 protected:
 	KviRegisteredUser * m_pUser;
-	QSimpleRichText * m_pText;
+	QTextEdit * m_pTextEditor;
+	QTextDocument * m_pText;
+	
 public:
 	KviRegisteredUsersDialogItem(KviTalListViewItem * par,KviRegisteredUser * u);
 	~KviRegisteredUsersDialogItem();
@@ -103,7 +107,7 @@ public:
 	KviRegisteredUsersDialog(QWidget * par = 0);
 	~KviRegisteredUsersDialog();
 public:
-	KviTalListView   * m_pListView;
+	KviTalListView * m_pListView;
 	QPushButton * m_pAddButton;
 	QPushButton * m_pWizardAddButton;
 	QPushButton * m_pRemoveButton;

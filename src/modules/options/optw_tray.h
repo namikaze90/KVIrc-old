@@ -25,7 +25,7 @@
 #include "kvi_optionswidget.h"
 #include <qcombobox.h>
 
-#define KVI_OPTIONS_WIDGET_ICON_KviTrayOptionsWidget KVI_SMALLICON_DOCKWIDGET
+#define KVI_OPTIONS_WIDGET_ICON_KviTrayOptionsWidget KVI_SMALLICON_TRAYICON
 #define KVI_OPTIONS_WIDGET_NAME_KviTrayOptionsWidget __tr2qs_no_lookup("Tray icon")
 #define KVI_OPTIONS_WIDGET_PARENT_KviTrayOptionsWidget KviInterfaceFeaturesOptionsWidget
 #define KVI_OPTIONS_WIDGET_KEYWORDS_KviTrayOptionsWidget __tr2qs_no_lookup("tray,dockwidget")

@@ -28,9 +28,9 @@
 
 class KviPixmap;
 class KviPixmapSelector;
-class KviTalVBoxLayout; 
-class KviTalHBoxLayout; 
-class QGridLayout; 
+class KviTalVBoxLayout;
+class KviTalHBoxLayout;
+class QGridLayout;
 class QCheckBox;
 class QLabel;
 class QLineEdit;
@@ -38,11 +38,11 @@ class QWidget;
 class KviRegisteredUserDataBase;
 
 class KviRegistrationWizard : public KviTalWizard
-{ 
-    Q_OBJECT
+{
+	Q_OBJECT
 public:
-    KviRegistrationWizard(const char * startMask,KviRegisteredUserDataBase * db = 0,QWidget * par = 0,bool bModal = false);
-    ~KviRegistrationWizard();
+	KviRegistrationWizard(const char * startMask,KviRegisteredUserDataBase * db = 0,QWidget * par = 0,bool bModal = false);
+	~KviRegistrationWizard();
 
 	KviRegisteredUserDataBase * m_pDb;
 
@@ -50,30 +50,30 @@ public:
 
 	bool m_bModal;
 
-    QWidget* m_pPage1;
-    QLabel* m_pLabel1;
-    QLineEdit* m_pEditRealName;
-    QWidget* m_pPage2;
-    QLabel* m_pLabel2;
-    QLineEdit* m_pNicknameEdit1;
-    QLineEdit* m_pNicknameEdit2;
-    QLineEdit* m_pHostEdit1;
-    QLineEdit* m_pHostEdit2;
-    QLineEdit* m_pUsernameEdit1;
-    QLineEdit* m_pUsernameEdit2;
-    QWidget* m_pPage3;
-    QLabel* m_pLabel3;
-	KviPixmapSelector * m_pAvatarSelector;
-    QWidget* m_pPage4;
-    QCheckBox* m_pNotifyCheck;
-    QLabel* m_pNotifyNickLabel1;
-    QLabel* m_pNotifyNickLabel2;
-    QLabel* m_pLabel4;
-    QLineEdit* m_pNotifyNickEdit1;
-    QLineEdit* m_pNotifyNickEdit2;
-    QWidget* m_pPage5;
-    QLabel* m_pTextLabel5;
+	QWidget* m_pPage1;
+	QLabel* m_pLabel1;
+	QLineEdit* m_pEditRealName;
+	QWidget* m_pPage2;
+	QLabel* m_pLabel2;
+	QLineEdit* m_pNicknameEdit1;
+	QLineEdit* m_pNicknameEdit2;
+	QLineEdit* m_pHostEdit1;
+	QLineEdit* m_pHostEdit2;
+	QLineEdit* m_pUsernameEdit1;
+	QLineEdit* m_pUsernameEdit2;
+	QWidget* m_pPage3;
+	QLabel* m_pLabel3;
+	QWidget* m_pPage4;
+	QCheckBox* m_pNotifyCheck;
+	QLabel* m_pNotifyNickLabel1;
+	QLabel* m_pNotifyNickLabel2;
+	QLabel* m_pLabel4;
+	QLineEdit* m_pNotifyNickEdit1;
+	QLineEdit* m_pNotifyNickEdit2;
+	QWidget* m_pPage5;
+	QLabel* m_pTextLabel5;
 
+	KviPixmapSelector * m_pAvatarSelector;
 	KviPixmap * m_pAvatar;
 protected:
 	virtual void showEvent(QShowEvent *e);

@@ -247,11 +247,11 @@ void KviMenuBar::setupMainPopup()
 
 	if(m_pFrm->dockExtension())
 	{
-		QAction * action = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCKWIDGET)),__tr2qs("Hide &Dock Icon"));
-		action->setData(QVariant(KVI_INTERNALCOMMAND_DOCKWIDGET_HIDE));
+		QAction * action = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TRAYICON)),__tr2qs("Hide &Dock Icon"));
+		action->setData(QVariant(KVI_INTERNALCOMMAND_TRAYICON_HIDE));
 	} else {
-		QAction * action = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCKWIDGET)),__tr2qs("Show &Dock Icon"));
-		action->setData(QVariant(KVI_INTERNALCOMMAND_DOCKWIDGET_SHOW));
+		QAction * action = main->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TRAYICON)),__tr2qs("Show &Dock Icon"));
+		action->setData(QVariant(KVI_INTERNALCOMMAND_TRAYICON_SHOW));
 	}
 	
 // Qt/Mac creates a Quit item on its own

@@ -27,21 +27,19 @@
 #include "kvi_string.h"
 #include "kvi_regusersdb.h"
 #include "kvi_selectors.h"
+#include "kvi_tal_listview.h"
+#include "kvi_tal_listbox.h"
+#include "kvi_tal_popupmenu.h"
 
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QDialog>
 #include <QtGui>
-#include "kvi_tal_listview.h"
-#include "kvi_tal_listbox.h"
+#include <QTableWidget>
 
-// TODO: Qt4
-#include <q3table.h>
-#define Kvi_Tal_Table Q3Table
-#define Kvi_Tal_TableItem Q3TableItem
-
-#include "kvi_tal_popupmenu.h"
+#define Kvi_Tal_Table QTableWidget
+#define Kvi_Tal_TableItem QTableWidgetItem
 
 #ifndef _EDITUSER_CPP_
 	extern KviRegisteredUserDataBase * g_pLocalRegisteredUserDataBase;
@@ -56,7 +54,7 @@ public:
 	KviReguserPropertiesDialog(QWidget *p,QHash<QString,QString> * dict);
 	~KviReguserPropertiesDialog();
 protected:
-	Q3Table *m_pTable;
+	QTableWidget *m_pTable;
 
 	QHash<QString,QString>     * m_pPropertyDict;
 	QPushButton        * m_pDelButton;
@@ -141,7 +139,5 @@ protected slots:
 	void editAllPropertiesClicked();
 	void maskCurrentChanged(KviTalListBoxItem *it);
 };
-
-
 
 #endif //_EDITUSER_H_

@@ -23,9 +23,7 @@
 //=============================================================================
 #define _WANT_OPTION_FLAGS_
 
-#include "edituser.h"
 #include "kvi_regusersdb.h"
-
 #include "kvi_locale.h"
 #include "kvi_ircmask.h"
 #include "kvi_debug.h"
@@ -40,33 +38,32 @@
 #include "kvi_stringconversion.h"
 #include "kvi_options.h"
 
-#include <qlayout.h>
-#include <qlabel.h>
+#include <QLayout>
+#include <QLabel>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 // TODO: Qt4
 #include <q3header.h>
 #include <qevent.h>
+
 #include <QImageWriter>
 #include <QImageReader>
-
-
-#include <qimage.h>
-#include <qstring.h>
-#include <qcombobox.h>
-
-
-#include <qstyle.h>
-#include <qpainter.h>
-#include "kvi_tal_hbox.h"
-#include "kvi_tal_vbox.h"
-#include <qinputdialog.h>
+#include <QImage>
+#include <QString>
+#include <QComboBox>
+#include <QStyle>
+#include <QPainter>
+#include <QInputDialog>
 
 #include "wizard.h"
 #include "dialog.h"
+#include "edituser.h"
 
 
 #ifdef COMPILE_INFO_TIPS
-	#include <qtooltip.h>
+	#include <QToolTip>
 #endif // COMPILE_INFO_TIPS
 
 
@@ -106,14 +103,19 @@ KviRegisteredUsersDialogItem::KviRegisteredUsersDialogItem(KviTalListViewItem * 
 		t += m_pUser->getProperty("comment");
 	}
 	t += "</font></nobr>";
-	m_pText = new QSimpleRichText(t,listView()->font());
+	// Qt3
+	//m_pText = new QSimpleRichText(t,listView()->font());
+	m_pTextEditor = new QTextEdit();
+	m_pTextEditor->setHtml(t);
+	m_pText = m_pTextEditor->document();
+	m_pText->setDefaultFont(listView()->font());
 	
 	//setText(0,u->name());
 }
 
 KviRegisteredUsersDialogItem::~KviRegisteredUsersDialogItem()
 {
-	delete m_pText;
+	delete m_pTextEditor;
 }
 
 QString KviRegisteredUsersDialogItem::key(int,bool) const
@@ -129,14 +131,24 @@ void KviRegisteredUsersDialogItem::paintCell(QPainter * p,const QColorGroup &cg,
 		p->drawPixmap(LVI_BORDER,LVI_BORDER, *(g_pIconManager->getBigIcon(QString(KVI_BIGICON_REGUSERS))) );
 		int afterIcon = LVI_BORDER + LVI_ICON_SIZE + LVI_SPACING;
 		int www = listView()->visibleWidth() - (afterIcon + LVI_BORDER);
-		m_pText->setWidth(www);
+		m_pText->setTextWidth(www);
 		if(isSelected())
 		{
-			QColorGroup cg2(cg);
-			cg2.setColor(QColorGroup::HighlightedText,cg.text());
-			m_pText->draw(p,afterIcon,LVI_BORDER,QRect(afterIcon,LVI_BORDER,www,height() - (LVI_BORDER * 2)),cg2);
+			// Qt3
+			//FIXME: use QPalette
+			//QColorGroup cg2(cg);
+			//cg2.setColor(QColorGroup::HighlightedText,cg.text());
+			
+			//m_pText->draw(p,afterIcon,LVI_BORDER,QRect(afterIcon,LVI_BORDER,www,height() - (LVI_BORDER * 2)),cg2);
+
+			// Qt4
+			//m_pText->drawContents(p,QRect(afterIcon));
 		} else {
-			m_pText->draw(p,afterIcon,LVI_BORDER,QRect(afterIcon,LVI_BORDER,www,height() - (LVI_BORDER * 2)),cg);
+			// Qt3
+			//m_pText->draw(p,afterIcon,LVI_BORDER,QRect(afterIcon,LVI_BORDER,www,height() - (LVI_BORDER * 2)),cg);
+
+			// Qt4
+			//m_pText->drawContents(p,QRect(afterIcon));
 		}
 	} else {
 		if(m_pUser)
@@ -155,8 +167,8 @@ void KviRegisteredUsersDialogItem::setup()
 	int iWidth = listView()->visibleWidth();
 	if(iWidth < LVI_MINIMUM_CELL_WIDTH)iWidth = LVI_MINIMUM_CELL_WIDTH;
 	iWidth -= LVI_BORDER + LVI_ICON_SIZE + LVI_SPACING + LVI_BORDER;
-	m_pText->setWidth(iWidth);
-	int iHeight = m_pText->height() + (2 * LVI_BORDER);
+	m_pText->setTextWidth(iWidth);
+	int iHeight = m_pTextEditor->height() + (2 * LVI_BORDER);
 	if(iHeight < (LVI_ICON_SIZE + (2 * LVI_BORDER)))iHeight = LVI_ICON_SIZE + (2 * LVI_BORDER);
 	setHeight(iHeight);
 }
@@ -199,19 +211,22 @@ KviRegisteredUsersDialog::KviRegisteredUsersDialog(QWidget * par)
 
 	g->addMultiCellWidget(m_pListView,0,1,0,1);
 
-	KviTalVBox * vbox = new KviTalVBox(this);
-	vbox->setSpacing(4);
+	QWidget * vbox = new QWidget(this);
+	QVBoxLayout * layout = new QVBoxLayout();
+	layout->setSpacing(4);
+	vbox->setLayout(layout);
 	g->addWidget(vbox,0,2);
 
 	m_pWizardAddButton = new QPushButton(__tr2qs("Add (Wizard)..."),vbox);
+	layout->addWidget(m_pWizardAddButton);
 	connect(m_pWizardAddButton,SIGNAL(clicked()),this,SLOT(addWizardClicked()));
 #ifdef COMPILE_INFO_TIPS
 	QToolTip::add(m_pWizardAddButton,__tr2qs("Add a registered user by means of a user-friendly wizard."));
 #endif // COMPILE_INFO_TIPS
 	m_pWizardAddButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NEWITEMBYWIZARD)));
 
-
 	m_pAddButton = new QPushButton(__tr2qs("&Add..."),vbox);
+	layout->addWidget(m_pAddButton);
 	connect(m_pAddButton,SIGNAL(clicked()),this,SLOT(addClicked()));
 #ifdef COMPILE_INFO_TIPS
 	QToolTip::add(m_pAddButton,__tr2qs("Open the edit dialog to create a new user entry."));
@@ -219,6 +234,7 @@ KviRegisteredUsersDialog::KviRegisteredUsersDialog(QWidget * par)
 	m_pAddButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NEWITEM)));
 	
 	m_pAddGroupButton = new QPushButton(__tr2qs("&Add Group..."),vbox);
+	layout->addWidget(m_pAddGroupButton);
 	connect(m_pAddGroupButton,SIGNAL(clicked()),this,SLOT(addGroupClicked()));
 #ifdef COMPILE_INFO_TIPS
 	QToolTip::add(m_pAddGroupButton,__tr2qs("Adds a new group"));
@@ -226,6 +242,7 @@ KviRegisteredUsersDialog::KviRegisteredUsersDialog(QWidget * par)
 	m_pAddGroupButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NEWITEM)));
 
 	m_pRemoveButton = new QPushButton(__tr2qs("Re&move"),vbox);
+	layout->addWidget(m_pRemoveButton);
 	connect(m_pRemoveButton,SIGNAL(clicked()),this,SLOT(removeClicked()));
 	m_pRemoveButton->setEnabled(false);
 #ifdef COMPILE_INFO_TIPS
@@ -233,8 +250,8 @@ KviRegisteredUsersDialog::KviRegisteredUsersDialog(QWidget * par)
 #endif // COMPILE_INFO_TIPS
 	m_pRemoveButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DELETEITEM)));
 
-
 	m_pEditButton = new QPushButton(__tr2qs("&Edit..."),vbox);
+	layout->addWidget(m_pEditButton);
 	connect(m_pEditButton,SIGNAL(clicked()),this,SLOT(editClicked()));
 	m_pEditButton->setEnabled(false);
 #ifdef COMPILE_INFO_TIPS
@@ -244,17 +261,19 @@ KviRegisteredUsersDialog::KviRegisteredUsersDialog(QWidget * par)
 
 	QFrame * f = new QFrame(vbox);
 	f->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+	layout->addWidget(f);
 
 	m_pExportButton = new QPushButton(__tr("Export To..."),vbox);
 	m_pExportButton->setEnabled(false);
+	layout->addWidget(m_pExportButton);
 	connect(m_pExportButton,SIGNAL(clicked()),this,SLOT(exportClicked()));
 #ifdef COMPILE_INFO_TIPS
 	QToolTip::add(m_pExportButton,__tr2qs("Export the selected entries to a file.<br>All the data associated with the selected registered users will be exported.<br>You (or anyone else) can later import the entries by using the \"Import\" button."));
 #endif // COMPILE_INFO_TIPS
 	m_pExportButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_FLOPPY)));
 
-
 	m_pImportButton = new QPushButton(__tr("Import From..."),vbox);
+	layout->addWidget(m_pImportButton);
 	connect(m_pImportButton,SIGNAL(clicked()),this,SLOT(importClicked()));
 #ifdef COMPILE_INFO_TIPS
 	QToolTip::add(m_pImportButton,__tr2qs("Import entries from a file exported earlier by the \"export\" function of this dialog."));
@@ -262,19 +281,22 @@ KviRegisteredUsersDialog::KviRegisteredUsersDialog(QWidget * par)
 	m_pImportButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_FOLDER)));
 
 
-	KviTalHBox * hbox = new KviTalHBox(this);
-	hbox->setSpacing(4);
+	QWidget * hbox = new QWidget(this);
+	QHBoxLayout * hLayout = new QHBoxLayout();
+	hLayout->setSpacing(4);
+	hbox->setLayout(hLayout);
 	g->addMultiCellWidget(hbox,3,3,1,2);
 
 	QPushButton * b;
 
-
 	b = new QPushButton(__tr2qs("&OK"),hbox);
+	hLayout->addWidget(b);
 	connect(b,SIGNAL(clicked()),this,SLOT(okClicked()));
 	b->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_ACCEPT)));
 	//b->setMinimumWidth(120);
 
 	b = new QPushButton(__tr2qs("Cancel"),hbox);
+	hLayout->addWidget(b);
 	connect(b,SIGNAL(clicked()),this,SLOT(cancelClicked()));
 	b->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DISCARD)));
 	//b->setMinimumWidth(120);
@@ -307,8 +329,7 @@ KviRegisteredUsersDialog::KviRegisteredUsersDialog(QWidget * par)
 KviRegisteredUsersDialog::~KviRegisteredUsersDialog()
 {
 #ifndef Q_OS_MACX
-	if(!parent())KVI_OPTION_RECT(KviOption_rectRegisteredUsersDialogGeometry) = QRect(pos().x(),pos().y(),
-			size().width(),size().height());
+	if(!parent())KVI_OPTION_RECT(KviOption_rectRegisteredUsersDialogGeometry) = QRect(pos().x(),pos().y(),size().width(),size().height());
 #else
 	if(!parent())KVI_OPTION_RECT(KviOption_rectRegisteredUsersDialogGeometry) = geometry();
 #endif
@@ -873,7 +894,6 @@ read_error:
 	return;
 
 succesfull_import:
-
 	f.close();
 	fillList();
 }

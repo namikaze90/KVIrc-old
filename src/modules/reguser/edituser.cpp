@@ -24,9 +24,7 @@
 #define _WANT_OPTION_FLAGS_
 #define _EDITUSER_CPP_
 
-#include "edituser.h"
 #include "kvi_regusersdb.h"
-
 #include "kvi_locale.h"
 #include "kvi_ircmask.h"
 #include "kvi_debug.h"
@@ -44,27 +42,21 @@
 #include <QLayout>
 #include <QLabel>
 #include <QGroupBox>
-
-// TODO: Qt4
 #include <QEvent>
-#include <q3header.h>
-#include <q3vbox.h>
-
-
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QImage>
 #include <QString>
+#include <QStringList>
 #include <QComboBox>
-
 #include <QtGui>
-
 #include <QStyle>
 #include <QPainter>
-#include "kvi_tal_hbox.h"
-#include "kvi_tal_vbox.h"
 #include <QInputDialog>
 
 #include "wizard.h"
 #include "dialog.h"
+#include "edituser.h"
 
 
 #ifdef COMPILE_INFO_TIPS
@@ -76,8 +68,6 @@ extern KviRegisteredUsersDialog * g_pRegisteredUsersDialog;
 
 KviRegisteredUserDataBase * g_pLocalRegisteredUserDataBase; // local copy!
 
-
-
 KviReguserPropertiesDialog::KviReguserPropertiesDialog(QWidget * p,QHash<QString,QString> * dict)
 : QDialog(p,"property_editor",true)
 {
@@ -88,41 +78,49 @@ KviReguserPropertiesDialog::KviReguserPropertiesDialog(QWidget * p,QHash<QString
 
 	QGridLayout * g = new QGridLayout(this,3,3,4,4);
 
-	m_pTable = new Q3Table(this);
+	m_pTable = new QTableWidget(this);
 
 	g->addMultiCellWidget(m_pTable,0,1,0,1);
 
-	m_pTable->setNumCols(2);
+	m_pTable->setColumnCount(2);
 	m_pTable->setSelectionMode(Kvi_Tal_Table::NoSelection);
 
-	m_pTable->horizontalHeader()->setLabel(0,__tr2qs("Property"));
-	m_pTable->horizontalHeader()->setLabel(1,__tr2qs("Value"));
+	QStringList m_szLabels;
+	m_szLabels << __tr2qs("Property") << __tr2qs("Value");
+	m_pTable->setHorizontalHeaderLabels(m_szLabels);
 
 	m_pTable->setMinimumSize(250,250);
 	//connect(m_pTable,SIGNAL(valueChanged(int,int)),this,SLOT(propertyValueChanged(int,int)));
 
-	KviTalVBox * vb = new KviTalVBox(this);
-	vb->setSpacing(4);
+	QWidget * vb = new QWidget(this);
+	QVBoxLayout * layout = new QVBoxLayout();
+	layout->setSpacing(4);
+	vb->setLayout(layout);
 	g->addWidget(vb,0,2);
 
 	m_pAddButton = new QPushButton(__tr2qs("&New"),vb);
+	layout->addWidget(m_pAddButton);
 	connect(m_pAddButton,SIGNAL(clicked()),this,SLOT(addClicked()));
 	m_pAddButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NEWITEM)));
 
 	m_pDelButton = new QPushButton(__tr2qs("&Remove"),vb);
+	layout->addWidget(m_pDelButton);
 	connect(m_pDelButton,SIGNAL(clicked()),this,SLOT(delClicked()));
 	m_pDelButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DELETEITEM)));
 
-	KviTalHBox * b = new KviTalHBox(this);
-	b->setSpacing(4);
+	QWidget * b = new QWidget(this);
+	QHBoxLayout * hLayout = new QHBoxLayout();
+	hLayout->setSpacing(4);
+	b->setLayout(hLayout);
 	g->addMultiCellWidget(b,2,2,1,2);
 
 	QPushButton * pb = new QPushButton(__tr2qs("&OK"),b);
+	hLayout->addWidget(pb);
 	connect(pb,SIGNAL(clicked()),this,SLOT(okClicked()));
 	pb->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_ACCEPT)));
 
-
 	pb = new QPushButton(__tr2qs("Cancel"),b);
+	hLayout->addWidget(pb);
 	connect(pb,SIGNAL(clicked()),this,SLOT(reject()));
 	pb->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DISCARD)));
 
@@ -144,28 +142,32 @@ void KviReguserPropertiesDialog::closeEvent(QCloseEvent *e)
 
 void KviReguserPropertiesDialog::fillData()
 {
-	m_pTable->setNumRows(m_pPropertyDict->count());
+	m_pTable->setRowCount(m_pPropertyDict->count());
 	QHash<QString,QString>::iterator it(m_pPropertyDict->begin());
 	int row = 0;
 	while(it != m_pPropertyDict->end())
 	{
-		m_pTable->setItem(row,0,new Kvi_Tal_TableItem(m_pTable,Kvi_Tal_TableItem::OnTyping,it.key()));
-		m_pTable->setItem(row,1,new Kvi_Tal_TableItem(m_pTable,Kvi_Tal_TableItem::OnTyping,it.value()));
+		Kvi_Tal_TableItem * pColKey = new Kvi_Tal_TableItem(it.key(),QTableWidgetItem::Type);
+		Kvi_Tal_TableItem * pColValue = new Kvi_Tal_TableItem(it.value(),QTableWidgetItem::Type);
+		pColKey->setFlags(Qt::ItemIsEditable);
+		pColValue->setFlags(Qt::ItemIsEditable);
+		m_pTable->setItem(row,0,pColKey);
+		m_pTable->setItem(row,1,pColValue);
 		++row;
 		++it;
 	}
-	if(m_pTable->numRows() == 0)m_pDelButton->setEnabled(false);
+	if(m_pTable->rowCount() == 0)m_pDelButton->setEnabled(false);
 }
 
 void KviReguserPropertiesDialog::okClicked()
 {
 	m_pPropertyDict->clear();
 
-	int n = m_pTable->numRows();
+	int n = m_pTable->rowCount();
 	for(int i=0;i<n;i++)
 	{
-		QString szName = m_pTable->text(i,0);
-		QString szValue = m_pTable->text(i,1);
+		QString szName = m_pTable->item(i,0)->text();
+		QString szValue = m_pTable->item(i,1)->text();
 		if((!szName.isEmpty()) && (!szValue.isEmpty()))
 		{
 			m_pPropertyDict->insert(szName,szValue);
@@ -175,12 +177,16 @@ void KviReguserPropertiesDialog::okClicked()
 	accept();
 }
 
-
 void KviReguserPropertiesDialog::addClicked()
 {
-	m_pTable->setNumRows(m_pTable->numRows() + 1);
-	m_pTable->setItem(m_pTable->numRows() - 1,0,new Kvi_Tal_TableItem(m_pTable,Kvi_Tal_TableItem::OnTyping,""));
-	m_pTable->setItem(m_pTable->numRows() - 1,1,new Kvi_Tal_TableItem(m_pTable,Kvi_Tal_TableItem::OnTyping,""));
+	Kvi_Tal_TableItem * pColKey = new Kvi_Tal_TableItem("",QTableWidgetItem::Type);
+	Kvi_Tal_TableItem * pColValue = new Kvi_Tal_TableItem("",QTableWidgetItem::Type);
+	pColKey->setFlags(Qt::ItemIsEditable);
+	pColValue->setFlags(Qt::ItemIsEditable);
+
+	m_pTable->setRowCount(m_pTable->rowCount() + 1);
+	m_pTable->setItem(m_pTable->rowCount()-1,0,pColKey);
+	m_pTable->setItem(m_pTable->rowCount()-1,1,pColValue);
 	m_pDelButton->setEnabled(true);
 }
 
@@ -188,18 +194,10 @@ void KviReguserPropertiesDialog::delClicked()
 {
 	int i = m_pTable->currentRow();
 
-	if((i > -1) && (i < m_pTable->numRows()))
+	if((i > -1) && (i < m_pTable->rowCount()))
 	{
-		// remove row i
-		m_pTable->clearCell(i,0);
-		m_pTable->clearCell(i,1);
-
-		for(;i < (m_pTable->numRows() - 1);i++)
-		{
-			m_pTable->swapRows(i,i+1);
-		}
-		m_pTable->setNumRows(m_pTable->numRows() - 1);
-		if(m_pTable->numRows() == 0)m_pDelButton->setEnabled(false);
+		m_pTable->removeRow(i);
+		if(m_pTable->rowCount() == 0)m_pDelButton->setEnabled(false);
 	}
 }
 
@@ -217,10 +215,13 @@ KviReguserMaskDialog::KviReguserMaskDialog(QWidget * p,KviIrcMask * m)
 	//l->setAlignment(Qt::AlignCenter);
 	g->addMultiCellWidget(l,0,0,0,1);
 
-	KviTalHBox * b = new KviTalHBox(this);
+	QWidget * b = new QWidget(this);
+	QHBoxLayout * hLayout = new QHBoxLayout();
+	b->setLayout(hLayout);
 	g->addMultiCellWidget(b,1,1,0,1);
 
 	m_pNickEdit = new QLineEdit(b);
+	hLayout->addWidget(m_pNickEdit);
 	//m_pNickEdit->setMinimumWidth(120);
 	m_pNickEdit->setAlignment(Qt::AlignRight);
 #ifdef COMPILE_INFO_TIPS
@@ -229,9 +230,11 @@ KviReguserMaskDialog::KviReguserMaskDialog(QWidget * p,KviIrcMask * m)
 
 	l = new QLabel("<center><b>!</b></center>",b);
 	l->setAlignment(Qt::AlignCenter);
+	hLayout->addWidget(l);
 	//l->setMinimumWidth(40);
 
 	m_pUserEdit = new QLineEdit(b);
+	hLayout->addWidget(m_pUserEdit);
 	//m_pUserEdit->setMinimumWidth(120);
 	m_pUserEdit->setAlignment(Qt::AlignCenter);
 #ifdef COMPILE_INFO_TIPS
@@ -240,9 +243,11 @@ KviReguserMaskDialog::KviReguserMaskDialog(QWidget * p,KviIrcMask * m)
 
 	l = new QLabel("<center><b>@</b></center>",b);
 	l->setAlignment(Qt::AlignCenter);
+	hLayout->addWidget(l);
 	//l->setMinimumWidth(40);
 
 	m_pHostEdit = new QLineEdit(b);
+	hLayout->addWidget(m_pHostEdit);
 	//m_pHostEdit->setMinimumWidth(120);
 	m_pHostEdit->setAlignment(Qt::AlignLeft);
 #ifdef COMPILE_INFO_TIPS
@@ -250,26 +255,28 @@ KviReguserMaskDialog::KviReguserMaskDialog(QWidget * p,KviIrcMask * m)
 #endif
 
 	// just a spacer
-//	l = new QLabel("<nobr>&nbsp;<nobr>",this);
-//	g->addMultiCellWidget(l,2,2,0,1);
+	//l = new QLabel("<nobr>&nbsp;<nobr>",this);
+	//g->addMultiCellWidget(l,2,2,0,1);
+	
+	//QFrame * f = new QFrame(this);
+	//f->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+	//g->addMultiCellWidget(f,3,3,0,1);
 
-//	QFrame * f = new QFrame(this);
-//	f->setFrameStyle(QFrame::HLine | QFrame::Sunken);
-//	g->addMultiCellWidget(f,3,3,0,1);
-
-	b = new KviTalHBox(this);
-	b->setSpacing(4);
+	b = new QWidget(this);
+	hLayout = new QHBoxLayout();
+	hLayout->setSpacing(4);
+	b->setLayout(hLayout);
 	g->addWidget(b,2,1);
 
 	QPushButton * pb = new QPushButton(__tr2qs("&OK"),b);
+	hLayout->addWidget(pb);
 	connect(pb,SIGNAL(clicked()),this,SLOT(okClicked()));
 	//pb->setMinimumWidth(120);
 
 	pb = new QPushButton(__tr2qs("Cancel"),b);
+	hLayout->addWidget(pb);
 	connect(pb,SIGNAL(clicked()),this,SLOT(reject()));
 	//pb->setMinimumWidth(120);
-
-
 
 	g->setColStretch(0,1);
 	g->setRowStretch(0,1);
@@ -305,8 +312,6 @@ void KviReguserMaskDialog::okClicked()
 
 	accept();
 }
-
-
 
 
 KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegisteredUser * r,bool bModal)
@@ -366,20 +371,25 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 
 	g->addMultiCellWidget(m_pMaskListBox,4,4,0,1);
 
-	KviTalHBox * b = new KviTalHBox(p1);
+	QWidget * b = new QWidget(p1);
+	QHBoxLayout * hLayout = new QHBoxLayout();
 	g->addMultiCellWidget(b,5,5,0,1);
-	b->setSpacing(4);
+	hLayout->setSpacing(4);
+	b->setLayout(hLayout);
 
 	m_pAddMaskButton = new QPushButton(__tr2qs("&Add..."),b);
+	hLayout->addWidget(m_pAddMaskButton);
 	connect(m_pAddMaskButton,SIGNAL(clicked()),this,SLOT(addMaskClicked()));
 	m_pAddMaskButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NEWITEM)));
 
 	m_pDelMaskButton = new QPushButton(__tr2qs("Re&move"),b);
+	hLayout->addWidget(m_pDelMaskButton);
 	m_pDelMaskButton->setEnabled(false);
 	connect(m_pDelMaskButton,SIGNAL(clicked()),this,SLOT(delMaskClicked()));
 	m_pDelMaskButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DELETEITEM)));
 
 	m_pEditMaskButton = new QPushButton(__tr2qs("&Edit"),b);
+	hLayout->addWidget(m_pEditMaskButton);
 	m_pEditMaskButton->setEnabled(false);
 	connect(m_pEditMaskButton,SIGNAL(clicked()),this,SLOT(editMaskClicked()));
 	m_pEditMaskButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_EDITITEM)));
@@ -388,7 +398,6 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 	g->setColStretch(1,1);
 
 	m_pTabs->addTab(p1,__tr2qs("Identity"));
-
 
 
 	QWidget * p2 = new QWidget(this);
@@ -453,9 +462,7 @@ KviRegisteredUserEntryDialog::KviRegisteredUserEntryDialog(QWidget *p,KviRegiste
 	m_pTabs->addTab(p2,__tr2qs("Properties"));
 
 	// Ignore TAB
-	Q3VBox * vb = new Q3VBox(this);
-
-	vb->setMargin(10);
+	QWidget * vb = new QWidget(this);
 
 	m_pIgnoreEnabled = new KviStyledCheckBox(__tr2qs("Enable ignore for this user"),vb);
 
@@ -759,7 +766,3 @@ void KviRegisteredUserEntryDialog::editAllPropertiesClicked()
 		m_pAvatarSelector->setImagePath(avatar);
 
 }
-
-
-
-

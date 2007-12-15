@@ -1,5 +1,5 @@
-#ifndef _KVI_DOCKWIDGET_QT4_H_
-#define _KVI_DOCKWIDGET_QT4_H_
+#ifndef _KVI_TRAYICON_H_
+#define _KVI_TRAYICON_H_
 //
 //   This file is part of the KVirc irc client distribution
 //   Creation date : Tue 02 Jan 2001 14:28:25 by Szymon Stefanek
@@ -32,12 +32,12 @@ class QTimer;
 //class KviFrame;
 class KviDynamicToolTip;
 
-class KviDockWidget : public QSystemTrayIcon, public KviDockExtension
+class KviTrayIcon : public QSystemTrayIcon, public KviDockExtension
 {
 	Q_OBJECT
 public:
-	KviDockWidget(KviFrame * win);
-	~KviDockWidget();
+	KviTrayIcon(KviFrame * win);
+	~KviTrayIcon();
 protected:
 	KviFrame          * m_pFrm;
 	KviDynamicToolTip * m_pTip;
@@ -50,7 +50,7 @@ protected:
 	bool m_bFlashed;
 	
 	QPixmap m_CurrentPixmap;
-	QTimer* m_pFlashingTimer;
+	QTimer * m_pFlashingTimer;
 	int m_iConsoles;
 	int m_iChannels;
 	int m_iQueries;
@@ -73,4 +73,4 @@ protected slots:
 	void activatedSlot( QSystemTrayIcon::ActivationReason reason );
 };
 
-#endif //_KVI_DOCKWIDGET_QT4_H_
+#endif //_KVI_TRAYICON_H_
