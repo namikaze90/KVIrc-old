@@ -211,10 +211,10 @@ static bool help_module_cleanup(KviModule *m)
 	if(g_pDocIndex) delete g_pDocIndex;
 	qDeleteAll(*g_pHelpWidgetList);
 	delete g_pHelpWidgetList;
-    g_pHelpWidgetList = 0;
-    qDeleteAll(*g_pHelpWindowList);
+	g_pHelpWidgetList = 0;
+	qDeleteAll(*g_pHelpWindowList);
 	delete g_pHelpWindowList;
-    g_pHelpWindowList = 0;
+	g_pHelpWindowList = 0;
 	return true;
 }
 

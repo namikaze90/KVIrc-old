@@ -23,8 +23,8 @@
 
 #include "helpwindow.h"
 #include "helpwidget.h"
-#include "kvi_app.h"
 
+#include "kvi_app.h"
 #include "kvi_iconmanager.h"
 #include "kvi_options.h"
 #include "kvi_locale.h"
@@ -32,15 +32,18 @@
 #include "kvi_config.h"
 #include "kvi_styled_controls.h"
 
-#include <qfileinfo.h>
-#include <qsplitter.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qregexp.h>
-#include <qtooltip.h>
+#include <QFileInfo>
+#include <QSplitter>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QRegExp>
+#include <QToolTip>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QProgressDialog>
 
 
-extern Index        * g_pDocIndex;
+extern Index * g_pDocIndex;
 extern QList<KviHelpWindow*> * g_pHelpWindowList;
 extern QList<KviHelpWidget*> * g_pHelpWidgetList;
 
@@ -48,7 +51,6 @@ bool g_bIndexingDone = FALSE;
 KviHelpWindow::KviHelpWindow(KviFrame * lpFrm,const char * name)
 : KviWindow(KVI_WINDOW_TYPE_HELP,lpFrm,name)
 {
-	
 	if(!g_bIndexingDone)
 	{
 		QString szDoclist,szDict;
@@ -74,15 +76,24 @@ KviHelpWindow::KviHelpWindow(KviFrame * lpFrm,const char * name)
 	m_pSplitter = new QSplitter(Qt::Horizontal,this,"main_splitter");
 	m_pHelpWidget = new KviHelpWidget(m_pSplitter,lpFrm);
 
-	m_pToolBar=new KviTalVBox(m_pSplitter);
+	m_pToolBar=new QWidget(m_pSplitter);
+	QVBoxLayout * layout = new QVBoxLayout();
+	m_pToolBar->setLayout(layout);
 
 	m_pTabWidget = new QTabWidget(m_pToolBar);
 	
-	m_pIndexTab  = new KviTalVBox(m_pTabWidget);
+	QWidget * m_pIndexTab = new QWidget(m_pTabWidget);
+	QVBoxLayout * vLayout = new QVBoxLayout();
+	m_pIndexTab->setLayout(vLayout);
 	m_pTabWidget->insertTab(m_pIndexTab,__tr2qs("Index"));
 	
-	KviTalHBox* pSearchBox = new KviTalHBox(m_pIndexTab);
+	QWidget * pSearchBox = new QWidget(m_pIndexTab);
+	QHBoxLayout * hLayout = new QHBoxLayout();
+	pSearchBox->setLayout(hLayout);
+	vLayout->addWidget(pSearchBox);
+
 	m_pIndexSearch = new QLineEdit(pSearchBox);
+	hLayout->addWidget(m_pIndexSearch);
 	connect( m_pIndexSearch, SIGNAL( textChanged(const QString&) ),
 	     this, SLOT( searchInIndex(const QString&) ) );
 	connect( m_pIndexSearch, SIGNAL( returnPressed() ),
@@ -90,25 +101,31 @@ KviHelpWindow::KviHelpWindow(KviFrame * lpFrm,const char * name)
 	
 	KviStyledToolButton* pBtnRefreshIndex = new KviStyledToolButton(pSearchBox);
 	pBtnRefreshIndex->setIconSet(*g_pIconManager->getBigIcon(KVI_REFRESH_IMAGE_NAME));
+	hLayout->addWidget(pBtnRefreshIndex);
 	connect(pBtnRefreshIndex,SIGNAL(clicked()),this,SLOT(refreshIndex()));
 	QToolTip::add( pBtnRefreshIndex, __tr2qs("Refresh index") );
 	
 	m_pIndexListBox = new KviTalListBox(m_pIndexTab);
+	vLayout->addWidget(m_pIndexListBox);
 	QStringList docList=g_pDocIndex->titlesList();
 	m_pIndexListBox->insertStringList(docList);
 	connect(m_pIndexListBox,SIGNAL(selected(int)),this,SLOT(indexSelected ( int )));
 	m_pIndexListBox->sort();
 	
-	m_pSearchTab  = new KviTalVBox(m_pTabWidget);
+	m_pSearchTab = new QWidget(m_pTabWidget);
+	QVBoxLayout * sLayout = new QVBoxLayout();
+	m_pSearchTab->setLayout(sLayout);
 	m_pTabWidget->insertTab(m_pSearchTab,__tr2qs("Search"));
 	
 	m_pTermsEdit = new QLineEdit(m_pSearchTab);
+	sLayout->addWidget(m_pTermsEdit);
 /*	connect( m_pTermsEdit, SIGNAL( textChanged(const QString&) ),
 	     this, SLOT( searchInIndex(const QString&) ) );*/
 	connect( m_pTermsEdit, SIGNAL( returnPressed() ),
 	     this, SLOT( startSearch() ) );
-	     
+
 	m_pResultBox = new KviTalListBox(m_pSearchTab);
+	sLayout->addWidget(m_pResultBox);
 	connect(m_pResultBox,SIGNAL(selected(int)),this,SLOT(searchSelected ( int )));
 	
 	QList<int> li;
@@ -139,7 +156,6 @@ void KviHelpWindow::loadProperties(KviConfig *cfg)
 	KviWindow::loadProperties(cfg);
 }
 
-
 void KviHelpWindow::refreshIndex()
 {
 	m_pIndexListBox->clear();
@@ -158,83 +174,76 @@ void KviHelpWindow::refreshIndex()
 
 void KviHelpWindow::startSearch()
 {
-
-    QString str = m_pTermsEdit->text();
-    str = str.replace( "\'", "\"" );
-    str = str.replace( "`", "\"" );
-    QString buf = str;
-    str = str.replace( "-", " " );
-    str = str.replace( QRegExp( "\\s[\\S]?\\s" ), " " );
-    m_terms = QStringList::split( " ", str );
-    QStringList termSeq;
-    QStringList seqWords;
-    QStringList::iterator it = m_terms.begin();
-    for ( ; it != m_terms.end(); ++it ) {
-	(*it) = (*it).simplifyWhiteSpace();
-	(*it) = (*it).lower();
-	(*it) = (*it).replace( "\"", "" );
-    }
-    if ( str.contains( '\"' ) ) {
-
-	if ( (str.count( '\"' ))%2 == 0 ) {
-
-	    int beg = 0;
-	    int end = 0;
-	    QString s;
-	    beg = str.find( '\"', beg );
-	    while ( beg != -1 ) {
-		beg++;
-		end = str.find( '\"', beg );
-		s = str.mid( beg, end - beg );
-		s = s.lower();
-		s = s.simplifyWhiteSpace();
-		if ( s.contains( '*' ) ) {
-		    QMessageBox::warning( this, tr( "Full Text Search" ),
-			tr( "Using a wildcard within phrases is not allowed." ) );
-		    return;
-		}
-		seqWords += QStringList::split( ' ', s );
-		termSeq << s;
-		beg = str.find( '\"', end + 1);
-	    }
-	} else {
-	    QMessageBox::warning( this, tr( "Full Text Search" ),
-		tr( "The closing quotation mark is missing." ) );
-	    return;
+	QString str = m_pTermsEdit->text();
+	str = str.replace( "\'", "\"" );
+	str = str.replace( "`", "\"" );
+	QString buf = str;
+	str = str.replace( "-", " " );
+	str = str.replace( QRegExp( "\\s[\\S]?\\s" ), " " );
+	m_terms = QStringList::split( " ", str );
+	QStringList termSeq;
+	QStringList seqWords;
+	QStringList::iterator it = m_terms.begin();
+	for ( ; it != m_terms.end(); ++it ) {
+		(*it) = (*it).simplifyWhiteSpace();
+		(*it) = (*it).lower();
+		(*it) = (*it).replace( "\"", "" );
 	}
-    }
+	if ( str.contains( '\"' ) ) {
+		if ( (str.count( '\"' ))%2 == 0 ) {
+			int beg = 0;
+			int end = 0;
+			QString s;
+			beg = str.find( '\"', beg );
+			while ( beg != -1 ) {
+				beg++;
+				end = str.find( '\"', beg );
+				s = str.mid( beg, end - beg );
+				s = s.lower();
+				s = s.simplifyWhiteSpace();
+				if ( s.contains( '*' ) ) {
+					QMessageBox::warning( this, tr( "Full Text Search" ), tr( "Using a wildcard within phrases is not allowed." ) );
+					return;
+				}
+				seqWords += QStringList::split( ' ', s );
+				termSeq << s;
+				beg = str.find( '\"', end + 1);
+			}
+		} else {
+			QMessageBox::warning( this, tr( "Full Text Search" ), tr( "The closing quotation mark is missing." ) );
+			return;
+		}
+	}
 
-    setCursor( Qt::WaitCursor );
+	setCursor( Qt::WaitCursor );
+	
+	m_foundDocs.clear();
+	m_foundDocs = g_pDocIndex->query( m_terms, termSeq, seqWords );
 
-    m_foundDocs.clear();
-    m_foundDocs = g_pDocIndex->query( m_terms, termSeq, seqWords );
- 
-    m_pResultBox->clear();
-    for ( it = m_foundDocs.begin(); it != m_foundDocs.end(); ++it )
-	m_pResultBox->insertItem( g_pDocIndex->getDocumentTitle( *it ) );
+	m_pResultBox->clear();
+	for ( it = m_foundDocs.begin(); it != m_foundDocs.end(); ++it )
+		m_pResultBox->insertItem( g_pDocIndex->getDocumentTitle( *it ) );
 
-    m_terms.clear();
-    bool isPhrase = FALSE;
-    QString s = "";
-    for ( int i = 0; i < (int)buf.length(); ++i ) {
-	if ( buf[i] == '\"' ) {
-	    isPhrase = !isPhrase;
-	    s = s.simplifyWhiteSpace();
-	    if ( !s.isEmpty() )
-		m_terms << s;
-	    s = "";
-	} else if ( buf[i] == ' ' && !isPhrase ) {
-	    s = s.simplifyWhiteSpace();
-	    if ( !s.isEmpty() )
-		m_terms << s;
-	    s = "";
-	} else
-	    s += buf[i];
-    }
-    if ( !s.isEmpty() )
-	m_terms << s;
-
-    setCursor( Qt::ArrowCursor );
+	m_terms.clear();
+	bool isPhrase = FALSE;
+	QString s = "";
+	for ( int i = 0; i < (int)buf.length(); ++i ) {
+		if ( buf[i] == '\"' ) {
+			isPhrase = !isPhrase;
+			s = s.simplifyWhiteSpace();
+			if ( !s.isEmpty() ) m_terms << s;
+			s = "";
+		} else if ( buf[i] == ' ' && !isPhrase ) {
+			s = s.simplifyWhiteSpace();
+			if ( !s.isEmpty() ) m_terms << s;
+			s = "";
+		} else {
+			s += buf[i];
+		}
+	}
+	if ( !s.isEmpty() ) m_terms << s;
+	
+	setCursor( Qt::ArrowCursor );
 }
 
 QTextBrowser * KviHelpWindow::textBrowser()
@@ -251,18 +260,18 @@ void KviHelpWindow::showIndexTopic()
 
 void KviHelpWindow::searchInIndex( const QString &s )
 {
-    KviTalListBoxItem *i = m_pIndexListBox->firstItem();
-    QString sl = s.lower();
-    while ( i ) {
-	QString t = i->text();
-	if ( t.length() >= sl.length() &&
-	     i->text().left(s.length()).lower() == sl ) {
-	    m_pIndexListBox->setCurrentItem( i );
-	    m_pIndexListBox->setTopItem(m_pIndexListBox->index(i));
-	    break;
+	KviTalListBoxItem *i = m_pIndexListBox->firstItem();
+	QString sl = s.lower();
+	while ( i ) {
+		QString t = i->text();
+		if ( t.length() >= sl.length() &&
+		i->text().left(s.length()).lower() == sl ) {
+			m_pIndexListBox->setCurrentItem( i );
+			m_pIndexListBox->setTopItem(m_pIndexListBox->index(i));
+			break;
+		}
+		i = i->next();
 	}
-	i = i->next();
-    }
 }
 
 void KviHelpWindow::indexSelected ( int index )
@@ -272,7 +281,7 @@ void KviHelpWindow::indexSelected ( int index )
 }
 
 void KviHelpWindow::navigate(const QString& file)
-{ 
+{
 	if(m_pHelpWidget) m_pHelpWidget->navigate(file);
 }
 
@@ -313,5 +322,3 @@ void KviHelpWindow::fillCaptionBuffers()
 	m_szHtmlInactiveCaption += m_szPlainTextCaption;
 	m_szHtmlInactiveCaption += "</b></font></nobr>";
 }
-
-

@@ -22,10 +22,11 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include "kvi_tal_hbox.h"
-#include <qtextbrowser.h>
+#include <QTextBrowser>
+#include <QProgressBar>
+#include <QWidget>
+
 #include "index.h"
-#include <qprogressbar.h> 
 
 class KviFrame;
 class QToolButton;
@@ -39,12 +40,12 @@ public:
 	KviHelpWidget(QWidget *par,KviFrame * lpFrm,bool bIsStandalone = false);
 	~KviHelpWidget();
 private:
-	QToolButton  * m_pBtnIndex;
-	QToolButton  * m_pBtnBackward;
-	QToolButton  * m_pBtnForward;
-	KviTalHBox        * m_pToolBar;
+	QWidget * m_pToolBar;
+	QToolButton * m_pBtnIndex;
+	QToolButton * m_pBtnBackward;
+	QToolButton * m_pBtnForward;
 	QTextBrowser * m_pTextBrowser;
-	bool           m_bIsStandalone;
+	bool m_bIsStandalone;
 protected:
 	virtual void resizeEvent(QResizeEvent *e);
 	bool eventFilter(QObject *, QEvent *);
@@ -57,6 +58,5 @@ public:
 	virtual QSize sizeHint() const;
 	QTextBrowser * textBrowser() { return m_pTextBrowser; }
 };
-
 
 #endif //_HELPWIDGET_H_

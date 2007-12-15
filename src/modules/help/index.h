@@ -33,22 +33,22 @@
 #include <QVector>
 
 struct Document {
-    Document( int d, int f ) : docNumber( d ), frequency( f ) {}
-    Document() : docNumber( -1 ), frequency( 0 ) {}
-    bool operator==( const Document &doc ) const {
-	return docNumber == doc.docNumber;
-    }
-    bool operator<( const Document &doc ) const {
-	return frequency > doc.frequency;
-    }
-    bool operator<=( const Document &doc ) const {
-	return frequency >= doc.frequency;
-    }
-    bool operator>( const Document &doc ) const {
-	return frequency < doc.frequency;
-    }
-    qint16 docNumber;
-    qint16 frequency;
+	Document( int d, int f ) : docNumber( d ), frequency( f ) {}
+	Document() : docNumber( -1 ), frequency( 0 ) {}
+	bool operator==( const Document &doc ) const {
+		return docNumber == doc.docNumber;
+	}
+	bool operator<( const Document &doc ) const {
+		return frequency > doc.frequency;
+	}
+	bool operator<=( const Document &doc ) const {
+		return frequency >= doc.frequency;
+	}
+	bool operator>( const Document &doc ) const {
+		return frequency < doc.frequency;
+	}
+	qint16 docNumber;
+	qint16 frequency;
 };
 
 QDataStream &operator>>( QDataStream &s, Document &l );
@@ -56,56 +56,59 @@ QDataStream &operator<<( QDataStream &s, const Document &l );
 
 class Index : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    struct Entry {
-	    Entry( int d ) { documents.append( Document( d, 1 ) ); }
-	    Entry( QVector<Document> l ) : documents( l ) {}
-	    QVector<Document> documents;
-    };
-    struct PosEntry {
-	    PosEntry( int p ) { positions.append( p ); }
-	    QList<uint> positions;
-    };
+	struct Entry {
+		Entry( int d ) { documents.append( Document( d, 1 ) ); }
+		Entry( QVector<Document> l ) : documents( l ) {}
+		QVector<Document> documents;
+	};
+	struct PosEntry {
+		PosEntry( int p ) { positions.append( p ); }
+		QList<uint> positions;
+	};
 
-    Index( const QString &dp, const QString &hp );
-    Index( const QStringList &dl, const QString &hp );
-    void writeDict();
-    void readDict();
-    int makeIndex();
-    QStringList query( const QStringList&, const QStringList&, const QStringList& );
-    QString getDocumentTitle( const QString& );
-    void setDictionaryFile( const QString& );
-    void setDocListFile( const QString& );
-    void setDocList( const QStringList & );
-    void writeDocumentList();
+	Index( const QString &dp, const QString &hp );
+	Index( const QStringList &dl, const QString &hp );
+	void writeDict();
+	void readDict();
+	int makeIndex();
+	QStringList query( const QStringList&, const QStringList&, const QStringList& );
+	QString getDocumentTitle( const QString& );
+	void setDictionaryFile( const QString& );
+	void setDocListFile( const QString& );
+	void setDocList( const QStringList & );
+	void writeDocumentList();
+	const QStringList& documentList() { return docList; };
+	const QStringList& titlesList() { return titleList; };
 
 signals:
-    void indexingProgress( int );
+	void indexingProgress( int );
 
 private slots:
-    void setLastWinClosed();
+	void setLastWinClosed();
 
 private:
-    void setupDocumentList();
-    void parseDocument( const QString&, int );
-    void insertInDict( const QString&, int );
-    void readDocumentList();
-    QStringList getWildcardTerms( const QString& );
-    QStringList split( const QString& );
-    QVector<Document> setupDummyTerm( const QStringList& );
-    bool searchForPattern( const QStringList&, const QStringList&, const QString& );
-    void buildMiniDict( const QString& );
-    QString getCharsetForDocument(QFile *);
-    QStringList docList;
-    QHash<QString, Entry*> dict;
-    QHash<QString, PosEntry*> miniDict;
-    uint wordNum;
-    QString docPath;
-    QString dictFile, docListFile;
-    bool alreadyHaveDocList;
-    bool lastWindowClosed;
-    QHash<QString, QString> documentTitleCache;
+	void setupDocumentList();
+	void parseDocument( const QString&, int );
+	void insertInDict( const QString&, int );
+	void readDocumentList();
+	QStringList getWildcardTerms( const QString& );
+	QStringList split( const QString& );
+	QVector<Document> setupDummyTerm( const QStringList& );
+	bool searchForPattern( const QStringList&, const QStringList&, const QString& );
+	void buildMiniDict( const QString& );
+	QString getCharsetForDocument(QFile *);
+	QStringList docList;
+	QStringList titleList;
+	QHash<QString, Entry*> dict;
+	QHash<QString, PosEntry*> miniDict;
+	uint wordNum;
+	QString docPath;
+	QString dictFile, docListFile;
+	bool alreadyHaveDocList;
+	bool lastWindowClosed;
+	QHash<QString, QString> documentTitleCache;
 };
 
 #endif
