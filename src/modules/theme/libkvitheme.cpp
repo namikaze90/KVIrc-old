@@ -183,7 +183,7 @@ static bool theme_module_can_unload(KviModule * m)
 
 KVIRC_MODULE(
 	"theme",                                                      // module name
-	"1.0.0",                                                        // module version
+	"4.0.0",                                                        // module version
 	"Copyright (C) 2006 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Theme management functions",
 	theme_module_init,

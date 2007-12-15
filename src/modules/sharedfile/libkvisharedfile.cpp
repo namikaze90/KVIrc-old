@@ -272,7 +272,7 @@ static bool sharedfile_module_cleanup(KviModule *m)
 
 KVIRC_MODULE(
 	"Offer",                                                // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2000-2003 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"User interface to the file sharing system",
 	sharedfile_module_init,

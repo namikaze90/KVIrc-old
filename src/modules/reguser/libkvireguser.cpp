@@ -23,7 +23,6 @@
 //=============================================================================
 
 #include "kvi_module.h"
-
 #include "kvi_regusersdb.h"
 #include "kvi_ircuserdb.h"
 #include "kvi_out.h"
@@ -33,14 +32,12 @@
 #include "kvi_app.h"
 #include "kvi_window.h"
 #include "kvi_frame.h"
+#include "kvi_ircconnection.h"
 
 #include "edituser.h"
 #include "wizard.h"
-#include "kvi_ircconnection.h"
 #include "dialog.h"
 
-
-#include <qsplitter.h> // FIXME: REmove this!
 
 //#warning "$reguser.matches..."
 //#warning "$reguser.clear"
@@ -1198,11 +1195,11 @@ static bool reguser_module_init(KviModule * m)
 static bool reguser_module_cleanup(KviModule *m)
 {
 	if(g_pRegisteredUsersDialog)delete g_pRegisteredUsersDialog;
-    g_pRegisteredUsersDialog = 0;
+	g_pRegisteredUsersDialog = 0;
 
 	qDeleteAll(*g_pRegistrationWizardList);
 	delete g_pRegistrationWizardList;
-    g_pRegistrationWizardList = 0;
+	g_pRegistrationWizardList = 0;
 
 	// FIXME: UNREGISTER THE METAOBJECTS
 	return true;
@@ -1215,7 +1212,7 @@ static bool reguser_module_can_unload(KviModule *)
 
 KVIRC_MODULE(
 	"Reguser",                                              // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2002 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Script interface to the registered users database",
 	reguser_module_init,

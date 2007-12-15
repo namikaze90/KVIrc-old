@@ -1688,7 +1688,7 @@ static bool mediaplayer_module_ctrl(KviModule * m,const char * operation,void * 
 
 KVIRC_MODULE(
 	"mediaplayer",
-	"1.1.0",
+	"4.0.0",
 	"Copyright (C) 2001-2007 Szymon Stefanek (pragma at kvirc dot net), " \
 		"Christoph Thielecke (crissi99 at gmx dot de)," \
 		"Tonino Imbesi (grifisx at barmes dot org)," \

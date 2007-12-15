@@ -584,7 +584,7 @@ static bool avatar_module_cleanup(KviModule *m)
 
 KVIRC_MODULE(
 	"Avatar",
-	"1.0.0",
+	"4.0.0",
 	"Copyright (C) 2004 Szymon Stefanek (pragma at kvirc dot net)",
 	"Avatar manipulation routines",
 	avatar_module_init,

@@ -723,7 +723,7 @@ static bool system_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"System",                                                 // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright	(C) 2001 Szymon Stefanek (pragma at kvirc dot net)" \
 	"			(C) 2005 Tonino Imbesi (grifisx at barmes dot org)"\
 	"			(C) 2005 Alessandro Carbone (noldor at barmes dot org)",// author & (C)

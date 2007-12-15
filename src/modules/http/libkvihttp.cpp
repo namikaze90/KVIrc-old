@@ -24,8 +24,6 @@
 
 #include "kvi_module.h"
 #include "kvi_string.h"
-
-
 #include "kvi_app.h"
 #include "kvi_locale.h"
 #include "kvi_filedialog.h"
@@ -290,7 +288,6 @@ static bool http_kvs_cmd_asyncGet(KviKvsModuleCallbackCommandCall * c)
 	return http_kvs_complete_get(c,szUrl,szFileName,c->callback()->code());
 }
 
-
 static bool http_module_init(KviModule * m)
 {
 	KviHttpFileTransfer::init();
@@ -314,7 +311,7 @@ static bool http_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"Http",                                                         // module name
-	"1.0.0",                                                        // module version
+	"4.0.0",                                                        // module version
 	"Copyright (C) 2003 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"HTTP interface for KVIrc",
 	http_module_init,

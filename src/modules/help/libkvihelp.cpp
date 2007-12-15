@@ -225,7 +225,7 @@ static bool help_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"Help",                                                 // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2000 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Help browser extension",
 	help_module_init,

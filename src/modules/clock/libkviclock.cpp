@@ -244,7 +244,7 @@ static bool clock_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"Clock",                                              // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2001 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Clock toolbar applet",
 	clock_module_init,

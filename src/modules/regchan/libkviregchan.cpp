@@ -409,7 +409,7 @@ static bool regchan_module_can_unload(KviModule *)
 
 KVIRC_MODULE(
 	"RegChan",                                              // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2002 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Script interface to the registered channels database",
 	regchan_module_init,

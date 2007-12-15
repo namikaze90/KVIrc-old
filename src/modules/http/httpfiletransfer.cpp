@@ -31,11 +31,10 @@
 #include "kvi_netutils.h"
 #include "kvi_kvs_eventtriggers.h"
 #include "kvi_console.h"
-
 #include "kvi_kvs_script.h"
-
 #include "kvi_tal_popupmenu.h"
-#include <qpainter.h>
+
+#include <QPainter>
 
 static QList<KviHttpFileTransfer*> * g_pHttpFileTransfers = 0;
 static QPixmap * g_pHttpIcon = 0;
@@ -473,4 +472,3 @@ bool KviHttpFileTransfer::startDownload()
 	m_eGeneralStatus = Connecting;
 	return m_pHttpRequest->start();
 }
-

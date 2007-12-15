@@ -312,7 +312,7 @@ static bool notifier_module_ctrl(KviModule *,const char *operation,void *param)
 
 KVIRC_MODULE(
 	"Notifier",
-	"2.0.0",
+	"4.0.0",
 	"Copyright (C) 2005:\n" \
 	"  Iacopo Palazzi (iakko at siena dot linux dot it)",
 	"KVIrc Client - Taskbar Notifier",

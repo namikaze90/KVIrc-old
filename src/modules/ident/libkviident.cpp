@@ -602,7 +602,7 @@ static bool ident_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"Ident",                                              // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2001 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Ident service",
 	ident_module_init,

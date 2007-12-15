@@ -676,7 +676,7 @@ static bool dockwidget_module_can_unload(KviModule *)
 // =======================================
 KVIRC_MODULE(
     "KVIrc dock widget implementation",
-	"2.0.0",
+	"4.0.0",
 	"Szymon Stefanek <pragma at kvirc dot net> and Alexey Uzhva <alexey at kvirc dot ru>" ,
 	"exports the /dockwidget.* interface\n",
     dockwidget_module_init ,

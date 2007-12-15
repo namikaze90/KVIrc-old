@@ -69,7 +69,7 @@ static bool editor_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"Editor",                                               // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2000 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Text editor extension",
 	editor_module_init,

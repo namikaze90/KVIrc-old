@@ -348,7 +348,7 @@ static bool spaste_module_can_unload(KviModule *m)
 //-------------------------------------------------
 KVIRC_MODULE(
 	"SPaste",                                                 // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"          (C) 2002 Juanjo Alvarez (juanjux@yahoo.es)", // author & (C)
 	"Delayed paste commands",
 	spaste_module_init,

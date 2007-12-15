@@ -27,11 +27,10 @@
 #include "kvi_filetransfer.h"
 #include "kvi_http.h"
 #include "kvi_time.h"
-
 #include "kvi_kvs_variant.h"
 
-#include <qstringlist.h>
-#include <qtimer.h>
+#include <QStringList>
+#include <QTimer>
 
 class QPainter;
 class KviTalPopupMenu;

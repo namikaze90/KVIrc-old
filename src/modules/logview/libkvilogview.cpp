@@ -158,7 +158,7 @@ static bool logview_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"KVIrc Log Viewer Widget",
-	"1.0.0",
+	"4.0.0",
 	"Juanjo Alvarez <juanjux@yahoo.es>",
 	"An structured log file viewer",
 	logview_module_init,

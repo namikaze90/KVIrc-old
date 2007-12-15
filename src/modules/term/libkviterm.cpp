@@ -155,7 +155,7 @@ static bool term_module_cleanup(KviModule *m)
 
 KVIRC_MODULE(
 	"Term",                                                 // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2000 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Terminal emulator extension based on the KonsolePart KDE class",
 	term_module_init,

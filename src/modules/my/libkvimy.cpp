@@ -411,7 +411,7 @@ static bool my_module_can_unload(KviModule *)
 
 KVIRC_MODULE(
 	"My",                                              // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2002 Szymon Stefanek (pragma at kvirc dot net)" \
 	"		   (C) 2005 Tonino Imbesi (grifisx at barmes dot net)" \
 	"          (C) 2005 Alessandro Carbone (noldor at barmes dot net)", // author & (C)

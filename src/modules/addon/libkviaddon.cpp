@@ -646,7 +646,7 @@ static bool addon_module_can_unload(KviModule * m)
 
 KVIRC_MODULE(
 	"addon",                                                      // module name
-	"1.0.0",                                                        // module version
+	"4.0.0",                                                        // module version
 	"Copyright (C) 2005 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Script management functions for the KVS engine",
 	addon_module_init,

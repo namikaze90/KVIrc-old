@@ -725,7 +725,7 @@ static bool snd_module_ctrl(KviModule * m,const char * operation,void * param)
 
 KVIRC_MODULE(
 	"Sound",                                                 // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"(C) 2002 Szymon Stefanek (pragma at kvirc dot net)," \
 	"Juanjo Alvarez (juanjux at yahoo dot es)", // author & (C)
 	"Sound playing commands",

@@ -888,7 +888,7 @@ static bool torrent_module_ctrl(KviModule * m,const char * operation,void * para
 
 KVIRC_MODULE(
 	"torrent",
-	"1.0.0",
+	"4.0.0",
 	"Copyright (C) 2007 Alexander Stillich (torque at pltn dot org)",
 	"Interface to various torrent clients",
 	torrent_module_init,

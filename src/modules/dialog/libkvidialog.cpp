@@ -903,7 +903,7 @@ static bool dialog_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
     "KVIrc script dialogs",
-	"1.0.0",
+	"4.0.0",
 	"Szymon Stefanek <pragma at kvirc dot net>" ,
 	"Adds the /dialog.* commands functionality\n",
     dialog_module_init ,

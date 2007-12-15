@@ -90,7 +90,7 @@ static bool list_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"List",                                             // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2000-2001 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"List window extension",
 	list_module_init,

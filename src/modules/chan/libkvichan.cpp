@@ -1620,7 +1620,7 @@ static bool chan_module_cleanup(KviModule *m)
 
 KVIRC_MODULE(
 	"Chan",                                                  // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2002 Szymon Stefanek (pragma at kvirc dot net)"\
 	"          (C) 2002 Juanjo Alvarez (juanjux at yahoo dot es)",
 	"Scripting interface for the channel management",

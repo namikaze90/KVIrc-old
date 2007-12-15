@@ -98,7 +98,7 @@ static bool channelsjoin_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"ChannelsJoin",
-	"0.0.3",
+	"4.0.0",
 	"Copyright (C) 2001-2006 Juan Jos��varez (juanjux@yahoo.es), Alexey (wizard@opendoor.ru)",
 	"Window to join channels in a GUI",
 	channelsjoin_module_init,

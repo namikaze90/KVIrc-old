@@ -94,7 +94,7 @@ static bool lag_module_can_unload(KviModule *m)
 //-------------------------------------------------
 KVIRC_MODULE(
 	"Lag",                                                 // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"          (C) 2002 Juanjo Alvarez (juanjux@yahoo.es)", // author & (C)
 	"Functions and commands to control the lag metering engine",
 	lag_module_init,

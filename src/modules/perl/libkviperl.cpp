@@ -590,7 +590,7 @@ static bool perl_module_cleanup(KviModule *m)
 
 KVIRC_MODULE(
 	"Perl",                                                 // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2004 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Perl scripting engine",
 	perl_module_init,

@@ -1244,7 +1244,7 @@ static bool file_module_cleanup(KviModule *m)
 
 KVIRC_MODULE(
 	"File",                                                 // module name
-	"1.0.0",                                                // module version
+	"4.0.0",                                                // module version
 	"Copyright (C) 2001 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Interface to the file system",
 	file_module_init,

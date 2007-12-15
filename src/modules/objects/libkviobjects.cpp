@@ -972,7 +972,7 @@ static bool objects_module_can_unload(KviModule *m)
 
 KVIRC_MODULE(
 	"Objects",
-	"2.0.0",
+	"4.0.0",
 	"Copyright (C) 2000-2006:\n" \
 		"  Szymon Stefanek (pragma at kvirc dot net)\n" \
 		"  Krzysztof Godlewski (kristoff at poczta dot wprost dot pl)\n" \
