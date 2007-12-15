@@ -8,7 +8,9 @@ INCLUDEPATH += ../kvilib/tal/ \
     ../kvilib/system/
     
 !contains( DEFINES, __KVILIB__ ) {
-      LIBS += -lkvilib
+      unix: LIBS += -lkvilib
+	  mac: LIBS += -lkvilib
+	  win32: LIBS += -lkvilib4
   } 
 
 unix {
