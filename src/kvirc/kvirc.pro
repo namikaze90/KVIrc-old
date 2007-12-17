@@ -58,7 +58,6 @@ HEADERS += ui/kvi_actiondrawer.h \
     ui/kvi_ircviewtools.h \
     ui/kvi_listview.h \
     ui/kvi_maskeditor.h \
-    ui/kvi_mdicaption.h \
     ui/kvi_mdimanager.h \
     ui/kvi_menubar.h \
     ui/kvi_modeeditor.h \
@@ -254,7 +253,6 @@ SOURCES += ui/kvi_actiondrawer.cpp \
     ui/kvi_ircviewtools.cpp \
     ui/kvi_listview.cpp \
     ui/kvi_maskeditor.cpp \
-    ui/kvi_mdicaption.cpp \
     ui/kvi_mdimanager.cpp \
     ui/kvi_menubar.cpp \
     ui/kvi_modeeditor.cpp \
