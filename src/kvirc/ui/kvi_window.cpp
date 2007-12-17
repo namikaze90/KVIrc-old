@@ -73,6 +73,7 @@
 #include <QToolButton>
 #include "kvi_tal_tooltip.h"
 #include <QMessageBox>
+#include "kvi_mdimanager.h"
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	#include "kvi_crypt.h"
@@ -102,6 +103,7 @@ unsigned long int g_uUniqueWindowId = 1;
 KviWindow::KviWindow(int type,KviFrame * lpFrm,const QString &name,KviConsole * lpConsole)
 		: QWidget(0)
 {
+	m_pMdiSubWindow = lpFrm->mdiManager()->addSubWindow(this);
 	m_uId = g_uUniqueWindowId;
 	g_uUniqueWindowId++;
 
@@ -213,7 +215,7 @@ bool KviWindow::hasAttention()
 {
 	if(((QApplication *)g_pApp)->activeWindow() == 0)return false; // no application window has the focus atm
 
-	if(mdiParent())
+	/*if(mdiParent())
 	{
 		if(frame()->isActiveWindow())return true;
 		// This frame is not the active window but the
@@ -237,13 +239,13 @@ bool KviWindow::hasAttention()
 		// when the window is undocked, instead
 		// it is likely to be covered by KVIrc or other windows...
 		if(isActiveWindow())return true;
-	}
+	}*/
 	return false;
 }
 
 void KviWindow::demandAttention()
 {
-	if(mdiParent())
+/*	if(mdiParent())
 	{
 		if(frame()->isActiveWindow())return;
 #ifdef COMPILE_ON_WINDOWS
@@ -278,7 +280,7 @@ void KviWindow::demandAttention()
 		#endif
 	#endif
 #endif
-	}
+	}*/
 }
 
 bool KviWindow::focusNextPrevChild(bool next)
@@ -706,13 +708,13 @@ void KviWindow::fillSingleColorCaptionBuffers(const QString &szName)
 void KviWindow::updateCaption()
 {
 	fillCaptionBuffers();
-	if(mdiParent())
+/*	if(mdiParent())
 		mdiParent()->setCaption(plainTextCaption(),htmlActiveCaption(),htmlInactiveCaption());
 	else
-		setCaption(plainTextCaption());
+		setCaption(plainTextCaption());*/
 	if(m_pTaskBarItem)m_pTaskBarItem->captionChanged();
-	if(mdiParent() && isMaximized() && (g_pActiveWindow == this))
-		g_pFrame->updateCaption();
+//	if(mdiParent() && isMaximized() && (g_pActiveWindow == this))
+//		g_pFrame->updateCaption();
 }
 
 void KviWindow::createSystemTextEncodingPopup()
@@ -794,13 +796,13 @@ void KviWindow::systemPopupRequest(const QPoint &pnt)
 		g_pMdiWindowSystemMainPopup->disconnect();
 	}
 
-	if(mdiParent())
+/*	if(mdiParent())
 		g_pMdiWindowSystemMainPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_UNDOCK)),
 		                                        __tr2qs("&Undock"),this,SLOT(undock()));
 	else
 		g_pMdiWindowSystemMainPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_DOCK)),
 		                                        __tr2qs("&Dock"),this,SLOT(dock()));
-
+*/
 	g_pMdiWindowSystemMainPopup->insertSeparator();
 
 	QAction * action = g_pMdiWindowSystemMainPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MINIMIZE)),
@@ -909,11 +911,8 @@ void KviWindow::delayedAutoRaise()
 
 void KviWindow::autoRaise()
 {
-	if(!mdiParent())
-	{
-		raise();
-		setActiveWindow();
-	}
+	raise();
+	setActiveWindow();
 	if(m_pFocusHandler)
 		m_pFocusHandler->setFocus();
 	else
@@ -933,12 +932,7 @@ void KviWindow::closeEvent(QCloseEvent *e)
 
 void KviWindow::updateIcon()
 {
-	if(parent())
-	{
-		((KviMdiChild *)parent())->setIcon(*myIconPtr());
-	} else {
-		setIcon(*myIconPtr());
-	}
+	m_pMdiSubWindow->setIcon(*myIconPtr());
 }
 
 void KviWindow::youAreDocked()
@@ -948,9 +942,9 @@ void KviWindow::youAreDocked()
 		delete m_pAccel;
 		m_pAccel = 0;
 	}
-	((KviMdiChild *)parent())->setIcon(*myIconPtr());
+//	((KviMdiChild *)parent())->setIcon(*myIconPtr());
 	updateCaption();
-	connect(((KviMdiChild *)parent()),SIGNAL(systemPopupRequest(const QPoint &)),this,SLOT(systemPopupRequest(const QPoint &)));
+/*	connect(((KviMdiChild *)parent()),SIGNAL(systemPopupRequest(const QPoint &)),this,SLOT(systemPopupRequest(const QPoint &)));*/
 }
 
 void KviWindow::youAreUndocked()
@@ -967,8 +961,8 @@ void KviWindow::youAreUndocked()
 
 void KviWindow::activateSelf()
 {
-	if(mdiParent())
-		mdiParent()->activate(false);
+//	if(mdiParent())
+//		mdiParent()->activate(false);
 
 	g_pFrame->childWindowActivated(this);
 	// this is now done by KviFrame in childWindowActivated
@@ -1263,39 +1257,39 @@ void KviWindow::moveEvent(QMoveEvent *e)
 
 void KviWindow::minimize()
 {
-	if(mdiParent())
+/*	if(mdiParent())
 	{
 		if(!isMinimized())
 			mdiParent()->minimize();
 	}
 	else
-		showMinimized();
+		showMinimized();*/
 }
 
 void KviWindow::maximize()
 {
-	if(mdiParent())
+/*	if(mdiParent())
 	{
 		if(!isMaximized())
 			mdiParent()->maximize();
 	}
 	else
 		showMaximized();
-	autoRaise();
+	autoRaise();*/
 }
 
 bool KviWindow::isMinimized()
 {
-	if(mdiParent())
+/*	if(mdiParent())
 		return (mdiParent()->state() == KviMdiChild::Minimized);
-	else
+	else*/
 		return QWidget::isMinimized();
 }
 
 bool KviWindow::isMaximized()
 {
-	if(mdiParent())
-		return (mdiParent()->state() == KviMdiChild::Maximized);
+/*	if(mdiParent())
+		return (mdiParent()->state() == KviMdiChild::Maximized);*/
 	// Heh...how to check it ?
 	// Empirical check
 	int wdth = (g_pApp->desktop()->width() * 75) / 100;
@@ -1306,23 +1300,24 @@ bool KviWindow::isMaximized()
 
 void KviWindow::restore()
 {
-	if(mdiParent())
+/*	if(mdiParent())
 	{
 		if(isMinimized()||isMaximized())
 			mdiParent()->restore();
 	}
 	else
 		showNormal();
-	autoRaise();
+	autoRaise();*/
 }
 
 QRect KviWindow::externalGeometry()
 {
 #ifndef Q_OS_MACX
-	return mdiParent() ? mdiParent()->restoredGeometry() : frameGeometry();
+//	return mdiParent() ? mdiParent()->restoredGeometry() : frameGeometry();
 #else
-	return mdiParent() ? mdiParent()->restoredGeometry() : geometry();
+//	return mdiParent() ? mdiParent()->restoredGeometry() : geometry();
 #endif
+	return QRect();
 }
 
 void KviWindow::applyOptions()

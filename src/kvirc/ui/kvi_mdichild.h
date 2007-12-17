@@ -38,7 +38,7 @@ class KviMdiCaption;
 
 class QCursor;
 
-
+#if 0
 
 class KVIRC_API KviMdiChild : public QFrame
 {
@@ -46,6 +46,7 @@ class KVIRC_API KviMdiChild : public QFrame
 	friend class KviMdiCaption;
 	Q_OBJECT
 public:
+	QMdiSubWindow *m_pMdiSubWindow;
 	KviMdiChild(KviMdiManager* par,const char * name = 0);
 	~KviMdiChild();
 public:
@@ -118,5 +119,6 @@ private:
 	void calculateResizeRect(int resizeCorner,QPoint mousePos,QRect &resizeRect,int minWidth,int minHeight);
 };
 
+#endif
 
 #endif //_KVI_MDICHILD_H_

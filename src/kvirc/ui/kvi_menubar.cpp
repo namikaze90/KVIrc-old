@@ -81,7 +81,7 @@ KviMenuBar::KviMenuBar(KviFrame * par,const char * name)
 	connect(pop,SIGNAL(aboutToShow()),this,SLOT(setupSettingsPopup()));
 	addDefaultItem(__tr2qs("&Settings"),pop);
 
-	addDefaultItem(__tr2qs("&Window"),par->mdiManager()->windowPopup());
+//	addDefaultItem(__tr2qs("&Window"),par->mdiManager()->windowPopup());
 
 	pop = new KviTalPopupMenu(this,"help");
 	connect(pop,SIGNAL(aboutToShow()),this,SLOT(setupHelpPopup()));
@@ -106,7 +106,7 @@ void KviMenuBar::showEvent(QShowEvent *e)
 	debug("menubar show");
 	// force a re-layout of the menubar in Qt4 (see the note in enterSDIMode())
 	// by resetting the corner widget
-	m_pFrm->mdiManager()->relayoutMenuButtons();
+//	m_pFrm->mdiManager()->relayoutMenuButtons();
 }
 
 void KviMenuBar::addDefaultItem(const QString &text,KviTalPopupMenu * pop)

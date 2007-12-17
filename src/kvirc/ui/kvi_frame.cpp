@@ -103,14 +103,15 @@ KviFrame::KviFrame()
 
 	m_pDockExtension = 0;
 	
-	m_pSplitter = new QSplitter(Qt::Horizontal,this,"main_splitter");
+	//m_pSplitter = new QSplitter(Qt::Horizontal,this,"main_splitter");
 //	m_pSplitter->setFrameShape(QFrame::NoFrame);
 	
-	setCentralWidget(m_pSplitter);
+	//setCentralWidget(m_pSplitter);
 
 	setUsesBigPixmaps(KVI_OPTION_BOOL(KviOption_boolUseBigIcons));
 
-	m_pMdi      = new KviMdiManager(m_pSplitter,this,"mdi_manager");
+	m_pMdi      = new KviMdiManager(this);
+	setCentralWidget(m_pMdi);
 	connect(m_pMdi,SIGNAL(enteredSdiMode()),this,SLOT(enteredSdiMode()));
 	connect(m_pMdi,SIGNAL(leftSdiMode()),this,SLOT(leftSdiMode()));
 
@@ -518,7 +519,7 @@ void KviFrame::saveWindowProperties(KviWindow * wnd,const char * szSection)
 	// The following line should NOT be needed...but just to be sure...
 	g_pWinPropertiesConfig->setGroup(szSection);
 
-	g_pWinPropertiesConfig->writeEntry("IsDocked",wnd->mdiParent());
+//	g_pWinPropertiesConfig->writeEntry("IsDocked",wnd->mdiParent());
 
 //	KviWindow * top = g_pActiveWindow;
 //	if(!top)top = wnd;
@@ -547,16 +548,16 @@ void KviFrame::closeWindow(KviWindow *wnd)
 	m_pWinList->removeAll(wnd);
 
 	// hide it
-	if(wnd->mdiParent())wnd->mdiParent()->hide();
-	else wnd->hide();
+//	if(wnd->mdiParent())wnd->mdiParent()->hide();
+	/*else*/ wnd->hide();
 
 	if(wnd == g_pActiveWindow)
 	{
 		// we need another active window before destroying it
-		KviMdiChild * pMdiChild = wnd->mdiParent();
-		if(pMdiChild)
+//		KviMdiChild * pMdiChild = wnd->mdiParent();
+/*		if(pMdiChild)
 		{
-			pMdiChild = m_pMdi->highestChildExcluding(pMdiChild);
+//			pMdiChild = m_pMdi->highestChildExcluding(pMdiChild);
 		} else {
 			// the best candidate for the new active window
 			// is the top mdiManager's child
@@ -573,7 +574,7 @@ void KviFrame::closeWindow(KviWindow *wnd)
 		
 		if(pCandidate)
 			childWindowActivated(pCandidate);
-		// else { m_pActiveWindow = 0; m_pActiveContext = 0; };
+		// else { m_pActiveWindow = 0; m_pActiveContext = 0; };*/
 	}
 
 	if(wnd == g_pActiveWindow) // ops... :/ ... this happens only at shutdown
@@ -584,7 +585,7 @@ void KviFrame::closeWindow(KviWindow *wnd)
 
 	// and shut it down...
 	// KviWindow will call childWindowDestroyed() here
-	if(wnd->mdiParent())m_pMdi->destroyChild(wnd->mdiParent(),true);
+//	if(wnd->mdiParent())m_pMdi->destroyChild(wnd->mdiParent(),true);
 	else delete wnd;
 }
 
@@ -636,12 +637,12 @@ void KviFrame::addWindow(KviWindow *wnd,bool bShow)
 				// when group settings are used , we always cascade the windows
 				// this means that windows that have no specialized config group name
 				// are always cascaded : this is true for consoles , queries (and other windows) but not channels (and some other windows)
-				KviMdiChild * lpC = dockWindow(wnd,false,bGroupSettings,&rect);
-				lpC->setRestoredGeometry(rect);
+//				KviMdiChild * lpC = dockWindow(wnd,false,bGroupSettings,&rect);
+//				lpC->setRestoredGeometry(rect);
 				wnd->triggerCreationEvents();
 				if(bShow)
 				{
-					m_pMdi->showAndActivate(lpC);
+//					m_pMdi->showAndActivate(lpC);
 					if(bMaximized)wnd->maximize();
 					// Handle the special case of this top level widget not being the active one.
 					// In this situation the child will not get the focusInEvent
@@ -673,7 +674,7 @@ default_docking:
 		wnd->triggerCreationEvents();
 		if(bShow)
 		{
-			m_pMdi->showAndActivate(lpC);
+//			m_pMdi->showAndActivate(lpC);
 			if(KVI_OPTION_BOOL(KviOption_boolMdiManagerInSdiMode)) wnd->maximize();
 			// Handle the special case of this top level widget not being the active one.
 			// In this situation the child will not get the focusInEvent
@@ -692,21 +693,21 @@ docking_done:
 
 KviMdiChild * KviFrame::dockWindow(KviWindow *wnd,bool bShow,bool bCascade,QRect *setGeom)
 {
-	if(wnd->mdiParent())return wnd->mdiParent();
-	KviMdiChild * lpC = new KviMdiChild(m_pMdi,"");
-	lpC->setClient(wnd);
+//	if(wnd->mdiParent())return wnd->mdiParent();
+//	KviMdiChild * lpC = new KviMdiChild(m_pMdi,"");
+//	lpC->setClient(wnd);
 	wnd->youAreDocked();
-	m_pMdi->manageChild(lpC,bCascade,setGeom);
-	if(bShow)m_pMdi->showAndActivate(lpC);
-	return lpC;
+//	m_pMdi->manageChild(lpC,bCascade,setGeom);
+//	if(bShow)m_pMdi->showAndActivate(lpC);
+	return 0;
 }
 
 void KviFrame::undockWindow(KviWindow *wnd)
 {
-	if(!(wnd->mdiParent()))return;
-	KviMdiChild * lpC = wnd->mdiParent();
-	lpC->unsetClient();
-	m_pMdi->destroyChild(lpC,false);
+//	if(!(wnd->mdiParent()))return;
+//	KviMdiChild * lpC = wnd->mdiParent();
+//	lpC->unsetClient();
+//	m_pMdi->destroyChild(lpC,false);
 	wnd->youAreUndocked();
 	wnd->raise();
 	wnd->setFocus();
@@ -741,6 +742,7 @@ KviConsole * KviFrame::createNewConsole(bool bFirstInFrame)
 unsigned int KviFrame::consoleCount()
 {
 	unsigned int count = 0;
+	if(!m_pWinList) return 0;
 	foreach(KviWindow * wnd,*m_pWinList)
 	{
 		if(wnd->type() == KVI_WINDOW_TYPE_CONSOLE)count++;
@@ -784,10 +786,12 @@ void KviFrame::unhighlightWindowsOfContext(KviIrcContext * c)
 
 void KviFrame::setActiveWindow(KviWindow *wnd)
 {
+	g_pActiveWindow = wnd;
 	// ASSERT(m_pWinList->findRef(wnd))
 	if(wnd->isMinimized())wnd->restore();
-	if(wnd->mdiParent())wnd->setFocus();
-	else wnd->delayedAutoRaise();
+//	if(wnd->mdiParent())wnd->setFocus();
+	wnd->delayedAutoRaise();
+	emit(activeWindowChanged());
 }
 
 KviIrcConnection * KviFrame::activeConnection()
@@ -855,7 +859,7 @@ void KviFrame::childWindowActivated(KviWindow *wnd)
 	bool bActiveContextChanged = (m_pActiveContext != wnd->context());
 	m_pActiveContext = wnd->context();
 
-	if(wnd->isMaximized() && wnd->mdiParent())updateCaption();
+//	if(wnd->isMaximized() && wnd->mdiParent())updateCaption();
 	m_pTaskBar->setActiveItem(wnd->taskBarItem());
 
 	//wnd->gainedActiveWindowStatus(); // <-- atm unused
@@ -907,17 +911,6 @@ void KviFrame::leftSdiMode()
 
 void KviFrame::updateCaption()
 {
-	if(g_pActiveWindow)
-	{
-		if(g_pActiveWindow->isMaximized() && g_pActiveWindow->mdiParent())
-		{
-			QString tmp = g_pActiveWindow->plainTextCaption();
-			tmp += QChar(' ');
-			tmp += KVI_DEFAULT_FRAME_CAPTION;
-			setCaption(tmp);
-			return;
-		}
-	}
 	setCaption(KVI_DEFAULT_FRAME_CAPTION);
 }
 
@@ -1163,11 +1156,11 @@ bool KviFrame::focusNextPrevChild(bool next)
 		}
 	}
 	// try to focus the widget on top of the Mdi
-	if(m_pMdi->topChild())
+/*	if(m_pMdi->topChild())
 	{
 		m_pMdi->focusTopChild();
 		return false;
-	}
+	}*/
 	return KviTalMainWindow::focusNextPrevChild(next);
 }
 

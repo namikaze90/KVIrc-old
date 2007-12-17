@@ -31,7 +31,7 @@
 #include "kvi_iconmanager.h"
 #include "kvi_frame.h"
 #include "kvi_menubar.h"
-#include "kvi_mdicaption.h"
+//#include "kvi_mdicaption.h"
 #include "kvi_app.h"
 #include "kvi_tal_popupmenu.h"
 #include "kvi_tal_hbox.h"
@@ -50,9 +50,9 @@
 	extern QPixmap * g_pShadedParentGlobalDesktopBackground;
 #endif
 
-
+#if 0
 KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)
-: KviTalScrollView(parent)
+: QMdiArea(parent)
 {
 	setFrameShape(NoFrame);
 	m_pZ = new QList<KviMdiChild*>;
@@ -75,13 +75,13 @@ KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)
 	m_pTileMethodPopup = new KviTalPopupMenu(this);
 	connect(m_pTileMethodPopup,SIGNAL(triggered(QAction*)),this,SLOT(tileMethodMenuActivated(QAction*)));
 
-	viewport()->setAutoFillBackground(false);
+	/*viewport()->setAutoFillBackground(false);
 
 	setStaticBackground(true);
 	resizeContents(width(),height());
 
 	setFocusPolicy(Qt::NoFocus);
-	viewport()->setFocusPolicy(Qt::NoFocus);
+	viewport()->setFocusPolicy(Qt::NoFocus);*/
 	
 	connect(g_pApp,SIGNAL(reloadImages()),this,SLOT(reloadImages()));
 }
@@ -132,34 +132,6 @@ void KviMdiManager::drawContents(QPainter *p,int x,int y,int w,int h)
 	}
 }
 
-void KviMdiManager::manageChild(KviMdiChild * lpC,bool bCascade,QRect *setGeom)
-{
-	__range_valid(lpC);
-
-	m_pZ->insert(0,lpC); //hidden -> last in the Z order
-
-	if(bCascade)
-	{
-		QPoint p = getCascadePoint(m_pZ->count()-1);
-		addChild(lpC,p.x(),p.y());
-	} else {
-		// FIXME: is this right ?
-		QPoint p = lpC->pos();
-		if(p.x() < 0)p.setX(0);
-		if(p.y() < 0)p.setY(0);
-		addChild(lpC,p.x(),p.y());
-
-		if(setGeom)
-		{
-			if(setGeom->left() < 0)setGeom->setLeft(0);
-			if(setGeom->top() < 0)setGeom->setTop(0);
-			moveChild(lpC,setGeom->x(),setGeom->y());
-			lpC->setGeometry(*setGeom);
-		}
-	}
-
-	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
-}
 
 void KviMdiManager::showAndActivate(KviMdiChild * lpC)
 {
@@ -1082,5 +1054,6 @@ void KviMdiManager::tileAnodine()
 	if(lpTop)lpTop->setFocus();
 	updateContentsSize();
 }
+#endif
 
 

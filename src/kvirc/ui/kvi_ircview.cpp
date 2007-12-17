@@ -2878,13 +2878,13 @@ void KviIrcView::paintEvent(QPaintEvent *p)
 	// and this window is attacched but is not the toplevel one
 	// then it is hidden completely behind the other windows
 	// and we can avoid to paint it :)
-	if(g_pFrame->mdiManager()->isInSDIMode() &&
+/*	if(g_pFrame->mdiManager()->isInSDIMode() &&
 		(m_pKviWindow->mdiParent() != g_pFrame->mdiManager()->topChild()) &&
 		(m_pKviWindow->mdiParent()))
 	{
 		m_iUnprocessedPaintEventRequests = 0; // assume a full repaint when this widget is shown...
 		return; // totally hidden behind other windows
-	}
+	}*/
 
 	int widgetHeight = height();
 

@@ -21,7 +21,7 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 //=============================================================================
-
+#if 0
 
 #define _KVI_DEBUG_CHECK_RANGE_
 #include "kvi_debug.h"
@@ -73,13 +73,14 @@
 
 
 KviMdiChild::KviMdiChild(KviMdiManager * par,const char * name)
-: QFrame(par->viewport(),name ? name : "mdi_child")
+: QFrame(par,name ? name : "mdi_child")
 {
+	m_pMdiSubWindow = par->addSubWindow(this);
 	setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
 	setFrameShape(NoFrame);
 	m_pManager = par;
 
-	m_pCaption      = new KviMdiCaption(this,"mdi_caption");
+	//m_pCaption      = new KviMdiCaption(this,"mdi_caption");
 
 	m_bResizeMode        = false;
 	m_iResizeCorner      = KVI_MDI_NORESIZE;
@@ -132,32 +133,33 @@ void KviMdiChild::setBackgroundMode(QWidget::BackgroundMode)
 
 void KviMdiChild::setIcon(const QPixmap &pix)
 {
-	m_pCaption->setSystemIcon(pix);
+//	m_pMdiSubWindow->setIcon(pix);
+//	m_pCaption->setSystemIcon(pix);
 
-	if((m_state == Maximized) && (m_pManager->topChild() == this))
+	/*if((m_state == Maximized) && (m_pManager->topChild() == this))
 	{
 		m_pManager->updateSDIMode();
-	}
+	}*/
 }
 
 const QPixmap * KviMdiChild::icon()
 {
-	return m_pCaption->systemIcon();
+	return m_pMdiSubWindow->icon();
 }
 
 void KviMdiChild::enableClose(bool bEnable)
 {
-	m_pCaption->enableClose(bEnable);
+//	m_pCaption->enableClose(bEnable);
 	if((m_state == Maximized) && (m_pManager->topChild() == this))
 	{
-		m_pManager->updateSDIMode();
+//		m_pManager->updateSDIMode();
 	}
 
 }
 
 bool KviMdiChild::closeEnabled()
 {
-	return m_pCaption->closeEnabled();
+	return true;
 }
 
 void KviMdiChild::setCaption(const QString & plain,const QString & xmlActive,const QString & xmlInactive)
@@ -166,7 +168,7 @@ void KviMdiChild::setCaption(const QString & plain,const QString & xmlActive,con
 	m_szXmlActiveCaption = xmlActive;
 	m_szXmlInactiveCaption = xmlInactive;
 	//m_pCaptionLabel->setActive(m_pCaptionLabel->active());
-	m_pCaption->update();
+//	m_pCaption->update();
 }
 
 void KviMdiChild::maximize()
@@ -174,7 +176,8 @@ void KviMdiChild::maximize()
 	if(m_state == Minimized)restore(); // restore first
 	if(m_state == Normal)m_restoredGeometry = geometry();
 	m_state = Maximized;
-	manager()->maximizeChild(this);
+	//maximize();
+	//manager()->maximizeChild(this);
 }
 
 void KviMdiChild::restore()
@@ -192,7 +195,7 @@ void KviMdiChild::restore()
 		m_restoredGeometry.setHeight(m_pManager->height() - m_restoredGeometry.y());
 	*/
 	
-	switch(m_state)
+/*	switch(m_state)
 	{
 		case Maximized:
 			m_pManager->moveChild(this,m_restoredGeometry.x(),m_restoredGeometry.y());
@@ -212,12 +215,13 @@ void KviMdiChild::restore()
 			if(!isVisible())show();
 			return;
 		break;
-	}
+	}*/
 }
 
 void KviMdiChild::minimize()
 {
-	switch(m_state)
+//	QWidget::minimize();
+	/*switch(m_state)
 	{
 		case Maximized:
 			hide();
@@ -235,7 +239,7 @@ void KviMdiChild::minimize()
 			if(isVisible())hide();
 			return;
 		break;
-	}
+	}*/
 }
 
 void KviMdiChild::closeRequest()
@@ -276,22 +280,13 @@ void KviMdiChild::systemPopupSlot()
 	{
 		emit systemPopupRequest(((QToolButton *)sender())->mapToGlobal(QPoint(0,((QToolButton *)sender())->height())));
 	} else {
-		emit systemPopupRequest(m_pCaption->mapToGlobal(QPoint(5,5)));
+		//emit systemPopupRequest(m_pCaption->mapToGlobal(QPoint(5,5)));
 	}
 }
 
 void KviMdiChild::resizeEvent(QResizeEvent *e)
 {
-	int s = m_pCaption->heightHint();
-	m_pCaption->setGeometry(KVI_MDICHILD_BORDER,KVI_MDICHILD_BORDER,
-		width() - (KVI_MDICHILD_BORDER << 1),s);
-
-	if(m_pClient)
-	{
-		int yPos = KVI_MDICHILD_BORDER + s + KVI_MDICHILD_SPACING;
-		m_pClient->setGeometry(KVI_MDICHILD_BORDER,yPos,
-			width() - (KVI_MDICHILD_BORDER << 1),height() - (yPos + KVI_MDICHILD_BORDER));
-	}
+	
 	QFrame::resizeEvent(e);
 }
 
@@ -442,9 +437,8 @@ void KviMdiChild::calculateResizeRect(int resizeCorner,QPoint mousePos,QRect &re
 void KviMdiChild::calculateMinimumSize(int &minWidth,int &minHeight)
 {
 	if(m_pClient){
-		minWidth  = m_pClient->minimumSize().width() + (KVI_MDICHILD_BORDER << 1);
-		minHeight = m_pClient->minimumSize().height()+ (KVI_MDICHILD_BORDER << 1)+
-					m_pCaption->heightHint() + KVI_MDICHILD_SPACING;
+		minWidth  = m_pClient->minimumSize().width();
+		minHeight = m_pClient->minimumSize().height();
 	}
 	if(minWidth<KVI_MDICHILD_MIN_WIDTH)minWidth=KVI_MDICHILD_MIN_WIDTH;
 	if(minHeight<KVI_MDICHILD_MIN_HEIGHT)minHeight=KVI_MDICHILD_MIN_HEIGHT;
@@ -452,7 +446,7 @@ void KviMdiChild::calculateMinimumSize(int &minWidth,int &minHeight)
 
 void KviMdiChild::resizeWindowOpaque(int resizeCorner)
 {
-	int minWidth=0;
+/*	int minWidth=0;
 	int minHeight=0;
 	QRect resizeRect(m_pManager->childX(this),m_pManager->childY(this),width(),height());
 	calculateMinimumSize(minWidth,minHeight);
@@ -466,7 +460,7 @@ void KviMdiChild::resizeWindowOpaque(int resizeCorner)
 	{
 		m_state=Normal;
 		m_pManager->childRestored(this,true);
-	}
+	}*/
 
 }
 
@@ -484,36 +478,6 @@ void KviMdiChild::setClient(QWidget *w)
 {
 	__range_valid(m_pClient==0);
 	__range_valid(w!=0);
-
-	m_pClient = w;
-	//resize to match the client
-	int clientYPos=m_pCaption->heightHint()+KVI_MDICHILD_SPACING+KVI_MDICHILD_BORDER;
-	resize(w->width()+(KVI_MDICHILD_BORDER << 1),w->height()+KVI_MDICHILD_BORDER+clientYPos);
-
-	//Reparent if needed
-	if(w->parent()!=this){
-		//reparent to this widget , no flags , point , show it
-		QPoint pnt2(KVI_MDICHILD_BORDER,clientYPos);
-		w->reparent(this,pnt2,true);
-	} else w->move(KVI_MDICHILD_BORDER,clientYPos);
-
-	setFocusProxy(w);
-	m_pCaption->setFocusProxy(w);
-
-/*
-	m_pMinimizeButton->setFocusProxy(w);
-	m_pMaximizeButton->setFocusProxy(w);
-	m_pCloseButton->setFocusProxy(w);
-	m_pIconButton->setFocusProxy(w);
-*/
-	//linkChildren(w);
-
-	if(m_pClient->minimumSize().width() > KVI_MDICHILD_MIN_WIDTH && 
-		m_pClient->minimumSize().height() > KVI_MDICHILD_MIN_HEIGHT){
-		setMinimumWidth(m_pClient->minimumSize().width() + (KVI_MDICHILD_BORDER << 1));
-		setMinimumHeight(m_pClient->minimumSize().height()+ (KVI_MDICHILD_BORDER << 1) +
-					m_pCaption->heightHint() + KVI_MDICHILD_SPACING);
-	}
 
 	KviStr tmp(KviStr::Format,"mdi_child_%s",w->name());
 	setName(tmp.ptr());
@@ -543,9 +507,11 @@ void KviMdiChild::unsetClient()
 
 void KviMdiChild::activate(bool bSetFocus)
 {
-	if(!m_pCaption->active())m_pCaption->setActive(true);
+	//if(!m_pCaption->active())m_pCaption->setActive(true);
 	if(m_pManager->topChild() != this)
-		m_pManager->setTopChild(this,bSetFocus);
+	{
+	//	m_pManager->setTopChild(this,bSetFocus);
+	}
 	else if(bSetFocus)setFocus();
 }
 
@@ -553,8 +519,8 @@ void KviMdiChild::focusInEvent(QFocusEvent *)
 {
 	// We gained focus by click , tab or from the caption label
 	// Bring this child to top
-	m_pCaption->setActive(true);
-	m_pManager->setTopChild(this,false); //Do not focus by now...
+//	m_pCaption->setActive(true);
+//	m_pManager->setTopChild(this,false); //Do not focus by now...
 	/*The client is our focusProxy ! it should be focused by Qt !*/
 #ifdef _KVI_DEBUG_CLASS_NAME_
 	__range_valid(focusProxy() == m_pClient);
@@ -566,11 +532,12 @@ QSize KviMdiChild::sizeHint()
 	if(m_pClient)
 	{
 		QSize s = m_pClient->sizeHint();
-		QSize ret(s.width() + (KVI_MDICHILD_BORDER << 1),
-				s.height() + (KVI_MDICHILD_BORDER << 1) + KVI_MDICHILD_SPACING + m_pCaption->heightHint());
+		QSize ret(s.width(),
+				s.height());
 		return ret;
 	}
 	return QFrame::sizeHint();
 }
 
 
+#endif

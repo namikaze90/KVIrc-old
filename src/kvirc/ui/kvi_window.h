@@ -60,7 +60,7 @@ class KviTalWidgetStack;
 #include "kvi_tal_widgetstack.h"
 #include "kvi_accel.h"
 #include "kvi_heapobject.h"
-
+#include <QMdiSubWindow>
 #ifdef COMPILE_CRYPT_SUPPORT
 	class KviCryptController;
 	class KviCryptSessionInfo;
@@ -147,6 +147,7 @@ public:
 	KviWindow(int type,KviFrame * lpFrm,const QString &name,KviConsole * pConsole = 0);
 	virtual ~KviWindow();
 protected: // almost private: don't touch :D
+	QMdiSubWindow                       * m_pMdiSubWindow;
 	QString                               m_szName;                  // the current window name (usually also the target)
 	KviFrame                            * m_pFrm;
 	KviConsole                          * m_pConsole;
@@ -206,8 +207,6 @@ public:
 	KviFrame * frame() const { return m_pFrm; };
 	// The KviIrcView of this window: may be NULL if the window has no KviIrcView (and thus supports no direct output)
 	KviIrcView * view() const { return m_pIrcView; };
-	// The mdiParent widget: may be nulll if the window is undocked
-	KviMdiChild * mdiParent(){ return (KviMdiChild *)parent(); };
 	// The console that this window belongs to: may be null for windows that aren't bound to irc contexts
 	KviConsole * console(){ return m_pConsole; };
 	// same as above

@@ -470,7 +470,7 @@ void KviIrcConnection::registerChannel(KviChannel * c)
 
 void KviIrcConnection::unregisterChannel(KviChannel * c)
 {
-	m_pChannelList->removeAll(c);
+	if(m_pChannelList) m_pChannelList->removeAll(c);
 	emit(channelUnregistered(c));
 	emit(chanListChanged());
 }

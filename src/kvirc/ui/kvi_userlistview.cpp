@@ -1395,12 +1395,12 @@ void KviUserListViewArea::paintEvent(QPaintEvent *ev)
 	// and this window is attacched but is not the toplevel one
 	// then it is hidden completely behind the other windows
 	// and we can avoid to paint it :)
-	if(g_pFrame->mdiManager()->isInSDIMode() &&
+	/*if(g_pFrame->mdiManager()->isInSDIMode() &&
 		(m_pListView->window()->mdiParent() != g_pFrame->mdiManager()->topChild()) &&
 		(m_pListView->window()->mdiParent()))
 	{
 		return; // totally hidden behind other windows
-	}
+	}*/
 
 	int wdth = width() - m_pScrollBar->width();
 

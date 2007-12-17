@@ -32,6 +32,7 @@
 #include <QFrame>
 #include <QPixmap>
 #include <QToolButton>
+#include <QMdiArea>
 
 #define KVI_MDICHILD_BORDER 4
 #define KVI_MDICHILD_SPACING 2
@@ -52,91 +53,17 @@ class KviTalHBox;
 class KviSdiButtonBox;
 class KviMenuBarToolButton;
 
-class KVIRC_API KviMdiManager : public KviTalScrollView
+#include <QMdiSubWindow>
+
+class KVIRC_API KviMdiManager : public QMdiArea
 {
 	friend class KviMdiChild;
 	friend class KviMdiCaption;
 	Q_OBJECT
 public:
-	KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name);
-	~KviMdiManager();
-public:
-	KviMdiChild * topChild(){ return m_pZ->isEmpty() ? 0 : m_pZ->last(); };
-	KviMdiChild * highestChildExcluding(KviMdiChild * pChild);
-	void manageChild(KviMdiChild * lpC,bool bCascade = true,QRect * setGeom = 0);
-	void setTopChild(KviMdiChild *lpC,bool bSetFocus);
-	void showAndActivate(KviMdiChild * lpC);
-	KviTalPopupMenu * windowPopup(){ return m_pWindowPopup; };
-	void focusTopChild();
-	void destroyChild(KviMdiChild *lpC,bool bFocusTopChild = true);
-	int getVisibleChildCount();
-	bool isInSDIMode();
-protected:
-	QList<KviMdiChild*>  * m_pZ; // topmost child is the last in the list
-
-	KviMenuBarToolButton     * m_pSdiRestoreButton;
-	KviMenuBarToolButton     * m_pSdiMinimizeButton;
-	KviMenuBarToolButton     * m_pSdiCloseButton;
-	KviMenuBarToolButton     * m_pSdiIconButton;
-
-#ifdef COMPILE_USE_QT4
-	KviTalHBox               * m_pSdiControls;
-#endif
-	int                        m_iSdiIconItemId;
-	int                        m_iSdiRestoreItemId;
-	int                        m_iSdiMinimizeItemId;
-	int                        m_iSdiCloseItemId;
-
-	KviTalPopupMenu               * m_pWindowPopup;
-	KviTalPopupMenu               * m_pTileMethodPopup;
-	KviFrame                 * m_pFrm;
-protected:
-	void updateContentsSize();
-	//void childMaximized(KviMdiChild *lpC);
-	void childMinimized(KviMdiChild *lpC,bool bWasMaximized);
-	void childRestored(KviMdiChild *lpC,bool bWasMaximized);
-	void childMoved(KviMdiChild * lpC);
-	void maximizeChild(KviMdiChild * lpC);
-	virtual void focusInEvent(QFocusEvent *e);
-	virtual void mousePressEvent(QMouseEvent *e);
-	virtual void resizeEvent(QResizeEvent *e);
-	virtual void drawContents(QPainter * p,int x,int y,int w,int h);
-	virtual bool focusNextPrevChild(bool pNext);
-public slots:
-	void relayoutMenuButtons();
-	void cascadeWindows();
-	void cascadeMaximized();
-	void expandVertical();
-	void expandHorizontal();
-	void minimizeAll();
-//    void restoreAll(); <-- this does nothing
-	void tile();
-	void toggleAutoTile();
-
-	void tileAnodine();
-	void reloadImages();
-protected slots:
-	void minimizeActiveChild();
-	void restoreActiveChild();
-	void closeActiveChild();
-	void activeChildSystemPopup();
-	void menuActivated(QAction * action);
-	void tileMethodMenuActivated(QAction * action);
-	void fillWindowPopup();
-	void sdiMinimizeButtonDestroyed();
-	void sdiRestoreButtonDestroyed();
-	void sdiCloseButtonDestroyed();
-	void sdiIconButtonDestroyed();
-private:
-	void ensureNoMaximized();
-	void tileAllInternal(int maxWnds,bool bHorizontal);
-	QPoint getCascadePoint(int indexOfWindow);
-	void enterSDIMode(KviMdiChild *lpC);
-	void leaveSDIMode();
-	void updateSDIMode();
-signals:
-	void enteredSdiMode();
-	void leftSdiMode();
+	KviMdiManager(QWidget *p):QMdiArea(p) {};
+	bool isInSDIMode() { return activeSubWindow()->isMaximized(); };
+	KviMdiChild* topChild() { return (KviMdiChild*)(activeSubWindow()->widget()); };
 };
 
 #endif //_KVI_MDIMANAGER_H_
