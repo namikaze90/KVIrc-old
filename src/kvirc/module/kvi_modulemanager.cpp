@@ -97,7 +97,7 @@ void KviModuleManager::completeModuleNames(const QString &path,const QString &wo
 	{
 		QString modname = *it;
 		#ifdef COMPILE_ON_WINDOWS
-			KviQString::cutToLast(modname,"4"+KVI_PATH_SEPARATOR_CHAR);
+			KviQString::cutToLast(modname,KVI_PATH_SEPARATOR_CHAR);
 		#else
 			KviQString::cutToLast(modname,KVI_PATH_SEPARATOR_CHAR);
 		#endif
