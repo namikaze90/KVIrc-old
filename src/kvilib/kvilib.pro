@@ -37,7 +37,6 @@ HEADERS += \
     tal/kvi_tal_wizard.h \
     system/kvi_byteorder.h \
     system/kvi_env.h \
-    system/kvi_library.h \
     system/kvi_locale.h \
     system/kvi_process.h \
     system/kvi_stdarg.h \
