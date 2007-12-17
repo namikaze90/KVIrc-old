@@ -243,49 +243,6 @@ namespace KviKvsCoreFunctions
 		return true;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
-	/*
-		@doc: avatar
-		@type:
-			function
-		@title:
-			$avatar
-		@short:
-			DEPRECATED: use [fnc]$avatar.name[/fnc]
-		@syntax:
-			<string> $avatar[([<nickname:string>])]
-		@description:
-			DEPRECATED: use [fnc]$avatar.name[/fnc]
-	*/
-
-	KVSCF(avatar)
-	{
-		QString szNick;
-
-		KVSCF_PARAMETERS_BEGIN
-			KVSCF_PARAMETER("nickname",KVS_PT_STRING,KVS_PF_OPTIONAL,szNick)
-		KVSCF_PARAMETERS_END
-
-		if(KVSCF_pContext->window()->console())
-		{
-			if(KVSCF_pContext->window()->console()->isConnected())
-			{
-				KviIrcUserEntry * e = KVSCF_pContext->window()->connection()->userDataBase()->find(szNick.isEmpty() ? KVSCF_pContext->window()->connection()->currentNickName() : szNick);
-				if(e)
-				{
-					KviAvatar * a = e->avatar();
-					if(a)
-					{
-						KVSCF_pRetBuffer->setString(a->localPath());
-						return true;
-					}
-				}
-			}
-		}
-		KVSCF_pRetBuffer->setNothing();
-		return true;
-	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -99,7 +99,6 @@ namespace KviKvsCoreSimpleCommands
 		_REGCMD("parse",parse)
 		_REGCMD("part",part)
 		_REGCMD("pass",rfc2812wrapper)
-		_REGCMD("play",play)
 		_REGCMD("popup",popup)
 		_REGCMD("privmsg",privmsg)
 		_REGCMD("query",query)

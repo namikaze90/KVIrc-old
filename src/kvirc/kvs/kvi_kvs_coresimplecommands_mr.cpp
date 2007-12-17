@@ -790,46 +790,6 @@ namespace KviKvsCoreSimpleCommands
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/*
-		@doc: play
-		@type:
-			command
-		@title:
-			play
-		@syntax:
-			play <filename:string>
-		@short:
-			DEPRECATED: Use $snd.play instead!
-		@description:
-			This command has been moved to the snd module.
-			See [cmd]snd.play[/cmd]
-	*/
-
-	KVSCSC(play)
-	{
-		// cool, no ?
-
-		KviModule * m = g_pModuleManager->getModule("snd");
-		if(!m)
-		{
-			KVSCSC_pContext->error(__tr2qs("Module command call failed: can't load the module 'snd'"));
-			return false;
-		}
-
-		KviKvsModuleSimpleCommandExecRoutine * proc = m->kvsFindSimpleCommand("play");
-		if(!proc)
-		{
-			KVSCSC_pContext->error(__tr2qs("Module command call failed: the module 'snd' doesn't export a command named 'play'"));
-			return false;
-		}
-
-		KviKvsModuleCommandCall call(m,KVSCSC_pContext,KVSCSC_pParams,KVSCSC_pSwitches);
-
-		return (*proc)(&call); 
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/*
 		@doc: popup
 		@type:
 			command

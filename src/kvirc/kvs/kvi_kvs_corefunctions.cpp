@@ -50,7 +50,6 @@ namespace KviKvsCoreFunctions
 		_REGFNC("ascii",unicode)
 		_REGFNC("asciiToHex",asciiToHex)
 		_REGFNC("asciiToBase64",asciiToBase64)
-		_REGFNC("avatar",avatar)
 		_REGFNC("away",away)
 		_REGFNC("b",b)
 		_REGFNC("base64ToAscii",base64ToAscii)
@@ -74,18 +73,12 @@ namespace KviKvsCoreFunctions
 		_REGFNC("hexToAscii",hexToAscii);
 		_REGFNC("hostname",hostname);
 		_REGFNC("hptimestamp",hptimestamp);
-		_REGFNC("ic",context);
 		_REGFNC("icon",icon);
 		_REGFNC("iconName",iconName);
 		_REGFNC("int",integer)
 		_REGFNC("integer",integer)
-		_REGFNC("isAnyConsoleConnected",isAnyConsoleConnected)
 		_REGFNC("isEmpty",isEmpty)
 		_REGFNC("isEventEnabled",isEventEnabled)
-		_REGFNC("isMeOp",isMeOp)
-		_REGFNC("isMeHalfOp",isMeHalfOp)
-		_REGFNC("isMeUserOp",isMeUserOp)
-		_REGFNC("isMeVoice",isMeVoice)
 		_REGFNC("isMainWindowActive",isMainWindowActive)
 		_REGFNC("isMainWindowMinimized",isMainWindowMinimized)
 		_REGFNC("isNumeric",isNumeric)
@@ -122,7 +115,6 @@ namespace KviKvsCoreFunctions
 		_REGFNC("sw",sw)
 		_REGFNC("target",target)
 		_REGFNC("this",thisCKEYWORDWORKAROUND)
-		_REGFNC("time",timeCFUNCTIONWORKAROUND)
 		_REGFNC("tr",tr)
 		_REGFNC("true",trueCKEYWORDWORKAROUND)
 		_REGFNC("typeof",typeofCKEYWORDWORKAROUND)

@@ -96,15 +96,11 @@ void KviModuleManager::completeModuleNames(const QString &path,const QString &wo
 	for(QStringList::Iterator it = sl.begin();it != sl.end();++it)
 	{
 		QString modname = *it;
-		#ifdef COMPILE_ON_WINDOWS
-			KviQString::cutToLast(modname,KVI_PATH_SEPARATOR_CHAR);
-		#else
-			KviQString::cutToLast(modname,KVI_PATH_SEPARATOR_CHAR);
-		#endif
+		KviQString::cutToLast(modname,KVI_PATH_SEPARATOR_CHAR);
 		KviQString::cutToFirst(modname,"kvi");
 		if(KviQString::equalCIN(word,modname,word.length()))
 		{
-			KviQString::cutFromLast(modname,".so");
+			KviQString::cutFromLast(modname,".so.4");
 			if(!modname.isEmpty())
 				matches.append(modname);
 			else
@@ -167,7 +163,7 @@ bool KviModuleManager::loadModule(const QString& modName)
 #ifdef COMPILE_ON_WINDOWS
 	KviQString::appendFormatted(szName,"kvi%Q4.dll",&modName);
 #else
-	KviQString::appendFormatted(szName,"libkvi%Q.so",&modName);
+	KviQString::appendFormatted(szName,"libkvi%Q.so.4",&modName);
 #endif
 	szName=szName.lower();
 
