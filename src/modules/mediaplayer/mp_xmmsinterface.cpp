@@ -86,7 +86,7 @@ KviXmmsInterface::KviXmmsInterface()
 
 KviXmmsInterface::~KviXmmsInterface()
 {
-	if(m_pPlayerLibrary.lsLoaded())
+	if(m_pPlayerLibrary.isLoaded())
 	{
 		m_pPlayerLibrary.unload();
 	}
