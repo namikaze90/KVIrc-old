@@ -26,7 +26,6 @@
 
 #include "kvi_module.h"
 #include "kvi_string.h"
-#include "kvi_library.h"
 #include "kvi_thread.h"
 #include "kvi_locale.h"
 #include "kvi_app.h"
@@ -103,9 +102,9 @@
 		[/example]
 */
 
-KviPlugin::KviPlugin(kvi_library_t pLib, const QString& name)
+KviPlugin::KviPlugin(QLibrary* pLib, const QString& name)
 {
-	m_Plugin = pLib;
+	m_pPlugin = pLib;
 	m_szName = name;
 }
 
@@ -115,9 +114,10 @@ KviPlugin::~KviPlugin()
 
 KviPlugin* KviPlugin::load(const QString& szFileName)
 {
-	kvi_library_t pLibrary = kvi_library_open(szFileName.local8Bit());
-	if (!pLibrary)
+	QLibrary* pLibrary = new QLibrary(szFileName);
+	if (!pLibrary->load())
 	{
+		delete pLibrary;
 		return 0;
 	} 
 
@@ -125,7 +125,7 @@ KviPlugin* KviPlugin::load(const QString& szFileName)
 	
 	plugin_load function_load;
 	
-	function_load = (plugin_unload)kvi_library_symbol(pLibrary,"_load");
+	function_load = (plugin_unload)pLibrary->resolve("_load");
 	if (function_load)
 	{
 		//TODO: THREAD
@@ -138,7 +138,7 @@ bool KviPlugin::pfree(char * pBuffer)
 {
 	plugin_free function_free;
 	
-	function_free = (plugin_free)kvi_library_symbol(m_Plugin,"_free");
+	function_free = (plugin_free)m_pPlugin->resolve("_free");
 	if (function_free)
 	{
 		//TODO: THREAD
@@ -152,16 +152,18 @@ bool KviPlugin::unload()
 {
 	plugin_unload function_unload;
 	
-	function_unload = (plugin_unload)kvi_library_symbol(m_Plugin,"_unload");
+	function_unload = (plugin_unload)m_pPlugin->resolve("_unload");
 	if (function_unload)
 	{
 		//TODO: THREAD
 		function_unload();
 	}
 	
-	if(m_Plugin)
+	if(m_pPlugin)
 	{
-		kvi_library_close(m_Plugin);
+		m_pPlugin->unload();
+		delete m_pPlugin;
+		m_pPlugin = 0;
 	}
 	
 	return true;
@@ -171,7 +173,7 @@ bool KviPlugin::canunload()
 {
 	plugin_canunload function_canunload;
 
-	function_canunload = (plugin_canunload)kvi_library_symbol(m_Plugin,"_canunload");
+	function_canunload = (plugin_canunload)m_pPlugin->resolve("_canunload");
 	if (function_canunload)
 	{
 		//TODO: THREAD
@@ -187,7 +189,7 @@ int KviPlugin::call(const QString& pszFunctionName, int argc, char * argv[], cha
 {
 	int r;
 	plugin_function function_call;
-	function_call = (plugin_function)kvi_library_symbol(m_Plugin,pszFunctionName.local8Bit());
+	function_call = (plugin_function)m_pPlugin->resolve(pszFunctionName.local8Bit());
 	if (!function_call)
 	{
 		return -1;

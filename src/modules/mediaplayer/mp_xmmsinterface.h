@@ -29,7 +29,6 @@
 
 #include "kvi_settings.h"
 #include "mp_interface.h"
-#include "kvi_library.h"
 
 #ifndef COMPILE_ON_WINDOWS
 	class KviXmmsInterface : public KviMediaPlayerInterface
