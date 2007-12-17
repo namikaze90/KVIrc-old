@@ -739,10 +739,11 @@ void KviApp::setupBegin()
 	getGlobalKvircDirectory(szSetupLib,KviApp::Modules);
 	KviQString::ensureLastCharIs(szSetupLib,KVI_PATH_SEPARATOR_CHAR);
 #ifdef COMPILE_ON_WINDOWS
-	szSetupLib.append("kvisetup.dll");
+	szSetupLib.append("kvisetup4.dll");
 #else
-	szSetupLib.append("libkvisetup.so");
+	szSetupLib.append("libkvisetup.so.4");
 #endif
+
 	g_pSetupLibrary = new QLibrary(szSetupLib);
 	bool bSuccess = g_pSetupLibrary->load();
 	if(!bSuccess)
