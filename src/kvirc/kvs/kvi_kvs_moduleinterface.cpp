@@ -90,17 +90,17 @@ void KviKvsModuleInterface::completeFunction(const QString &szFunctionBegin,QStr
 
 void KviKvsModuleInterface::kvsRegisterSimpleCommand(const QString &szCommand,KviKvsModuleSimpleCommandExecRoutine r)
 {
-	m_pModuleSimpleCommandExecRoutineDict->insert(szCommand,new KviKvsModuleSimpleCommandExecRoutine(r));
+	m_pModuleSimpleCommandExecRoutineDict->insert(szCommand.toLower(),new KviKvsModuleSimpleCommandExecRoutine(r));
 }
 
 void KviKvsModuleInterface::kvsRegisterCallbackCommand(const QString &szCommand,KviKvsModuleCallbackCommandExecRoutine r)
 {
-	m_pModuleCallbackCommandExecRoutineDict->insert(szCommand,new KviKvsModuleCallbackCommandExecRoutine(r));
+	m_pModuleCallbackCommandExecRoutineDict->insert(szCommand.toLower(),new KviKvsModuleCallbackCommandExecRoutine(r));
 }
 
 void KviKvsModuleInterface::kvsRegisterFunction(const QString &szFunction,KviKvsModuleFunctionExecRoutine r)
 {
-	m_pModuleFunctionExecRoutineDict->insert(szFunction,new KviKvsModuleFunctionExecRoutine(r));
+	m_pModuleFunctionExecRoutineDict->insert(szFunction.toLower(),new KviKvsModuleFunctionExecRoutine(r));
 }
 
 

@@ -148,11 +148,11 @@ public:
 	bool kvsRegisterRawEventHandler(unsigned int iRawIdx,KviKvsModuleEventHandlerRoutine r);
 
 	void kvsUnregisterSimpleCommand(const QString &szCommand)
-		{ delete m_pModuleSimpleCommandExecRoutineDict->take(szCommand); };
+	{ delete m_pModuleSimpleCommandExecRoutineDict->take(szCommand.toLower()); };
 	void kvsUnregisterCallbackCommand(const QString &szCommand)
-		{ delete m_pModuleCallbackCommandExecRoutineDict->take(szCommand); };
+		{ delete m_pModuleCallbackCommandExecRoutineDict->take(szCommand.toLower()); };
 	void kvsUnregisterFunction(const QString &szFunction)
-		{ delete m_pModuleFunctionExecRoutineDict->take(szFunction); };
+		{ delete m_pModuleFunctionExecRoutineDict->take(szFunction.toLower()); };
 	void kvsUnregisterAppEventHandler(unsigned int iEventIdx);
 	void kvsUnregisterRawEventHandler(unsigned int iRawIdx);
 
@@ -164,11 +164,11 @@ public:
 	void kvsUnregisterAllEventHandlers();
 
 	KviKvsModuleSimpleCommandExecRoutine * kvsFindSimpleCommand(const QString &szCommand)
-		{ return m_pModuleSimpleCommandExecRoutineDict->value(szCommand); };
+	{ return m_pModuleSimpleCommandExecRoutineDict->value(szCommand.toLower()); };
 	KviKvsModuleCallbackCommandExecRoutine * kvsFindCallbackCommand(const QString &szCommand)
-		{ return m_pModuleCallbackCommandExecRoutineDict->value(szCommand); };
+		{ return m_pModuleCallbackCommandExecRoutineDict->value(szCommand.toLower()); };
 	KviKvsModuleFunctionExecRoutine * kvsFindFunction(const QString &szFunction)
-		{ return m_pModuleFunctionExecRoutineDict->value(szFunction); };
+		{ return m_pModuleFunctionExecRoutineDict->value(szFunction.toLower()); };
 
 	void completeCommand(const QString &cmd,QStringList & matches);
 	void completeFunction(const QString &cmd,QStringList & matches);
