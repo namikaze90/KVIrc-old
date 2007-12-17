@@ -240,6 +240,7 @@ void KviUserListView::emitRightClick()
 			appendSelectedNicknames(nicks);
 			KviKvsVariantList vList;
 			vList.append(nicks);
+			vList.allAsString(nicks);
 			KviKvsEventManager::instance()->trigger(ev,m_pKviWindow,&vList);
 		} else {
 			g_pApp->checkSuggestRestoreDefaultScript();

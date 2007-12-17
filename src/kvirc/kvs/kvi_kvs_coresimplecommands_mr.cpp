@@ -864,9 +864,13 @@ namespace KviKvsCoreSimpleCommands
 
 		// copy parameters
 		KviKvsVariantList * pPopupParams = new KviKvsVariantList();
+		bool bFirstIsSkipped = false;
 		foreach(KviKvsVariant * v,*(KVSCSC_pParams->list()))
 		{
-			pPopupParams->append(new KviKvsVariant(*v));
+			if(bFirstIsSkipped)
+				pPopupParams->append(new KviKvsVariant(*v));
+			else
+				bFirstIsSkipped = true;
 		}
 
 		KviKvsPopupMenu * pMenu = KviKvsPopupManager::instance()->lookup(szPopupName);
