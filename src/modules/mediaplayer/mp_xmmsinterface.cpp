@@ -80,17 +80,15 @@ static const char *audacious_lib_names[] =
 KviXmmsInterface::KviXmmsInterface()
 : KviMediaPlayerInterface()
 {
-	m_hPlayerLibrary = 0;
 	m_szPlayerLibraryName = "libxmms.so";
 	m_pLibraryPaths = xmms_lib_names;
 }
 
 KviXmmsInterface::~KviXmmsInterface()
 {
-	if(m_hPlayerLibrary)
+	if(m_pPlayerLibrary->lsLoaded())
 	{
-		kvi_library_close(m_hPlayerLibrary);
-		m_hPlayerLibrary = 0;
+		m_pPlayerLibrary->unload();
 	}
 }
 
@@ -107,13 +105,13 @@ KviAudaciousClassicInterface::~KviAudaciousClassicInterface()
 
 bool KviXmmsInterface::loadPlayerLibrary()
 {
-	if(m_hPlayerLibrary)return true;
+	if(m_pPlayerLibrary->isLoaded())return true;
 
 	const char **lib_name = m_pLibraryPaths;
 	while(*lib_name)
 	{
-		m_hPlayerLibrary = kvi_library_load(*lib_name);
-		if(m_hPlayerLibrary)
+		m_pPlayerLibrary->setFileName(*lib_name);
+		if(m_pPlayerLibrary->load())
 		{
 			m_szPlayerLibraryName = *lib_name;
 			break;
@@ -125,7 +123,7 @@ bool KviXmmsInterface::loadPlayerLibrary()
 
 void * KviXmmsInterface::lookupSymbol(const char * szSymbolName)
 {
-	if(!m_hPlayerLibrary)
+	if(!m_pPlayerLibrary->isLoaded())
 	{
 		if(!loadPlayerLibrary())
 		{
@@ -135,7 +133,7 @@ void * KviXmmsInterface::lookupSymbol(const char * szSymbolName)
 			return 0;
 		}
 	}
-	void * symptr = kvi_library_symbol(m_hPlayerLibrary,szSymbolName);
+	void * symptr = m_pPlayerLibrary->resolve(szSymbolName);
 	if(!symptr)
 	{
 		QString tmp;

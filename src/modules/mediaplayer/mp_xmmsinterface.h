@@ -37,7 +37,7 @@
 		KviXmmsInterface();
 		virtual ~KviXmmsInterface();
 	protected:
-		kvi_library_t m_hPlayerLibrary;
+		QLibrary m_pPlayerLibrary;
 		QString m_szPlayerLibraryName;
 		const char ** m_pLibraryPaths;
 	public:
