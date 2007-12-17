@@ -1107,91 +1107,89 @@ KviKvsEvent KviKvsEventManager::m_appEventTable[KVI_NUM_SCRIPT_EVENTS]=
 			[event:onmeban]OnMeBan[/event]
 	*/
 EVENT("OnMeUnban","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = ban mask"),
- 	/*
-        @doc: onbanexception
-        @type:
-            event
-        @title:
-            OnBanException
-        @short:
-            Someone has set a +e flag on the channel
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source hostname
-            $3 = banexception mask
-        @window:
-            Channel window
-        @description:
-            Triggered when someone sets a +e (Ban Exception) flag on the channel
-        @seealso:
-            [event:onbanexceptionremove]OnBanExceptionRemove[/event]
-    */
-
+	/*
+		@doc: onbanexception
+		@type:
+			event
+		@title:
+			OnBanException
+		@short:
+			Someone has set a +e flag on the channel
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source hostname
+			$3 = banexception mask
+		@window:
+			Channel window
+		@description:
+			Triggered when someone sets a +e (Ban Exception) flag on the channel
+		@seealso:
+			[event:onbanexceptionremove]OnBanExceptionRemove[/event]
+	*/
 	EVENT("OnBanException","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = ban exception mask"),
-    /*
-        @doc: onbanexceptionremove
-        @type:
-            event
-        @title:
-            OnBanExceptionRemove
-        @short:
-            Someone has set a -e flag on the channel
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source hostname
-            $3 = unban mask
-        @window:
-            Channel window
-        @description:
-            Triggered when someone sets a -e (Removed a Ban Exception) flag on the channel
-        @seealso:
-            [event:onbanexception]OnBanException[/event]
-    */
+	/*
+		@doc: onbanexceptionremove
+		@type:
+			event
+		@title:
+			OnBanExceptionRemove
+		@short:
+			Someone has set a -e flag on the channel
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source hostname
+			$3 = unban mask
+		@window:
+			Channel window
+		@description:
+			Triggered when someone sets a -e (Removed a Ban Exception) flag on the channel
+		@seealso:
+			[event:onbanexception]OnBanException[/event]
+	*/
 	EVENT("OnBanExceptionRemove","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = ban exception mask"),
-    /*
-        @doc: onmebanexception
-        @type:
-            event
-        @title:
-            OnMeBanException
-        @short:
-            Someone has set a +e flag on the local user
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source hostname
+	/*
+		@doc: onmebanexception
+		@type:
+			event
+		@title:
+			OnMeBanException
+		@short:
+			Someone has set a +e flag on the local user
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source hostname
 			$3 = mask
-        @window:
-            Channel window
-        @description:
-            Triggered when someone sets a +e (puts a Ban Exception) flag on the local user in the active
-channel
-        @seealso:
-            [event:onmebanexceptionremove]OnMeBanExceptionRemove[/event]
-    */
+		@window:
+			Channel window
+		@description:
+			Triggered when someone sets a +e (puts a Ban Exception) flag on the local user in the active channel
+		@seealso:
+			[event:onmebanexceptionremove]OnMeBanExceptionRemove[/event]
+	*/
 	EVENT("OnMeBanException","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = mask"),
-    /*
-        @doc: onmebanexceptionremove
-        @type:
-            event
-        @title:
-            OnMeBanExceptionRemove
-        @short:
-            Someone has set a -e flag on the local user
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source hostname
+	/*
+		@doc: onmebanexceptionremove
+		@type:
+			event
+		@title:
+			OnMeBanExceptionRemove
+		@short:
+			Someone has set a -e flag on the local user
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source hostname
 			$3 = mask
-        @window:
-            Channel window
-        @description:
-            Triggered when someone sets a -e (removes a Ban Exception) flag on the local user in the active channel
-        @seealso:
-            [event:onmebanexception]OnMeBanException[/event]
-    */
+		@window:
+			Channel window
+		@description:
+			Triggered when someone sets a -e (removes a Ban Exception) flag on the local user in the active channel
+		@seealso:
+			[event:onmebanexception]OnMeBanException[/event]
+	*/
 	EVENT("OnMeBanExceptionRemove","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = mask"),
 	/*
 	 	@doc: onop
@@ -1296,111 +1294,111 @@ channel
 			[event:onlimitunset]OnLimitUnset[/event]
 	*/
 	EVENT("OnLimitSet","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = limit"),
-    /*
-        @doc: onlimitunset
-        @type:
-            event
-        @title:
-            OnLimitUnSet
-        @short:
-            The channel users limit has been unset
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-        @window:
-            Channels window
-        @description:
-            Triggered when someone unsets the active channel user limit (-l)
-        @seealso:
-            [event:onlimitunset]OnLimitUnset[/event]
-    */
+	/*
+		@doc: onlimitunset
+		@type:
+			event
+		@title:
+			OnLimitUnSet
+		@short:
+			The channel users limit has been unset
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+		@window:
+			Channels window
+		@description:
+			Triggered when someone unsets the active channel user limit (-l)
+		@seealso:
+			[event:onlimitunset]OnLimitUnset[/event]
+	*/
 	EVENT("OnLimitUnset","$0 = source nick\n$1 = source username\n$2 = source hostname"),
-    /*
-        @doc: onkeyset
-        @type:
-            event
-        @title:
-            OnKeySet
-        @short:
-            The channel users key has been set
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-            $3 = key
-        @window:
-            Channels window
-        @description:
-            Triggered when someone change or sets the active channel access key (+k)
-        @seealso:
-            [event:onkeyunset]OnKeyUnset[/event]
-    */
+	/*
+		@doc: onkeyset
+		@type:
+			event
+		@title:
+			OnKeySet
+		@short:
+			The channel users key has been set
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+			$3 = key
+		@window:
+			Channels window
+		@description:
+			Triggered when someone change or sets the active channel access key (+k)
+		@seealso:
+			[event:onkeyunset]OnKeyUnset[/event]
+	*/
 	EVENT("OnKeySet","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = key"),
-    /*
-        @doc: onkeyunset
-        @type:
-            event
-        @title:
-            OnKeyUnset
-        @short:
-            The channel users key has been unset
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-        @window:
-            Channels window
-        @description:
-            Triggered when someone unsets the active channel access key (-k)
-        @seealso:
-            [event:onkeyunset]OnKeyUnset[/event]
-    */
+	/*
+		@doc: onkeyunset
+		@type:
+			event
+		@title:
+			OnKeyUnset
+		@short:
+			The channel users key has been unset
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+		@window:
+			Channels window
+		@description:
+			Triggered when someone unsets the active channel access key (-k)
+		@seealso:
+			[event:onkeyunset]OnKeyUnset[/event]
+	*/
 	EVENT("OnKeyUnset","$0 = source nick\n$1 = source username\n$2 = source hostname"),
-    /*
-        @doc: oninvite
-        @type:
-            event
-        @title:
-            OnInvite
-        @short:
-            The local user has received an invitation
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-            $3 = channel
-        @window:
-            Active window/console
-        @description:
-            Triggered when someone invites the local user to join a channel
-    */
+	/*
+		@doc: oninvite
+		@type:
+			event
+		@title:
+			OnInvite
+		@short:
+			The local user has received an invitation
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+			$3 = channel
+		@window:
+			Active window/console
+		@description:
+			Triggered when someone invites the local user to join a channel
+	*/
 	EVENT("OnInvite","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = channel"),
-    /*
-        @doc: onchannelmessage
-        @type:
-            event
-        @title:
-            OnChannelMessage
-        @short:
-            A message has been received from the channel
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-            $3 = message
-		    $4 = [target mode prefixes]
-        @window:
-            Channels window
-        @description:
-            Triggered when a channel message is received
-            $0!$1@$2 is the source of the message, $3 is the message text
-            and $4 are the eventual mode prefixes added to the target channel (i.e:
-            if the message is only for channel operators then you will get the string @ in $4).
-        @seealso:
-            [event:onquerymessage]OnQueryMessage[/event]
+	/*
+		@doc: onchannelmessage
+		@type:
+			event
+		@title:
+			OnChannelMessage
+		@short:
+			A message has been received from the channel
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+			$3 = message
+			$4 = [target mode prefixes]
+		@window:
+			Channels window
+		@description:
+			Triggered when a channel message is received
+			$0!$1@$2 is the source of the message, $3 is the message text
+			and $4 are the eventual mode prefixes added to the target channel (i.e:
+			if the message is only for channel operators then you will get the string @ in $4).
+		@seealso:
+			[event:onquerymessage]OnQueryMessage[/event]
 			[event:ondccchatmessage]OnDCCChatMessage[/event]
-    */
+	*/
 	EVENT("OnChannelMessage","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = message\n$4 = target mode prefixes"),
 	/*
 		@doc: onquerymessage
@@ -1435,247 +1433,247 @@ channel
 			[event:ondccchatmessage]OnDCCChatMessage[/event]
 	*/
 	EVENT("OnQueryMessage","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = message"),
-    /*
-        @doc: onvoice
-        @type:
-            event
-        @title:
-            OnVoice
-        @short:
-            Someone has given a user the +v flag
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-		    $3 = voiced nick
-        @window:
-            Channels window
-        @description:
-            Triggered when someone sets a +v (voice) flag to someone in the active channel.
-        @seealso:
-            [event:ondevoice]OnDeVoice[/event]
+	/*
+		@doc: onvoice
+		@type:
+			event
+		@title:
+			OnVoice
+		@short:
+			Someone has given a user the +v flag
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+			$3 = voiced nick
+		@window:
+			Channels window
+		@description:
+			Triggered when someone sets a +v (voice) flag to someone in the active channel.
+		@seealso:
+			[event:ondevoice]OnDeVoice[/event]
 	*/
 	EVENT("OnVoice","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = voiced nick"),
-    /*
-        @doc: ondevoice
-        @type:
-            event
-        @title:
-            OnDeVoice
-        @short:
-            Someone has given a user the -v flag
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
+	/*
+		@doc: ondevoice
+		@type:
+			event
+		@title:
+			OnDeVoice
+		@short:
+			Someone has given a user the -v flag
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
 			$3 = devoiced nick
-        @window:
-            Channels window
-        @description:
-            Triggered when someone sets a -v (devoice) flag to someone in the active channel.
-        @seealso:
-            [event:ondevoice]OnDeVoice[/event]
-    */
+		@window:
+			Channels window
+		@description:
+			Triggered when someone sets a -v (devoice) flag to someone in the active channel.
+		@seealso:
+			[event:ondevoice]OnDeVoice[/event]
+	*/
 	EVENT("OnDeVoice","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = voiced nick"),
-    /*
-        @doc: onmevoice
-        @type:
-            event
-        @title:
-            OnMeVoice
-        @short:
-            Someone has give the local user a +v flag
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-        @window:
-            Channels window
-        @description:
-            Triggered when someone sets a +v (devoice) flag for the local user in the active channel.
-        @seealso:
-            [event:onmedevoice]OnMeDeVoice[/event]
-    */
+	/*
+		@doc: onmevoice
+		@type:
+			event
+		@title:
+			OnMeVoice
+		@short:
+			Someone has give the local user a +v flag
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+		@window:
+			Channels window
+		@description:
+			Triggered when someone sets a +v (devoice) flag for the local user in the active channel.
+		@seealso:
+			[event:onmedevoice]OnMeDeVoice[/event]
+	*/
 	EVENT("OnMeVoice","$0 = source nick\n$1 = source username\n$2 = source hostname"),
-    /*
-        @doc: onmedevoice
-        @type:
-            event
-        @title:
-            OnMeDeVoice
-        @short:
-            Someone has give the local user a -v flag
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-        @window:
-            Channels window
-        @description:
-            Triggered when someone sets a -v (devoice) flag for the local user in the active channel.
-        @seealso:
-            [event:onmevoice]OnMeVoice[/event]
-    */
+	/*
+		@doc: onmedevoice
+		@type:
+			event
+		@title:
+			OnMeDeVoice
+		@short:
+			Someone has give the local user a -v flag
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+		@window:
+			Channels window
+		@description:
+			Triggered when someone sets a -v (devoice) flag for the local user in the active channel.
+		@seealso:
+			[event:onmevoice]OnMeVoice[/event]
+	*/
 	EVENT("OnMeDeVoice","$0 = source nick\n$1 = source username\n$2 = source hostname"),
-    /*
-        @doc: onnickchange
-        @type:
-            event
-        @title:
-            OnNickChange
-        @short:
-            Someone has changed his nickname
-        @parameters:
+	/*
+		@doc: onnickchange
+		@type:
+			event
+		@title:
+			OnNickChange
+		@short:
+			Someone has changed his nickname
+		@parameters:
 			$0 = source nick
 			$1 = source username
 			$2 = source host
 			$3 = new nickname
-        @window:
-            Console window
-        @description:
-            Triggered when someone has changed his nickname.
+		@window:
+			Console window
+		@description:
+			Triggered when someone has changed his nickname.
 			The change has already been processed by the server, but not by the
 			local KVIrc database.
-        @seealso:
-            [event:onmenickchange]OnMeNickChange[/event]
-    */
+		@seealso:
+			[event:onmenickchange]OnMeNickChange[/event]
+	*/
 	EVENT("OnNickChange","$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = new nickname"),
-    /*
-        @doc: onmenickchange
-        @type:
-            event
-        @title:
-            OnMeNickChange
-        @short:
-            The local user has changed his nickname
-        @parameters:
+	/*
+		@doc: onmenickchange
+		@type:
+			event
+		@title:
+			OnMeNickChange
+		@short:
+			The local user has changed his nickname
+		@parameters:
 			$0 = old nick
 			$1 = new nickname
-        @window:
-            Console window
-        @description:
-            Triggered when the local user is going to change his nickname.
+		@window:
+			Console window
+		@description:
+			Triggered when the local user is going to change his nickname.
 			The change has already been processed by the server, but not by the
 			local KVIrc database.
-        @seealso:
-            [event:onnickchange]OnNickChange[/event]
-    */
+		@seealso:
+			[event:onnickchange]OnNickChange[/event]
+	*/
 	EVENT("OnMeNickChange","$0 = old nick\n$1 = new nick"),
-    /*
-        @doc: onctcprequest
-        @type:
-            event
-        @title:
-            OnCTCPRequest
-        @short:
-            A CTCP request has been received
-        @parameters:
+	/*
+		@doc: onctcprequest
+		@type:
+			event
+		@title:
+			OnCTCPRequest
+		@short:
+			A CTCP request has been received
+		@parameters:
 			$0 = source nick
 			$1 = source user
 			$2 = source host
 			$3 = target
 			$4 = ctcp type
 			$5- = ctcp parameters
-        @window:
-            Console window
-        @description:
-            A CTCP request has been received.[br]
+		@window:
+			Console window
+		@description:
+			A CTCP request has been received.[br]
 			If you call [cmd]halt[/cmd] in this event, you will stop the further
 			processing of the CTCP (thus, you can disable some of the KVIrc features).
 			Be careful when using this.
-        @seealso:
-            [event:onctcpreply]OnCTCPReply[/event]
-    */
+		@seealso:
+			[event:onctcpreply]OnCTCPReply[/event]
+	*/
 	EVENT("OnCTCPRequest","$0 = source nick\n$1 = source user\n$2 = source host\n$3 = target\n$4 = ctcp type\n$5- = ctcp parameters"),
-    /*
-        @doc: onctcpreply
-        @type:
-            event
-        @title:
-            OnCTCPReply
-        @short:
-            A CTCP reply has been received
-        @parameters:
+	/*
+		@doc: onctcpreply
+		@type:
+			event
+		@title:
+			OnCTCPReply
+		@short:
+			A CTCP reply has been received
+		@parameters:
 			$0 = source nick
 			$1 = source user
 			$2 = source host
 			$3 = target
 			$4 = ctcp type
 			$5- = ctcp parameters
-        @window:
-            Console window
-        @description:
-            A CTCP reply has been received.[br]
+		@window:
+			Console window
+		@description:
+			A CTCP reply has been received.[br]
 			If you call [cmd]halt[/cmd] in this event, you will stop the further
 			processing of the CTCP (thus, you can disable some of the KVIrc features).
 			Be careful when using this.
-        @seealso:
-            [event:onctcpreply]OnCTCPReply[/event]
-    */
+		@seealso:
+			[event:onctcpreply]OnCTCPReply[/event]
+	*/
 	EVENT("OnCTCPReply","$0 = source nick\n$1 = source user\n$2 = source host\n$3 = target\n$4 = ctcp type\n$5- = ctcp parameters"),
-    /*
-        @doc: onunhandledliteral
-        @type:
-            event
-        @title:
-            OnUnhandledLiteral
-        @short:
-            An unhandled literal server message has been received
-        @parameters:
+	/*
+		@doc: onunhandledliteral
+		@type:
+			event
+		@title:
+			OnUnhandledLiteral
+		@short:
+			An unhandled literal server message has been received
+		@parameters:
 			$0 = source mask
 			$1 = message (literal)
 			$2- = parameters
-        @window:
-            Console window
-        @description:
+		@window:
+			Console window
+		@description:
 			An unhandled/unrecognized literal server message has been received.[br]
 			The KVIrc core code hasn't been able to recognize it nor handle it
 			in any way.[br]
 			If you call [cmd]halt[/cmd] you will stop the standard or warning message output.[br]
 			For server numerics there is no "unhandled" event, you should use the
 			raw numeric events to handle them.[br]
-        @seealso:
-    */
+		@seealso:
+	*/
 	EVENT("OnUnhandledLiteral","$0 = source mask\n$1 = message\n$2- parameters"),
-    /*
-        @doc: onmehalfop
-        @type:
-            event
-        @title:
-            OnMeHalfOp
-        @short:
-            Someone has given the local user the +h flag
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-        @window:
-            Channels window
-        @description:
-            Triggered when someone sets a +h (halfop) flag for the local user in the active channel.
-        @seealso:
-            [event:onmedehalfop]OnMeDeHalfOp[/event]
-    */
+	/*
+		@doc: onmehalfop
+		@type:
+			event
+		@title:
+			OnMeHalfOp
+		@short:
+			Someone has given the local user the +h flag
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+		@window:
+			Channels window
+		@description:
+			Triggered when someone sets a +h (halfop) flag for the local user in the active channel.
+		@seealso:
+			[event:onmedehalfop]OnMeDeHalfOp[/event]
+	*/
 	EVENT("OnMeHalfOp","$0 = source nick\n$1 = source username\n$2 = source hostname"),
-    /*
-        @doc: onmedehalfop
-        @type:
-            event
-        @title:
-            OnMeDeHalfOp
-        @short:
-            Someone has given the local user the -h flag
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-        @window:
-            Channels window
-        @description:
-            Triggered when someone sets a -h (dehalfop) flag for the local user in the active channel.
-        @seealso:
-            [event:onmehalfop]OnMeHalfOp[/event]
-    */
+	/*
+		@doc: onmedehalfop
+		@type:
+			event
+		@title:
+			OnMeDeHalfOp
+		@short:
+			Someone has given the local user the -h flag
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+		@window:
+			Channels window
+		@description:
+			Triggered when someone sets a -h (dehalfop) flag for the local user in the active channel.
+		@seealso:
+			[event:onmehalfop]OnMeHalfOp[/event]
+	*/
 	EVENT("OnMeDeHalfOp","$0 = source nick\n$1 = source username\n$2 = source hostname"),
 	/*
 	 	@doc: onhalfop
@@ -1833,13 +1831,7 @@ channel
 				case the event is triggered in the console window.[br]
 			Calling [cmd]halt[/cmd] in this event stops the message output.[br]
 	*/
-
-	EVENT("OnAction", \
-			"$0 = source nick\n" \
-			"$1 = source username\n" \
-			"$2 = source hostname\n" \
-			"$3 = message target\n" \
-			"$4 = action message text"),
+	EVENT("OnAction", "$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = message target\n$4 = action message text"),
 	/*
 		@doc: onctcpflood
 		@type:
@@ -1888,7 +1880,7 @@ channel
 			[event:onservernotice]OnServerNotice[/event]
 	*/
 	EVENT("OnChannelNotice", "$0 = source nick\n$1 = message,\n$2 = target"),
-    /*
+	/*
 		@doc: onservernotice
 		@type: event
 		@title:
@@ -2079,7 +2071,7 @@ channel
 			This means that you can set up 33 "quick" aliases...that's really more than
 			an user can remember.[br]
 			If you need more keys , mail me , I'll see what I can do :)[br]
-    */
+	*/
 	EVENT("OnAccelKeyPressed", "$0 = keys"),
 	/*
 		@doc: onhighlight
@@ -2114,7 +2106,7 @@ channel
 			A common error here is to call halt and re-echo the unmodified output; [b]this
 			can cause another OnHighlight event to be triggered and create an infinite loop![/b].
 			[cmd]echoprivmsg[/cmd] [b]-n[/b] is the command you probably want. 
-    */
+	*/
 	EVENT("OnHighlight", "$0 = source nick\n$1 = source username\n$2 = source hostname\n$3 = message\n$4 = highlight word"),
 	/*
 		@doc: onwindowactivated
@@ -2154,7 +2146,6 @@ channel
 			but this is rather a bad idea since KVIrc gives a lot of additional informations to the
 			user with some notify-methods).[br]
 			This is a good place to play a sound or attract the user attention in some other way.[br]
-
 	*/
 	EVENT("OnNotifyOnline","$0 = nickname"),
 	/*
@@ -2197,7 +2188,7 @@ channel
 			Triggered when a PONG message was received from a server.[br]
 			Calling 'halt' in this event will stop the informational message about the pong'.[br]
 	*/
-    EVENT("OnPong", "$0 = server\n$1 = pong message parameters"),
+	EVENT("OnPong", "$0 = server\n$1 = pong message parameters"),
 	/*
 		@doc: onlagalarmtimeup
 		@type:
@@ -2212,10 +2203,10 @@ channel
 		@window:
 			Console
 		@description:
-            Triggered when the Lag on the server tied to this console is higher than the[br]
-            configured Lag-Alarm time.
+			Triggered when the Lag on the server tied to this console is higher than the[br]
+			configured Lag-Alarm time.
 	*/
-    EVENT("OnLagAlarmTimeUp", "$0 = server\n$1 = lag time in miliseconds"),
+	EVENT("OnLagAlarmTimeUp", "$0 = server\n$1 = lag time in miliseconds"),
 	/*
 		@doc: onlagalarmtimedown
 		@type:
@@ -2230,10 +2221,10 @@ channel
 		@window:
 			Console
 		@description:
-            Triggered when the Lag on the server tied to this console is lower than the[br]
-            configured Lag-Alarm time but was higher in the previous lag check.
+			Triggered when the Lag on the server tied to this console is lower than the[br]
+			configured Lag-Alarm time but was higher in the previous lag check.
 	*/
-    EVENT("OnLagAlarmTimeDown", "$0 = server\n$1 = lag time in miliseconds"),
+	EVENT("OnLagAlarmTimeDown", "$0 = server\n$1 = lag time in miliseconds"),
 	/*
 		@doc: onlagcheck
 		@type:
@@ -2250,79 +2241,79 @@ channel
 		@description:
 			Triggered when the lag metering engine calculate a new current lag.[br]
 	*/
-    EVENT("OnLagCheck", "$0 = server\n$1 = lag time in miliseconds"),
-    /*
-        @doc: onquerynotice
-        @type:
-            event
-        @title:
-            OnQueryNotice
-        @short:
-            A private notice has been received
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-            $3 = message
-        @window:
-            Query window or console
-        @description:
-            Triggered when a private notice is received.[br]
+	EVENT("OnLagCheck", "$0 = server\n$1 = lag time in miliseconds"),
+	/*
+		@doc: onquerynotice
+		@type:
+			event
+		@title:
+			OnQueryNotice
+		@short:
+			A private notice has been received
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+			$3 = message
+		@window:
+			Query window or console
+		@description:
+			Triggered when a private notice is received.[br]
 			If you call [cmd]halt[/cmd] in this event, the message output will be stopped
 			and if the message was going to cause a query window creation, the window will NOT be created.[br]
-        @seealso:
-            [event:onchannelmessage]OnChannelMessage[/event]
+		@seealso:
+			[event:onchannelmessage]OnChannelMessage[/event]
 			[event:onchannelnotice]OnChannelNotice[/event]
-    */
-    EVENT("OnQueryNotice", "$0 = source nick\n$1 = source username\n$2 = source host\n$3 = message"),
-    /*
-        @doc: onchanservnotice
-        @type:
-            event
-        @title:
-            OnChanServNotice
-        @short:
+	*/
+	EVENT("OnQueryNotice", "$0 = source nick\n$1 = source username\n$2 = source host\n$3 = message"),
+	/*
+		@doc: onchanservnotice
+		@type:
+			event
+		@title:
+			OnChanServNotice
+		@short:
 			A notice from ChanServ has been received
-        @parameters:
-            $0 = ChanServ nick
-            $1 = ChanServ username
-            $2 = ChanServ host
-            $3 = message
-        @window:
-            console
-        @description:
+		@parameters:
+			$0 = ChanServ nick
+			$1 = ChanServ username
+			$2 = ChanServ host
+			$3 = message
+		@window:
+			console
+		@description:
 			Triggered when a notice is received and the source user is recognized as
 			the ChanServ service.<br>
 			Calling [cmd]halt[/cmd] stops the message output.
-        @seealso:
-            [event:onquerynotice]OnQueryNotice[/event]
+		@seealso:
+			[event:onquerynotice]OnQueryNotice[/event]
 			[event:onnickservnotice]OnNickServNotice[/event]
-    */
-    EVENT("OnChanServNotice", "$0 = ChanServ nick\n$1 = ChanServ username\n$2 = ChanServ host\n$3 = message"),
-    /*
-        @doc: onnickservnotice
-        @type:
-            event
-        @title:
-            OnNickServNotice
-        @short:
+	*/
+	EVENT("OnChanServNotice", "$0 = ChanServ nick\n$1 = ChanServ username\n$2 = ChanServ host\n$3 = message"),
+	/*
+		@doc: onnickservnotice
+		@type:
+			event
+		@title:
+			OnNickServNotice
+		@short:
 			A notice from NickServ has been received
-        @parameters:
-            $0 = NickServ nick
-            $1 = NickServ username
-            $2 = NickServ host
-            $3 = message
-        @window:
-            console
-        @description:
+		@parameters:
+			$0 = NickServ nick
+			$1 = NickServ username
+			$2 = NickServ host
+			$3 = message
+		@window:
+			console
+		@description:
 			Triggered when a notice is received and the source user is recognized as
 			the NickServ service.<br>
 			Calling [cmd]halt[/cmd] stops the message output.
-        @seealso:
-            [event:onquerynotice]OnQueryNotice[/event]
+		@seealso:
+			[event:onquerynotice]OnQueryNotice[/event]
 			[event:onchanservnotice]OnChanServNotice[/event]
-    */
-    EVENT("OnNickServNotice", "$0 = NickServ nick\n$1 = NickServ username\n$2 = NickServ host\n$3 = message"),
+	*/
+	EVENT("OnNickServNotice", "$0 = NickServ nick\n$1 = NickServ username\n$2 = NickServ host\n$3 = message"),
 	/*
 	 	@doc: onchanadmin
 		@type:
@@ -2405,45 +2396,45 @@ channel
 			[event:onmeop]OnMeOp[/event]
 	*/
 	EVENT("OnMeDeChanAdmin","$0 = source nick\n$1 = source username\n$2 = source hostname"),
-    /*
-        @doc: onmeuserop
-        @type:
-            event
-        @title:
-            OnMeUserOp
-        @short:
-            Someone has given the local user the +u flag
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-        @window:
-            Channels window
-        @description:
-            Triggered when someone sets a +u (userop) flag for the local user in the active channel.
-        @seealso:
-            [event:onmedeuserop]OnMeDeUserOp[/event]
-    */
+	/*
+		@doc: onmeuserop
+		@type:
+			event
+		@title:
+			OnMeUserOp
+		@short:
+			Someone has given the local user the +u flag
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+		@window:
+			Channels window
+		@description:
+			Triggered when someone sets a +u (userop) flag for the local user in the active channel.
+		@seealso:
+			[event:onmedeuserop]OnMeDeUserOp[/event]
+	*/
 	EVENT("OnMeUserOp","$0 = source nick\n$1 = source username\n$2 = source hostname"),
-    /*
-        @doc: onmedeuserop
-        @type:
-            event
-        @title:
-            OnMeDeUserOp
-        @short:
-            Someone has given the local user the -u flag
-        @parameters:
-            $0 = source nick
-            $1 = source username
-            $2 = source host
-        @window:
-            Channels window
-        @description:
-            Triggered when someone sets a -u (deuserop) flag for the local user in the active channel.
-        @seealso:
-            [event:onmeuserop]OnMeUserOp[/event]
-    */
+	/*
+		@doc: onmedeuserop
+		@type:
+			event
+		@title:
+			OnMeDeUserOp
+		@short:
+			Someone has given the local user the -u flag
+		@parameters:
+			$0 = source nick
+			$1 = source username
+			$2 = source host
+		@window:
+			Channels window
+		@description:
+			Triggered when someone sets a -u (deuserop) flag for the local user in the active channel.
+		@seealso:
+			[event:onmeuserop]OnMeUserOp[/event]
+	*/
 	EVENT("OnMeDeUserOp","$0 = source nick\n$1 = source username\n$2 = source hostname"),
 	/*
 	 	@doc: onuserop
@@ -3124,24 +3115,22 @@ channel
 		@description:
 			Triggered when ircd sets a registered user mode.
 	*/
-        EVENT("OnNickServAuth",""),
-        /*
-                @doc: onmeaction
-                @type:
-                        event
-                @title:
-                        OnMeAction
-                @short:
-                        User issued a CTCP ACTION
-                @parameters:
-                        $0 = action message text
-                @window:
-                        Channels and query windows
-                @description:
-                        This event is triggered when user issues a CTCP ACTION.[br]
-                        (The CTCP ACTION is usually triggered by the /me command).[br]
-        */
-
-        EVENT("OnMeAction","$0 = action message text")
+	EVENT("OnNickServAuth",""),
+	/*
+		@doc: onmeaction
+		@type:
+			event
+		@title:
+			OnMeAction
+		@short:
+			User issued a CTCP ACTION
+		@parameters:
+			$0 = action message text
+		@window:
+			Channels and query windows
+		@description:
+			This event is triggered when user issues a CTCP ACTION.[br]
+			(The CTCP ACTION is usually triggered by the /me command).[br]
+	*/
+	EVENT("OnMeAction","$0 = action message text")
 };
-
