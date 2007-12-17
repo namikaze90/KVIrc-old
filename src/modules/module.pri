@@ -55,7 +55,7 @@ mac {
 }
 
 win32 { 
-	LIBS += -lkvirc4  
+	LIBS += -lkvirc  
 	RC_FILE = ../../../data/resources/commctrl.rc
 }
 

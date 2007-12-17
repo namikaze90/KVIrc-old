@@ -54,9 +54,9 @@
 	class KviIpcSentinel;
 #endif // !COMPILE_NO_IPC
 
-#ifdef USING_PCH
+//#ifdef USING_PCH
 #include <QApplication>
-#endif
+//#endif
 	
 class KviTalPopupMenu;
 class QPixmap;

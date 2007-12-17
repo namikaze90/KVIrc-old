@@ -100,7 +100,7 @@ void SPasteController::pasteFile(void)
 		linesize--;
 		
 		// '\r' or '\n' characters will be read to so remove them at end of line
-		while (linesize >=0 and (line.at(linesize) == QChar('\r') || line.at(linesize) == QChar('\n')))
+		while (linesize >=0 && (line.at(linesize) == QChar('\r') || line.at(linesize) == QChar('\n')))
 		{
 			line.chop(1);
 			linesize--;

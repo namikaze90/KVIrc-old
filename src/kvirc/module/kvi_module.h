@@ -27,12 +27,11 @@
 
 #include "kvi_settings.h"
 #include "kvi_string.h"
-#include "kvi_library.h"
 
 #include "kvi_moduleextension.h"
 #include "kvi_kvs_moduleinterface.h"
 
-
+#include <QLibrary>
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	#include "kvi_crypt.h"
@@ -138,13 +137,13 @@ class KVIRC_API KviModule : public KviKvsModuleInterface
 	friend class KviModuleManager;
 	friend class KviUserParser;
 protected:
-	KviModule(kvi_library_t handle,KviModuleInfo * info,const QString& name,const QString& filename);
+	KviModule(QLibrary* library,KviModuleInfo * info,const QString& name,const QString& filename);
 	~KviModule();
 private:
 	QString                                     m_szName;
 	QString                                     m_szFileName;
 	KviModuleInfo                            * m_pModuleInfo;
-	kvi_library_t                              m_dlHandle;
+	QLibrary                                 * m_pLibrary;
 	unsigned int                               m_uLock;
 	long int                                   m_lastAccessTime;
 protected:
@@ -155,7 +154,7 @@ public:
 	QString name(){ return m_szName; };
 	// filename of this module (with NO path): formatted as "libkvi%s.so",name()
 	QString filename(){ return m_szFileName; };
-	kvi_library_t   handle(){ return m_dlHandle; };
+	QLibrary*       libraryHandle(){ return m_pLibrary; };
 	KviModuleInfo * moduleInfo(){ return m_pModuleInfo; };
 	
 	//

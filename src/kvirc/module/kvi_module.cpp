@@ -136,8 +136,8 @@ extern KVIRC_API KviModuleExtensionManager    * g_pModuleExtensionManager;
 // FIXME: #warning "Move all the modules to the new locking method ?"
 
 
-KviModule::KviModule(kvi_library_t handle,KviModuleInfo * info,const QString& name,const QString& filename)
-: KviKvsModuleInterface(), m_szName(name), m_dlHandle(handle),m_pModuleInfo(info),m_szFileName(filename)
+KviModule::KviModule(QLibrary* library,KviModuleInfo * info,const QString& name,const QString& filename)
+: KviKvsModuleInterface(), m_szName(name), m_pLibrary(library),m_pModuleInfo(info),m_szFileName(filename)
 {
 // FIXME: this should become case insensitive and converted toUpper()
 	/*
@@ -156,6 +156,8 @@ KviModule::KviModule(kvi_library_t handle,KviModuleInfo * info,const QString& na
 
 KviModule::~KviModule()
 {
+	m_pLibrary->unload();
+	delete m_pLibrary;
 #ifdef COMPILE_CRYPT_SUPPORT
 	unregisterCryptEngines();
 #endif
@@ -351,7 +353,7 @@ void KviModule::unregisterCryptEngines()
 
 void * KviModule::getSymbol(const char * symname)
 {
-	return kvi_library_symbol(handle(),symname);
+	return m_pLibrary->resolve(symname);
 }
 
 void KviModule::getDefaultConfigFileName(QString &szBuffer)

@@ -66,7 +66,7 @@ bool KviKvsTreeNodeModuleFunctionCall::evaluateReadOnly(KviKvsRunTimeContext * c
 	KviModule * m = g_pModuleManager->getModule(m_szModuleName.utf8().data());
 	if(!m)
 	{
-		QString szErr = g_pModuleManager->lastError().ptr(); // <-- fixme!
+		QString szErr = g_pModuleManager->lastError();
 		c->error(this,__tr2qs("Module function call failed: can't load the module '%Q': %Q"),&m_szModuleName,&szErr);
 		return false;
 	}

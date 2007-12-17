@@ -43,9 +43,9 @@ public:
 private:
 	QHash<QString,KviModule*>                    * m_pModuleDict;
 	QTimer                                       * m_pCleanupTimer;
-	KviStr                                         m_szLastError;
+	QString                                        m_szLastError;
 public:
-	KviStr & lastError(){ return m_szLastError; };
+	QString & lastError(){ return m_szLastError; };
 	KviModule * findModule(const QString& modName);
 	KviModule * getModule(const QString& modName);
 	bool loadModule(const QString& modName);
