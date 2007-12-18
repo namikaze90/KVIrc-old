@@ -110,15 +110,15 @@ KviFrame::KviFrame()
 
 	setUsesBigPixmaps(KVI_OPTION_BOOL(KviOption_boolUseBigIcons));
 
-	m_pMdi      = new KviMdiManager(this);
-	setCentralWidget(m_pMdi);
-	connect(m_pMdi,SIGNAL(enteredSdiMode()),this,SLOT(enteredSdiMode()));
-	connect(m_pMdi,SIGNAL(leftSdiMode()),this,SLOT(leftSdiMode()));
 
 	// This theoretically had to exists before KviMdiManager (that uses enterSdiMode)
 	m_pMenuBar   = new KviMenuBar(this,"main_menu_bar");
 	this->setMenuBar(m_pMenuBar);
-	
+
+	m_pMdi      = new KviMdiManager(this);
+	setCentralWidget(m_pMdi);
+
+
 	if(KVI_OPTION_BOOL(KviOption_boolStatusBarVisible))
 	{
 		m_pStatusBar = new KviStatusBar(this);

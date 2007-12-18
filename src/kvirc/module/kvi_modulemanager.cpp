@@ -163,18 +163,27 @@ bool KviModuleManager::loadModule(const QString& modName)
 #ifdef COMPILE_ON_WINDOWS
 	KviQString::appendFormatted(szName,"kvi%Q4.dll",&modName);
 #else
-	KviQString::appendFormatted(szName,"libkvi%Q.so.4",&modName);
+	KviQString::appendFormatted(szName,"libkvi%Q",&modName);
 #endif
 	szName=szName.lower();
 
 	g_pApp->getLocalKvircDirectory(tmp,KviApp::Plugins,szName);
+#ifdef COMPILE_ON_WINDOWS
 	if(!KviFileUtils::fileExists(tmp))
+#else
+	if(!KviFileUtils::fileExists(tmp+".so.4"))
+#endif
 	{
 		g_pApp->getGlobalKvircDirectory(tmp,KviApp::Plugins,szName);
 	}
 	
-	if(!KviFileUtils::fileExists(tmp)) return false;
-	QLibrary* lib = new QLibrary(tmp);
+#ifdef COMPILE_ON_WINDOWS
+	if(!KviFileUtils::fileExists(tmp))
+#else
+	if(!KviFileUtils::fileExists(tmp+".so.4"))
+#endif
+		return false;
+	QLibrary* lib = new QLibrary(tmp,4);
 	bool bSuccess = lib->load();
 	if(!bSuccess)
 	{

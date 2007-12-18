@@ -104,6 +104,7 @@ KviMenuBar::~KviMenuBar()
 void KviMenuBar::showEvent(QShowEvent *e)
 {
 	debug("menubar show");
+	updateGeometry();
 	// force a re-layout of the menubar in Qt4 (see the note in enterSDIMode())
 	// by resetting the corner widget
 //	m_pFrm->mdiManager()->relayoutMenuButtons();
