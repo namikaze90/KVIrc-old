@@ -1524,6 +1524,9 @@ int KviKvsVariant::compare(const KviKvsVariant * pOther,bool bPreferNumeric) con
 				case KviKvsVariantData::HObject:
 					return KviKvsVariantComparison::compare_string_hobject(this,pOther);
 				break;
+				case KviKvsVariantData::Nothing:
+					return -1;
+				break;
 			}
 		break;
 		case KviKvsVariantData::Hash:
@@ -1551,6 +1554,9 @@ int KviKvsVariant::compare(const KviKvsVariant * pOther,bool bPreferNumeric) con
 				case KviKvsVariantData::HObject:
 					return -1 * KviKvsVariantComparison::compare_hobject_hash(pOther,this);
 				break;
+				case KviKvsVariantData::Nothing:
+					return -1;
+				break;
 			}
 		break;
 		case KviKvsVariantData::Array:
@@ -1575,6 +1581,9 @@ int KviKvsVariant::compare(const KviKvsVariant * pOther,bool bPreferNumeric) con
 				break;
 				case KviKvsVariantData::HObject:
 					return -1 * KviKvsVariantComparison::compare_hobject_array(pOther,this);
+				break;
+				case KviKvsVariantData::Nothing:
+					return -1;
 				break;
 			}
 		break;
@@ -1603,6 +1612,9 @@ int KviKvsVariant::compare(const KviKvsVariant * pOther,bool bPreferNumeric) con
 				break;
 				case KviKvsVariantData::HObject:
 					return KviKvsVariantComparison::compare_boolean_hobject(this,pOther);
+				break;
+				case KviKvsVariantData::Nothing:
+					return -1;
 				break;
 			}
 		break;
