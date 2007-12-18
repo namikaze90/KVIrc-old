@@ -93,12 +93,10 @@ protected:
 	// UI
 	virtual QPixmap * myIconPtr();
 	virtual void fillCaptionBuffers();
-	virtual void resizeEvent(QResizeEvent *e);
 	virtual void closeEvent(QCloseEvent *e);
 	virtual void getBaseLogFileName(QString &buffer);
 	virtual void getTaskBarTipText(QString &buffer);
 	virtual void fillContextPopup(KviTalPopupMenu * p);
-	virtual QSize sizeHint() const;
 	virtual void applyOptions();
 	virtual void triggerCreationEvents();
 	void fillStatusString();

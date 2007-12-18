@@ -104,6 +104,7 @@ KviWindow::KviWindow(int type,KviFrame * lpFrm,const QString &name,KviConsole * 
 		: QWidget(0)
 {
 	m_pMdiSubWindow = lpFrm->mdiManager()->addSubWindow(this);
+	m_pMdiSubWindow->setWindowState(Qt::WindowMaximized);
 	m_uId = g_uUniqueWindowId;
 	g_uUniqueWindowId++;
 
@@ -1257,45 +1258,28 @@ void KviWindow::moveEvent(QMoveEvent *e)
 
 void KviWindow::minimize()
 {
-/*	if(mdiParent())
+	if(!m_pMdiSubWindow->isMinimized())
 	{
-		if(!isMinimized())
-			mdiParent()->minimize();
+		m_pMdiSubWindow->setWindowState(Qt::WindowMinimized);
 	}
-	else
-		showMinimized();*/
 }
 
 void KviWindow::maximize()
 {
-/*	if(mdiParent())
+	if(!m_pMdiSubWindow->isMaximized())
 	{
-		if(!isMaximized())
-			mdiParent()->maximize();
+		m_pMdiSubWindow->setWindowState(Qt::WindowMaximized);
 	}
-	else
-		showMaximized();
-	autoRaise();*/
 }
 
 bool KviWindow::isMinimized()
 {
-/*	if(mdiParent())
-		return (mdiParent()->state() == KviMdiChild::Minimized);
-	else*/
-		return QWidget::isMinimized();
+		return m_pMdiSubWindow->isMinimized();
 }
 
 bool KviWindow::isMaximized()
 {
-/*	if(mdiParent())
-		return (mdiParent()->state() == KviMdiChild::Maximized);*/
-	// Heh...how to check it ?
-	// Empirical check
-	int wdth = (g_pApp->desktop()->width() * 75) / 100;
-	int hght = (g_pApp->desktop()->height() * 75) / 100;
-
-	return ((x() <= 1)&&(y() <= 1)&&(width() >= wdth)&&(height() >= hght));
+	return m_pMdiSubWindow->isMaximized();
 }
 
 void KviWindow::restore()
@@ -1325,10 +1309,6 @@ void KviWindow::applyOptions()
 	updateCaption();
 	if(m_pIrcView)m_pIrcView->applyOptions();
 	if(m_pInput)m_pInput->applyOptions();
-
-	// trick: relayout
-	resize(width() - 1,height() - 1);
-	resize(width() + 1,height() + 1);
 }
 
 KviWindow * KviWindow::outputProxy()

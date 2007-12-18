@@ -117,24 +117,18 @@ KviConsole::KviConsole(KviFrame * lpFrm,int iFlags)
 		m_iFlags |= KVI_CONSOLE_FLAG_FIRSTINAPP;
 	}
 
-	m_pButtonBox = new QWidget(this);
-	QHBoxLayout * mainlayout = new QHBoxLayout();
-	m_pButtonBox->setLayout(mainlayout);
-	mainlayout->setSpacing(1);
-	mainlayout->setMargin(0);
-	QSizePolicy spbuttonbox(QSizePolicy::Minimum, QSizePolicy::Ignored);
-	m_pButtonBox->setSizePolicy(spbuttonbox);
-	
-	m_pButtonGrid = new QFrame(m_pButtonBox);
-	QGridLayout * gridlayout = new QGridLayout(m_pButtonGrid,0,1);
-	gridlayout->setSpacing(1);
-	gridlayout->setMargin(0);
-	m_pButtonGrid->setLayout(gridlayout);
-	
-	QLabel * address = new QLabel(__tr2qs("Address:"),m_pButtonBox,"url_label");
-	mainlayout->addWidget(address);
-	m_pAddressEdit = new QComboBox(m_pButtonBox,"url_editor");
-	mainlayout->addWidget(m_pAddressEdit);
+	QVBoxLayout * mainWindowLayout = new QVBoxLayout(0);
+
+	//top buttons
+
+	QHBoxLayout * topLineLayout = new QHBoxLayout(mainWindowLayout);
+	topLineLayout->setSpacing(0);
+	topLineLayout->setMargin(0);	
+
+	QLabel * address = new QLabel(__tr2qs("Address:"),this,"url_label");
+	topLineLayout->addWidget(address);
+	m_pAddressEdit = new QComboBox(this,"url_editor");
+	topLineLayout->addWidget(m_pAddressEdit);
 	QSizePolicy spaddressedit(QSizePolicy::Expanding, QSizePolicy::Ignored);
 	m_pAddressEdit->setSizePolicy(spaddressedit);
 	m_pAddressEdit->setAutoCompletion(true);
@@ -145,16 +139,25 @@ KviConsole::KviConsole(KviFrame * lpFrm,int iFlags)
 	m_pAddressEdit->setCurrentText("");
 	m_pAddressEdit->setInsertionPolicy(QComboBox::NoInsertion);
 	m_pAddressEdit->setMinimumHeight(24); //icon is 16px, + margins
-	//m_pButtonBox->setStretchFactor(m_pAddressEdit,1);
-	m_pButtonBox->setObjectName( QLatin1String( "kvi_window_button_box" ) );
 	KviTalToolTip::add(m_pAddressEdit,__tr2qs("Current IRC URI"));
 	connect(m_pAddressEdit,SIGNAL(activated(const QString & )),this,SLOT(ircUriChanged(const QString & )));
 	connect(g_pApp,SIGNAL(recentUrlsChanged()),this,SLOT(recentUrlsChanged()));
 
+	m_pButtonGrid = new QFrame(this);
+	topLineLayout->addWidget(m_pButtonGrid);
+	QGridLayout * gridlayout = new QGridLayout(m_pButtonGrid,0,1);
+	gridlayout->setSpacing(0);
+	gridlayout->setMargin(0);
+	m_pButtonGrid->setLayout(gridlayout);
+	topLineLayout->addWidget(m_pButtonGrid);
+
+	mainWindowLayout->addLayout(topLineLayout);
 
 	m_pSplitter = new QSplitter(Qt::Horizontal,this,"splitter");
 	m_pIrcView = new KviIrcView(m_pSplitter,lpFrm,this);
 	connect(m_pIrcView,SIGNAL(rightClicked()),this,SLOT(textViewRightClicked()));
+
+	mainWindowLayout->addWidget(m_pSplitter,1);
 
 	// FIXME: #warning "If notify list is disabled avoid to show this"
 	// FIXME: #warning "Button to show/hide the notifyListView (NOT DELETE RE_CREATE!)"
@@ -164,13 +167,14 @@ KviConsole::KviConsole(KviFrame * lpFrm,int iFlags)
 	connect(m_pNotifyViewButton,SIGNAL(clicked()),this,SLOT(toggleNotifyView()));
 	gridlayout->addWidget(m_pNotifyViewButton);
 	
-	m_pButtonBox->layout()->addWidget(m_pButtonGrid);
 	
 	m_pNotifyListView  = new KviUserListView(m_pSplitter,m_pNotifyViewButton,0,this,19,__tr2qs("Notify List"),"notify_list_view");
 
 	m_pInput   = new KviInput(this,m_pNotifyListView);
 
+	mainWindowLayout->addWidget(m_pInput);
 	if(KVI_OPTION_BOOL(KviOption_boolAutoLogConsole))m_pIrcView->startLogging();
+	setLayout(mainWindowLayout);
 
 }
 
@@ -215,10 +219,13 @@ KviConsole::~KviConsole()
 
 	KVS_TRIGGER_EVENT_0(KviEvent_OnIrcContextDestroyed,this);
 
-	if(g_pFrame->consoleCount() <= 1)
+	if(g_pFrame)
 	{
-		KVS_TRIGGER_EVENT_0(KviEvent_OnFrameWindowDestroyed,this);
-		KVS_TRIGGER_EVENT_0(KviEvent_OnKVIrcShutdown,this);
+		if(g_pFrame->consoleCount() <= 1)
+		{
+			KVS_TRIGGER_EVENT_0(KviEvent_OnFrameWindowDestroyed,this);
+			KVS_TRIGGER_EVENT_0(KviEvent_OnKVIrcShutdown,this);
+		}
 	}
 
 	//if(m_pLastIrcServer)delete m_pLastIrcServer;
@@ -469,19 +476,6 @@ void KviConsole::showNotifyList(bool bShow)
 
 void KviConsole::loadProperties(KviConfig *cfg)
 {
-	int w = width();
-	QList<int> def;
-	def.append((w * 85) / 100);
-	def.append((w * 15) / 100);
-	QList<int> cur = cfg->readIntListEntry("Splitter",def);
-	// check the size correctness
-	if(cur.count() != 2)cur = def;
-	else {
-		int i1 = cur[0];
-		int i2 = cur[1];
-		if(i1 < i2)cur = def;
-	}
-	m_pSplitter->setSizes(cur);
 	KviWindow::loadProperties(cfg);
 	showNotifyList(cfg->readBoolEntry("NotifyListViewVisible",false));
 }
@@ -1080,28 +1074,9 @@ void KviConsole::applyOptions()
 	m_pNotifyListView->applyOptions();
 	//m_pInput->applyOptions(); will be done by KviWindow
 	//m_pIrcView->applyOptions(); will be done by KviWindow
-
 	KviWindow::applyOptions();
-
-	// trick
-	resize(width() - 1,height() - 1);
-	resize(width() + 1,height() + 1);
 }
 
-void KviConsole::resizeEvent(QResizeEvent *e)
-{
-	int hght = m_pInput->heightHint();
-	int hght2 = m_pButtonBox->sizeHint().height();
-	m_pButtonBox->setGeometry(0,0,width(),hght2);
-	m_pSplitter->setGeometry(0,hght2,width(),height() - (hght + hght2));
-	m_pInput->setGeometry(0,height() - hght,width(),hght);
-}
-
-QSize KviConsole::sizeHint() const
-{
-	QSize ret(m_pIrcView->sizeHint().height(),m_pIrcView->sizeHint().height() + m_pInput->heightHint());
-	return ret;
-}
 
 void KviConsole::fillStatusString()
 {
