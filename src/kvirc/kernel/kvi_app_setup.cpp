@@ -744,6 +744,9 @@ void KviApp::setupBegin()
 	szSetupLib.append("libkvisetup");
 #endif
 
+	debug("global kvirc dir:");
+	debug(m_szGlobalKvircDir.toUtf8());
+
 	g_pSetupLibrary = new QLibrary(szSetupLib,4);
 	bool bSuccess = g_pSetupLibrary->load();
 	if(!bSuccess)
