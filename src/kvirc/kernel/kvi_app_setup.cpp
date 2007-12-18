@@ -741,10 +741,10 @@ void KviApp::setupBegin()
 #ifdef COMPILE_ON_WINDOWS
 	szSetupLib.append("kvisetup4.dll");
 #else
-	szSetupLib.append("libkvisetup.so.4");
+	szSetupLib.append("libkvisetup");
 #endif
 
-	g_pSetupLibrary = new QLibrary(szSetupLib);
+	g_pSetupLibrary = new QLibrary(szSetupLib,4);
 	bool bSuccess = g_pSetupLibrary->load();
 	if(!bSuccess)
 	{
