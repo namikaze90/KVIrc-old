@@ -912,8 +912,7 @@ void KviWindow::delayedAutoRaise()
 
 void KviWindow::autoRaise()
 {
-	raise();
-	setActiveWindow();
+	activateSelf();
 	if(m_pFocusHandler)
 		m_pFocusHandler->setFocus();
 	else
@@ -965,6 +964,7 @@ void KviWindow::activateSelf()
 //	if(mdiParent())
 //		mdiParent()->activate(false);
 
+	m_pMdiSubWindow->activateWindow();
 	g_pFrame->childWindowActivated(this);
 	// this is now done by KviFrame in childWindowActivated
 	//g_pFrame->m_pTaskBar->setActiveItem(m_pTaskBarItem);
@@ -1048,8 +1048,8 @@ bool KviWindow::eventFilter(QObject *o,QEvent *e)
 	switch(e->type())
 	{
 	case QEvent::FocusIn:
-		m_pLastFocusedChild = (QWidget *)o;
-		if(g_pActiveWindow != this)activateSelf();
+		//m_pLastFocusedChild = (QWidget *)o;
+		//if(g_pActiveWindow != this)activateSelf();
 		break;
 	case QEvent::Enter:
 		// this is a handler moved here from KviMdiChild::eventFilter

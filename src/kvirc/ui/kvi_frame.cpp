@@ -548,45 +548,24 @@ void KviFrame::closeWindow(KviWindow *wnd)
 	m_pWinList->removeAll(wnd);
 
 	// hide it
-//	if(wnd->mdiParent())wnd->mdiParent()->hide();
-	/*else*/ wnd->hide();
+	m_pMdi->activateNextSubWindow();
+	wnd->close();
+	m_pMdi->removeSubWindow(wnd);
 
-	if(wnd == g_pActiveWindow)
-	{
-		// we need another active window before destroying it
-//		KviMdiChild * pMdiChild = wnd->mdiParent();
-/*		if(pMdiChild)
+	 if(!m_pWinList->isEmpty())
+	 {
+		if(wnd == g_pActiveWindow)
 		{
-//			pMdiChild = m_pMdi->highestChildExcluding(pMdiChild);
-		} else {
-			// the best candidate for the new active window
-			// is the top mdiManager's child
-			pMdiChild = m_pMdi->topChild();
+			childWindowActivated(wnd);
 		}
-		KviWindow * pCandidate;
-		if(pMdiChild)
-		{
-			pCandidate = (KviWindow *)(pMdiChild->client());
-		} else {
-			pCandidate = m_pWinList->first();
-			if(pCandidate == wnd)pCandidate = 0;
-		}
-		
-		if(pCandidate)
-			childWindowActivated(pCandidate);
-		// else { m_pActiveWindow = 0; m_pActiveContext = 0; };*/
-	}
-
-	if(wnd == g_pActiveWindow) // ops... :/ ... this happens only at shutdown
-	{
+	 } else {
+	// ops... :/ ... this happens only at shutdown
 		g_pActiveWindow = 0;
 		m_pActiveContext = 0;
 	}
 
 	// and shut it down...
-	// KviWindow will call childWindowDestroyed() here
-//	if(wnd->mdiParent())m_pMdi->destroyChild(wnd->mdiParent(),true);
-	else delete wnd;
+	delete wnd;
 }
 
 
@@ -787,9 +766,7 @@ void KviFrame::unhighlightWindowsOfContext(KviIrcContext * c)
 void KviFrame::setActiveWindow(KviWindow *wnd)
 {
 	g_pActiveWindow = wnd;
-	// ASSERT(m_pWinList->findRef(wnd))
 	if(wnd->isMinimized())wnd->restore();
-//	if(wnd->mdiParent())wnd->setFocus();
 	wnd->delayedAutoRaise();
 	emit(activeWindowChanged());
 }
@@ -851,15 +828,18 @@ void KviFrame::childConnectionUserModeChange(KviIrcConnection * c)
 void KviFrame::childWindowActivated(KviWindow *wnd)
 {
 	// ASSERT(m_pWinList->findRef(wnd))
-	if(g_pActiveWindow == wnd)return;
-	if(g_pActiveWindow)g_pActiveWindow->lostUserFocus();
-	// YES: it's HERE!
-	g_pActiveWindow = wnd;
+//	if(g_pActiveWindow == wnd)return;
+	if( g_pActiveWindow != wnd )
+	{
+		if(g_pActiveWindow) g_pActiveWindow->lostUserFocus();
+		// YES: it's HERE!
+		g_pActiveWindow = wnd;
+	}
 
 	bool bActiveContextChanged = (m_pActiveContext != wnd->context());
 	m_pActiveContext = wnd->context();
 
-//	if(wnd->isMaximized() && wnd->mdiParent())updateCaption();
+	/*if(wnd->isMaximized() && wnd->mdiParent())*/updateCaption();
 	m_pTaskBar->setActiveItem(wnd->taskBarItem());
 
 	//wnd->gainedActiveWindowStatus(); // <-- atm unused
@@ -1014,7 +994,6 @@ void KviFrame::moveEvent(QMoveEvent *e)
 
 void KviFrame::applyOptions()
 {
-	m_pMdi->update();
 	foreach(KviWindow * wnd,*m_pWinList)
 	{
 		wnd->applyOptions();
@@ -1140,27 +1119,6 @@ void KviFrame::toolbarsPopupSelected(QAction * action)
 
 bool KviFrame::focusNextPrevChild(bool next)
 {
-	//debug("FOCUS NEXT PREV CHILD");
-	QWidget * w = focusWidget();
-	if(w)
-	{
-		if(w->focusPolicy() == Qt::StrongFocus)return false;
-
-		//QVariant v = w->property("KviProperty_FocusOwner");
-		//if(v.isValid())return false; // Do NOT change the focus widget!
-		
-		if(w->parent())
-		{
-			QVariant v = w->parent()->property("KviProperty_ChildFocusOwner");
-			if(v.isValid())return false; // Do NOT change the focus widget!
-		}
-	}
-	// try to focus the widget on top of the Mdi
-/*	if(m_pMdi->topChild())
-	{
-		m_pMdi->focusTopChild();
-		return false;
-	}*/
 	return KviTalMainWindow::focusNextPrevChild(next);
 }
 
