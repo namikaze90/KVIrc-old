@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dcc_pt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-07 21:08+0100\n"
-"PO-Revision-Date: 2007-08-21 04:46+0100\n"
+"POT-Creation-Date: 2007-11-21 17:09+0100\n"
+"PO-Revision-Date: 2007-11-09 20:15+0000\n"
 "Last-Translator: Zé <mmodem00@gmail.com>\n"
 "Language-Team: Português <pt@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -160,7 +160,6 @@ msgid "Auto-saving DCC %Q file %Q as \r![!dbl]play $0\r%Q\r"
 msgstr "Auto-guardar DCC %Q ficheiro %Q como \r![!dbl]play $0\r%Q\r"
 
 #: /home/hellvis69/kvircsvn/trunk/kvirc/src/modules/dcc/broker.cpp:665
-#, fuzzy
 msgid ""
 "The file '<b>%1</b>' already exists and is <b>%2</b> large.<br>Do you wish "
 "to<br><b>overwrite</b> the existing file,<br> <b>auto-rename</b> the new "

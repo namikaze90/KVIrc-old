@@ -8,15 +8,15 @@
 # Valeriy Girchenko <valeragir@mail.ru>, 2005.
 # root <wizard@opendoor.ru>, 2005, 2006.
 # Alexey <wizard@opendoor.ru>, 2005.
-# Alexey Uzhva <alexey ar kvirc dot ru>, 2007.
+# Alexey Uzhva <alexey at kvirc dot ru>, 2007.
 #: /home/hellvis69/kvircsvn/trunk/kvirc/src/modules/options/optw_dcc.cpp:304
 msgid ""
 msgstr ""
 "Project-Id-Version: options_ru\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-07 21:08+0100\n"
+"POT-Creation-Date: 2007-11-21 17:09+0100\n"
 "PO-Revision-Date: 2007-03-31 10:19+0400\n"
-"Last-Translator: Alexey Uzhva <alexey ar kvirc dot ru>\n"
+"Last-Translator: Alexey Uzhva <alexey at kvirc dot ru>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
