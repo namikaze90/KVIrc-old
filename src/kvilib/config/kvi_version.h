@@ -25,8 +25,8 @@
 //
 //=============================================================================
 
-#define VERSION "3.9.99"
-#define VERSION_BRANCH "3.9"
+#define VERSION "3.9.991"
+#define VERSION_BRANCH "4.0"
 #define PACKAGE "kvirc"
 #define RELEASE_NAME "Insomnia"
 

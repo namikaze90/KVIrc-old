@@ -4,6 +4,7 @@ CONFIG   += precompile_header thread dll
 LANGUAGE  = C++
 TEMPLATE = lib
 
+
 QT += core \
     gui \
     qt3support

@@ -78,6 +78,7 @@
 
 bool KviApp::checkGlobalKvircDirectory(const QString dir)
 {
+	qDebug("Checking global kvirc dir: %s",dir.toUtf8().data());
 	//First check if the help subdir exists
 	QString szDir2 = dir;
 	szDir2+=KVI_PATH_SEPARATOR"modules";

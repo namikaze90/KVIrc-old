@@ -67,7 +67,7 @@ public:
 	
 	const QString& name() { return m_szName; };
 	const QString& group() { return m_szGroup; };
-	QMap<int,KviOptionsPageDescriptorBase*>* childs() { m_pChilds; };
+	QMap<int,KviOptionsPageDescriptorBase*>* childs() { return m_pChilds; };
 	int icon() { return m_iIcon; };
 };
 

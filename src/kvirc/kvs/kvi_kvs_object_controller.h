@@ -41,10 +41,10 @@ public:
 	KviKvsObjectController();
 	~KviKvsObjectController();
 protected:
-	QList<KviKvsObject*>      * m_pTopLevelObjectList;
-	QHash<kvs_hobject_t,KviKvsObject*>        * m_pObjectDict;
-	QHash<QString,KviKvsObjectClass*>      * m_pClassDict;
-	KviKvsObjectClass             * m_pObjectClass; //base class
+	QList<KviKvsObject*>               * m_pTopLevelObjectList;
+	QHash<kvs_hobject_t,KviKvsObject*> * m_pObjectDict;
+	QHash<QString,KviKvsObjectClass*>  * m_pClassDict;
+	KviKvsObjectClass                  * m_pObjectClass; //base class
 protected:
 	// the classes and the objects register themselves with the controller
 	void registerObject(KviKvsObject *pObject);

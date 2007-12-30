@@ -69,7 +69,7 @@ KviOptionsManager::~KviOptionsManager()
 	g_pInstance = 0;
 }
 
-static KviOptionsManager::KviOptionsManager* instance()
+KviOptionsManager* KviOptionsManager::instance()
 {
 	return g_pInstance; 
 }
@@ -99,7 +99,7 @@ void KviOptionsManager::registerWidget(KviOptionsPageDescriptorBase* pDescriptor
 void KviOptionsManager::registrationFinished()
 {
 	KviOptionsPageDescriptorBase* parent;
-	foreach(KviOptionsPageDescriptorBase* page,m_pInstance->m_pagesByName)
+	foreach(KviOptionsPageDescriptorBase* page,g_pInstance->m_pagesByName)
 	{
 		if(!page->m_szParent.isEmpty())
 		{
