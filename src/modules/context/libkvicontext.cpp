@@ -258,10 +258,12 @@ static bool context_kvs_fnc_list(KviKvsModuleFunctionCall * c)
 {
 	KviKvsArray * pArray = new KviKvsArray();
 
-	KviPtrList<KviWindow> * pWinList = g_pFrame->windowList();
+	QList<KviWindow*> * pWinList = g_pFrame->windowList();
 	int idx = 0;
-	for(KviWindow * pWnd = pWinList->first();pWnd;pWnd = pWinList->next())
+	
+	for (int i = 0; i < pWinList->count(); i++)
 	{
+		KviWindow * pWnd = pWinList->at(i);
 		if(pWnd->type() == KVI_WINDOW_TYPE_CONSOLE)
 		{
 			pArray->set(idx,new KviKvsVariant((kvs_int_t)((KviConsole *)pWnd)->ircContextId()));
