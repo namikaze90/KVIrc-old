@@ -1,4 +1,5 @@
 [ported] No more Qt3 code directly and through tal-files
+links
 
 [first port] No Qt3 code but perhaps through tal files
 about
@@ -31,7 +32,6 @@ ident
 iograph
 lag
 lamerizer
-links
 list
 log
 logview

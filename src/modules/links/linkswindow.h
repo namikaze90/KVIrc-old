@@ -31,7 +31,7 @@
 
 #include "kvi_tal_listview.h"
 #include "kvi_tal_popupmenu.h"
-#include <qtoolbutton.h>
+#include <QToolButton>
 
 class KviThemedLabel;
 

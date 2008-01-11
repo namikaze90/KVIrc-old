@@ -33,10 +33,11 @@
 #include "kvi_irccontext.h"
 #include "kvi_ircconnection.h"
 
-#include <qsplitter.h>
-#include <qtooltip.h>
-#include "kvi_tal_hbox.h"
-#include <qlabel.h>
+#include <QSplitter>
+#include <QToolTip>
+#include <QLabel>
+#include <QWidget>
+#include <QHBoxLayout>
 
 extern QList<KviLinksWindow*> * g_pLinksWindowList;
 
@@ -48,17 +49,21 @@ KviLinksWindow::KviLinksWindow(KviFrame * lpFrm,KviConsole * lpConsole)
 	m_pTopSplitter = new QSplitter(Qt::Horizontal,this,"top_splitter");
 
 	// The button box on the left
-	KviTalHBox * box = new KviTalHBox(m_pTopSplitter);
+	QWidget * box = new QWidget(m_pTopSplitter);
+	QHBoxLayout * pHLayout;
+	box->setLayout(pHLayout);
 
 	m_pRequestButton = new QToolButton(box,"request_button");
 	m_pRequestButton->setUsesBigPixmap(false);
 	m_pRequestButton->setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_LINKS)));
 	connect(m_pRequestButton,SIGNAL(clicked()),this,SLOT(requestLinks()));
 	QToolTip::add(m_pRequestButton,__tr2qs("Request Links"));
+	pHLayout->addWidget(m_pRequestButton);
 
 	QLabel * l = new QLabel(box,"");
-	box->setStretchFactor(l,1);
+	pHLayout->setStretchFactor(l,1);
 	m_pInfoLabel = new KviThemedLabel(m_pTopSplitter,"info_label");
+	pHLayout->addWidget(l);
 
 	connect(lpConsole->context(),SIGNAL(stateChanged()),
 		this,SLOT(connectionStateChange()));
