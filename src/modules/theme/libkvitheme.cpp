@@ -22,12 +22,13 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include "managementdialog.h"
+#include "themefunctions.h"
+
 #include "kvi_module.h"
 #include "kvi_locale.h"
 #include "kvi_qstring.h"
-
 #include "kvi_cmdformatter.h"
-#include "kvi_qstring.h"
 #include "kvi_error.h"
 #include "kvi_out.h"
 #include "kvi_iconmanager.h"
@@ -37,10 +38,7 @@
 #include "kvi_fileutils.h"
 #include "kvi_filedialog.h"
 
-#include "managementdialog.h"
-#include "themefunctions.h"
-
-#include <qfileinfo.h>
+#include <QFileInfo>
 
 QRect g_rectManagementDialogGeometry(0,0,0,0);
 

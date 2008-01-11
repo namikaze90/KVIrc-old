@@ -35,31 +35,6 @@
 
 #include "kvi_iconmanager.h"
 #include "kvi_msgbox.h"
-
-
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include "kvi_tal_listbox.h"
-#include <qlineedit.h>
-#include <kvi_tal_textedit.h>
-#include <qregexp.h>
-#include <qmessagebox.h>
-#include <qdir.h>
-#include <qstringlist.h>
-#include <qdatetime.h>
-#include <qfiledialog.h>
-#include "kvi_tal_popupmenu.h"
-#include <qcombobox.h>
-#include <qpainter.h>
-#include <qtooltip.h>
-#include <qimage.h>
-#include <kvi_tal_textedit.h>
-//#include <qmultilineedit.h>
-
-#include <QCloseEvent>
-
-#include <qbuffer.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
 #include "kvi_config.h"
@@ -74,6 +49,27 @@
 #include "kvi_fileextensions.h"
 #include "kvi_filedialog.h"
 #include "kvi_dynamictooltip.h"
+#include "kvi_tal_listbox.h"
+#include "kvi_tal_popupmenu.h"
+
+#include <QLayout>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QRegExp>
+#include <QMessageBox>
+#include <QDir>
+#include <QStringList>
+#include <QDateTime>
+#include <QFileDialog>
+#include <QComboBox>
+#include <QPainter>
+#include <QToolTip>
+#include <QImage>
+#include <QCloseEvent>
+#include <QBuffer>
+#include <QTextEdit>
+#include <QWidget>
+#include <QHBoxLayout>
 
 #include <stdlib.h> // rand & srand
 
@@ -108,11 +104,14 @@ KviThemeListBoxItem::KviThemeListBoxItem(KviTalListBox * box,KviThemeInfo * inf)
 	t += "<br><nobr><font size=\"-1\">";
 	t += inf->description();
 	t += "</font></nobr>";
-	m_pText = new KviTalSimpleRichText(t,box->font());
+	QWidget * win = new QWidget();
+	m_pText = new QTextEdit(win);
+	m_pText->setFont(box->font());
+	m_pText->setText(t);
 	int iWidth = box->visibleWidth();
 	if(iWidth < LVI_MINIMUM_CELL_WIDTH)iWidth = LVI_MINIMUM_CELL_WIDTH;
 	iWidth -= LVI_BORDER + LVI_ICON_SIZE + LVI_SPACING + LVI_BORDER;
-	m_pText->setWidth(iWidth);
+	m_pText->setMinimumWidth(iWidth);
 }
 
 KviThemeListBoxItem::~KviThemeListBoxItem()
@@ -127,8 +126,8 @@ void KviThemeListBoxItem::paint(QPainter * p)
 	p->drawPixmap(LVI_BORDER,LVI_BORDER, *(g_pIconManager->getBigIcon(QString(KVI_BIGICON_THEME))) );
 	int afterIcon = LVI_BORDER + LVI_ICON_SIZE + LVI_SPACING;
 	int www = p->window().width() - (afterIcon + LVI_BORDER);
-	m_pText->setWidth(www);
-	m_pText->draw(p,afterIcon,LVI_BORDER,QRect(afterIcon,LVI_BORDER,www,p->window().height() - (LVI_BORDER * 2)),listBox()->viewport()->colorGroup());
+	m_pText->setMinimumWidth(www);
+	//m_pText->draw(p,afterIcon,LVI_BORDER,QRect(afterIcon,LVI_BORDER,www,p->window().height() - (LVI_BORDER * 2)),listBox()->viewport()->colorGroup());
 }
 
 int KviThemeListBoxItem::height(const KviTalListBox * lb) const 
@@ -153,7 +152,9 @@ KviThemeManagementDialog::KviThemeManagementDialog(QWidget * parent)
 
 	QGridLayout * g = new QGridLayout(this,3,2,4,4);
 
-	KviTalHBox *hb = new KviTalHBox(this);
+	QWidget * hb = new QWidget(this);
+	QHBoxLayout * pHLayout = new QHBoxLayout();
+	hb->setLayout(pHLayout);
 	g->addMultiCellWidget(hb,0,0,0,1);
 
 	KviStyledToolButton * tb;
@@ -164,41 +165,49 @@ KviThemeManagementDialog::KviThemeManagementDialog(QWidget * parent)
 	tb->setUsesBigPixmap(true);
 	QToolTip::add(tb,__tr2qs_ctx("Save Current Theme...","theme"));
 	connect(tb,SIGNAL(clicked()),this,SLOT(saveCurrentTheme()));
+	pHLayout->addWidget(tb);
 
 	sep = new QFrame(hb);
 	sep->setFrameStyle(QFrame::VLine | QFrame::Sunken);
 	sep->setMinimumWidth(12);
+	pHLayout->addWidget(sep);
 	
 	m_pPackThemeButton = new KviStyledToolButton(hb);
 	m_pPackThemeButton->setIconSet(*(g_pIconManager->getBigIcon(KVI_BIGICON_PACK)));
 	m_pPackThemeButton->setUsesBigPixmap(true);
 	QToolTip::add(m_pPackThemeButton,__tr2qs_ctx("Export Selected Themes to a Distributable Package","theme"));
 	connect(m_pPackThemeButton,SIGNAL(clicked()),this,SLOT(packTheme()));
+	pHLayout->addWidget(m_pPackThemeButton);
 
 	m_pDeleteThemeButton = new KviStyledToolButton(hb);
 	m_pDeleteThemeButton->setIconSet(*(g_pIconManager->getBigIcon(KVI_BIGICON_REMOVE)));
 	m_pDeleteThemeButton->setUsesBigPixmap(true);
 	QToolTip::add(m_pDeleteThemeButton,__tr2qs_ctx("Delete Selected Themes","theme"));
 	connect(m_pDeleteThemeButton,SIGNAL(clicked()),this,SLOT(deleteTheme()));
+	pHLayout->addWidget(m_pDeleteThemeButton);
 
 	sep = new QFrame(hb);
 	sep->setFrameStyle(QFrame::VLine | QFrame::Sunken);
 	sep->setMinimumWidth(12);
+	pHLayout->addWidget(sep);
 
 	tb = new KviStyledToolButton(hb);
 	tb->setIconSet(*(g_pIconManager->getBigIcon(KVI_BIGICON_OPEN)));
 	tb->setUsesBigPixmap(true);
 	QToolTip::add(tb,__tr2qs_ctx("Install Theme Package From Disk","theme"));
 	connect(tb,SIGNAL(clicked()),this,SLOT(installFromFile()));
+	pHLayout->addWidget(tb);
 
 	tb = new KviStyledToolButton(hb);
 	tb->setIconSet(*(g_pIconManager->getBigIcon(KVI_BIGICON_WWW)));
 	tb->setUsesBigPixmap(true);
 	QToolTip::add(tb,__tr2qs_ctx("Get More Themes...","theme"));
 	connect(tb,SIGNAL(clicked()),this,SLOT(getMoreThemes()));
+	pHLayout->addWidget(tb);
 
 	QWidget *w= new QWidget(hb);
 	w->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+	pHLayout->addWidget(w);
 
 	m_pListBox = new KviTalListBox(this);
 	m_pListBox->setMinimumHeight(400);

@@ -25,17 +25,15 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
 #include "kvi_theme.h"
-
-#include <qdialog.h>
 #include <kvi_tal_wizard.h>
 
-class QLineEdit;
-class KviTalTextEdit;
-class QLabel;
-class QMultiLineEdit;
+#include <QDialog>
+#include <QTextEdit>
+
 class KviFileSelector;
+class QLineEdit;
+class QLabel;
 
 
 class KviPackThemeDialog : public KviTalWizard
@@ -52,7 +50,7 @@ protected:
 	QLabel * m_pImageLabel;
 	QList<KviThemeInfo*> * m_pThemeInfoList;
 	QLineEdit * m_pPackageNameEdit;
-	KviTalTextEdit * m_pPackageDescriptionEdit;
+	QTextEdit * m_pPackageDescriptionEdit;
 	QLineEdit * m_pPackageVersionEdit;
 	QLineEdit * m_pPackagerNameEdit;
 	QWidget * m_pImageSelectionPage;

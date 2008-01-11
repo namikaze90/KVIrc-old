@@ -25,26 +25,6 @@
 #include "savethemedialog.h"
 #include "themefunctions.h"
 
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qlineedit.h>
-#include <qregexp.h>
-#include <qmessagebox.h>
-#include <qdir.h>
-#include <qcombobox.h>
-#include <qpainter.h>
-#include <qtooltip.h>
-#include <qimage.h>
-#include <kvi_tal_textedit.h>
-
-// TODO: Qt4
-#include <q3multilineedit.h>
-#include <QDateTime>
-
-#include <qbuffer.h>
-#include <qlabel.h>
-
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
 #include "kvi_config.h"
@@ -61,6 +41,20 @@
 #include "kvi_miscutils.h"
 #include "kvi_sourcesdate.h"
 
+#include <QLayout>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QRegExp>
+#include <QMessageBox>
+#include <QDir>
+#include <QComboBox>
+#include <QPainter>
+#include <QToolTip>
+#include <QImage>
+#include <QDateTime>
+#include <QBuffer>
+#include <QLabel>
+#include <QTextEdit>
 
 
 KviSaveThemeDialog::KviSaveThemeDialog(QWidget * pParent)
@@ -122,7 +116,7 @@ KviSaveThemeDialog::KviSaveThemeDialog(QWidget * pParent)
 	pLabel->setText(__tr2qs_ctx("Description:","theme"));
 	pLayout->addWidget(pLabel,3,0);
 	
-	m_pThemeDescriptionEdit = new KviTalTextEdit(pPage);
+	m_pThemeDescriptionEdit = new QTextEdit(pPage);
 	//m_pThemeDescriptionEdit->setText(szThemeDescription);
 	pLayout->addWidget(m_pThemeDescriptionEdit,3,1);
 
@@ -293,4 +287,3 @@ bool KviSaveThemeDialog::saveTheme()
 
 	return true;
 }
-
