@@ -30,10 +30,11 @@
 #include "kvi_app.h"
 
 
-#include <qmessagebox.h>
-#include <qdir.h>
-#include <qpushbutton.h>
-#include "kvi_tal_vbox.h"
+#include <QMessageBox>
+#include <QDir>
+#include <QPushButton>
+#include <QWidget>
+#include <QVBoxLayout>
 
 KviMircServersIniImport * g_pMircServersIniImport = 0;
 KviRemoteMircServersIniImport * g_pRemoteMircServersIniImport = 0;
@@ -149,25 +150,32 @@ KviRemoteMircServerImportWizard::KviRemoteMircServerImportWizard(KviRemoteMircSe
 	addPage(l,capt);
 
 
-	KviTalVBox * vb = new KviTalVBox(this);
+	QWidget * vb = new QWidget(this);
+	QVBoxLayout * pVLayout = new QVBoxLayout(this);
+	vb->setLayout(pVLayout);
 	l = new QLabel(vb);
 	l->setText(__tr2qs("<center>Here you can modify the URL that the list will be downloaded from. In most cases the default URL is acceptable.</center>"));
+	pVLayout->addWidget(l);
 
-	vb->setStretchFactor(l,1);
+	pVLayout->setStretchFactor(l,1);
 
 	m_pUrlEdit = new QLineEdit(vb);
-
 	m_pUrlEdit->setText(KVI_WWWMIRCCOUK_SERVERSINI);
+	pVLayout->addWidget(m_pUrlEdit);
 
 	addPage(vb,__tr2qs("URL Selection"));
 
-	vb = new KviTalVBox(this);
+	vb = new QWidget(this);
+	QVBoxLayout * pV2Layout = new QVBoxLayout(this);
+	vb->setLayout(pV2Layout);
 
 	l = new QLabel(__tr2qs("Please wait while the list is being downloaded"),vb);
-	vb->setStretchFactor(l,1);
+	pV2Layout->setStretchFactor(l,1);
+	pV2Layout->addWidget(l);
 
 	m_pOutput = new QLabel(vb);
 	m_pOutput->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+	pV2Layout->addWidget(m_pOutput);
 
 	addPage(vb,__tr2qs("List Download"));
 

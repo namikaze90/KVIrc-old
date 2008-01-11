@@ -28,8 +28,8 @@
 #include "kvi_heapobject.h"
 
 #include <kvi_tal_wizard.h>
-#include <qlineedit.h>
-#include <qlabel.h>
+#include <QLineEdit>
+#include <QLabel>
 
 class KviMircServersIniImport : public KviMexServerImport
 {

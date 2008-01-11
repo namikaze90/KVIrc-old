@@ -28,13 +28,9 @@
 #include "kvi_frame.h"
 #include "kvi_locale.h"
 
-
-#include <qbitmap.h>
-#include <qtooltip.h>
-#include <qpainter.h>
-
-
-
+#include <QBitmap>
+#include <QToolTip>
+#include <QPainter>
 
 //#include <X11/Xlib.h>
 #include <time.h>

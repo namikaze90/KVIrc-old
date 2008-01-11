@@ -1,5 +1,10 @@
 [ported] No more Qt3 code directly and through tal-files
+clock
+ident
 links
+mircimport
+perl
+perlcore
 
 [first port] No Qt3 code but perhaps through tal files
 about
@@ -18,7 +23,6 @@ actioneditor
 addon
 aliaseditor
 channelsjoin
-clock
 codetester
 dcc
 dialog
@@ -28,7 +32,6 @@ eventeditor
 file
 filetransferwindow
 help
-ident
 iograph
 lamerizer
 list
@@ -37,13 +40,10 @@ logview
 mask
 math
 mediaplayer
-mircimport
 my
 notifier
 objects
 options
-perl
-perlcore
 popupeditor
 raweditor
 regchan

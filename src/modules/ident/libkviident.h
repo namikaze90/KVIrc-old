@@ -28,8 +28,7 @@
 #include "kvi_time.h"
 #include "kvi_settings.h"
 
-
-#include <qobject.h>
+#include <QObject>
 
 class KviIdentRequest
 {

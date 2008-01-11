@@ -20,17 +20,16 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include "kvi_module.h"
 
 #include "libkviident.h"
 
+#include "kvi_module.h"
 #include "kvi_socket.h"
 #include "kvi_app.h"
 #include "kvi_out.h"
 #include "kvi_netutils.h"
 #include "kvi_locale.h"
 #include "kvi_window.h"
-
 #include "kvi_options.h"
 #include "kvi_defaults.h"
 
