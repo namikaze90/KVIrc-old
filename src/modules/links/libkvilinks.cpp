@@ -19,17 +19,15 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-#include "kvi_module.h"
-
-
 #include "linkswindow.h"
 
+#include "kvi_module.h"
 #include "kvi_frame.h"
 #include "kvi_window.h"
 #include "kvi_locale.h"
+
 #include <QList>
-#include <qsplitter.h>
+#include <QSplitter>
 
 QList<KviLinksWindow*> * g_pLinksWindowList = 0;
 
