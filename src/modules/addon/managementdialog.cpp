@@ -30,30 +30,26 @@
 #include "kvi_iconmanager.h"
 #include "kvi_kvs_scriptaddonmanager.h"
 #include "kvi_window.h"
-
 #include "kvi_filedialog.h"
 #include "kvi_fileutils.h"
 #include "kvi_kvs_script.h"
 #include "kvi_sourcesdate.h"
-
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qapplication.h>
-#include <qtooltip.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qmessagebox.h>
-#include <qframe.h>
+#include "kvi_draganddrop.h"
 #include "kvi_tal_scrollview.h"
 
-// TODO: Qt4
-#include <q3header.h>
+#include <QPushButton>
+#include <QLayout>
+#include <QApplication>
+#include <QToolTip>
+#include <QLineEdit>
+#include <QLabel>
+#include <QMessageBox>
+#include <QFrame>
+#include <QPainter>
+#include <QPixmap>
+#include <QEvent>
+#include <QHeaderView>
 
-#include "kvi_draganddrop.h"
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qmessagebox.h>
-#include <qevent.h>
 
 KviScriptManagementDialog * KviScriptManagementDialog::m_pInstance = 0;
 extern QRect g_rectManagementDialogGeometry;
@@ -143,7 +139,7 @@ KviScriptAddonListView::KviScriptAddonListView(QWidget * pParent)
 	if(p)setBackgroundOverlayPixmap(p,Qt::AlignRight | Qt::AlignBottom);
 
 	setSelectionMode(Single);
-	header()->hide();
+	hide();
 	int iWidth = visibleWidth();
 	if(iWidth < LVI_MINIMUM_CELL_WIDTH)iWidth = LVI_MINIMUM_CELL_WIDTH;
 	addColumn("",iWidth);

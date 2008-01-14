@@ -24,15 +24,14 @@
 //
 //=============================================================================
 
-#include <qdialog.h>
-
 #include "kvi_listview.h"
 #include "kvi_settings.h"
-#include <qwidget.h>
-#include <qlabel.h>
-#include <qdialog.h>
-#include <qcolor.h>
 #include "kvi_tal_listview.h"
+
+#include <QWidget>
+#include <QLabel>
+#include <QDialog>
+#include <QColor>
 
 class QPushButton;
 class QPixmap;
