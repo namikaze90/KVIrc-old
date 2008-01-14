@@ -1,10 +1,13 @@
 [ported] No more Qt3 code directly and through tal-files
+action
 clock
+dialog
 ident
 lamerizer
 links
 log
 mask
+mediaplayer
 mircimport
 perl
 perlcore
@@ -13,24 +16,21 @@ term
 
 [first port] No Qt3 code but perhaps through tal files
 about
+actioneditor
 addon
 avatar
+codetester
 http
 theme
 tip
 
 [not checked] To be checked for Qt3 code
 chan
-codetester
 config
-action
-actioneditor
 aliaseditor
 channelsjoin
 codetester
 dcc
-dialog
-dockwidget
 editor
 eventeditor
 file
@@ -41,7 +41,7 @@ list
 log
 logview
 math
-mediaplayer
+
 my
 notifier
 objects
@@ -63,5 +63,6 @@ tmphighlight
 toolbar
 toolbareditor
 torrent
+trayicon
 url
 window

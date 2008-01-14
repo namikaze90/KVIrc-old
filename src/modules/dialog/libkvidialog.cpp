@@ -25,20 +25,6 @@
 
 #include "libkvidialog.h"
 
-#include <qmessagebox.h>
-#include <qlayout.h>
-#include "kvi_tal_hbox.h"
-#include <qlineedit.h>
-
-// TODO: Qt4
-#include <q3multilineedit.h>
-#define QMultiLineEdit Q3MultiLineEdit
-#include <qdesktopwidget.h>
-
-#include <qevent.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-
 #include "kvi_locale.h"
 #include "kvi_module.h"
 #include "kvi_modulemanager.h"
@@ -49,6 +35,17 @@
 #include "kvi_iconmanager.h"
 #include "kvi_kvs_script.h"
 #include "kvi_msgbox.h"
+
+#include <QMessageBox>
+#include <QLayout>
+#include <QLineEdit>
+#include <QEvent>
+#include <QLabel>
+#include <QPushButton>
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QDesktopWidget>
+#include <QTextEdit>
 
 static QList<QWidget*> * g_pDialogModuleDialogList;
 
@@ -233,8 +230,8 @@ KviKvsCallbackTextInput::KviKvsCallbackTextInput(
 
 	if(m_bMultiLine)
 	{
-		m_pEdit = new QMultiLineEdit(this);
-		((QMultiLineEdit *)m_pEdit)->setText(szDefaultText);
+		m_pEdit = new QTextEdit(this);
+		((QTextEdit *)m_pEdit)->setText(szDefaultText);
 	} else {
 		m_pEdit = new QLineEdit(this);
 		((QLineEdit *)m_pEdit)->setText(szDefaultText);
@@ -242,7 +239,9 @@ KviKvsCallbackTextInput::KviKvsCallbackTextInput(
 
 	g->addMultiCellWidget(m_pEdit,1,1,0,1);
 
-	KviTalHBox * box = new KviTalHBox(this);
+	QWidget * box = new QWidget(this);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	box->setLayout(pLayout);
 	g->addMultiCellWidget(box,2,2,0,1);
 
 	m_iEscapeButton = 0;
@@ -263,6 +262,7 @@ KviKvsCallbackTextInput::KviKvsCallbackTextInput(
 			m_iEscapeButton = 0;
 		}
 		QPushButton * pb1 = new QPushButton(szB,box);
+		pLayout->addWidget(pb1);
 		if(bDef)pb1->setDefault(true);
 		connect(pb1,SIGNAL(clicked()),this,SLOT(b0Clicked()));
 	}
@@ -282,6 +282,7 @@ KviKvsCallbackTextInput::KviKvsCallbackTextInput(
 			m_iEscapeButton = 1;
 		}
 		QPushButton * pb2 = new QPushButton(szB,box);
+		pLayout->addWidget(pb2);
 		if(bDef)pb2->setDefault(true);
 		connect(pb2,SIGNAL(clicked()),this,SLOT(b1Clicked()));
 	}
@@ -301,6 +302,7 @@ KviKvsCallbackTextInput::KviKvsCallbackTextInput(
 			m_iEscapeButton = 2;
 		}
 		QPushButton * pb3 = new QPushButton(szB,box);
+		pLayout->addWidget(pb3);
 		if(bDef)pb3->setDefault(true);
 		connect(pb3,SIGNAL(clicked()),this,SLOT(b2Clicked()));
 	}
@@ -354,7 +356,7 @@ void KviKvsCallbackTextInput::done(int code)
 	
 	if(m_bMultiLine)
 	{
-		txt = ((QMultiLineEdit *)m_pEdit)->text();
+		txt = ((QTextEdit *)m_pEdit)->text();
 	} else {
 		txt = ((QLineEdit *)m_pEdit)->text();
 	}

@@ -25,10 +25,21 @@
 //=============================================================================
 
 #include "kvi_window.h"
-
-#include <qwidget.h>
-#include "kvi_tal_listview.h"
 #include "kvi_styled_controls.h"
+#include "kvi_tal_listview.h"
+
+#include <QWidget>
+#include <QTextEdit>
+
+class KviScriptEditor;
+class QLineEdit;
+class QComboBox;
+class QToolButton;
+class QPushButton;
+
+
+//#include <q3simplerichtext.h>
+//#define QSimpleRichText Q3SimpleRichText
 
 class KviActionEditorListViewItem;
 
@@ -64,18 +75,6 @@ public:
 };
 
 
-class QLineEdit;
-class QComboBox;
-class KviScriptEditor;
-class QToolButton;
-class QSimpleRichText;
-class QPushButton;
-
-
-#include <q3simplerichtext.h>
-#define QSimpleRichText Q3SimpleRichText
-
-
 class KviActionEditorListViewItem : public KviTalListViewItem
 {
 public:
@@ -83,7 +82,7 @@ public:
 	~KviActionEditorListViewItem();
 protected:
 	KviActionData * m_pActionData;
-	QSimpleRichText * m_pText;
+	QTextEdit * m_pText;
 	QPixmap * m_pIcon;
 	KviTalListView * m_pListView;
 	QString m_szKey;

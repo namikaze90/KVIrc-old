@@ -28,22 +28,18 @@
 #include "kvi_filedialog.h"
 #include "kvi_fileutils.h"
 #include "kvi_scripteditor.h"
-
 #include "kvi_app.h"
 #include "kvi_console.h"
-
 #include "kvi_kvs_script.h"
 #include "kvi_kvs_variantlist.h"
+#include "kvi_tal_popupmenu.h"
 
 #include <QPushButton>
 #include <QLayout>
 #include <QLabel>
 #include <QToolButton>
-#include "kvi_tal_popupmenu.h"
 
 extern QList<KviCodeTesterWindow*> * g_pCodeTesterWindowList;
-
-
 
 
 KviCodeTester::KviCodeTester(QWidget * par)

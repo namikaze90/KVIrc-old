@@ -25,15 +25,12 @@
 
 #include "kvi_window.h"
 #include "kvi_string.h"
-
 #include "kvi_filedialog.h"
 #include "kvi_imagedialog.h"
-
 #include "kvi_kvs_callbackobject.h"
 
-#include <qmessagebox.h>
-#include <qdialog.h>
-
+#include <QMessageBox>
+#include <QDialog>
 
 
 // New KVS

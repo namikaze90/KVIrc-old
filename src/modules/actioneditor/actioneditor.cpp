@@ -40,28 +40,25 @@
 #include "kvi_action.h"
 #include "kvi_kvs_useraction.h"
 #include "kvi_customtoolbarmanager.h"
-
-#include <qsplitter.h>
-#include <qlayout.h>
-#include "kvi_tal_vbox.h"
-#include <qtooltip.h>
-#include <qpushbutton.h>
-#include <qdir.h>
-#include <qmessagebox.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qtoolbutton.h>
-#include <qcheckbox.h>
-#include <qtooltip.h>
-#include <qpainter.h>
-
-// TODO: Qt4
-#include <q3header.h>
-
-#include <qtabwidget.h>
 #include <kvi_tal_groupbox.h>
 
-#include <qlabel.h>
+#include <QSplitter>
+#include <QLayout>
+#include <QPushButton>
+#include <QDir>
+#include <QMessageBox>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QToolButton>
+#include <QCheckBox>
+#include <QToolTip>
+#include <QPainter>
+#include <QTabWidget>
+#include <QLabel>
+#include <QHeaderView>
+#include <QWidget>
+#include <QVBoxLayout>
+
 
 extern KviActionEditorWindow * g_pActionEditorWindow;
 
@@ -93,7 +90,10 @@ void KviActionEditorListViewItem::setupForActionData()
 	QString t = "<b>" + m_pActionData->m_szName + "</b>";
 	t += "<br><font color=\"#808080\" size=\"-1\">" + m_pActionData->m_szVisibleName + "</font>";
 	m_szKey = m_pActionData->m_szName.upper();
-	m_pText = new QSimpleRichText(t,m_pListView->font());
+	//m_pText = new QSimpleRichText(t,m_pListView->font());
+	m_pText = new QTextEdit();
+	m_pText->setFont(m_pListView->font());
+	m_pText->setText(t);
 	if(m_pIcon)delete m_pIcon;
 	QPixmap * p = g_pIconManager->getBigIcon(m_pActionData->m_szBigIcon);
 	if(p)m_pIcon = new QPixmap(*p);
@@ -116,7 +116,7 @@ void KviActionEditorListViewItem::setup()
 	int iWidth = m_pListView->visibleWidth();
 	if(iWidth < LVI_MINIMUM_CELL_WIDTH)iWidth = LVI_MINIMUM_CELL_WIDTH;
 	iWidth -= LVI_BORDER + LVI_ICON_SIZE + LVI_SPACING + LVI_BORDER;
-	m_pText->setWidth(iWidth);
+	m_pText->setMinimumWidth(iWidth);
 	int iHeight = m_pText->height() + (2 * LVI_BORDER);
 	if(iHeight < (LVI_ICON_SIZE + (2 * LVI_BORDER)))iHeight = LVI_ICON_SIZE + (2 * LVI_BORDER);
 	setHeight(iHeight);
@@ -128,8 +128,8 @@ void KviActionEditorListViewItem::paintCell(QPainter * p,const QColorGroup & cg,
 	p->drawPixmap(LVI_BORDER,LVI_BORDER,*m_pIcon);
 	int afterIcon = LVI_BORDER + LVI_ICON_SIZE + LVI_SPACING;
 	int www = m_pListView->visibleWidth() - (afterIcon + LVI_BORDER);
-	m_pText->setWidth(www);
-	m_pText->draw(p,afterIcon,LVI_BORDER,QRect(afterIcon,LVI_BORDER,www,height() - (LVI_BORDER * 2)),cg);
+	m_pText->setMinimumWidth(www);
+	//m_pText->draw(p,afterIcon,LVI_BORDER,QRect(afterIcon,LVI_BORDER,www,height() - (LVI_BORDER * 2)),cg);
 }
 
 
@@ -655,11 +655,14 @@ KviActionEditor::KviActionEditor(QWidget * par)
 
 	l->addWidget(m_pSplitter,0,0);
 	
-	
-	KviTalVBox * box = new KviTalVBox(m_pSplitter);
+	QWidget * box = new QWidget(m_pSplitter);
+	QVBoxLayout * pLayout = new QVBoxLayout(m_pSplitter);
+	box->setLayout(pLayout);
+
 	m_pListView = new KviActionEditorListView(box);
 	//m_pListView->setMultiSelection(false);
 	m_pListView->setShowSortIndicator(true);
+	pLayout->addWidget(m_pListView);
 
 	m_pListView->setFocusPolicy(Qt::StrongFocus);
 
@@ -668,14 +671,17 @@ KviActionEditor::KviActionEditor(QWidget * par)
 
 	m_pNewActionButton = new QPushButton(__tr2qs("New Action"),box);
 	connect(m_pNewActionButton,SIGNAL(clicked()),this,SLOT(newAction()));
+	pLayout->addWidget(m_pNewActionButton);
 
 	m_pDeleteActionsButton = new QPushButton(__tr2qs("Delete Actions"),box);
 	connect(m_pDeleteActionsButton,SIGNAL(clicked()),this,SLOT(deleteActions()));
+	pLayout->addWidget(m_pDeleteActionsButton);
 
 	m_pExportActionsButton = new QPushButton(__tr2qs("Export Actions..."),box);
 	connect(m_pExportActionsButton,SIGNAL(clicked()),this,SLOT(exportActions()));
+	pLayout->addWidget(m_pExportActionsButton);
 
-	box->setSpacing(1);
+	pLayout->setSpacing(1);
 
 	m_pSingleActionEditor = new KviSingleActionEditor(m_pSplitter,this);
 

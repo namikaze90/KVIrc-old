@@ -22,12 +22,11 @@
 //
 //===============================================================================
 
+#include "codetester.h"
+
 #include "kvi_module.h"
 #include "kvi_locale.h"
 #include "kvi_frame.h"
-
-
-#include "codetester.h"
 
 QList<KviCodeTesterWindow*> * g_pCodeTesterWindowList = 0;
 

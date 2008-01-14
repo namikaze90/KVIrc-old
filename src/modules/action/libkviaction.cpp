@@ -27,9 +27,7 @@
 #include "kvi_actionmanager.h"
 #include "kvi_locale.h"
 #include "kvi_qstring.h"
-
 #include "kvi_cmdformatter.h"
-#include "kvi_qstring.h"
 #include "kvi_error.h"
 #include "kvi_out.h"
 #include "kvi_iconmanager.h"
