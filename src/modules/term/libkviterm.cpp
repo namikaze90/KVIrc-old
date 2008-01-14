@@ -21,21 +21,17 @@
 //
 
 #include "kvi_settings.h"
-
 #include "kvi_module.h"
-
 #include "kvi_window.h"
-
 #include "kvi_frame.h"
 
-#include <qsplitter.h>
+#include <QSplitter>
 
 
 #ifdef COMPILE_KDE_SUPPORT
 
 	#include "termwidget.h"
 	#include "termwindow.h"
-
 	#include "ktrader.h"
 
 //	#include "kparts/part.h"

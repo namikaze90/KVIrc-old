@@ -28,10 +28,9 @@
 #include "kvi_iconmanager.h"
 #include "kvi_locale.h"
 
-#include <qlabel.h>
-
-#include <qtooltip.h>
-#include <qtimer.h>
+#include <QLabel>
+#include <QToolTip>
+#include <QTimer>
 
 #ifdef COMPILE_KDE_SUPPORT
 
@@ -55,13 +54,20 @@ KviTermWidget::KviTermWidget(QWidget * par,KviFrame * lpFrm,bool bIsStandalone)
 
 	if(bIsStandalone)
 	{
-		m_pHBox = new KviTalHBox(this);
+		QWidget * m_pHBox = new QWidget(this);
+		QHBoxLayout * pLayout = new QHBoxLayout();
+		m_pHBox->setLayout(pLayout);
+
 		m_pTitleLabel = new QLabel(__tr2qs("Terminal emulator"),m_pHBox);
 		m_pTitleLabel->setFrameStyle(QFrame::Raised | QFrame::WinPanel);
+		pLayout->addWidget(m_pTitleLabel);
+
 		m_pCloseButton = new QPushButton("",m_pHBox);
 		m_pCloseButton->setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CLOSE)));
 		QToolTip::add(m_pCloseButton,__tr2qs("Close this window"));
-		m_pHBox->setStretchFactor(m_pTitleLabel,2);
+		pLayout->addWidget(m_pCloseButton);
+
+		pLayout->setStretchFactor(m_pTitleLabel,2);
 		connect(m_pCloseButton,SIGNAL(clicked()),this,SLOT(closeClicked()));
 	} else {
 		m_pHBox = 0;

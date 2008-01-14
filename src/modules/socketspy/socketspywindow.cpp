@@ -28,7 +28,7 @@
 #include "kvi_locale.h"
 #include "kvi_console.h"
 
-#include <qsplitter.h>
+#include <QSplitter>
 //#include "kvi_module.h"
 
 extern QList<KviSocketSpyWindow*> * g_pSocketSpyWindowList;
