@@ -35,15 +35,16 @@
 #include "kvi_cmdformatter.h"
 #include "kvi_kvs_eventmanager.h"
 #include "kvi_kvs_eventhandler.h"
-
-#include <qmessagebox.h>
-#include <qsplitter.h>
-#include <qlayout.h>
-#include "kvi_tal_vbox.h"
 #include "kvi_tal_popupmenu.h"
-#include <qtooltip.h>
-#include <qinputdialog.h>
-#include <qpushbutton.h>
+
+#include <QMessageBox>
+#include <QSplitter>
+#include <QLayout>
+#include <QToolTip>
+#include <QInputDialog>
+#include <QPushButton>
+#include <QWidget>
+#include <QVBoxLayout>
 
 extern KviRawEditorWindow * g_pRawEditorWindow;
 
@@ -80,18 +81,27 @@ KviRawEditor::KviRawEditor(QWidget * par)
 
 	l->addWidget(spl,0,0);
 
-	KviTalVBox * boxi = new KviTalVBox(spl);
+	QWidget * boxi = new QWidget(spl);
+	QVBoxLayout * pLayout = new QVBoxLayout(spl);
+	boxi->setLayout(pLayout);
+
 	m_pListView = new KviTalListView(boxi);
 	m_pListView->addColumn(__tr2qs("Raw Event"));
 	m_pListView->setMultiSelection(false);
 	m_pListView->setShowSortIndicator(true);
 	m_pListView->setRootIsDecorated(true);
+	pLayout->addWidget(m_pListView);
 
 	QPushButton * pb = new QPushButton(__tr2qs("&Export All To..."),boxi);
+	pLayout->addWidget(pb);
 	connect(pb,SIGNAL(clicked()),this,SLOT(exportAllEvents()));
 	
-	KviTalVBox * box = new KviTalVBox(spl);
+	QWidget * box = new QWidget(spl);
+	QVBoxLayout * pVLayout = new QVBoxLayout(spl);
+	box->setLayout(pVLayout);
+
 	m_pNameEditor = new QLineEdit(box);
+	pVLayout->addWidget(m_pNameEditor);
 	QToolTip::add(m_pNameEditor,__tr2qs("Edit the raw event handler name."));
 	m_pEditor = KviScriptEditor::createInstance(box);
 

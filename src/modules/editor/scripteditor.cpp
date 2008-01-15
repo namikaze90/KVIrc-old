@@ -25,31 +25,27 @@
 
 #include "scripteditor.h"
 
-#include <qlayout.h>
-#include <qtoolbutton.h>
-#include <qmessagebox.h>
-#include <qtimer.h>
-
-#include <qcursor.h>
-#include <qfont.h>
-#include <qrect.h>
-
 #include "kvi_fileutils.h"
 #include "kvi_locale.h"
 #include "kvi_filedialog.h"
 #include "kvi_qstring.h"
 #include "kvi_config.h"
 #include "kvi_module.h"
-//
 #include "kvi_app.h"
 #include "kvi_console.h"
 #include "kvi_window.h"
 #include "kvi_iconmanager.h"
 #include "kvi_kvs_kernel.h"
 
+#include <QLayout>
+#include <QToolButton>
+#include <QMessageBox>
+#include <QTimer>
+#include <QCursor>
+#include <QFont>
+#include <QRect>
 #include <QSet>
 #include <QMenu>
-#include <qlayout.h>
 
 extern QSet<KviScriptEditorImplementation*> * g_pScriptEditorWindowList;
 extern KviModule * g_pEditorModulePointer;

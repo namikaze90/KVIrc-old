@@ -23,9 +23,7 @@
 //=============================================================================
 
 #include "kvi_module.h"
-
 #include "kvi_locale.h"
-
 #include "kvi_window.h"
 #include "kvi_app.h"
 #include "kvi_error.h"

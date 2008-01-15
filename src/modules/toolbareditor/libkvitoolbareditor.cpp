@@ -23,10 +23,9 @@
 //=============================================================================
 
 #include "toolbareditor.h"
+
 #include "kvi_module.h"
-
 #include "kvi_locale.h"
-
 #include "kvi_frame.h"
 #include "kvi_actionmanager.h"
 #include "kvi_config.h"

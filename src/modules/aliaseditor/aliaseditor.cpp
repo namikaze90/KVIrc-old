@@ -40,16 +40,17 @@
 #include "kvi_cmdformatter.h"
 #include "kvi_module.h"
 
-
-#include <qsplitter.h>
-#include <qlayout.h>
-#include "kvi_tal_vbox.h"
-#include <qtooltip.h>
-#include <qpushbutton.h>
-#include <qdir.h>
-#include <qmessagebox.h>
-#include <qinputdialog.h>
-#include <qregexp.h>
+#include <QSplitter>
+#include <QLayout>
+#include <QToolTip>
+#include <QPushButton>
+#include <QDir>
+#include <QMessageBox>
+#include <QInputDialog>
+#include <QRegExp>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 extern KviAliasEditorWindow * g_pAliasEditorWindow;
 extern KviModule * g_pAliasEditorModule;
@@ -215,20 +216,33 @@ KviAliasEditor::KviAliasEditor(QWidget * par)
 
 	l->addWidget(m_pSplitter,0,0);
 	
-	KviTalVBox * box = new KviTalVBox(m_pSplitter);
+	QWidget * box = new QWidget(m_pSplitter);
+	QVBoxLayout * pLayout = new QVBoxLayout(m_pSplitter);
+	box->setLayout(pLayout);
+
 	m_pListView = new KviTalListView(box);
 	m_pListView->addColumn(__tr2qs("Alias"));
 	m_pListView->setSelectionMode(KviTalListView::Extended);
 	m_pListView->setShowSortIndicator(true);
 	m_pListView->setRootIsDecorated(true);
+	pLayout->addWidget(m_pListView);
 
-	box = new KviTalVBox(m_pSplitter);
-	KviTalHBox * hbox = new KviTalHBox(box);
+	box = new QWidget(m_pSplitter);
+	QVBoxLayout * pVLayout = new QVBoxLayout(m_pSplitter);
+	box->setLayout(pVLayout);
+
+	QWidget * hbox = new QWidget(box);
+	QHBoxLayout * pHLayout = new QHBoxLayout(box);
+	hbox->setLayout(pHLayout);
+
 	m_pNameLabel = new QLabel(__tr2qs("No item selected"),hbox);
+	pHLayout->addWidget(m_pNameLabel);
+
 	m_pRenameButton = new QPushButton(__tr2qs("Rename"),hbox);
 	m_pRenameButton->setEnabled(false);
 	connect(m_pRenameButton,SIGNAL(clicked()),this,SLOT(renameItem()));
-	hbox->setStretchFactor(m_pNameLabel,2);
+	pHLayout->addWidget(m_pRenameButton);
+	pHLayout->setStretchFactor(m_pNameLabel,2);
 	QToolTip::add(m_pRenameButton,__tr2qs("Edit the alias or namespace name"));
 	m_pEditor = KviScriptEditor::createInstance(box);
 	m_pEditor->setFocus();

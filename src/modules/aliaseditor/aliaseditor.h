@@ -26,16 +26,14 @@
 
 #include "kvi_window.h"
 #include "kvi_string.h"
-
-
-
-#include <qwidget.h>
 #include "kvi_tal_listview.h"
-#include <qlineedit.h>
 #include "kvi_tal_popupmenu.h"
-#include <qstringlist.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
+
+#include <QWidget>
+#include <QLineEdit>
+#include <QStringList>
+#include <QPushButton>
+#include <QLabel>
 
 class KviScriptEditor;
 class KviAliasNamespaceListViewItem;

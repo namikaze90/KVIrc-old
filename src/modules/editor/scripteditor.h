@@ -27,15 +27,15 @@
 
 #include "kvi_scripteditor.h"
 
-#include <qlabel.h>
+#include "kvi_qcstring.h"
+#include "kvi_selectors.h"
+
+#include <QLabel>
 #include <QTextEdit>
 #include <QSyntaxHighlighter>
-#include <qdialog.h>
-#include <qcheckbox.h>
-#include <qevent.h> 
-#include "kvi_qcstring.h"
-
-#include "kvi_selectors.h"
+#include <QDialog>
+#include <QCheckBox>
+#include <QEvent>
 
 class KviScriptEditorWidget : public QTextEdit
 {
@@ -64,8 +64,6 @@ protected:
 	QString m_szHelp;
 
 };
-
-
 
 
 class KviScriptSyntaxHighlighter : public QSyntaxHighlighter

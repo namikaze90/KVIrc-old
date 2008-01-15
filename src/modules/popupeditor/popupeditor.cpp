@@ -38,21 +38,18 @@
 #include "kvi_kvs_popupmanager.h"
 #include "kvi_kvs_popupmenu.h"
 #include "kvi_kvs_variantlist.h"
-//
 
-#include <qmessagebox.h>
-#include <qdir.h>
-#include <qsplitter.h>
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qtooltip.h>
-
-#include <qpushbutton.h>
-#include "kvi_tal_vbox.h"
+#include <QMessageBox>
+#include <QDir>
+#include <QSplitter>
+#include <QLayout>
+#include <QLabel>
+#include <QToolTip>
+#include <QPushButton>
+#include <QWidget>
+#include <QVBoxLayout>
 
 extern KviPopupEditorWindow * g_pPopupEditorWindow;
-
-
 
 //KviPopupEntryItem
 KviPopupListViewItem::KviPopupListViewItem(KviTalListView * pListView,KviPopupListViewItem * after,Type t)
@@ -1022,14 +1019,18 @@ KviPopupEditor::KviPopupEditor(QWidget * par)
 
 	l->addWidget(spl,0,0);
 	
-	KviTalVBox * box = new KviTalVBox(spl);
+	QWidget * box = new QWidget(spl);
+	QVBoxLayout * pLayout = new QVBoxLayout(spl);
+	box->setLayout(pLayout);
 
 	m_pListView = new KviTalListView(box);
 	m_pListView->addColumn(__tr2qs("Popup"));
 	m_pListView->setSelectionMode(KviTalListView::Extended);
 	m_pListView->setShowSortIndicator(true);
+	pLayout->addWidget(m_pListView);
 
 	QPushButton * pb = new QPushButton(__tr2qs("&Export All To..."),box);
+	pLayout->addWidget(pb);
 	connect(pb,SIGNAL(clicked()),this,SLOT(exportAll()));
 	QPushButton * gn = new QPushButton(__tr2qs("&Export selected To..."),box);
 	connect(gn,SIGNAL(clicked()),this,SLOT(exportSelected()));

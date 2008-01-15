@@ -2,6 +2,7 @@
 action
 clock
 dialog
+editor
 ident
 lamerizer
 links
@@ -13,26 +14,30 @@ perl
 perlcore
 socketspy
 term
+toolbar
+toolbareditor
 
 [first port] No Qt3 code but perhaps through tal files
 about
 actioneditor
 addon
+aliaseditor
 avatar
 codetester
+eventeditor
 http
+popupeditor
+raweditor
 theme
 tip
+trayicon
 
 [not checked] To be checked for Qt3 code
 chan
 config
-aliaseditor
 channelsjoin
 codetester
 dcc
-editor
-eventeditor
 file
 filetransferwindow
 help
@@ -41,13 +46,10 @@ list
 log
 logview
 math
-
 my
 notifier
 objects
 options
-popupeditor
-raweditor
 regchan
 reguser
 rijndael
@@ -60,9 +62,6 @@ str
 system
 texticons
 tmphighlight
-toolbar
-toolbareditor
 torrent
-trayicon
 url
 window

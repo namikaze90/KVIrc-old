@@ -24,13 +24,12 @@
 
 #include "kvi_window.h"
 #include "kvi_string.h"
-
-
-#include <qwidget.h>
 #include "kvi_tal_listview.h"
-#include <qlineedit.h>
 #include "kvi_tal_popupmenu.h"
-#include <qpushbutton.h>
+
+#include <QWidget>
+#include <QLineEdit>
+#include <QPushButton>
 
 class KviKvsPopupMenu;
 class KviKvsPopupMenuItem;

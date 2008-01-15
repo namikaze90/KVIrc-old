@@ -24,10 +24,10 @@
 
 #include "kvi_window.h"
 #include "kvi_string.h"
-
-#include <qwidget.h>
 #include "kvi_tal_listview.h"
-#include <qlineedit.h>
+
+#include <QWidget>
+#include <QLineEdit>
 
 class KviScriptEditor;
 

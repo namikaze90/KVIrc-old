@@ -19,9 +19,11 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#include "scripteditor.h"
+
 #include "kvi_module.h"
 #include "kvi_window.h"
-#include "scripteditor.h"
+
 #include <QSet>
 
 KviModule * g_pEditorModulePointer = 0;

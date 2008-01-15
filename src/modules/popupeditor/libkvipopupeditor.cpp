@@ -20,13 +20,11 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include "kvi_module.h"
-
-#include "kvi_locale.h"
-
-#include "kvi_frame.h"
-
 #include "popupeditor.h"
+
+#include "kvi_module.h"
+#include "kvi_locale.h"
+#include "kvi_frame.h"
 
 KviPopupEditorWindow * g_pPopupEditorWindow = 0;
 

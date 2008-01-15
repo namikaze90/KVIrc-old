@@ -22,6 +22,7 @@
 //=============================================================================
 
 #include "toolbareditor.h"
+
 #include "kvi_actiondrawer.h"
 #include "kvi_locale.h"
 #include "kvi_frame.h"
@@ -36,18 +37,17 @@
 #include "kvi_kvs_useraction.h"
 #include "kvi_draganddrop.h"
 
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qapplication.h>
-#include <qtooltip.h>
-
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qmessagebox.h>
-#include <qframe.h>
-#include <qdir.h>
-#include <qtimer.h>
-#include <qevent.h>
+#include <QPushButton>
+#include <QLayout>
+#include <QApplication>
+#include <QToolTip>
+#include <QLineEdit>
+#include <QLabel>
+#include <QMessageBox>
+#include <QFrame>
+#include <QDir>
+#include <QTimer>
+#include <QEvent>
 
 KviCustomizeToolBarsDialog * KviCustomizeToolBarsDialog::m_pInstance = 0;
 extern QRect g_rectToolBarEditorDialogGeometry;

@@ -22,11 +22,12 @@
 //
 //==========================================================================================
 
+#include "aliaseditor.h"
+
 #include "kvi_module.h"
 #include "kvi_locale.h"
 #include "kvi_frame.h"
 
-#include "aliaseditor.h"
 KviAliasEditorWindow * g_pAliasEditorWindow = 0;
 KviModule * g_pAliasEditorModule = 0;
 
