@@ -24,9 +24,9 @@
 //=============================================================================
 
 #include "libkvisnd.h"
+
 #include "kvi_module.h"
 #include "kvi_debug.h"
-
 #include "kvi_fileutils.h"
 #include "kvi_malloc.h"
 #include "kvi_window.h"
@@ -34,13 +34,13 @@
 #include "kvi_locale.h"
 #include "kvi_qstring.h"
 
-#include <qsound.h>
+#include <QSound>
 
 #ifdef COMPILE_ON_WINDOWS
 	#include <mmsystem.h>
 #else //!COMPILE_ON_WINDOWS
 
-	#include <qfile.h>
+	#include <QFile>
 	#include <unistd.h>
 	#include <errno.h>
 
@@ -66,13 +66,6 @@
 		#endif //COMPILE_AUDIOFILE_SUPPORT
 	#endif //COMPILE_OSS_SUPPORT
 
-	#ifdef COMPILE_ARTS_SUPPORT
-		#include <arts/soundserver.h>
-
-		static Arts::Dispatcher * g_pArtsDispatcher = 0;
-
-	#endif //COMPILE_ARTS_SUPPORT
-
 #endif
 
 static KviSoundPlayer * g_pSoundPlayer = 0;
@@ -96,18 +89,10 @@ KviSoundPlayer::KviSoundPlayer()
 	#ifdef COMPILE_ESD_SUPPORT
 		m_pSoundSystemDict->insert("esd",new SoundSystemRoutine(KVI_PTR2MEMBER(KviSoundPlayer::playEsd)));
 	#endif //COMPILE_ESD_SUPPORT
-	#ifdef COMPILE_ARTS_SUPPORT
-		m_pSoundSystemDict->insert("arts",new SoundSystemRoutine(KVI_PTR2MEMBER(KviSoundPlayer::playArts)));
-	#endif //COMPILE_ARTS_SUPPORT
 #endif //!COMPILE_ON_WINDOWS
 
-#if QT_VERSION >= 0x030100
 	if(QSound::isAvailable())
 		m_pSoundSystemDict->insert("qt",new SoundSystemRoutine(KVI_PTR2MEMBER(KviSoundPlayer::playQt)));
-#else
-	if(QSound::available())
-		m_pSoundSystemDict->insert("qt",new SoundSystemRoutine(KVI_PTR2MEMBER(KviSoundPlayer::playQt)));
-#endif
 
 	m_pSoundSystemDict->insert("null",new SoundSystemRoutine(KVI_PTR2MEMBER(KviSoundPlayer::playNull)));
 
@@ -121,12 +106,6 @@ KviSoundPlayer::~KviSoundPlayer()
 	foreach(SoundSystemRoutine* i,*m_pSoundSystemDict) { delete i; }
 	delete m_pSoundSystemDict;
 
-#ifndef COMPILE_ON_WINDOWS
-	#ifdef COMPILE_ARTS_SUPPORT
-		if(g_pArtsDispatcher)delete g_pArtsDispatcher;
-        g_pArtsDispatcher = 0;
-	#endif
-#endif //!COMPILE_ON_WINDOWS
 	g_pSoundPlayer = 0;
 }
 
@@ -170,19 +149,6 @@ void KviSoundPlayer::detectSoundSystem()
 #ifdef COMPILE_ON_WINDOWS
 	KVI_OPTION_STRING(KviOption_stringSoundSystem) = "winmm";
 #else
-	#ifdef COMPILE_ARTS_SUPPORT
-		if(!g_pArtsDispatcher)g_pArtsDispatcher = new Arts::Dispatcher();
-
-		Arts::SimpleSoundServer *server = new Arts::SimpleSoundServer(Arts::Reference("global:Arts_SimpleSoundServer"));
-		if(!server->isNull())
-		{
-	        //Don't change the order of those deletes!
-			KVI_OPTION_STRING(KviOption_stringSoundSystem) = "arts";
-			delete server;
-			return;
-	    }
-		delete server;
-	#endif //COMPILE_ARTS_SUPPORT
 	#ifdef COMPILE_ESD_SUPPORT
 		esd_format_t format = ESD_BITS16 | ESD_STREAM | ESD_PLAY | ESD_MONO;
 		int esd_fd = esd_play_stream(format, 8012, NULL, "kvirc");
@@ -200,11 +166,7 @@ void KviSoundPlayer::detectSoundSystem()
 		KVI_OPTION_STRING(KviOption_stringSoundSystem) = "oss";
 	#endif
 
-#if QT_VERSION >= 0x030100
 	if(QSound::isAvailable())
-#else
-	if(QSound::available())
-#endif
 	{
 		KVI_OPTION_STRING(KviOption_stringSoundSystem) = "qt";
 		return;
@@ -261,19 +223,6 @@ void KviSoundPlayer::detectSoundSystem()
 			return true;
 		}
 	#endif //COMPILE_ESD_SUPPORT
-	#ifdef COMPILE_ARTS_SUPPORT
-		bool KviSoundPlayer::playArts(const QString &szFileName)
-		{
-			if(isMuted()) return true;
-			KviArtsSoundThread * t = new KviArtsSoundThread(szFileName);
-			if(!t->start())
-			{
-				delete t;
-				return false;
-			}
-			return true;
-		}
-	#endif //COMPILE_ARTS_SUPPORT
 #endif //!COMPILE_ON_WINDOWS
 
 bool KviSoundPlayer::playQt(const QString &szFileName)
@@ -365,11 +314,11 @@ void KviSoundThread::run()
 				frameSize = afGetVirtualFrameSize(file, AF_DEFAULT_TRACK, 1);
 				channelCount = afGetVirtualChannels(file, AF_DEFAULT_TRACK); 
 				buffer = kvi_malloc(int(BUFFER_FRAMES * frameSize));
-			    
+			
 				int audiofd_c = open("/dev/dsp", O_WRONLY | O_EXCL | O_NDELAY);
 				QFile audiofd;
 				audiofd.open(IO_WriteOnly,audiofd_c);
-			    
+			
 				if(audiofd_c < 0)
 				{
 					debug("Could not open audio devive /dev/dsp! [OSS]");
@@ -527,33 +476,6 @@ void KviSoundThread::run()
 
 	#endif //COMPILE_ESD_SUPPORT
 
-	#ifdef COMPILE_ARTS_SUPPORT
-
-		KviArtsSoundThread::KviArtsSoundThread(const QString &szFileName)
-		: KviSoundThread(szFileName)
-		{
-		}
-
-		KviArtsSoundThread::~KviArtsSoundThread()
-		{
-		}
-
-		void KviArtsSoundThread::play()
-		{
-			if(!g_pArtsDispatcher)g_pArtsDispatcher = new Arts::Dispatcher;
-		
-			Arts::SimpleSoundServer *server = new Arts::SimpleSoundServer(Arts::Reference("global:Arts_SimpleSoundServer"));
-			if(server->isNull())
-			{
-				debug("Can't connect to sound server to play file %s",m_szFileName.utf8().data());
-			} else {
-				server->play(m_szFileName);
-			}
-			delete server;
-		}
-	#endif
-
-
 #endif //!COMPILE_ON_WINDOWS
 
 
@@ -570,7 +492,7 @@ void KviSoundThread::run()
     @description:
         Play a file, using the sound system specified by the user in the options.[br]
         The supported file formats vary from one sound system to another, but the best
-        bet could be Au Law (.au) files. Artsd, EsounD and Linux/OSS with audiofile support also
+        bet could be Au Law (.au) files, EsounD and Linux/OSS with audiofile support also
         support other formats like .wav files but in OSS without audiofile only .au files are
         supported.
 		On windows the supported file formats are determined by the drivers installed.
@@ -623,7 +545,7 @@ static bool snd_kvs_cmd_autodetect(KviKvsModuleCommandCall * c)
     @short:
         Mute all sounds
     @syntax:
-        snd.mute 
+        snd.mute
     @description:
         Mute all sounds
 */
@@ -734,4 +656,3 @@ KVIRC_MODULE(
 	snd_module_ctrl,
 	snd_module_cleanup
 )
-

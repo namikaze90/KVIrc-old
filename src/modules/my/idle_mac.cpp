@@ -20,7 +20,7 @@
 
 #ifdef Q_OS_MACX
 
-#include"idle.h"
+#include "idle.h"
 #include <Carbon/Carbon.h>
 
 // Why does Apple have to make this so complicated?
@@ -159,4 +159,5 @@ bool IdlePlatform::init() {
 int IdlePlatform::secondsIdle() {
 	return d->mSecondsIdle;
 }
+
 #endif

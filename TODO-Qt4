@@ -1,6 +1,7 @@
 [ported] No more Qt3 code directly and through tal-files
 action
 clock
+codetester
 dialog
 editor
 ident
@@ -10,9 +11,13 @@ log
 mask
 mediaplayer
 mircimport
+my
 perl
 perlcore
+rijndael
+sharedfile
 socketspy
+spaste
 term
 toolbar
 toolbareditor
@@ -28,6 +33,7 @@ eventeditor
 http
 popupeditor
 raweditor
+sharedfileswindow
 theme
 tip
 trayicon
@@ -36,7 +42,6 @@ trayicon
 chan
 config
 channelsjoin
-codetester
 dcc
 file
 filetransferwindow
@@ -46,18 +51,13 @@ list
 log
 logview
 math
-my
 notifier
 objects
 options
 regchan
 reguser
-rijndael
 setup
-sharedfile
-sharedfileswindow
 snd
-spaste
 str
 system
 texticons

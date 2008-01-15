@@ -1,3 +1,6 @@
+#ifndef SPASTE_CONTROLLER_H
+#define SPASTE_CONTROLLER_H
+
 //   File : controller.h
 //   Creation date : Thu Apr 30 2002 17:13:12 GMT by Juanjo Álvarez
 //
@@ -19,15 +22,12 @@
 //   along with this program. If not, write to the Free Software Foundation,
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-#ifndef SPASTE_CONTROLLER_H
-#define SPASTE_CONTROLLER_H
-
 #include "kvi_window.h"
 #include "kvi_string.h"
 
-#include <qobject.h>
-#include <qstringlist.h>
-#include <qfile.h>
+#include <QObject>
+#include <QStringList>
+#include <QFile>
 
 class SPasteController : public QObject
 {
@@ -56,4 +56,3 @@ private:
 };
 
 #endif //SPASTE_CONTROLLER_H
-    

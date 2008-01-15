@@ -20,7 +20,7 @@
 #ifndef Q_OS_MACX
 #ifndef COMPILE_ON_WINDOWS
 
-#include"idle.h"
+#include "idle.h"
 
 #ifndef COMPILE_XSS_SUPPORT
 
@@ -31,14 +31,12 @@ int IdlePlatform::secondsIdle() { return 0; }
 
 #else
 
-#include<qapplication.h>
+#include <QApplication>
+#include <QDesktopWidget>
 
-#include<X11/Xlib.h>
-#include<X11/Xutil.h>
-#include<X11/extensions/scrnsaver.h>
-
-
-#include <qdesktopwidget.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/scrnsaver.h>
 
 
 static XErrorHandler old_handler = 0;

@@ -21,9 +21,7 @@
 //
 
 #include "kvi_module.h"
-
 #include "kvi_console.h"
-
 #include "kvi_app.h"
 #include "kvi_locale.h"
 #include "kvi_ircconnection.h"
@@ -31,6 +29,7 @@
 #include "kvi_ircconnectionserverinfo.h"
 #include "kvi_ircserver.h"
 #include "idle.h"
+
 Idle* g_pIdle;
 
 #define GET_KVS_CONSOLE \
@@ -46,7 +45,7 @@ Idle* g_pIdle;
 	} else { \
 		wnd = g_pApp->findConsole(uiWnd); \
 		if(!wnd)c->warning(__tr2qs("No such irc context (%d)"),uiWnd); \
-	} 	
+	}
 
 /*
 	@doc: my.nick

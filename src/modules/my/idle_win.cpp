@@ -19,10 +19,10 @@
  */
 #ifdef COMPILE_ON_WINDOWS
 
-#include"idle.h"
+#include "idle.h"
 
-#include<qlibrary.h>
-#include<windows.h>
+#include <QLibrary>
+#include <windows.h>
 
 typedef struct tagLASTINPUTINFO {
 	UINT cbSize;

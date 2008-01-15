@@ -23,17 +23,14 @@
 //=============================================================================
 
 #include "kvi_module.h"
-
 #include "kvi_sharedfiles.h"
 #include "kvi_ircmask.h"
 #include "kvi_fileutils.h"
 #include "kvi_locale.h"
-
 #include "kvi_out.h"
 #include "kvi_mirccntrl.h"
 #include "kvi_window.h"
 #include "kvi_frame.h"
-
 
 #include <time.h>
 

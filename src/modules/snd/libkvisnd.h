@@ -24,15 +24,11 @@
 //
 
 #include "kvi_settings.h"
-
-#include <qobject.h>
-
 #include "kvi_thread.h"
 #include "kvi_string.h"
-
-
-
 #include "kvi_options.h"
+
+#include <QObject>
 
 //class KviWavSoundFileReader
 //{
@@ -149,17 +145,6 @@ protected:
 			virtual void play();
 		};
 	#endif //COMPILE_ESD_SUPPORT
-
-	#ifdef COMPILE_ARTS_SUPPORT
-		class KviArtsSoundThread : public KviSoundThread
-		{
-		public:
-			KviArtsSoundThread(const QString &szFileName);
-			virtual ~KviArtsSoundThread();
-		protected:
-			virtual void play();
-		};
-	#endif //COMPILE_ARTS_SUPPORT
 #endif //!COMPILE_ON_WINDOWS
 
 class KviSoundPlayer;
@@ -197,9 +182,6 @@ protected:
 			bool playOssAudiofile(const QString &szFileName);
 		#endif //COMPILE_AUDIOFILE_SUPPORT
 	#endif //COMPILE_OSS_SUPPORT
-	#ifdef COMPILE_ARTS_SUPPORT
-		bool playArts(const QString &szFileName);
-	#endif //COMPILE_ARTS_SUPPORT
 	#ifdef COMPILE_ESD_SUPPORT
 		bool playEsd(const QString &szFileName);
 	#endif //COMPILE_ESD_SUPPORT

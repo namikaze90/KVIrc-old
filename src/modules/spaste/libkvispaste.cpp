@@ -25,17 +25,15 @@
 #include "controller.h"
 
 #include "kvi_module.h"
-
 #include "kvi_fileutils.h"
 #include "kvi_app.h"
 #include "kvi_locale.h"
-
 #include "kvi_console.h"
 #include "kvi_options.h"
 #include "kvi_out.h"
 
-#include <qfile.h>
-#include <qclipboard.h>
+#include <QFile>
+#include <QClipboard>
 
 #ifndef COMPILE_ON_WINDOWS
     #include <unistd.h>

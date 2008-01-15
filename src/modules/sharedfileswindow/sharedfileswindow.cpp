@@ -37,17 +37,18 @@
 #include "kvi_filedialog.h"
 #include "kvi_styled_controls.h"
 
-#include <qdatetimeedit.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qsplitter.h>
-#include "kvi_tal_hbox.h"
-#include "kvi_tal_vbox.h"
-#include <qlayout.h>
-#include <qcheckbox.h>
-#include <qmessagebox.h>
-#include <qfileinfo.h>
+#include <QDateTimeEdit>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSplitter>
+#include <QLayout>
+#include <QCheckBox>
+#include <QMessageBox>
+#include <QFileInfo>
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 extern KviSharedFilesWindow * g_pSharedFilesWindow;
 extern KVIRC_API KviSharedFilesManager * g_pSharedFilesManager;
@@ -208,7 +209,9 @@ KviSharedFilesWindow::KviSharedFilesWindow(KviModuleExtensionDescriptor * d,KviF
 	g_pSharedFilesWindow = this;
 	m_pSplitter = new QSplitter(Qt::Horizontal,this,"splitter");
 
-	KviTalVBox * vbox = new KviTalVBox(m_pSplitter);
+	QWidget * vbox = new QWidget(m_pSplitter);
+	QVBoxLayout * pVLayout = new QVBoxLayout(m_pSplitter);
+	vbox->setLayout(pVLayout);
 
 	m_pListView  = new KviTalListView(vbox);
 	//m_pListView->header()->hide();
@@ -219,12 +222,16 @@ KviSharedFilesWindow::KviSharedFilesWindow(KviModuleExtensionDescriptor * d,KviF
 	m_pListView->addColumn(__tr2qs_ctx("Expires","sharedfileswindow"),200);
 	m_pListView->setSelectionMode(KviTalListView::Single);
 	connect(m_pListView,SIGNAL(selectionChanged()),this,SLOT(enableButtons()));
+	pVLayout->addWidget(m_pListView);
 
 	connect(g_pSharedFilesManager,SIGNAL(sharedFilesChanged()),this,SLOT(fillFileView()));
 	connect(g_pSharedFilesManager,SIGNAL(sharedFileAdded(KviSharedFile *)),this,SLOT(sharedFileAdded(KviSharedFile *)));
 	connect(g_pSharedFilesManager,SIGNAL(sharedFileRemoved(KviSharedFile *)),this,SLOT(sharedFileRemoved(KviSharedFile *)));
 
-	KviTalHBox * b = new KviTalHBox(vbox);
+	QWidget * b = new QWidget(vbox);
+	QHBoxLayout * pHLayout = new QHBoxLayout(vbox);
+	b->setLayout(pHLayout);
+	pVLayout->addWidget(b);
 
 	m_pAddButton = new QPushButton(__tr2qs_ctx("&Add...","sharedfileswindow"),b);
 	connect(m_pAddButton,SIGNAL(clicked()),this,SLOT(addClicked()));
@@ -232,6 +239,9 @@ KviSharedFilesWindow::KviSharedFilesWindow(KviModuleExtensionDescriptor * d,KviF
 	connect(m_pRemoveButton,SIGNAL(clicked()),this,SLOT(removeClicked()));
 	m_pEditButton = new QPushButton(__tr2qs_ctx("&Edit","sharedfileswindow"),b);
 	connect(m_pEditButton,SIGNAL(clicked()),this,SLOT(editClicked()));
+	pHLayout->addWidget(m_pAddButton);
+	pHLayout->addWidget(m_pRemoveButton);
+	pHLayout->addWidget(m_pEditButton);
 
 	fillFileView();
 }

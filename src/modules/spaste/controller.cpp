@@ -20,15 +20,16 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "controller.h"
+
 #include "kvi_window.h"
 #include "kvi_console.h"
 #include "kvi_mirccntrl.h"
 #include "kvi_app.h"
 #include "kvi_options.h"
 
-#include <qtimer.h>
-#include <qstringlist.h>
-#include <qclipboard.h>
+#include <QTimer>
+#include <QStringList>
+#include <QClipboard>
 
 extern QList<SPasteController*> * g_pControllerList;
 
