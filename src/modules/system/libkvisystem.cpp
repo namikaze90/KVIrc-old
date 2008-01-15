@@ -26,7 +26,6 @@
 #include "kvi_module.h"
 #include "kvi_string.h"
 #include "kvi_thread.h"
-
 #include "kvi_locale.h"
 #include "kvi_qcstring.h"
 #include "kvi_app.h"
@@ -34,7 +33,7 @@
 #include "kvi_osinfo.h"
 #include "kvi_qcstring.h"
 
-#include <qclipboard.h>
+#include <QClipboard>
 
 #ifndef COMPILE_ON_WINDOWS
 	#include <sys/utsname.h>

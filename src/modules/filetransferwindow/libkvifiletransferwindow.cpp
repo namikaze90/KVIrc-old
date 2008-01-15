@@ -21,18 +21,16 @@
 //
 //==================================================================================
 
-#include "kvi_module.h"
-
-
 #include "filetransferwindow.h"
 
+#include "kvi_module.h"
 #include "kvi_app.h"
 #include "kvi_frame.h"
 #include "kvi_window.h"
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 
-#include <qsplitter.h>
+#include <QSplitter>
 
 KviFileTransferWindow * g_pFileTransferWindow = 0;
 

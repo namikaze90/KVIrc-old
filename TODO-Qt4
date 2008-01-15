@@ -4,6 +4,7 @@ clock
 codetester
 dialog
 editor
+file
 ident
 lamerizer
 links
@@ -16,9 +17,12 @@ perl
 perlcore
 rijndael
 sharedfile
+snd
 socketspy
 spaste
+system
 term
+texticons
 toolbar
 toolbareditor
 
@@ -28,8 +32,10 @@ actioneditor
 addon
 aliaseditor
 avatar
+channelsjoin
 codetester
 eventeditor
+filetransferwindow
 http
 popupeditor
 raweditor
@@ -41,10 +47,7 @@ trayicon
 [not checked] To be checked for Qt3 code
 chan
 config
-channelsjoin
 dcc
-file
-filetransferwindow
 help
 iograph
 list
@@ -57,10 +60,7 @@ options
 regchan
 reguser
 setup
-snd
 str
-system
-texticons
 tmphighlight
 torrent
 url

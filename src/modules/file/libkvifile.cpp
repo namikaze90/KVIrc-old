@@ -29,13 +29,12 @@
 #include "kvi_app.h"
 #include "kvi_options.h"
 #include "kvi_qcstring.h"
-
 #include "kvi_kvs_arraycast.h"
-
-#include <qfileinfo.h>
 #include "kvi_file.h"
-#include <qdir.h>
-#include <qtextstream.h>
+
+#include <QFileInfo>
+#include <QDir>
+#include <QTextStream>
 
 /*
 	@doc: file.copy

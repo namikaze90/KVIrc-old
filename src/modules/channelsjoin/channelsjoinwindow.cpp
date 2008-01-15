@@ -28,12 +28,13 @@
 #include "kvi_options.h"
 #include "kvi_selectors.h"
 #include "kvi_app.h"
-
 #include "kvi_string.h"
 #include "kvi_iconmanager.h"
 #include "kvi_console.h"
 #include "kvi_regchan.h"
 #include "kvi_kvs_script.h"
+#include "kvi_tal_listview.h"
+#include <kvi_tal_groupbox.h>
 
 #include <QLabel>
 #include <QLineEdit>
@@ -41,12 +42,8 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include <QCloseEvent>
+//#include <QHeaderView>
 
-// TODO: Qt4
-#include <q3header.h>
-#include "kvi_tal_listview.h"
-#include <kvi_tal_groupbox.h>
-// end TODO
 
 extern KviChannelsJoinWindow * g_pChannelsWindow;
 extern QRect                   g_rectChannelsJoinGeometry;
@@ -152,7 +149,7 @@ void KviChannelsJoinWindow::fillListView()
 {
 	m_pListView->clear();
 
-	m_pListView->header()->hide();
+	//m_pListView->header()->hide();
 
 	KviTalListViewItem * par = new KviTalListViewItem(m_pListView,__tr2qs("Recent Channels"));
 	par->setOpen(true);

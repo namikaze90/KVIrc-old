@@ -36,21 +36,17 @@
 #include "kvi_input.h"
 #include "kvi_qstring.h"
 
-#include <qsplitter.h>
-#include <qtooltip.h>
-#include "kvi_tal_hbox.h"
-
-// TODO: Qt4
-#include <q3header.h>
-
-#include <qpainter.h>
-#include <qmessagebox.h>
-#include <qclipboard.h>
-#include <qfileinfo.h>
-#include <qfile.h>
-#include <qlabel.h>
-#include <qfontmetrics.h>
-#include <qevent.h>
+#include <QSplitter>
+#include <QToolTip>
+#include <QPainter>
+#include <QMessageBox>
+#include <QClipboard>
+#include <QFileInfo>
+#include <QFile>
+#include <QLabel>
+#include <QFontMetrics>
+#include <QEvent>
+//#include <QHeaderView>
 
 #ifdef COMPILE_KDE_SUPPORT
 	#include <kurl.h>

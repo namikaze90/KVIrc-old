@@ -22,9 +22,10 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 //=============================================================================
-#include "kvi_module.h"
 
 #include "channelsjoinwindow.h"
+
+#include "kvi_module.h"
 #include "kvi_window.h"
 #include "kvi_frame.h"
 #include "kvi_locale.h"
@@ -52,7 +53,7 @@ QRect                   g_rectChannelsJoinGeometry;
 */
 
 static bool channelsjoin_kvs_cmd_open(KviKvsModuleCommandCall * c)
-{ 
+{
 	if(!g_pChannelsWindow)g_pChannelsWindow = new KviChannelsJoinWindow(c->window()->frame(),"channelsjoin");
 
 	g_pChannelsWindow->setConsole(c->window()->console());
@@ -62,8 +63,6 @@ static bool channelsjoin_kvs_cmd_open(KviKvsModuleCommandCall * c)
 	g_pChannelsWindow->setFocus();
 
 	return true;
-
-
 }
 
 static bool channelsjoin_module_init(KviModule * m)

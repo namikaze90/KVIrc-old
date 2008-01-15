@@ -1,3 +1,6 @@
+#ifndef _CHANNELSJOIN_H_
+#define _CHANNELSJOIN_H_
+
 //
 //   File : channelsjoinwindow.h
 //   Creation date : Thu Nov 06 2001 12:30:25 CEST by Juan Jos��varez
@@ -21,11 +24,11 @@
 //
 
 
-#ifndef _CHANNELSJOIN_H_
-#define _CHANNELSJOIN_H_
 #include "kvi_window.h"
 #include "kvi_string.h"
+#include "kvi_styled_controls.h"
 #include "kvi_tal_groupbox.h"
+#include "kvi_tal_listview.h"
 
 #include <QDialog>
 
@@ -33,9 +36,6 @@ class KviConsole;
 class KviTalGroupBox;
 class QPushButton;
 class QLineEdit;
-
-#include "kvi_styled_controls.h"
-#include "kvi_tal_listview.h"
 
 class KviChannelsJoinWindow : public QDialog
 {
