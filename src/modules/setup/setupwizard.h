@@ -22,26 +22,24 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-#include <kvi_tal_wizard.h>
-#include "kvi_tal_vbox.h"
-#include "kvi_tal_hbox.h"
-#include "kvi_tal_groupbox.h"
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qlineedit.h>
-
-// TODO: Qt4
-#include <q3buttongroup.h>
-#define KviTalVButtonGroup Q3VButtonGroup
-
-#include <qradiobutton.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
-
 #include "kvi_settings.h"
 #include "kvi_string.h"
 #include "kvi_selectors.h"
+#include <kvi_tal_wizard.h>
+#include "kvi_tal_groupbox.h"
+
+#include <QLabel>
+#include <QPixmap>
+#include <QLineEdit>
+
+#include <QRadioButton>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QButtonGroup>
+
 
 class KviSetupWizard;
 
@@ -52,10 +50,9 @@ public:
 	KviSetupPage(KviSetupWizard * w);
 	~KviSetupPage();
 public:
-	KviTalVBox * m_pVBox;
-	QLabel * m_pPixmapLabel;
-	QLabel * m_pTextLabel;
-   
+	QWidget * m_pVBox;
+	QLabel  * m_pPixmapLabel;
+	QLabel  * m_pTextLabel;
 };
 
 
@@ -80,10 +77,7 @@ public:
 	KviSetupPage  * m_pServers;
 	
 	// Theme
-
-
-	KviTalVButtonGroup * m_pThemeButtonGroup;
-
+	QButtonGroup  * m_pThemeButtonGroup;
 	QRadioButton  * m_pThemeHiRes;
 	QRadioButton  * m_pThemeLoRes;
 	QRadioButton  * m_pThemeNone;
@@ -95,7 +89,7 @@ public:
 	//Dir
 	QLineEdit     * m_pDataPathEdit;
 	QLineEdit     * m_pIncomingPathEdit;
-	KviTalVButtonGroup * m_pDirButtonGroup;
+	QButtonGroup  * m_pDirButtonGroup;
 	QRadioButton  * m_pDirUsePrev;
 	QRadioButton  * m_pDirUseNew;
 #ifdef COMPILE_ON_WINDOWS
@@ -103,9 +97,9 @@ public:
 #endif
 	QRadioButton  * m_pDirRestore;
 	QLineEdit     * m_pOldDataPathEdit;
-	KviTalHBox         * m_pOldPathBox;
-	KviTalHBox         * m_pNewPathBox;
-	KviTalHBox         * m_pNewIncomingBox;
+	QWidget       * m_pOldPathBox;
+	QWidget       * m_pNewPathBox;
+	QWidget       * m_pNewIncomingBox;
 	
 	//Identify
 	QComboBox        * m_pAgeCombo;
@@ -118,7 +112,7 @@ public:
 	KviStringSelector * m_pOtherInfoSelector;
 	
 	//Servers
-	KviTalVButtonGroup * m_pServersButtonGroup;
+	QButtonGroup  * m_pServersButtonGroup;
 	QRadioButton  * m_pServersChooseFromList;
 	QRadioButton  * m_pServersSpecifyManually;
 	QRadioButton  * m_pServersOpenIrcUrl;
@@ -128,15 +122,15 @@ public:
 	QRadioButton  * m_pUseMircServerList;
 #endif
 	
-	QString		    m_szServerConfigFile;
-	QString		    m_szServerUrl;
-	QString		    m_szServerHost;
-	unsigned int        m_uServerPort;
+	QString         m_szServerConfigFile;
+	QString         m_szServerUrl;
+	QString         m_szServerHost;
+	unsigned int    m_uServerPort;
 	
 	KviStringSelector * m_pServerHostSelector;
 	KviStringSelector * m_pServerUrlSelector;
 	KviFileSelector   * m_pServerConfigSelector;
-	KviUIntSelector   *m_pServerPortSelector;
+	KviUIntSelector   * m_pServerPortSelector;
 	
 protected:
 	void makeLink();

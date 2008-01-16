@@ -22,20 +22,21 @@
 
 #include "logviewwidget.h"
 
-#include <qsplitter.h>
-#include <qlayout.h>
-#include <qdir.h>
+#include <QSplitter>
+#include <QLayout>
+#include <QDir>
+#include <QTextCodec>
 
 //#include "kvi_debug.h"
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 #include "kvi_app.h"
-
 #include "kvi_qstring.h"
+
 #ifdef COMPILE_ZLIB_SUPPORT
 	#include <zlib.h>
 #endif
-#include <qtextcodec.h>
+
 
 const QPixmap * KviLogListViewItemType::pixmap(int col) const 
 {
@@ -71,5 +72,3 @@ QString KviLogListViewItemType::text(int col) const
 			return __tr2qs_ctx("Other","logview");
 	}
 };
-
-

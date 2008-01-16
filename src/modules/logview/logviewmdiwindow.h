@@ -25,16 +25,14 @@
 #include "kvi_settings.h"
 #include "kvi_window.h"
 #include "kvi_moduleextension.h"
-
-#include "kvi_tal_vbox.h"
 #include "kvi_tal_listview.h"
 
-#include <qtabwidget.h>
-#include <qdatetime.h> 
+#include <QTabWidget>
+#include <QDateTime>
 
 class KviTalListView;
-class QStringList;
 class KviLogViewWidget;
+class QStringList;
 class QCheckBox;
 class QLineEdit;
 class QDateEdit;
@@ -101,7 +99,7 @@ protected:
 	QStringList        * m_pFileNames;
 	QString              m_szLogDirectory;
 	QTabWidget         * m_pTabWidget;
-	KviTalVBox         * m_pIndexTab;
+	QWidget            * m_pIndexTab;
 	QWidget            * m_pSearchTab;
 protected:
 	QStringList getFileNames();

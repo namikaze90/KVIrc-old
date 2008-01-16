@@ -1,7 +1,9 @@
 [ported] No more Qt3 code directly and through tal-files
 action
+chan
 clock
 codetester
+config
 dialog
 editor
 file
@@ -16,6 +18,7 @@ mircimport
 my
 perl
 perlcore
+regchan
 rijndael
 sharedfile
 snd
@@ -41,26 +44,22 @@ eventeditor
 filetransferwindow
 http
 list
+logview
 popupeditor
 raweditor
+setup
 sharedfileswindow
 theme
 tip
 trayicon
 
 [not checked] To be checked for Qt3 code
-chan
-config
 help
 iograph
-log
-logview
 notifier
 objects
 options
-regchan
 reguser
-setup
 str
 torrent
 url

@@ -22,13 +22,9 @@
 //
 //=============================================================================
 
-#include "kvi_module.h"
-
 #include "setupwizard.h"
 
-#include <qstring.h>
-#include <qfile.h>
-
+#include "kvi_module.h"
 #include "kvi_options.h"
 #include "kvi_defaults.h"
 #include "kvi_app.h"
@@ -37,6 +33,11 @@
 #include "kvi_window.h"
 #include "kvi_theme.h"
 #include "kvi_ircserverdb.h"
+
+#include <QString>
+#include <QFile>
+
+
 
 // this will be choosen during the setup process
 QString g_szChoosenIncomingDirectory;
@@ -151,8 +152,8 @@ KVIRC_MODULE(
 	"4.0.0",
 	"Szymon Stefanek <pragma at kvirc dot net>" ,
 	"First-time-run setup wizard",
-    setup_module_init ,
-    setup_module_can_unload,
-    0,
+	setup_module_init ,
+	setup_module_can_unload,
+	0,
 	setup_module_cleanup
 )

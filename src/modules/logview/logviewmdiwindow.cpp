@@ -32,33 +32,31 @@
 #include "kvi_qcstring.h"
 #include "kvi_app.h"
 #include "kvi_fileutils.h"
-
-// TODO: Qt4
-#include <q3progressdialog.h>
-
-
 #include "kvi_accel.h"
-#include <qpixmap.h>
-#include <qsplitter.h>
-#include <qtoolbutton.h>
+#include "kvi_styled_controls.h"
 #include "kvi_tal_listview.h"
-#include <qfileinfo.h>
-#include <qdir.h>
 #include "kvi_tal_popupmenu.h"
-#include <qcursor.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
 
-
+#include <QPixmap>
+#include <QSplitter>
+#include <QToolButton>
+#include <QFileInfo>
+#include <QDir>
+#include <QCursor>
+#include <QLayout>
+#include <QPushButton>
+#include <QTextCodec>
+#include <QDateTimeEdit>
+#include <QLineEdit>
+#include <QLabel>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QProgressDialog>
 
 #ifdef COMPILE_ZLIB_SUPPORT
 	#include <zlib.h>
 #endif
-#include <qtextcodec.h>
-#include "kvi_styled_controls.h"
-#include <qdatetimeedit.h>
-#include <qlineedit.h>
-#include <qlabel.h>
+
 
 extern KviLogViewMDIWindow * g_pLogViewWindow;
 
@@ -72,8 +70,12 @@ KviLogViewMDIWindow::KviLogViewMDIWindow(KviModuleExtensionDescriptor * d,KviFra
 
 	m_pTabWidget = new QTabWidget(m_pSplitter);
 	
-	m_pIndexTab  = new KviTalVBox(m_pTabWidget);
+	m_pIndexTab = new QWidget(m_pTabWidget);
+	QVBoxLayout * pLayout = new QVBoxLayout(m_pTabWidget);
+	m_pIndexTab->setLayout(pLayout);
+
 	m_pTabWidget->insertTab(m_pIndexTab,__tr2qs_ctx("Index","logview"));
+
 	m_pListView = new KviTalListView(m_pIndexTab);
 	m_pListView->addColumn(__tr2qs_ctx("Log File","logview"),135);
 	m_pListView->setColumnWidthMode(0,KviTalListView::Maximum);
@@ -83,6 +85,7 @@ KviLogViewMDIWindow::KviLogViewMDIWindow(KviModuleExtensionDescriptor * d,KviFra
 	m_pListView->setRootIsDecorated(true);
 	connect(m_pListView,SIGNAL(selectionChanged(KviTalListViewItem *)),this,SLOT(itemSelected(KviTalListViewItem *)));
 	connect(m_pListView,SIGNAL(rightButtonClicked ( KviTalListViewItem * , const QPoint &, int )),this,SLOT(rightButtonClicked ( KviTalListViewItem * , const QPoint &, int )));
+	pLayout->addWidget(m_pListView);
 	
 	m_pSearchTab  = new QWidget(m_pTabWidget);
 	m_pTabWidget->insertTab(m_pSearchTab,__tr2qs_ctx("Filter","logview"));
@@ -242,15 +245,15 @@ void KviLogViewMDIWindow::setupItemList()
 
 	QString textBuffer;
 
-	Q3ProgressDialog progress( __tr2qs_ctx("Filtering files...","logview"),
-		__tr2qs_ctx("Abort filtering","logview"), m_logList.count(),
-                          this, "progress", TRUE );
+	QProgressDialog progress( __tr2qs_ctx("Filtering files...","logview"),
+		__tr2qs_ctx("Abort filtering","logview"),0, m_logList.count());
+	progress.setModal(true);
 
 
 	int i=0;
 	foreach(pFile,m_logList)
 	{
-		progress.setProgress( i );
+		progress.setValue(i);
 		i++;
 		g_pApp->processEvents();
 
@@ -305,7 +308,7 @@ void KviLogViewMDIWindow::setupItemList()
 		}
 		new KviLogListViewLog(pLastGroupItem,pFile->type(),pFile);
 	}
-	progress.setProgress( m_logList.count() );
+	progress.setValue(m_logList.count());
 }
 
 void KviLogViewMDIWindow::cacheFileList()
