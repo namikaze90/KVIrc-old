@@ -10,6 +10,7 @@ lamerizer
 links
 log
 mask
+math
 mediaplayer
 mircimport
 my
@@ -23,6 +24,7 @@ spaste
 system
 term
 texticons
+tmphighlight
 toolbar
 toolbareditor
 
@@ -34,9 +36,11 @@ aliaseditor
 avatar
 channelsjoin
 codetester
+dcc
 eventeditor
 filetransferwindow
 http
+list
 popupeditor
 raweditor
 sharedfileswindow
@@ -47,13 +51,10 @@ trayicon
 [not checked] To be checked for Qt3 code
 chan
 config
-dcc
 help
 iograph
-list
 log
 logview
-math
 notifier
 objects
 options
@@ -61,7 +62,6 @@ regchan
 reguser
 setup
 str
-tmphighlight
 torrent
 url
 window

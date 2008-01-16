@@ -27,9 +27,6 @@
 #include "kvi_string.h"
 #include "kvi_console.h"
 
-
-
-
 class KviDccWindow;
 class KviDccFileTransfer;
 
@@ -156,8 +153,6 @@ public:
 	bool isDccChat();
 	bool isFileTransfer(){ return (isFileUpload() || isFileDownload()); };
 };
-
-
 
 
 #endif //_DESCRIPTOR_H_

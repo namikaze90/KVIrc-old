@@ -25,12 +25,12 @@
 #include "kvi_iconmanager.h"
 #include "kvi_app.h"
 
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qstringlist.h>
-#include <qevent.h>
-#include <qdesktopwidget.h>
+#include <QLayout>
+#include <QPushButton>
+#include <QLabel>
+#include <QStringList>
+#include <QEvent>
+#include <QDesktopWidget>
 
 KviDccBox::KviDccBox(KviDccBroker * br,KviDccDescriptor * dcc)
 {
@@ -199,7 +199,3 @@ void KviDccRenameBox::cancelClicked()
 	emit cancelSelected(this,m_pDescriptor);
 	g_pApp->collectGarbage(this);
 }
-
-
-
-

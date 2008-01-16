@@ -21,7 +21,9 @@
 //
 
 #include "window.h"
-#include "kvi_tal_hbox.h" 
+
+#include <QWidget>
+#include <QHBoxLayout>
 
 KviDccWindow::KviDccWindow(int type,KviFrame * lpFrm,const char * name,KviDccDescriptor * d)
 : KviWindow(type,lpFrm,name)
@@ -29,7 +31,10 @@ KviDccWindow::KviDccWindow(int type,KviFrame * lpFrm,const char * name,KviDccDes
 	m_pDescriptor = d;
 	m_pDescriptor->setWindow(this);
 	m_pMarshal    = 0;
-	m_pButtonBox = new KviTalHBox(this);
+
+	m_pButtonBox = new QWidget(this);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	m_pButtonBox->setLayout(pLayout);
 	createTextEncodingButton(m_pButtonBox);
 }
 
@@ -49,4 +54,3 @@ const char * KviDccWindow::dccMarshalOutputContextString()
 	static const char * static_context = "DCC";
 	return static_context;
 }
-

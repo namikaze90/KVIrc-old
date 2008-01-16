@@ -23,6 +23,8 @@
 #include "voice.h"
 #include "marshal.h"
 #include "broker.h"
+#include "adpcmcodec.h"
+#include "gsmcodec.h"
 
 #include "kvi_settings.h"
 #include "kvi_iconmanager.h"
@@ -37,14 +39,13 @@
 #include "kvi_socket.h"
 #include "kvi_ircconnection.h"
 
-#include "adpcmcodec.h"
-#include "gsmcodec.h"
-
-#include <qframe.h>
-#include <qsplitter.h>
-#include "kvi_tal_vbox.h"
-#include <qslider.h>
-#include <qtooltip.h>
+#include <QFrame>
+#include <QSplitter>
+#include <QSlider>
+#include <QToolTip>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 #ifndef COMPILE_ON_WINDOWS
 	#include <sys/time.h>
@@ -655,29 +656,41 @@ KviDccVoice::KviDccVoice(KviFrame *pFrm,KviDccDescriptor * dcc,const char * name
 	m_pSplitter = new QSplitter(Qt::Horizontal,this,"splitter");
 	m_pIrcView = new KviIrcView(m_pSplitter,pFrm,this);
 
-	m_pHBox = new KviTalHBox(this);
+	m_pHBox = new QWidget(this);
+	QHBoxLayout * pHLayout = new QHBoxLayout(this);
+	m_pHBox->setLayout(pHLayout);
 
-	KviTalVBox * vbox = new KviTalVBox(m_pHBox);
+	QWidget * vbox = new QWidget(m_pHBox);
+	QVBoxLayout * pVLayout = new QVBoxLayout(m_pHBox);
+	vbox->setLayout(pVLayout);
+	pHLayout->addWidget(vbox);
 
 	m_pInputLabel = new QLabel(__tr2qs_ctx("Input buffer","dcc"),vbox);
 	m_pInputLabel->setFrameStyle(QFrame::Sunken | QFrame::Panel);
 	m_pOutputLabel = new QLabel(__tr2qs_ctx("Output buffer","dcc"),vbox);
 	m_pOutputLabel->setFrameStyle(QFrame::Sunken | QFrame::Panel);
-	vbox->setSpacing(1);
+	pVLayout->setSpacing(1);
+	pVLayout->addWidget(m_pInputLabel);
+	pVLayout->addWidget(m_pOutputLabel);
 	
-	KviTalVBox * vbox2 = new KviTalVBox(m_pHBox);
+	QWidget * vbox2 = new QWidget(m_pHBox);
+	QVBoxLayout * pV2Layout = new QVBoxLayout(m_pHBox);
+	vbox2->setLayout(pV2Layout);
+	pHLayout->addWidget(vbox2);
 
 	m_pRecordingLabel = new QLabel(vbox2);
 	m_pRecordingLabel->setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_RECORD)));
 	m_pRecordingLabel->setEnabled(false);
 	m_pRecordingLabel->setFrameStyle(QFrame::Raised | QFrame::Panel);
+	pV2Layout->addWidget(m_pRecordingLabel);
 	
 	m_pPlayingLabel = new QLabel(vbox2);
 	m_pPlayingLabel->setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_PLAY)));
 	m_pPlayingLabel->setEnabled(false);
 	m_pPlayingLabel->setFrameStyle(QFrame::Raised | QFrame::Panel);
+	pV2Layout->addWidget(m_pPlayingLabel);
 
-	vbox2->setSpacing(1);
+	pV2Layout->setSpacing(1);
 
 //#warning "The volume slider should be enabled only when receiving data"
 	m_pVolumeSlider = new QSlider(-100, 0, 10, 0, Qt::Vertical, m_pHBox, "dcc_voice_volume_slider");
@@ -687,26 +700,25 @@ KviDccVoice::KviDccVoice(KviFrame *pFrm,KviDccDescriptor * dcc,const char * name
 	m_pVolumeSlider->setMaximumWidth(16);
 	m_pVolumeSlider->setMaximumHeight(2*m_pPlayingLabel->height());
 	connect(m_pVolumeSlider, SIGNAL(valueChanged(int)), this, SLOT(setMixerVolume(int)));
+	pHLayout->addWidget(m_pVolumeSlider);
 
 	m_pTalkButton = new QToolButton(m_pHBox);
 	m_pTalkButton->setEnabled(false);
 	m_pTalkButton->setToggleButton(true);
-#if QT_VERSION >= 300
+	pHLayout->addWidget(m_pTalkButton);
+
 	QIconSet iset;
 	iset.setPixmap(*(g_pIconManager->getBigIcon(KVI_BIGICON_DISCONNECTED)),QIconSet::Large,QIconSet::Normal,QIconSet::Off);
 	iset.setPixmap(*(g_pIconManager->getBigIcon(KVI_BIGICON_CONNECTED)),QIconSet::Large,QIconSet::Normal,QIconSet::On);
 	m_pTalkButton->setIconSet(iset);
-#else
-	m_pTalkButton->setOffIconSet(*(g_pIconManager->getBigIcon(KVI_BIGICON_DISCONNECTED)));
-	m_pTalkButton->setOnIconSet(*(g_pIconManager->getBigIcon(KVI_BIGICON_CONNECTED)));
-#endif
+
 	m_pTalkButton->setUsesBigPixmap(true);
 
 	connect(m_pTalkButton,SIGNAL(toggled(bool)),this,SLOT(startOrStopTalking(bool)));
 
-	m_pHBox->setStretchFactor(vbox,1);
-	m_pHBox->setMargin(2);
-	m_pHBox->setSpacing(1);
+	pHLayout->setStretchFactor(vbox,1);
+	pHLayout->setMargin(2);
+	pHLayout->setSpacing(1);
 
 	//setFocusHandler(m_pIrcView,this);
 

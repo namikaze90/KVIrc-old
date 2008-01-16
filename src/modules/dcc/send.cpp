@@ -27,7 +27,6 @@
 #include "marshal.h"
 #include "broker.h"
 #include "window.h"
-#include "kvi_styled_controls.h"
 
 #ifdef COMPILE_ON_WINDOWS
 	// Ugly Windoze compiler...
@@ -50,25 +49,24 @@
 #include "kvi_memmove.h"
 #include "kvi_thread.h"
 #include "kvi_ircsocket.h"
-
+#include "kvi_styled_controls.h"
 #include "kvi_mediatype.h"
 #include "kvi_socket.h"
 #include "kvi_kvs_eventtriggers.h"
-
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_sparser.h"
 #include "kvi_kvs_script.h"
 
-#include <qevent.h>
-#include <qfile.h>
-#include <qpainter.h>
-#include <qdatetime.h>
 #include <qglobal.h>
-#include <qcheckbox.h>
-#include <qspinbox.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
+#include <QEvent>
+#include <QFile>
+#include <QPainter>
+#include <QDateTime>
+#include <QCheckBox>
+#include <QSpinBox>
+#include <QLayout>
+#include <QPushButton>
 
 #define INSTANT_BANDWIDTH_CHECK_INTERVAL_IN_MSECS 3000
 #define INSTANT_BANDWIDTH_CHECK_INTERVAL_IN_SECS 3
@@ -928,9 +926,7 @@ void KviDccFileTransfer::fillContextPopup(KviTalPopupMenu * m,int column)
 	m->insertItem(__tr2qs_ctx("Resend DCC","dcc"),this,SLOT(retryDCC()));
 	m->insertItem(__tr2qs_ctx("Resend TDCC","dcc"),this,SLOT(retryTDCC()));
 	m->insertItem(__tr2qs_ctx("Resend RevDCC","dcc"),this,SLOT(retryRevDCC()));
-	/* FIX ME credo che il problema sia che se riavvio un trasferimento, a sua volta gia'
-		   avviato, questo non ha irc contex, perche' la finestra "in cui e' nato"e' sta
-	   quella della dcc. Conservarsi l'id della finestra? */
+	/* FIXME: I think the problem is that if the transfer is rebooted and it is already booted, this one has not an irc context because the window where it was born is the same of the dcc. Better to store the window id? */
 	QAction * action = m->insertItem(__tr2qs_ctx("Abort","dcc"),this,SLOT(abort()));
 	if(!active())action->setEnabled(false);
 }
@@ -1571,9 +1567,6 @@ void KviDccFileTransfer::sslError(const char * msg)
 #endif
 }
 
-
-
-
 bool KviDccFileTransfer::event(QEvent *e)
 {
 	if(e->type() == KVI_THREAD_EVENT)
@@ -1876,7 +1869,3 @@ void KviDccFileTransferBandwidthDialog::closeEvent(QCloseEvent * e)
 	e->ignore();
 	delete this;
 }
-
-
-
-

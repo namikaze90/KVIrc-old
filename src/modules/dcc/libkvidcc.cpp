@@ -22,6 +22,13 @@
 //
 //=============================================================================
 
+#include "gsmcodec.h"
+#include "broker.h"
+#include "voice.h"
+#include "utils.h"
+#include "send.h"
+#include "window.h"
+
 #include "kvi_debug.h"
 #include "kvi_settings.h"
 #include "kvi_string.h"
@@ -41,14 +48,7 @@
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionuserinfo.h"
 
-#include "gsmcodec.h"
-#include "broker.h"
-#include "voice.h"
-#include "utils.h"
-#include "send.h"
-#include "window.h"
-
-#include <qfileinfo.h>
+#include <QFileInfo>
 
 #ifdef COMPILE_ON_WINDOWS
 	// Ugly Windoze compiler...
@@ -813,7 +813,7 @@ static bool dcc_kvs_cmd_recv(KviKvsModuleCommandCall * c)
 	d->szFileSize.setNum(uSize);
 
 	d->bActive           = false; // we have to listen!
-	d->bResume           = false; 
+	d->bResume           = false;
 	d->bRecvFile         = true;  // we have to receive the file!
 	d->bSendRequest      = !c->switches()->find('n',"no-ctcp");
 	d->bNoAcks           = d->bIsTdcc || c->switches()->find('b',"blind");

@@ -51,7 +51,6 @@
 #include "kvi_themedlabel.h"
 #include "kvi_socket.h"
 #include "kvi_app.h"
-
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_kvs_eventtriggers.h"
@@ -63,15 +62,15 @@
 	#include "kvi_mirccntrl.h"
 #endif
 
-#include <qsplitter.h>
-#include <qevent.h>
-#include "kvi_tal_vbox.h"
+#include <QSplitter>
+#include <QEvent>
+#include <QWidget>
+#include <QVBoxLayout>
 
 
 #ifdef COMPILE_SSL_SUPPORT
 	#include "kvi_sslmaster.h"
 #endif
-
 
 
 extern KviDccBroker * g_pDccBroker;
@@ -92,7 +91,10 @@ KviDccChat::KviDccChat(KviFrame *pFrm,KviDccDescriptor * dcc,const char * name)
 	m_pTopSplitter = new QSplitter(Qt::Horizontal,this,"top_splitter");
 	KviThemedLabel * dummy;
 	dummy = new KviThemedLabel(m_pTopSplitter,"dummy_label");
-	KviTalVBox * box = new KviTalVBox(m_pTopSplitter);
+
+	QWidget * box = new QWidget(m_pTopSplitter);
+	QVBoxLayout * pLayout = new QVBoxLayout(m_pTopSplitter);
+	box->setLayout(pLayout);
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	createCryptControllerButton(box);

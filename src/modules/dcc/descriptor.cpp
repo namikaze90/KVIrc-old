@@ -23,15 +23,13 @@
 //=============================================================================
 
 #include "descriptor.h"
+#include "send.h"
+#include "window.h"
 
 #include "kvi_locale.h"
 #include "kvi_kvs_eventtriggers.h"
-
 #include "kvi_window.h"
 #include "kvi_app.h"
-
-#include "send.h"
-#include "window.h"
 
 
 static unsigned int g_uNextDescriptorId = 1; // we use 0 as an invalid descriptor id

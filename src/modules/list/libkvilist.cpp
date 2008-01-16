@@ -20,16 +20,14 @@
 //
 
 
-#include "kvi_module.h"
-
-
 #include "listwindow.h"
 
+#include "kvi_module.h"
 #include "kvi_frame.h"
 #include "kvi_window.h"
 #include "kvi_locale.h"
 
-#include <qsplitter.h>
+#include <QSplitter>
 
 QList<KviListWindow*> * g_pListWindowList = 0;
 

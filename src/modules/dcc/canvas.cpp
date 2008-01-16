@@ -50,7 +50,7 @@
 #include "kvi_themedlabel.h"
 #include "kvi_ircconnection.h"
 
-#include <qsplitter.h>
+#include <QSplitter>
 
 extern KviDccBroker * g_pDccBroker;
 

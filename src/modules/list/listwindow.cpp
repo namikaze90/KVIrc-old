@@ -42,16 +42,18 @@
 #include "kvi_topicw.h"
 #include "kvi_config.h"
 #include "kvi_filedialog.h"
-
 #include "kvi_styled_controls.h"
-#include <qtimer.h>
-#include <qpainter.h>
-#include <qfontmetrics.h>
-#include <qsplitter.h>
-#include <qtooltip.h>
-#include <qdatetime.h>
-#include "kvi_tal_hbox.h"
 #include "kvi_msgbox.h"
+
+#include <QTimer>
+#include <QPainter>
+#include <QFontMetrics>
+#include <QSplitter>
+#include <QToolTip>
+#include <QDateTime>
+#include <QWidget>
+#include <QHBoxLayout>
+
 
 extern QList<KviListWindow*> * g_pListWindowList;
 
@@ -174,33 +176,41 @@ KviListWindow::KviListWindow(KviFrame * lpFrm,KviConsole * lpConsole)
 	m_pTopSplitter = new QSplitter(Qt::Horizontal,this,"top_splitter");
 	m_pVertSplitter = new QSplitter(Qt::Vertical,m_pSplitter,"vsplitter");
 
-	KviTalHBox * box = new KviTalHBox(m_pTopSplitter);
+	QWidget * box = new QWidget(m_pTopSplitter);
+	QHBoxLayout * pLayout = new QHBoxLayout(m_pTopSplitter);
+	box->setLayout(pLayout);
+
 	m_pOpenButton = new KviStyledToolButton(box);
 	m_pOpenButton->setPixmap(*(g_pIconManager->getBigIcon(KVI_BIGICON_OPEN)));
-	connect(m_pOpenButton,SIGNAL(clicked()),this,SLOT(importList()));	
+	connect(m_pOpenButton,SIGNAL(clicked()),this,SLOT(importList()));
+	pLayout->addWidget(m_pOpenButton);
 
 	m_pSaveButton = new KviStyledToolButton(box);
 	m_pSaveButton->setPixmap(*(g_pIconManager->getBigIcon(KVI_BIGICON_SAVE)));
-	connect(m_pSaveButton,SIGNAL(clicked()),this,SLOT(exportList()));	
+	connect(m_pSaveButton,SIGNAL(clicked()),this,SLOT(exportList()));
+	pLayout->addWidget(m_pSaveButton);
 
 	m_pRequestButton = new KviStyledToolButton(box,"request_button");
 	m_pRequestButton->setUsesBigPixmap(false);
 	m_pRequestButton->setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_LIST)));
-	connect(m_pRequestButton,SIGNAL(clicked()),this,SLOT(requestList()));	
+	connect(m_pRequestButton,SIGNAL(clicked()),this,SLOT(requestList()));
 	QToolTip::add(m_pRequestButton,__tr2qs("Request List"));
+	pLayout->addWidget(m_pRequestButton);
 	
 	m_pStopListDownloadButton = new KviStyledToolButton(box,"stoplistdownload_button");
 	m_pStopListDownloadButton->setUsesBigPixmap(false);
 	m_pStopListDownloadButton->setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_NICKNAMEPROBLEM)));
 	connect(m_pStopListDownloadButton,SIGNAL(clicked()),this,SLOT(stoplistdownload()));
 	QToolTip::add(m_pStopListDownloadButton,__tr2qs("Stop list download"));
+	pLayout->addWidget(m_pStopListDownloadButton);
 
 	m_pParamsEdit = new QLineEdit(box);
-	box->setStretchFactor(m_pParamsEdit,1);
+	pLayout->setStretchFactor(m_pParamsEdit,1);
 	QToolTip::add(m_pParamsEdit,__tr2qs("<center><b>/LIST command parameters:</b><br>Many servers accept special parameters that " \
-						"allow you to filter the returned entries.<br>" \
-						"Commonly, masked channel names (*kvirc*) are accepted as parameters, as well as strings " \
-						"like <b>c&lt;n</b> or <b>c&gt;n</b> where <b>n</b> is the minimum or maximum of users on the channel.</center>"));
+		"allow you to filter the returned entries.<br>" \
+		"Commonly, masked channel names (*kvirc*) are accepted as parameters, as well as strings " \
+		"like <b>c&lt;n</b> or <b>c&gt;n</b> where <b>n</b> is the minimum or maximum of users on the channel.</center>"));
+	pLayout->addWidget(m_pParamsEdit);
 
 	m_pInfoLabel = new KviThemedLabel(m_pTopSplitter,"info_label");
 

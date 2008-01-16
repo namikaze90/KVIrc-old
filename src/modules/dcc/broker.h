@@ -29,12 +29,11 @@
 // #define COMPILE_DCC_CANVAS
 
 #include "kvi_string.h"
-
 #include "kvi_sparser.h"
 
 #include <QHash>
-#include <qdatetime.h>
-#include <qobject.h>
+#include <QDateTime>
+#include <QObject>
 
 class KviConsole;
 class KviDccBroker;

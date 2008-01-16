@@ -23,6 +23,13 @@
 //=============================================================================
 
 #define _KVI_DEBUG_CHECK_RANGE_
+
+#include "gsmcodec.h"
+#include "broker.h"
+#include "voice.h"
+#include "utils.h"
+#include "send.h"
+
 #include "kvi_debug.h"
 #include "kvi_settings.h"
 #include "kvi_string.h"
@@ -34,7 +41,6 @@
 #include "kvi_netutils.h"
 #include "kvi_frame.h"
 #include "kvi_console.h"
-
 #include "kvi_error.h"
 #include "kvi_options.h"
 #include "kvi_defaults.h"
@@ -44,13 +50,7 @@
 #include "kvi_ircconnection.h"
 #include "kvi_ircconnectionuserinfo.h"
 
-#include "gsmcodec.h"
-#include "broker.h"
-#include "voice.h"
-#include "utils.h"
-#include "send.h"
-
-#include <qfileinfo.h>
+#include <QFileInfo>
 
 #ifdef COMPILE_ON_WINDOWS
 	// Ugly Windoze compiler...

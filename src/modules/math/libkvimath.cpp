@@ -31,12 +31,12 @@
 // Workaround for lost isnan and isinf definitions after
 // inclusion of iostream.h on some MacOS X systems
 #ifdef Q_OS_MACX
-  #ifndef isnan
-    extern "C" int isnan (double);
-  #endif
-  #ifndef isinf
-    extern "C" int isinf (double);
-  #endif
+	#ifndef isnan
+		extern "C" int isnan (double);
+	#endif
+	#ifndef isinf
+		extern "C" int isinf (double);
+	#endif
 #endif
 
 #define MATH_KVS_1PARAM_FUNCTION(__fncname,__paramname,__mathcallname) \
@@ -54,40 +54,40 @@ static bool __fncname(KviKvsModuleFunctionCall * c) \
 // dobbiamo testare meglio, i risultati.
 static double cbrt(double x)
 {
-    if (x > 0.0)
-	return pow(x, 1.0/3.0);
-    else
-	return -pow(-x, 1.0/3.0);
+	if (x > 0.0) return pow(x, 1.0/3.0);
+	else return -pow(-x, 1.0/3.0);
 }
+
 static int isinf (double d) {
-    int expon = 0;
-    double val = frexp (d, &expon);
-    if (expon == 1025) {
-        if (val == 0.5) {
-            return 1;
-        } else if (val == -0.5) {
-            return -1;
-        } else {
-            return 0;
-        }
-    } else {
-        return 0;
-    }
+	int expon = 0;
+	double val = frexp (d, &expon);
+	if (expon == 1025) {
+		if (val == 0.5) {
+			return 1;
+		} else if (val == -0.5) {
+			return -1;
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
+	}
 }
+
 static int isnan (double d) {
-    int expon = 0;
-    double val = frexp (d, &expon);
-    if (expon == 1025) {
-        if (val == 0.5) {
-            return 0;
-        } else if (val == -0.5) {
-            return 0;
-        } else {
-            return 1;
-        }
-    } else {
-        return 0;
-    }
+	int expon = 0;
+	double val = frexp (d, &expon);
+	if (expon == 1025) {
+		if (val == 0.5) {
+			return 0;
+		} else if (val == -0.5) {
+			return 0;
+		} else {
+			return 1;
+		}
+	} else {
+		return 0;
+	}
 }
 #endif
 /*

@@ -26,9 +26,7 @@
 #include "kvi_thread.h"
 #include "kvi_sockettype.h"
 
-
-
-#include <qobject.h>
+#include <QObject>
 
 #ifdef COMPILE_SSL_SUPPORT
 	#include "kvi_ssl.h"

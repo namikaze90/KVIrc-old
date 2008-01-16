@@ -72,29 +72,29 @@ static int stepsizeTable[89] = {
 
 void ADPCM_compress(short indata[],char outdata[],int len,ADPCM_state *state)
 {
-    short *lpIn;          /* Input buffer pointer */
-    signed char *lpOut;   /* output buffer pointer */
-    int val;              /* Current input sample value */
-    int sign;             /* Current adpcm sign bit */
-    int delta;            /* Current adpcm output value */
-    int diff;             /* Difference between val and valprev */
-    int step;             /* Stepsize */
-    int valpred;          /* Predicted output value */
-    int vpdiff;           /* Current change to valpred */
-    int index;            /* Current step change index */
-    int outputbuffer = 0; /* place to keep previous 4-bit value */
-    int bufferstep;	      /* toggle between outputbuffer/output */
-
-    lpOut = (signed char *)outdata;
-    lpIn  = indata;
-
-    valpred = state->valprev;
-    index = state->index;
-    step = stepsizeTable[index];
-    
-    bufferstep = 1;
-
-    for ( ;len > 0;len-- ) {
+	short *lpIn;          /* Input buffer pointer */
+	signed char *lpOut;   /* output buffer pointer */
+	int val;              /* Current input sample value */
+	int sign;             /* Current adpcm sign bit */
+	int delta;            /* Current adpcm output value */
+	int diff;             /* Difference between val and valprev */
+	int step;             /* Stepsize */
+	int valpred;          /* Predicted output value */
+	int vpdiff;           /* Current change to valpred */
+	int index;            /* Current step change index */
+	int outputbuffer = 0; /* place to keep previous 4-bit value */
+	int bufferstep;	      /* toggle between outputbuffer/output */
+	
+	lpOut = (signed char *)outdata;
+	lpIn  = indata;
+	
+	valpred = state->valprev;
+	index = state->index;
+	step = stepsizeTable[index];
+	
+	bufferstep = 1;
+	
+	for ( ;len > 0;len-- ) {
 		val = *lpIn++;
 		// Step 1 - compute difference with previous value
 		diff = val - valpred;
@@ -144,35 +144,35 @@ void ADPCM_compress(short indata[],char outdata[],int len,ADPCM_state *state)
 		else *lpOut++ = (delta & 0x0f) | outputbuffer;
 		bufferstep = !bufferstep;
     }
-    // Output last step, if needed
-    if (!bufferstep)*lpOut++ = outputbuffer;
-    state->valprev = valpred;
-    state->index = index;
+	// Output last step, if needed
+	if (!bufferstep)*lpOut++ = outputbuffer;
+	state->valprev = valpred;
+	state->index = index;
 }
 
 void ADPCM_uncompress(char indata[],short outdata[],int len,ADPCM_state *state)
 {
-    signed char *inp;		/* Input buffer pointer */
-    short *outp;		/* output buffer pointer */
-    int sign;			/* Current adpcm sign bit */
-    int delta;			/* Current adpcm output value */
-    int step;			/* Stepsize */
-    int valpred;		/* Predicted value */
-    int vpdiff;			/* Current change to valpred */
-    int index;			/* Current step change index */
-    int inputbuffer=0;  /* place to keep next 4-bit value */
-    int bufferstep;		/* toggle between inputbuffer/input */
-
-    outp = outdata;
-    inp = (signed char *)indata;
-
-    valpred = state->valprev;
-    index = state->index;
-    step = stepsizeTable[index];
-
-    bufferstep = 0;
-    
-    for ( ; len > 0 ; len-- ) {
+	signed char *inp;		/* Input buffer pointer */
+	short *outp;		/* output buffer pointer */
+	int sign;			/* Current adpcm sign bit */
+	int delta;			/* Current adpcm output value */
+	int step;			/* Stepsize */
+	int valpred;		/* Predicted value */
+	int vpdiff;			/* Current change to valpred */
+	int index;			/* Current step change index */
+	int inputbuffer=0;  /* place to keep next 4-bit value */
+	int bufferstep;		/* toggle between inputbuffer/input */
+	
+	outp = outdata;
+	inp = (signed char *)indata;
+	
+	valpred = state->valprev;
+	index = state->index;
+	step = stepsizeTable[index];
+	
+	bufferstep = 0;
+	
+	for ( ; len > 0 ; len-- ) {
 	
 		/* Step 1 - get the delta value */
 		if ( bufferstep )delta = inputbuffer & 0xf;
@@ -213,10 +213,10 @@ void ADPCM_uncompress(char indata[],short outdata[],int len,ADPCM_state *state)
 
 		/* Step 7 - Output value */
 		*outp++ = valpred;
-    }
+	}
 
-    state->valprev = valpred;
-    state->index = index;
+	state->valprev = valpred;
+	state->index = index;
 }
 
 

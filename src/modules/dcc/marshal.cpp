@@ -171,8 +171,7 @@ void KviDccMarshal::doListen()
 
 
 #ifdef COMPILE_IPV6_SUPPORT
-	m_fd = kvi_socket_create(m_bIpV6 ? KVI_SOCKET_PF_INET6 : KVI_SOCKET_PF_INET,
-								KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
+	m_fd = kvi_socket_create(m_bIpV6 ? KVI_SOCKET_PF_INET6 : KVI_SOCKET_PF_INET,KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
 #else
 	m_fd = kvi_socket_create(KVI_SOCKET_PF_INET,KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
 #endif
@@ -352,11 +351,9 @@ void KviDccMarshal::doConnect()
 
 	// create the socket
 #ifdef COMPILE_IPV6_SUPPORT
-	m_fd = kvi_socket_create(m_bIpV6 ? KVI_SOCKET_PF_INET6 : KVI_SOCKET_PF_INET,
-					KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
+	m_fd = kvi_socket_create(m_bIpV6 ? KVI_SOCKET_PF_INET6 : KVI_SOCKET_PF_INET,KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
 #else
-	m_fd = kvi_socket_create(KVI_SOCKET_PF_INET,
-					KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
+	m_fd = kvi_socket_create(KVI_SOCKET_PF_INET,KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
 #endif
 	if(m_fd == KVI_INVALID_SOCKET)
 	{
@@ -400,8 +397,7 @@ void KviDccMarshal::doConnect()
 			{
 				// Zero error ?...let's look closer
 				int iSize=sizeof(int);
-				if(!kvi_socket_getsockopt(m_fd,SOL_SOCKET,SO_ERROR,
-						(void *)&sockError,&iSize))sockError=0;
+				if(!kvi_socket_getsockopt(m_fd,SOL_SOCKET,SO_ERROR,(void *)&sockError,&iSize))sockError=0;
 			}
 			// Die
 			reset();
@@ -642,5 +638,3 @@ void KviDccMarshal::connectionTimedOut()
 	reset();
 	emit error(KviError_connectionTimedOut);
 }
-
-

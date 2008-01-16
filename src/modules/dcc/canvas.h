@@ -34,9 +34,6 @@
 #include "thread.h"
 
 
-
-
-
 class KviDccMarshal;
 class KviCanvasWidget;
 

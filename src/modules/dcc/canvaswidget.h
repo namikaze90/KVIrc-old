@@ -26,26 +26,21 @@
 
 #ifdef COMPILE_DCC_CANVAS
 
-
-#include <qcanvas.h>
+#include <QCanvas>
 
 //#ifdef QT_NO_CANVAS
-//	#warning "HEre is not"
+//	#warning "Here is not"
 //#endif
 
 
-#include <qmenubar.h>
-#include <qlabel.h>
-
-#include <qmap.h>
-#include <qvariant.h>
-#include <qtable.h>
-#include <qsplitter.h>
-
-
+#include <QMenuBar>
+#include <QLabel>
+#include <QMap>
+#include <QVariant>
+#include <QTable>
+#include <QSplitter>
 
 class KviCanvasWidget;
-
 
 
 #define KVI_CANVAS_RTTI_CONTROL_TYPE_RECTANGLE 1
@@ -86,8 +81,6 @@ public:
 	virtual void setProperty(const QString &property,const QVariant &val);
 	virtual int rtti() const;
 };
-
-
 
 
 class KviCanvasRectangleItem : public QCanvasRectangle
@@ -177,7 +170,6 @@ public:
 };
 
 
-
 class KviCanvasRectangle : public KviCanvasRectangleItem
 {
 public:
@@ -264,7 +256,6 @@ public slots:
 	void propertyChanged(const QString &s,const QVariant &v);
 };
 
-// For Qt3.0 this might need to be changed
 
 class KviVariantTableItem : public QTableItem
 {
@@ -281,7 +272,6 @@ public:
 };
 
 
-
 class KviCanvasItemPropertiesWidget : public QTable
 {
 	Q_OBJECT
@@ -295,7 +285,6 @@ protected slots:
 signals:
 	void propertyChanged(const QString &s,const QVariant &v);
 };
-
 
 
 class KviCanvasWidget : public QWidget

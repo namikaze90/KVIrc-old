@@ -27,15 +27,14 @@
 #include "kvi_window.h"
 #include "kvi_string.h"
 #include "kvi_ircsocket.h"
-
 #include "kvi_sparser.h"
 #include "kvi_console.h"
 #include "kvi_irccontext.h"
-
 #include "kvi_tal_listview.h"
 #include "kvi_tal_popupmenu.h"
-#include <qtoolbutton.h>
-#include <qlineedit.h>
+
+#include <QToolButton>
+#include <QLineEdit>
 
 class KviThemedLabel;
 
@@ -78,16 +77,16 @@ public:
 	KviListWindow(KviFrame * lpFrm,KviConsole * lpConsole);
 	~KviListWindow();
 protected:
-	QSplitter                              * m_pVertSplitter;
-	QSplitter                              * m_pTopSplitter;
-	KviTalListView                         * m_pListView;
-	QLineEdit                              * m_pParamsEdit;
-	QToolButton                            * m_pRequestButton;
-	QToolButton							   * m_pStopListDownloadButton;
-	QToolButton							   * m_pOpenButton;
-	QToolButton							   * m_pSaveButton;
-	KviThemedLabel                         * m_pInfoLabel;
-	QTimer                                 * m_pFlushTimer;
+	QSplitter          * m_pVertSplitter;
+	QSplitter          * m_pTopSplitter;
+	KviTalListView     * m_pListView;
+	QLineEdit          * m_pParamsEdit;
+	QToolButton        * m_pRequestButton;
+	QToolButton        * m_pStopListDownloadButton;
+	QToolButton        * m_pOpenButton;
+	QToolButton        * m_pSaveButton;
+	KviThemedLabel     * m_pInfoLabel;
+	QTimer             * m_pFlushTimer;
 	QList<KviChannelListViewItemData*> * m_pItemList;
 public: // Methods
 	virtual void control(int msg);
