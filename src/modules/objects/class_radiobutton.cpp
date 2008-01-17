@@ -21,9 +21,9 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 #include "class_radiobutton.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 
@@ -82,10 +82,11 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_radiobutton)
 
 bool KviKvsObject_radiobutton::init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams)
 {
-	setObject(new QRadioButton(parentScriptWidget(),name()),true);
+	setObject(new QRadioButton(name(),parentScriptWidget()),true);
 	connect(widget(),SIGNAL(toggled(bool)),this,SLOT(toggled(bool)));
 	return true;
 }
+
 bool KviKvsObject_radiobutton::functionSetText(KviKvsObjectFunctionCall *c)
 {
 	QString szText;
@@ -96,6 +97,7 @@ bool KviKvsObject_radiobutton::functionSetText(KviKvsObjectFunctionCall *c)
 		((QRadioButton *)widget())->setText(szText);
 	return true;
 }
+
 bool KviKvsObject_radiobutton::functionIsChecked(KviKvsObjectFunctionCall *c)
 {
 	if(widget()) c->returnValue()->setBoolean(((QRadioButton *)widget())->isChecked());
@@ -111,6 +113,7 @@ bool KviKvsObject_radiobutton::functionSetChecked(KviKvsObjectFunctionCall *c)
 	if(widget()) ((QRadioButton *)widget())->setChecked(bChecked);
 	return true;
 }
+
 bool KviKvsObject_radiobutton::functionSetImage(KviKvsObjectFunctionCall *c)
 {
 	QString icon;
@@ -122,6 +125,7 @@ bool KviKvsObject_radiobutton::functionSetImage(KviKvsObjectFunctionCall *c)
 	if(pix)widget()->setIcon(*pix);
 	return true;
 }
+
 bool KviKvsObject_radiobutton::function_toggleEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("toggled",c,c->params());
@@ -133,4 +137,3 @@ void KviKvsObject_radiobutton::toggled(bool b)
 	KviKvsVariantList params(new KviKvsVariant(b));
 	callFunction(this,"toggleEvent",&params);
 }
-

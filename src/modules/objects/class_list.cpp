@@ -22,12 +22,11 @@
 //
 //============================================================================
 
-#include "kvi_debug.h"
+#include "class_list.h"
 
+#include "kvi_debug.h"
 #include "kvi_malloc.h"
 #include "kvi_locale.h"
-
-#include "class_list.h"
 
 #include <stdlib.h>
 
@@ -407,6 +406,7 @@ bool KviKvsObject_list::function_clear(KviKvsObjectFunctionCall *c)
 	m_pDataList->clear();
 	return true;
 }
+
 bool KviKvsObject_list::function_sort(KviKvsObjectFunctionCall *c)
 {
 	if(!m_pDataList)return true;
@@ -435,4 +435,3 @@ bool KviKvsObject_list::function_count(KviKvsObjectFunctionCall *c)
 	c->returnValue()->setInteger(m_pDataList->count());
 	return true;
 }
-

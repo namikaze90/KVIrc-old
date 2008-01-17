@@ -22,11 +22,11 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
-#include <qpushbutton.h>
 #include "class_widget.h"
 #include "object_macros.h"
+
+#include <QPushButton>
+
 
 class KviKvsObject_button : public KviKvsObject_widget
 {
@@ -55,4 +55,4 @@ protected slots:
 	void slotClicked();
 };
 
-#endif	// !_CLASS_BUTTON_H_
+#endif // !_CLASS_BUTTON_H_

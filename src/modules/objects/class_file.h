@@ -22,11 +22,12 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#include "object_macros.h"
 
-
-#include <qfile.h>
-#include <qtextstream.h>
 #include "kvi_string.h"
+
+#include <QFile>
+#include <QTextStream>
 
 
 /*
@@ -75,7 +76,6 @@ protected:
 
 */
 
-#include "object_macros.h"
 
 class KviKvsObject_file : public KviKvsObject
 {

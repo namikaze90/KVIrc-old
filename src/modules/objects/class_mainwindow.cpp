@@ -21,14 +21,13 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include "kvi_tal_mainwindow.h"
 #include "class_mainwindow.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
-
+#include "kvi_tal_mainwindow.h"
 
 /*
 	@doc:	mainwindow

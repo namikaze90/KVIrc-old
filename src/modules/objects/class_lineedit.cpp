@@ -20,25 +20,23 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#include "class_lineedit.h"
 
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 
-#include "class_lineedit.h"
-
 static const char * mode_tbl[] = {
-			"Normal",
-			"NoEcho",
-			"Password"
-			  };
+	"Normal",
+	"NoEcho",
+	"Password"
+};
 
-static const int mode_cod[] =  {
-		QLineEdit::Normal,
-		QLineEdit::NoEcho,
-		QLineEdit::Password
-			};
+static const int mode_cod[] = {
+	QLineEdit::Normal,
+	QLineEdit::NoEcho,
+	QLineEdit::Password
+};
 
 #define mode_num	(sizeof(mode_tbl) / sizeof(mode_tbl[0]))
 
@@ -191,7 +189,6 @@ KVSO_BEGIN_REGISTERCLASS(KviKvsObject_lineedit,"lineedit","widget")
 	KVSO_REGISTER_HANDLER(KviKvsObject_lineedit,"copy", functionCopy)
 	KVSO_REGISTER_HANDLER(KviKvsObject_lineedit,"cut", functionCut)
 	KVSO_REGISTER_HANDLER(KviKvsObject_lineedit,"paste", functionPaste)
-
 	KVSO_REGISTER_HANDLER(KviKvsObject_lineedit,"echoMode", functionEchoMode)
 	KVSO_REGISTER_HANDLER(KviKvsObject_lineedit,"setEchoMode", functionSetEchoMode)
 	KVSO_REGISTER_HANDLER(KviKvsObject_lineedit,"clear", functionClear)
@@ -428,6 +425,7 @@ void KviKvsObject_lineedit::slotreturnPressed()
 	callFunction(this,"returnPressedEvent",params);
 
 }
+
 // FIND ME
 bool KviKvsObject_lineedit::functionlostFocusEvent(KviKvsObjectFunctionCall *c)
 {
@@ -444,6 +442,7 @@ void KviKvsObject_lineedit::slotlostFocus()
 	callFunction(this,"lostFocusEvent",params);
 }
 /////
+
 bool KviKvsObject_lineedit::functiontextChangedEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("textChanged",c,c->params());
@@ -456,4 +455,3 @@ void KviKvsObject_lineedit::slottextChanged(const QString &text)
 	KviKvsVariantList params(new KviKvsVariant(text));
 	callFunction(this,"textChangedEvent",&params);
 }
-

@@ -20,14 +20,12 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#include "class_button.h"
+
 #include "kvi_debug.h"
-
-
 #include "kvi_error.h"
-#include <qiconset.h>
 #include "kvi_iconmanager.h"
 
-#include "class_button.h"
 
 KVSO_BEGIN_REGISTERCLASS(KviKvsObject_button,"button","widget")
 
@@ -78,6 +76,7 @@ bool KviKvsObject_button::functionSetText(KviKvsObjectFunctionCall *c)
 		((QPushButton *)widget())->setText(szText);
 	return true;
 }
+
 bool KviKvsObject_button::functionSetAutoDefault(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -88,6 +87,7 @@ bool KviKvsObject_button::functionSetAutoDefault(KviKvsObjectFunctionCall *c)
 		((QPushButton *)widget())->setAutoDefault(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_button::functionSetToggleButton(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -98,6 +98,7 @@ bool KviKvsObject_button::functionSetToggleButton(KviKvsObjectFunctionCall *c)
 		((QPushButton *)widget())->setToggleButton(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_button::functionSetOn(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -108,7 +109,8 @@ bool KviKvsObject_button::functionSetOn(KviKvsObjectFunctionCall *c)
 		((QPushButton *)widget())->setOn(bEnabled);
 	return true;
 }
-// FIX ME
+
+// FIXME
 bool KviKvsObject_button::functionSetIsMenuButton(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -121,22 +123,26 @@ bool KviKvsObject_button::functionSetIsMenuButton(KviKvsObjectFunctionCall *c)
 
 	return true;
 }
+
 bool KviKvsObject_button::functionIsMenuButton(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setBoolean(((QPushButton *)widget())->isMenuButton());
 	return true;
 }
 //
+
 bool KviKvsObject_button::functionIsOn(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setBoolean(((QPushButton *)widget())->isOn());
 	return true;
 }
+
 bool KviKvsObject_button::functionToggle(KviKvsObjectFunctionCall *c)
 {
 	if(widget()) ((QPushButton *)widget())->toggle();
 	return true;
 }
+
 // FIX ME
 bool KviKvsObject_button::functionSetImage(KviKvsObjectFunctionCall *c)
 {
@@ -154,6 +160,7 @@ bool KviKvsObject_button::functionSetImage(KviKvsObjectFunctionCall *c)
 	}
 	return true;
 }
+
 bool KviKvsObject_button::functionclickEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("clicked",c);

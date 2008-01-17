@@ -24,8 +24,8 @@
 #include "class_painter.h"
 #include "class_pixmap.h"
 #include "class_widget.h"
-#include "kvi_debug.h"
 
+#include "kvi_debug.h"
 #include "kvi_locale.h"
 #include "kvi_error.h"
 #include "kvi_iconmanager.h"
@@ -362,15 +362,12 @@ KVSO_BEGIN_REGISTERCLASS(KviKvsObject_painter,"painter","object")
 	// Text & Pixmap
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"drawText",functiondrawText)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"drawPixmap",functiondrawPixmap)
-
-
-	// MAtrix Operation
+	// Matrix Operation
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"rotate",functionrotateMatrix)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"shear",functionshearMatrix)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"scale",functionscaleMatrix)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"translate",functiontranslateMatrix)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"reset",functionresetMatrix)
-
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"setOpacity",functionsetOpacity)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"setTextAntialiasing",functionsetTextAntialiasing)
 	KVSO_REGISTER_HANDLER(KviKvsObject_painter,"setAntialiasing",functionsetAntialiasing)
@@ -988,5 +985,3 @@ bool KviKvsObject_painter::functionsetSmoothPixmapTransform(KviKvsObjectFunction
 	m_pPainter->setRenderHint(QPainter::SmoothPixmapTransform,bEnabled);
 	return true;
 }
-
-

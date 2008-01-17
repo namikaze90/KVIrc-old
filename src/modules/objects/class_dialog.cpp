@@ -24,12 +24,11 @@
 
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_frame.h"
 #include "kvi_app.h"
 
-#include <qdialog.h>
+#include <QDialog>
 
 
 /*
@@ -70,11 +69,12 @@ bool KviKvsObject_dialog::init(KviKvsRunTimeContext * pContext,KviKvsVariantList
 {
 	QWidget * w = g_pApp->activeModalWidget();
 	if(!w)w = g_pFrame;
-	QDialog * d = new QDialog(parentScriptWidget() ? parentScriptWidget() : w,name());
-	//d->setModal(true);
+	QDialog * d = new QDialog(parentScriptWidget() ? parentScriptWidget() : w);
+	d->setObjectName(name());
 	setObject(d);
 	return true;
 }
+
 bool KviKvsObject_dialog::functionSetModal(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -85,5 +85,3 @@ bool KviKvsObject_dialog::functionSetModal(KviKvsObjectFunctionCall *c)
 		((QDialog *)widget())->setModal(bEnabled);
 	return true;
 }
-
-

@@ -24,10 +24,10 @@
 //
 //=============================================================================
 
-#include "kvi_settings.h"
 #include "object_macros.h"
-
 #include "class_widget.h"
+
+#include "kvi_settings.h"
 
 #include <QBoxLayout>
 

@@ -22,17 +22,13 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
-#include <qpixmap.h>
-#include <qimage.h>
-
-#include <QMatrix>
+#include "object_macros.h"
 
 #include "kvi_string.h"
 
-
-#include "object_macros.h"
+#include <QPixmap>
+#include <QImage>
+#include <QMatrix>
 
 
 class KviKvsObject_pixmap : public KviKvsObject

@@ -23,11 +23,9 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
-#include <qlcdnumber.h>
 #include "class_widget.h"
 
+#include <QLCDNumber>
 
 class KviKvsObject_lcd : public KviKvsObject_widget
 {
@@ -39,13 +37,13 @@ protected:
 	virtual bool init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams);
 
 	bool functiondisplayStr(KviKvsObjectFunctionCall *c);
-    bool functionsetMode(KviKvsObjectFunctionCall *c);
-    bool functionsetSegmentStyle(KviKvsObjectFunctionCall *c);
-    bool functionsetNumDigits(KviKvsObjectFunctionCall *c);
-    bool functionsetSmallDecimalPoint(KviKvsObjectFunctionCall *c);
-    bool functioncheckOverflow(KviKvsObjectFunctionCall *c);
-    bool functiondisplayInt(KviKvsObjectFunctionCall *c);
-    bool functiondisplayDouble(KviKvsObjectFunctionCall *c);
+	bool functionsetMode(KviKvsObjectFunctionCall *c);
+	bool functionsetSegmentStyle(KviKvsObjectFunctionCall *c);
+	bool functionsetNumDigits(KviKvsObjectFunctionCall *c);
+	bool functionsetSmallDecimalPoint(KviKvsObjectFunctionCall *c);
+	bool functioncheckOverflow(KviKvsObjectFunctionCall *c);
+	bool functiondisplayInt(KviKvsObjectFunctionCall *c);
+	bool functiondisplayDouble(KviKvsObjectFunctionCall *c);
 };
 
 #endif        // !_CLASS_LCD_H_

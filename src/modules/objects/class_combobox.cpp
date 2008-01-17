@@ -20,16 +20,15 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#include "class_list.h"
+#include "class_combobox.h"
 
 #include "kvi_error.h"
 #include "kvi_locale.h"
 #include "kvi_debug.h"
 
-
-#include "class_list.h"
-#include "class_combobox.h"
-#include <qlineedit.h>
-#include <qstring.h>
+#include <QLineEdit>
+#include <QString>
 
 /*
 	@doc:	combobox
@@ -132,7 +131,9 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_combobox)
 
 bool KviKvsObject_combobox::init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams)
 {
-	setObject(new QComboBox(parentScriptWidget(), name()), true);
+	QComboBox * combo = new QComboBox(parentScriptWidget());
+	combo->setObjectName(name());
+	setObject(combo, true);
 	connect (((QComboBox *)widget()),SIGNAL(activated( int )),this,SLOT(slotActivated( int )));
 	return true;
 }

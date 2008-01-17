@@ -22,9 +22,11 @@
 //
 //=============================================================================
 
+#include "class_widget.h"
+#include "class_pixmap.h"
+
 #include "kvi_malloc.h"
 #include "kvi_debug.h"
-
 #include "kvi_error.h"
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
@@ -33,37 +35,33 @@
 #include "kvi_mirccntrl.h"
 #include "kvi_app.h"
 #include "kvi_string.h"
-#include <qcursor.h>
-#include <qiconset.h>
-#include <qcolor.h>
-#include <qlayout.h>
-#include <qbitmap.h>
-#include <qmetaobject.h>
-#include "class_widget.h"
-#include "class_pixmap.h"
 
+#include <QCursor>
+#include <QColor>
+#include <QLayout>
+#include <QBitmap>
+#include <QMetaObject>
 #include <QKeyEvent>
 #include <QDesktopWidget>
+#include <QWidget>
+#include <QToolTip>
+#include <QFont>
+#include <QVariant>
 
-#include <qwidget.h>
-#include <qtooltip.h>
-#include <qfont.h>
-#include <qvariant.h>
-
-// FIX ME: WFLAGS
+// FIXME: WFLAGS
 const char * const widgettypes_tbl[] = {
-			"TopLevel",
-			"Dialog",
-			"Popup",
-			"Desktop",
-			"Customize",
-			"Title",
-			"StaysOnTop",
-			"SysMenu",
-			"Minimize",
-			"Maximize",
-			"NoAutoErase"
-			   };
+	"TopLevel",
+	"Dialog",
+	"Popup",
+	"Desktop",
+	"Customize",
+	"Title",
+	"StaysOnTop",
+	"SysMenu",
+	"Minimize",
+	"Maximize",
+	"NoAutoErase"
+};
 
 const Qt::WidgetAttribute widgetattributes_cod[]= {
 	Qt::WA_OpaquePaintEvent,
@@ -78,32 +76,32 @@ const char * const widgetattributes_tbl[] = {
 	"paintOnScreen",
 	"noMousePropagation",
 };
-#define widgetattributes_num	(sizeof(widgetattributes_tbl) / sizeof(widgetattributes_tbl[0]))
+#define widgetattributes_num (sizeof(widgetattributes_tbl) / sizeof(widgetattributes_tbl[0]))
 
 
 const Qt::WindowType widgettypes_cod[] = {
-		Qt::WType_TopLevel,
-		Qt::WType_Dialog,
-		Qt::WType_Popup,
-		Qt::WType_Desktop,
-		Qt::WStyle_Customize,
-		Qt::WStyle_Title,
-		Qt::WStyle_StaysOnTop,
-		Qt::WStyle_SysMenu,
-		Qt::WStyle_Minimize,
-		Qt::WStyle_Maximize,
-		Qt::WNoAutoErase
+	Qt::WType_TopLevel,
+	Qt::WType_Dialog,
+	Qt::WType_Popup,
+	Qt::WType_Desktop,
+	Qt::WStyle_Customize,
+	Qt::WStyle_Title,
+	Qt::WStyle_StaysOnTop,
+	Qt::WStyle_SysMenu,
+	Qt::WStyle_Minimize,
+	Qt::WStyle_Maximize,
+	Qt::WNoAutoErase
 };
 
 
 #define QT_WIDGET_TABFOCUS Qt::TabFocus
-#define	QT_WIDGET_CLICKFOCUS Qt::ClickFocus
+#define QT_WIDGET_CLICKFOCUS Qt::ClickFocus
 #define QT_WIDGET_STRONGFOCUS Qt::StrongFocus
 #define QT_WIDGET_NOFOCUS Qt::NoFocus
 
 
 
-#define widgettypes_num	(sizeof(widgettypes_tbl) / sizeof(widgettypes_tbl[0]))
+#define widgettypes_num (sizeof(widgettypes_tbl) / sizeof(widgettypes_tbl[0]))
 
 /*
 	@doc: widget
@@ -621,7 +619,9 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_widget)
 
 bool KviKvsObject_widget::init(KviKvsRunTimeContext * pContext,KviKvsVariantList * pParams)
 {
-	setObject(new QWidget(parentScriptWidget(),getName()),true);
+	QWidget * widget = new QWidget(parentScriptWidget());
+	widget->setObjectName(getName());
+	setObject(widget,true);
 	return true;
 }
 
@@ -1712,4 +1712,3 @@ bool KviKvsObject_widget::function_setAttribute(KviKvsObjectFunctionCall *c)
 	else c->warning(__tr2qs("Unknown widget attribute '%Q'"),&attribute);	
 	return true;
 }
-

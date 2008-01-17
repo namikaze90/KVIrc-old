@@ -54,15 +54,7 @@
 #include <QDateTime>
 #include <QBuffer>
 #include <QLabel>
-
-// TODO: Qt4
-//#include <q3multilineedit.h>
 #include <QTextEdit>
-
-
-
-
-
 
 
 KviPackThemeDialog::KviPackThemeDialog(QWidget * pParent,QList<KviThemeInfo*> * pThemeInfoList)

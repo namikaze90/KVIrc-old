@@ -24,11 +24,11 @@
 //
 //=========================================================================================
 
+#include "object_macros.h"
+
 #include "kvi_settings.h"
 #include "kvi_string.h"
-
 #include "kvi_kvs_variant.h"
-#include "object_macros.h"
 
 #include <QList>
 

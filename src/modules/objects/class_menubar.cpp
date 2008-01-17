@@ -20,12 +20,10 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
 #include "class_menubar.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 
 /*
@@ -61,7 +59,9 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_menubar)
 
 bool KviKvsObject_menubar::init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams)
 {
-	setObject(new QMenuBar(parentScriptWidget(), name()));
+	QMenuBar * menu = new QMenuBar(parentScriptWidget());
+	menu->setObjectName(name());
+	setObject(menu, name());
 	return true;
 }
 

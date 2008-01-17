@@ -23,12 +23,14 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-#include "kvi_tal_popupmenu.h"
-#include <QCursor>
-#include <QList>
 #include "class_widget.h"
 #include "object_macros.h"
+
+#include "kvi_tal_popupmenu.h"
+
+#include <QCursor>
+#include <QList>
+
 
 class KviKvsObject_popupmenu : public KviKvsObject_widget
 {
@@ -58,4 +60,3 @@ private:
 };
 
 #endif	// !_CLASS_POPUPMENU_H_
-

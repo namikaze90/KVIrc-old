@@ -23,25 +23,26 @@
 //#warning "Add QFILEINFO to this stuff ?"
 
 #include "class_file.h"
-#include "kvi_debug.h"
 
+#include "kvi_debug.h"
 #include "kvi_locale.h"
 #include "kvi_error.h"
 #include "kvi_fileutils.h"
-#include  <qstringlist.h>
+
+#include  <QStringList>
 
 
 // needed for $open()
 const char * const mod_tbl[] =	{
-					"Raw",
-					"ReadOnly",
-					"WriteOnly",
-					"ReadWrite",
-					"Append",
-					"Truncate"
-				  };
+	"Raw",
+	"ReadOnly",
+	"WriteOnly",
+	"ReadWrite",
+	"Append",
+	"Truncate"
+};
 
-#define	IO_RAW QIODevice::Unbuffered
+#define IO_RAW QIODevice::Unbuffered
 #define IO_READONLY QIODevice::ReadOnly
 #define IO_WRITEONLY QIODevice::WriteOnly
 #define IO_READWRITE QIODevice::ReadWrite
@@ -50,15 +51,15 @@ const char * const mod_tbl[] =	{
 //#define IO_TRANSLATE QIODevice::Text
 
 const QIODevice::OpenMode mod_cod[] = {
-				IO_RAW,
-				IO_READONLY,
-				IO_WRITEONLY,
-				IO_READWRITE,
-				IO_APPEND,
-				IO_TRUNCATE
-			};
+	IO_RAW,
+	IO_READONLY,
+	IO_WRITEONLY,
+	IO_READWRITE,
+	IO_APPEND,
+	IO_TRUNCATE
+};
 
-#define mod_num			(sizeof(mod_tbl) / sizeof(mod_tbl[0]))
+#define mod_num (sizeof(mod_tbl) / sizeof(mod_tbl[0]))
 
 /*
 	@doc:	file
@@ -172,10 +173,10 @@ KVSO_BEGIN_REGISTERCLASS(KviKvsObject_file,"file","object")
 	KVSO_REGISTER_HANDLER(KviKvsObject_file,"writeBlock", functionwriteBlock)
 	KVSO_REGISTER_HANDLER(KviKvsObject_file,"readLine", functionreadLine)
 	KVSO_REGISTER_HANDLER(KviKvsObject_file,"writeLine", functionwriteLine)
-/*	KVSO_REGISTER_HANDLER(KviKvsObject_file,"hexWrite", functionHexWrite)
-	KVSO_REGISTER_HANDLER(KviKvsObject_file,"hexRead", functionHexRead)
-*/
-  KVSO_END_REGISTERCLASS(KviKvsObject_file)
+//	KVSO_REGISTER_HANDLER(KviKvsObject_file,"hexWrite", functionHexWrite)
+//	KVSO_REGISTER_HANDLER(KviKvsObject_file,"hexRead", functionHexRead)
+
+KVSO_END_REGISTERCLASS(KviKvsObject_file)
 
 KVSO_BEGIN_CONSTRUCTOR(KviKvsObject_file,KviKvsObject)
 	m_pFile = new QFile();
@@ -197,6 +198,7 @@ bool KviKvsObject_file::functionsetName(KviKvsObjectFunctionCall *c)
 	if (m_pFile) m_pFile->setName(szName);
 	return true;
 }
+
 bool KviKvsObject_file::functionname(KviKvsObjectFunctionCall *c)
 {
 	if (m_pFile) c->returnValue()->setString(m_pFile->name());
@@ -254,6 +256,7 @@ bool KviKvsObject_file::functionclose(KviKvsObjectFunctionCall *c)
 	else m_pFile->close();
 	return true;
 }
+
 bool KviKvsObject_file::functionflush(KviKvsObjectFunctionCall *c)
 {
 	if (!m_pFile->isOpen()) c->warning(__tr2qs("File is not open!"));
@@ -266,12 +269,12 @@ bool KviKvsObject_file::functionsize(KviKvsObjectFunctionCall *c)
 	if (m_pFile) c->returnValue()->setInteger((kvs_int_t)(m_pFile->size()));
 	return true;
 }
+
 bool KviKvsObject_file::functionatEnd(KviKvsObjectFunctionCall *c)
 {
 	if (m_pFile) c->returnValue()->setInteger((kvs_int_t)(m_pFile->size()));
 	return true;
 }
-
 
 bool KviKvsObject_file::functionwhere(KviKvsObjectFunctionCall *c)
 {
@@ -279,6 +282,7 @@ bool KviKvsObject_file::functionwhere(KviKvsObjectFunctionCall *c)
 	else c->returnValue()->setInteger((kvs_int_t)(m_pFile->pos()));
 	return true;
 }
+
 bool KviKvsObject_file::functionseek(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uIndex;
@@ -307,6 +311,7 @@ bool KviKvsObject_file::functionputch(KviKvsObjectFunctionCall *c)
 
 	return true;
 }
+
 bool KviKvsObject_file::functiongetch(KviKvsObjectFunctionCall *c)
 {
 	if (!m_pFile) return true;
@@ -321,6 +326,7 @@ bool KviKvsObject_file::functiongetch(KviKvsObjectFunctionCall *c)
 	}
 	return true;
 }
+
 bool KviKvsObject_file::functionunGetch(KviKvsObjectFunctionCall *c)
 {
 	QString szChar;
@@ -338,6 +344,7 @@ bool KviKvsObject_file::functionunGetch(KviKvsObjectFunctionCall *c)
 	}
 	return true;
 }
+
 bool KviKvsObject_file::functionreadBlock(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uLen;
@@ -376,6 +383,7 @@ bool KviKvsObject_file::functionwriteBlock(KviKvsObjectFunctionCall *c)
 	m_pFile->flush();
 	return true;
 }
+
 bool KviKvsObject_file::functionreadLine(KviKvsObjectFunctionCall *c)
 {
 	if (!m_pFile) return true;
@@ -389,6 +397,7 @@ bool KviKvsObject_file::functionreadLine(KviKvsObjectFunctionCall *c)
 	}
 	return true;
 }
+
 bool KviKvsObject_file::functionwriteLine(KviKvsObjectFunctionCall *c)
 {
 	QString szLine;
@@ -405,9 +414,8 @@ bool KviKvsObject_file::functionwriteLine(KviKvsObjectFunctionCall *c)
 	}
 	return true;
 }
-// fixme
-/*
 
+/* FIXME
 bool KviScriptFileObject::functionHexWrite(KviCommand * c, KviParameterList * p,
 	KviStr & b)
 {
@@ -438,16 +446,15 @@ bool KviScriptFileObject::functionHexWrite(KviCommand * c, KviParameterList * p,
 bool KviScriptFileObject::functionHexRead(KviCommand * c, KviParameterList * p,
 	KviStr & b)
 {
- 	if(!m_pFile->isOpen())
- 		c->warning(__tr("File is not open !"));
+	if(!m_pFile->isOpen())
+		c->warning(__tr("File is not open !"));
 
 	char ch = m_pFile->getch();
 
 	KviStr tmp;
- 	tmp.bufferToHex(&ch, 1);
- 	b.append(tmp);
+	tmp.bufferToHex(&ch, 1);
+	b.append(tmp);
 
- 	return true;
+	return true;
 }
-
 */

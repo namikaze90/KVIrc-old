@@ -1,11 +1,11 @@
 #ifndef _CLASS_MULTILINEEDIT_H_
 #define _CLASS_MULTILINEEDIT_H_
-//vim: ts=8
+//
 //   File : class_multilineedit.cpp
 //   Creation date : Mon Feb 19 00:45:34 CET by Krzysztof Godlewski
 //
-//	 Modification date: Thu 15 Feb 2005 22:00 :00
-//	 by Tonino Imbesi(Grifisx) and Alessandro Carbone(Noldor)
+//   Modification date: Thu 15 Feb 2005 22:00 :00
+//   by Tonino Imbesi(Grifisx) and Alessandro Carbone(Noldor)
 //
 //   This file is part of the KVirc irc client distribution
 //   Copyright (C) 1999-2000 Szymon Stefanek (pragma at kvirc dot net)
@@ -59,7 +59,7 @@ protected:
 	bool functionCopy(KviKvsObjectFunctionCall *c);
 	bool functionPaste(KviKvsObjectFunctionCall *c);
 	bool functionCut(KviKvsObjectFunctionCall *c);
-//								|-G&N add-| 
+//	|-G&N add-|
 	bool functionsetItalic(KviKvsObjectFunctionCall *c);
 	bool functionitalic(KviKvsObjectFunctionCall *c);
 	bool functionsetBold(KviKvsObjectFunctionCall *c);
@@ -67,20 +67,20 @@ protected:
 	bool functionsetUnderline(KviKvsObjectFunctionCall *c);
 	bool functionunderline(KviKvsObjectFunctionCall *c);
 	bool functionzoomIn(KviKvsObjectFunctionCall *c);
-    bool functionzoomOut(KviKvsObjectFunctionCall *c);
-    bool functionzoomTo(KviKvsObjectFunctionCall *c);
+	bool functionzoomOut(KviKvsObjectFunctionCall *c);
+	bool functionzoomTo(KviKvsObjectFunctionCall *c);
 	bool functionundo(KviKvsObjectFunctionCall *c);
-    bool functionredo(KviKvsObjectFunctionCall *c);
-    bool functiondel(KviKvsObjectFunctionCall *c);
-    bool functionclear(KviKvsObjectFunctionCall *c);
-    bool functionindent(KviKvsObjectFunctionCall *c);
-    bool functionsetUndoRedoEnabled(KviKvsObjectFunctionCall *c);
-    bool functionsetUndoDepth(KviKvsObjectFunctionCall *c);
-    bool functionisUndoRedoEnabled(KviKvsObjectFunctionCall *c);
-    bool functionundoDepth(KviKvsObjectFunctionCall *c);
+	bool functionredo(KviKvsObjectFunctionCall *c);
+	bool functiondel(KviKvsObjectFunctionCall *c);
+	bool functionclear(KviKvsObjectFunctionCall *c);
+	bool functionindent(KviKvsObjectFunctionCall *c);
+	bool functionsetUndoRedoEnabled(KviKvsObjectFunctionCall *c);
+	bool functionsetUndoDepth(KviKvsObjectFunctionCall *c);
+	bool functionisUndoRedoEnabled(KviKvsObjectFunctionCall *c);
+	bool functionundoDepth(KviKvsObjectFunctionCall *c);
 	bool functionsetText(KviKvsObjectFunctionCall *c);
-    bool functionsetPointSize(KviKvsObjectFunctionCall *c);
-    bool functionsetColor(KviKvsObjectFunctionCall *c);
+	bool functionsetPointSize(KviKvsObjectFunctionCall *c);
+	bool functionsetColor(KviKvsObjectFunctionCall *c);
 	bool functionisUndoAvailable(KviKvsObjectFunctionCall *c);
 	bool functionisRedoAvailable(KviKvsObjectFunctionCall *c);
 	bool functionsetLinkUnderline(KviKvsObjectFunctionCall *c);

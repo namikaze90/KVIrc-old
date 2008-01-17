@@ -19,12 +19,16 @@
 //   along with this program. If not, write to the Free Software Foundation,
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
-#define _KVI_DEBUG_CHECK_RANGE_
-#include "kvi_debug.h"
 
-#include "kvi_locale.h"
+#define _KVI_DEBUG_CHECK_RANGE_
 
 #include "class_hbox.h"
+
+#include "kvi_debug.h"
+#include "kvi_locale.h"
+
+#include <QWidget>
+#include <QHBoxLayout>
 
 /*
 	@doc: hbox
@@ -67,29 +71,37 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_hbox)
 
 bool KviKvsObject_hbox::init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams)
 {
-	
-		setObject(new KviTalHBox(parentScriptWidget()), true);
+	QWidget * widget = new QWidget(parentScriptWidget());
+	QHBoxLayout * pLayout = new QHBoxLayout(parentScriptWidget());
+	widget->setLayout(pLayout);
+
+	setObject(widget, true);
 	return true;
 }
+
+// FIXME: pLayout was not declared in this scope
 bool KviKvsObject_hbox::functionsetMargin(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uMargin;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("margin",KVS_PT_UNSIGNEDINTEGER,0,uMargin)
 	KVSO_PARAMETERS_END(c)
-    if (widget()) ((KviTalHBox *)widget())->setMargin(uMargin);
+	//if (widget()) pLayout()->setMargin(uMargin);
 	return true;
 }
 
+// FIXME: pLayout was not declared in this scope
 bool KviKvsObject_hbox::functionsetSpacing(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uSpacing;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("spacing",KVS_PT_UNSIGNEDINTEGER,0,uSpacing)
 	KVSO_PARAMETERS_END(c)
-    if (widget()) ((KviTalHBox *)widget())->setSpacing(uSpacing);
+	//if (widget()) pLayout->setSpacing(uSpacing);
 	return true;
 }
+
+// FIXME: pLayout was not declared in this scope
 bool KviKvsObject_hbox::functionsetStretchFactor(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject * pObject;
@@ -121,8 +133,6 @@ bool KviKvsObject_hbox::functionsetStretchFactor(KviKvsObjectFunctionCall *c)
 		c->warning(__tr2qs("The widget must be a child of this hbox"));
 		return true;
 	}
-	((KviTalHBox *)widget())->setStretchFactor(((QWidget *)(pObject->object())),uStretch);
+	//pLayout->setStretchFactor(((QWidget *)(pObject->object())),uStretch);
 	return true;
 }
-
-

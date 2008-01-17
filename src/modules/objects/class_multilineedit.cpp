@@ -1,9 +1,8 @@
-//vim: ts=8
 //   File : class_multilineedit.cpp
 //   Creation date : Mon Feb 19 00:45:34 CET by Krzysztof Godlewski
 //
-//	 Modification date: Thu 15 Feb 2005 22:00 :00
-//	 by Tonino Imbesi(Grifisx) and Alessandro Carbone(Noldor)
+//   Modification date: Thu 15 Feb 2005 22:00 :00
+//   by Tonino Imbesi(Grifisx) and Alessandro Carbone(Noldor)
 //
 //   This file is part of the KVirc irc client distribution
 //   Copyright (C) 1999-2000 Szymon Stefanek (pragma at kvirc dot net)
@@ -23,44 +22,40 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#include "class_multilineedit.h"
 
 #include "kvi_error.h"
 #include "kvi_debug.h"
 #include "kvi_locale.h"
 #include "kvi_malloc.h"
-#include <qfile.h>
 
-// TODO: Qt4
-#include <q3multilineedit.h>
+#include <QFile>
 #include <QTextStream>
-#include <q3stylesheet.h>
-#define KviTalMultiLineEdit Q3MultiLineEdit
-#define QTEXTEDIT_AUTO_ALL Q3TextEdit::AutoAll
-#define QTEXTEDIT_AUTO_NONE Q3TextEdit::AutoNone
-#define QTEXTEDIT_AUTO_BULLET_LIST Q3TextEdit::AutoBulletList
+#include <QTextEdit>
 
-
-#include "class_multilineedit.h"
-
+/* TODO: Qt4 QMultiLineEdit was removed and there is no class that
+		reimplements it but QTextEdit and QTextDocument. By the
+		way these classes miss almost all member functions
+		the old Q(3)MultiLineEdit implements.
+		Better to create a class that inherits QTextEdit ?
+*/
 
 //->Tables for Text Format
-static char * const mod_tbl[] =	{
-					"PlainText",
-					"RichText",
-					"AutoText",
-					"LogText"
-				  };
+static char * const mod_tbl[] = {
+	"PlainText",
+	"RichText",
+	"AutoText",
+	"LogText"
+};
 
-static int mod_cod[] =	{
-				Qt::PlainText,
-				Qt::RichText,
-				Qt::AutoText,
-				Qt::LogText
-			};
+static int mod_cod[] = {
+	Qt::PlainText,
+	Qt::RichText,
+	Qt::AutoText,
+	Qt::LogText
+};
 
-#define mod_num			(sizeof(mod_tbl) / sizeof(mod_tbl[0]))
-
-
+#define mod_num		(sizeof(mod_tbl) / sizeof(mod_tbl[0]))
 
 /*
 	@doc:	multilineedit
@@ -251,7 +246,7 @@ static int mod_cod[] =	{
 
 */
 
-
+#if 0
 KVSO_BEGIN_REGISTERCLASS(KviKvsObject_mledit,"multilineedit","widget")
 
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"textLine", functionTextLine)
@@ -285,24 +280,24 @@ KVSO_BEGIN_REGISTERCLASS(KviKvsObject_mledit,"multilineedit","widget")
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"underline", functionunderline)
 //->Zoom In, Out, To
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"zoomIn", functionzoomIn)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"zoomOut", functionzoomOut)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"zoomTo", functionzoomTo)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"zoomOut", functionzoomOut)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"zoomTo", functionzoomTo)
 //->Undo & Redo
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"undo", functionundo)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"redo", functionredo)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"del", functiondel)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"clear", functionclear)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setUndoRedoEnabled", functionsetUndoRedoEnabled)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setUndoDepth", functionsetUndoDepth)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"isUndoRedoEnabled", functionsetUndoRedoEnabled)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"undoDepth", functionundoDepth)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"redo", functionredo)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"del", functiondel)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"clear", functionclear)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setUndoRedoEnabled", functionsetUndoRedoEnabled)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setUndoDepth", functionsetUndoDepth)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"isUndoRedoEnabled", functionsetUndoRedoEnabled)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"undoDepth", functionundoDepth)
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"indent", functionundoDepth)
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"isUndoAvailable", functionisUndoAvailable)
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"isUndoRedoAvailable", functionisRedoAvailable)
 //->Text color & others
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setText", functionsetText)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setPointSize", functionsetPointSize)
-    KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setColor", functionsetColor)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setPointSize", functionsetPointSize)
+	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setColor", functionsetColor)
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setModified" , functionsetModified)
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setLinkUnderline" , functionsetLinkUnderline)
 	KVSO_REGISTER_HANDLER(KviKvsObject_mledit,"setOverwriteMode" , functionsetOverwriteMode)
@@ -342,40 +337,35 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_mledit)
 
 bool KviKvsObject_mledit::init(KviKvsRunTimeContext * pContext,KviKvsVariantList * pParams)
 {
-	setObject(new KviTalMultiLineEdit(parentScriptWidget(),getName()),true);
+	setObject(new QTextEdit(parentScriptWidget(),getName()),true);
 	return true;
 }
 
-
 bool KviKvsObject_mledit::functionSetReadOnly(KviKvsObjectFunctionCall *c)
-
 {
 	bool bEnabled;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
 	KVSO_PARAMETERS_END(c)
 	if(widget())
-		((KviTalMultiLineEdit *)widget())->setReadOnly(bEnabled);
+		((QTextEdit *)widget())->setReadOnly(bEnabled);
 	return true;
 }
 
-
 bool KviKvsObject_mledit::functionTextLine(KviKvsObjectFunctionCall *c)
-
 {
 	kvs_int_t iLine;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("line",KVS_PT_INT,0,iLine)
 	KVSO_PARAMETERS_END(c)
 	if(!widget())return true;
-	if(iLine > ((KviTalMultiLineEdit *)widget())->numLines() || iLine < 0) c->warning(__tr2qs("No such line number"));
+	if(iLine > ((QTextEdit *)widget())->numLines() || iLine < 0) c->warning(__tr2qs("No such line number"));
 	else
-		c->returnValue()->setString(((KviTalMultiLineEdit *)widget())->textLine(iLine));
+		c->returnValue()->setString(((QTextEdit *)widget())->textLine(iLine));
 	return true;
 }
 
 bool KviKvsObject_mledit::functionInsertLine(KviKvsObjectFunctionCall *c)
-
 {
 	kvs_int_t iLine;
 	QString szInsert;
@@ -384,7 +374,7 @@ bool KviKvsObject_mledit::functionInsertLine(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("line",KVS_PT_INT,KVS_PF_OPTIONAL,iLine)
 	KVSO_PARAMETERS_END(c)
 	if(!widget())return true;
-	((KviTalMultiLineEdit *)widget())->insertLine(szInsert,iLine);
+	((QTextEdit *)widget())->insertLine(szInsert,iLine);
 	return true;
 }
 
@@ -395,14 +385,14 @@ bool KviKvsObject_mledit::functionRemoveLine(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("line",KVS_PT_INT,0,iLine)
 	KVSO_PARAMETERS_END(c)
 	if(!widget())return true;
-	if(iLine > ((KviTalMultiLineEdit *)widget())->numLines() || iLine < 0)
-			c->warning("No such line number");
-	else ((KviTalMultiLineEdit *)widget())->removeLine(iLine);
+	if(iLine > ((QTextEdit *)widget())->numLines() || iLine < 0)
+		c->warning("No such line number");
+	else
+		((QTextEdit *)widget())->removeLine(iLine);
 	return true;
 }
 
 bool KviKvsObject_mledit::functionInsertAt(KviKvsObjectFunctionCall *c)
-
 {
 	kvs_uint_t iLine,iCol;
 	QString szInsert;
@@ -412,17 +402,16 @@ bool KviKvsObject_mledit::functionInsertAt(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("col",KVS_PT_UNSIGNEDINTEGER,0,iCol)
 	KVSO_PARAMETERS_END(c)
 	if(!widget())return true;
-	if(iLine < 0 || iCol < 0 || iLine > ((KviTalMultiLineEdit *)widget())->numLines())
+	if(iLine < 0 || iCol < 0 || iLine > ((QTextEdit *)widget())->numLines())
 			c->warning("No such line number");
 	else
-		((KviTalMultiLineEdit *)widget())->insertAt(szInsert,iLine,iCol);
+		((QTextEdit *)widget())->insertAt(szInsert,iLine,iCol);
 	return true;
 }
 
 bool KviKvsObject_mledit::functionNumLines(KviKvsObjectFunctionCall *c)
-
 {
-	if(widget()) c->returnValue()->setInteger(((KviTalMultiLineEdit *)widget())->numLines());
+	if(widget()) c->returnValue()->setInteger(((QTextEdit *)widget())->numLines());
 	return true;
 }
 
@@ -437,7 +426,7 @@ bool KviKvsObject_mledit::functionSetCursorPosition(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("mark",KVS_PT_BOOL,0,bFlag)
 	KVSO_PARAMETERS_END(c)
 	if(widget())
-		((KviTalMultiLineEdit *)widget())->setCursorPosition(iLine, iCol, bFlag);
+		((QTextEdit *)widget())->setCursorPosition(iLine, iCol, bFlag);
 	return true;
 }
 
@@ -445,11 +434,9 @@ bool KviKvsObject_mledit::functionCursorPosition(KviKvsObjectFunctionCall *c)
 {
 	if(!widget()) return true;
 	int line, col;
-	#if QT_VERSION >= 300
-		((KviTalMultiLineEdit *)widget())->getCursorPosition(&line, &col);
-	#else
-		((KviTalMultiLineEdit *)widget())->cursorPosition(&line, &col);
-	#endif
+	
+	((QTextEdit *)widget())->getCursorPosition(&line, &col);
+
 	KviKvsArray * a = new KviKvsArray();
 	a->set(0,new KviKvsVariant((kvs_int_t)line));
 	a->set(1,new KviKvsVariant((kvs_int_t)col));
@@ -460,14 +447,14 @@ bool KviKvsObject_mledit::functionCursorPosition(KviKvsObjectFunctionCall *c)
 bool KviKvsObject_mledit::functionAtBeginning(KviKvsObjectFunctionCall *c)
 {
 	if(!widget()) return true;
-	c->returnValue()->setBoolean(((KviTalMultiLineEdit *)widget())->atBeginning());
+	c->returnValue()->setBoolean(((QTextEdit *)widget())->atBeginning());
 	return true;
 }
 
 bool KviKvsObject_mledit::functionAtEnd(KviKvsObjectFunctionCall *c)
 {
 	if(!widget()) return true;
-	c->returnValue()->setBoolean(((KviTalMultiLineEdit *)widget())->atEnd());
+	c->returnValue()->setBoolean(((QTextEdit *)widget())->atEnd());
 	return true;
 }
 
@@ -479,13 +466,13 @@ bool KviKvsObject_mledit::functionSetWordWrap(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("word_wrap",KVS_PT_STRING,0,szWrap)
 	KVSO_PARAMETERS_END(c)
 	if(KviQString::equalCI(szWrap,"NoWrap"))
-			((KviTalMultiLineEdit *)widget())->setWordWrap(KviTalMultiLineEdit::NoWrap);
+			((QTextEdit *)widget())->setWordWrap(QTextEdit::NoWrap);
 	else if(KviQString::equalCI(szWrap,"WidgetWidth"))
-			((KviTalMultiLineEdit *)widget())->setWordWrap(KviTalMultiLineEdit::WidgetWidth);
+			((QTextEdit *)widget())->setWordWrap(QTextEdit::WidgetWidth);
 	else if(KviQString::equalCI(szWrap,"FixedPixelWidth"))
-			((KviTalMultiLineEdit *)widget())->setWordWrap(KviTalMultiLineEdit::FixedPixelWidth);
+			((QTextEdit *)widget())->setWordWrap(QTextEdit::FixedPixelWidth);
 	else if(KviQString::equalCI(szWrap,"FixedColumnWidth"))
-			((KviTalMultiLineEdit *)widget())->setWordWrap(KviTalMultiLineEdit::FixedColumnWidth);
+			((QTextEdit *)widget())->setWordWrap(QTextEdit::FixedColumnWidth);
 	else c->warning(__tr2qs("Unknown word wrap '%Q'"),&szWrap);
 	return true;
 }
@@ -498,13 +485,13 @@ bool KviKvsObject_mledit::functionsetWrapPolicy(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("wrap_policy",KVS_PT_STRING,0,szPolicy)
 	KVSO_PARAMETERS_END(c)
 	if(KviQString::equalCI(szPolicy,"AtWhiteSpace)"))
-			((KviTalMultiLineEdit *)widget())->setWrapPolicy(KviTalMultiLineEdit::AtWhiteSpace);
+			((QTextEdit *)widget())->setWrapPolicy(QTextEdit::AtWhiteSpace);
 	else if(KviQString::equalCI(szPolicy,"Anywhere"))
-			((KviTalMultiLineEdit *)widget())->setWrapPolicy(KviTalMultiLineEdit::Anywhere);
+			((QTextEdit *)widget())->setWrapPolicy(QTextEdit::Anywhere);
 	else if(KviQString::equalCI(szPolicy,"AtWordBoundary"))
-			((KviTalMultiLineEdit *)widget())->setWrapPolicy(KviTalMultiLineEdit::AtWordBoundary);
+			((QTextEdit *)widget())->setWrapPolicy(QTextEdit::AtWordBoundary);
 	else if(KviQString::equalCI(szPolicy,"AtWordOrDocumentBoundary"))
-			((KviTalMultiLineEdit *)widget())->setWrapPolicy(KviTalMultiLineEdit::AtWordOrDocumentBoundary);
+			((QTextEdit *)widget())->setWrapPolicy(QTextEdit::AtWordOrDocumentBoundary);
 	else c->warning(__tr2qs("Unknown wrap policy'%Q'"),&szPolicy);
 	return true;
 }
@@ -512,21 +499,21 @@ bool KviKvsObject_mledit::functionsetWrapPolicy(KviKvsObjectFunctionCall *c)
 bool KviKvsObject_mledit::functionWordWrap(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setBoolean(((KviTalMultiLineEdit *)widget())->wordWrap() & KviTalMultiLineEdit::WidgetWidth);
+		c->returnValue()->setBoolean(((QTextEdit *)widget())->wordWrap() & QTextEdit::WidgetWidth);
 	return true;
 }
 
 bool KviKvsObject_mledit::functionText(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setString(((KviTalMultiLineEdit *)widget())->text());
+		c->returnValue()->setString(((QTextEdit *)widget())->text());
 	return true;
 }
 
 bool KviKvsObject_mledit::functionLength(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-			c->returnValue()->setInteger(((KviTalMultiLineEdit *)widget())->length());
+			c->returnValue()->setInteger(((QTextEdit *)widget())->length());
 	return true;
 }
 
@@ -538,62 +525,60 @@ bool KviKvsObject_mledit::functionSetMaxLines(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("max_lines",KVS_PT_UNSIGNEDINTEGER,0,imaxLines)
 	KVSO_PARAMETERS_END(c)
 	if(widget())
-		((KviTalMultiLineEdit *)widget())->setMaxLines(imaxLines);
+		((QTextEdit *)widget())->setMaxLines(imaxLines);
 	return true;
 }
 
 bool KviKvsObject_mledit::functionMaxLines(KviKvsObjectFunctionCall *c)
-
 {
 	if(widget())
-		c->returnValue()->setInteger(((KviTalMultiLineEdit *)widget())->maxLines());
+		c->returnValue()->setInteger(((QTextEdit *)widget())->maxLines());
 	return true;
 }
 
 bool KviKvsObject_mledit::functionInsert(KviKvsObjectFunctionCall *c)
-
 {
 	QString szInsert;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("text",KVS_PT_STRING,0,szInsert)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->insert(szInsert);
+		((QTextEdit *)widget())->insert(szInsert);
 	return true;
 }
 
 bool KviKvsObject_mledit::functionAppend(KviKvsObjectFunctionCall *c)
-
 {
 	QString szAppend;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("text",KVS_PT_STRING,0,szAppend)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->append(szAppend);
+		((QTextEdit *)widget())->append(szAppend);
 	return true;
 }
 
 bool KviKvsObject_mledit::functionCopy(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		((KviTalMultiLineEdit *)widget())->copy();
+		((QTextEdit *)widget())->copy();
 	return true;
 }
 
 bool KviKvsObject_mledit::functionCut(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		((KviTalMultiLineEdit *)widget())->cut();
+		((QTextEdit *)widget())->cut();
 	return true;
 }
 
 bool KviKvsObject_mledit::functionPaste(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		((KviTalMultiLineEdit *)widget())->paste();
+		((QTextEdit *)widget())->paste();
 	return true;
 }
+
 //->Set Bold, Italic, Underline
 bool KviKvsObject_mledit::functionsetBold(KviKvsObjectFunctionCall *c)
 {
@@ -602,9 +587,10 @@ bool KviKvsObject_mledit::functionsetBold(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("bBold",KVS_PT_BOOL,0,bFlag)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->setBold(bFlag);
+		((QTextEdit *)widget())->setBold(bFlag);
 	return true;
 }
+
 bool KviKvsObject_mledit::functionsetUnderline(KviKvsObjectFunctionCall *c)
 {
 	bool bFlag;
@@ -612,7 +598,7 @@ bool KviKvsObject_mledit::functionsetUnderline(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("bUnderline",KVS_PT_BOOL,0,bFlag)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->setUnderline(bFlag);
+		((QTextEdit *)widget())->setUnderline(bFlag);
 	return true;
 }
 
@@ -623,30 +609,32 @@ bool KviKvsObject_mledit::functionsetItalic(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("bItalic",KVS_PT_BOOL,0,bFlag)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->setItalic(bFlag);
+		((QTextEdit *)widget())->setItalic(bFlag);
 	return true;
 }
 
-
-//-->Returns Italic , Bold, Underline.
+//-->Returns Italic, Bold, Underline.
 bool KviKvsObject_mledit::functionbold(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setBoolean(((KviTalMultiLineEdit *)widget())->bold());
+		c->returnValue()->setBoolean(((QTextEdit *)widget())->bold());
 	return true;
 }
+
 bool KviKvsObject_mledit::functionitalic(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setBoolean(((KviTalMultiLineEdit *)widget())->italic());
+		c->returnValue()->setBoolean(((QTextEdit *)widget())->italic());
 	return true;
 }
+
 bool KviKvsObject_mledit::functionunderline(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setBoolean(((KviTalMultiLineEdit *)widget())->underline());
+		c->returnValue()->setBoolean(((QTextEdit *)widget())->underline());
 	return true;
 }
+
 //->Zoom In, out at
 bool KviKvsObject_mledit::functionzoomIn(KviKvsObjectFunctionCall *c)
 {
@@ -656,97 +644,105 @@ bool KviKvsObject_mledit::functionzoomIn(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_END(c)
 	if (!widget()) return true;
 	if (!iZoom)
-		((KviTalMultiLineEdit *)object())->zoomIn();
-    else
-		((KviTalMultiLineEdit *)object())->zoomIn(iZoom);
-    return true;
+		((QTextEdit *)object())->zoomIn();
+	else
+		((QTextEdit *)object())->zoomIn(iZoom);
+	return true;
 }
 
 bool KviKvsObject_mledit::functionzoomOut(KviKvsObjectFunctionCall *c)
 {
-    kvs_int_t iZoom;
+	kvs_int_t iZoom;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("zoom_value",KVS_PT_INT,KVS_PF_OPTIONAL,iZoom)
 	KVSO_PARAMETERS_END(c)
 	if (!widget()) return true;
 	if (!iZoom)
-		((KviTalMultiLineEdit *)object())->zoomOut();
-    else
-		((KviTalMultiLineEdit *)object())->zoomOut(iZoom);
-    return true;
+		((QTextEdit *)object())->zoomOut();
+	else
+		((QTextEdit *)object())->zoomOut(iZoom);
+	return true;
 }
+
 bool KviKvsObject_mledit::functionzoomTo(KviKvsObjectFunctionCall *c)
 {
-    kvs_int_t iZoom;
+	kvs_int_t iZoom;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("zoom_size",KVS_PT_INT,0,iZoom)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)object())->zoomTo(iZoom);
-    return true;
+		((QTextEdit *)object())->zoomTo(iZoom);
+	return true;
 }
-//-> Undo & Redo functions
 
+//-> Undo & Redo functions
 bool KviKvsObject_mledit::functionundo(KviKvsObjectFunctionCall *c)
 {
-    if(widget())
-        ((KviTalMultiLineEdit *)widget())->undo();
-    return true;
+	if(widget())
+		((QTextEdit *)widget())->undo();
+	return true;
 }
+
 bool KviKvsObject_mledit::functionredo(KviKvsObjectFunctionCall *c)
 {
-    if(widget())
-        ((KviTalMultiLineEdit *)widget())->redo();
-    return true;
+	if(widget())
+		((QTextEdit *)widget())->redo();
+	return true;
 }
+
 bool KviKvsObject_mledit::functionclear(KviKvsObjectFunctionCall *c)
 {
-    if(widget())
-        ((KviTalMultiLineEdit *)widget())->clear();
-    return true;
+	if(widget())
+		((QTextEdit *)widget())->clear();
+	return true;
 }
+
 bool KviKvsObject_mledit::functiondel(KviKvsObjectFunctionCall *c)
 {
-    if(widget())
-		((KviTalMultiLineEdit *)widget())->del();
-    return true;
+	if(widget())
+		((QTextEdit *)widget())->del();
+	return true;
 }
+
 bool KviKvsObject_mledit::functionindent(KviKvsObjectFunctionCall *c)
-{
-    if(widget())
-        ((KviTalMultiLineEdit *)widget())->indent();
-    return true;
+	{
+	if(widget())
+		((QTextEdit *)widget())->indent();
+	return true;
 }
 
 bool KviKvsObject_mledit::functionsetUndoRedoEnabled(KviKvsObjectFunctionCall *c)
 {
-    bool bFlag;
+	bool bFlag;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("bUndoredo",KVS_PT_BOOL,0,bFlag)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-       ((KviTalMultiLineEdit *)widget())->setUndoRedoEnabled(bFlag);
-    return true;
+       ((QTextEdit *)widget())->setUndoRedoEnabled(bFlag);
+	return true;
 }
 
 bool KviKvsObject_mledit::functionisUndoRedoEnabled(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setBoolean(((KviTalMultiLineEdit *)widget())->isUndoRedoEnabled());
-    return true;
+		c->returnValue()->setBoolean(((QTextEdit *)widget())->isUndoRedoEnabled());
+	return true;
 }
+
 bool KviKvsObject_mledit::functionisUndoAvailable(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setBoolean(((KviTalMultiLineEdit *)widget())->isUndoAvailable());
-    return true;
+		c->returnValue()->setBoolean(((QTextEdit *)widget())->isUndoAvailable());
+	return true;
 }
+
 bool KviKvsObject_mledit::functionisRedoAvailable(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setBoolean(((KviTalMultiLineEdit *)widget())->isRedoAvailable());
-    return true;
+		c->returnValue()->setBoolean(((QTextEdit *)widget())->isRedoAvailable());
+	return true;
 }
+
 bool KviKvsObject_mledit::functionsetUndoDepth(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iDepth;
@@ -754,15 +750,16 @@ bool KviKvsObject_mledit::functionsetUndoDepth(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("undo_depth",KVS_PT_UNSIGNEDINTEGER,0,iDepth)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)object())->setUndoDepth(iDepth);
-    return true;
+		((QTextEdit *)object())->setUndoDepth(iDepth);
+	return true;
 
 }
+
 bool KviKvsObject_mledit::functionundoDepth(KviKvsObjectFunctionCall *c)
 {
-    if(widget())
-        c->returnValue()->setInteger(((KviTalMultiLineEdit *)widget())->undoDepth());
-    return true;
+	if(widget())
+		c->returnValue()->setInteger(((QTextEdit *)widget())->undoDepth());
+	return true;
 }
 
 //-->Text & Color & Family
@@ -774,9 +771,10 @@ bool KviKvsObject_mledit::functionsetText(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("text",KVS_PT_STRING,0,szText)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->setText(szText);
+		((QTextEdit *)widget())->setText(szText);
 	return true;
 }
+
 bool KviKvsObject_mledit::functionsetColor(KviKvsObjectFunctionCall *c)
 {
 	KviKvsVariant * pColArray;
@@ -831,7 +829,7 @@ bool KviKvsObject_mledit::functionsetColor(KviKvsObjectFunctionCall *c)
 					c->warning(__tr2qs("Not an hex digits"));
 				return true;
 				}
-			if (widget()) ((KviTalMultiLineEdit *)widget())->setColor(QColor(iColR,iColG,iColB));
+			if (widget()) ((QTextEdit *)widget())->setColor(QColor(iColR,iColG,iColB));
 			return true;
 			}
 		if(c->params()->count() < 3)
@@ -845,7 +843,7 @@ bool KviKvsObject_mledit::functionsetColor(KviKvsObjectFunctionCall *c)
 			return false;
 		}
 	}
-	if (widget()) ((KviTalMultiLineEdit *)widget())->setColor(QColor(iColR,iColG,iColB));
+	if (widget()) ((QTextEdit *)widget())->setColor(QColor(iColR,iColG,iColB));
 	return true;
 }
 
@@ -856,7 +854,7 @@ bool KviKvsObject_mledit::functionsetPointSize(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("point_size",KVS_PT_UNSIGNEDINTEGER,0,uPointSize)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->setPointSize(uPointSize);
+		((QTextEdit *)widget())->setPointSize(uPointSize);
 	return true;
 }
 
@@ -867,7 +865,7 @@ bool KviKvsObject_mledit::functionsetLinkUnderline(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("bLinkunderline",KVS_PT_BOOL,0,bFlag)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->setLinkUnderline(bFlag);
+		((QTextEdit *)widget())->setLinkUnderline(bFlag);
 	return true;
 }
 
@@ -878,7 +876,7 @@ bool KviKvsObject_mledit::functionsetFamily(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("family",KVS_PT_STRING,0,szFamily)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-			((KviTalMultiLineEdit *)widget())->setFamily(szFamily);
+		((QTextEdit *)widget())->setFamily(szFamily);
 	return true;
 }
 
@@ -889,7 +887,7 @@ bool KviKvsObject_mledit::functionsetModified(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("bModified",KVS_PT_BOOL,0,bFlag)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->setModified(bFlag);
+		((QTextEdit *)widget())->setModified(bFlag);
 	return true;
 }
 
@@ -902,7 +900,7 @@ bool KviKvsObject_mledit::functioninsertParagraph(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("paragraph",KVS_PT_INT,0,iParagraph)
 	KVSO_PARAMETERS_END(c)
 	if(widget())
-		((KviTalMultiLineEdit *)widget())->insertParagraph(szText,iParagraph);
+		((QTextEdit *)widget())->insertParagraph(szText,iParagraph);
 	return true;
 }
 
@@ -913,7 +911,7 @@ bool KviKvsObject_mledit::functionremoveParagraph(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("paragraph",KVS_PT_INT,0,iParagraph)
 	KVSO_PARAMETERS_END(c)
 	if(widget())
-		((KviTalMultiLineEdit*)widget())->removeParagraph(iParagraph);
+		((QTextEdit*)widget())->removeParagraph(iParagraph);
 	return true;
 }
 
@@ -924,15 +922,14 @@ bool KviKvsObject_mledit::functionsetOverwriteMode(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("bOverwritemode",KVS_PT_BOOL,0,bFlag)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->setOverwriteMode(bFlag);
+		((QTextEdit *)widget())->setOverwriteMode(bFlag);
 	return true;
 }
 
 bool KviKvsObject_mledit::functiontextFormat(KviKvsObjectFunctionCall *c)
-
 {
 	if(!widget())return true;
-	int fstyle = ((KviTalMultiLineEdit *)widget())->textFormat();
+	int fstyle = ((QTextEdit *)widget())->textFormat();
 	QString format="";
 	for(unsigned int i = 0; i < mod_num; i++)
 	{
@@ -943,10 +940,9 @@ bool KviKvsObject_mledit::functiontextFormat(KviKvsObjectFunctionCall *c)
 	}
 	c->returnValue()->setString(format);
 	return true;
-
 }
-bool KviKvsObject_mledit::functionsetTextFormat(KviKvsObjectFunctionCall *c)
 
+bool KviKvsObject_mledit::functionsetTextFormat(KviKvsObjectFunctionCall *c)
 {
 	QString szFormat;
 	KVSO_PARAMETERS_BEGIN(c)
@@ -954,20 +950,21 @@ bool KviKvsObject_mledit::functionsetTextFormat(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_END(c)
 	if(!widget()) return true;
 	if(KviQString::equalCI(szFormat,"PlainText"))
-			((KviTalMultiLineEdit *)widget())->setTextFormat(Qt::PlainText);
+			((QTextEdit *)widget())->setTextFormat(Qt::PlainText);
 	else if(KviQString::equalCI(szFormat,"RichText"))
-			((KviTalMultiLineEdit *)widget())->setTextFormat(Qt::RichText);
+			((QTextEdit *)widget())->setTextFormat(Qt::RichText);
 	else if(KviQString::equalCI(szFormat,"LogText"))
-			((KviTalMultiLineEdit *)widget())->setTextFormat(Qt::LogText);
+			((QTextEdit *)widget())->setTextFormat(Qt::LogText);
 	else if(KviQString::equalCI(szFormat,"AutoText"))
-			((KviTalMultiLineEdit *)widget())->setTextFormat(Qt::AutoText);
+			((QTextEdit *)widget())->setTextFormat(Qt::AutoText);
 	else c->warning(__tr2qs("Unknown text format '%Q'"),&szFormat);
 	return true;
 }
+
 // findme
 bool KviKvsObject_mledit::functionsetParagraphBackgroundColor(KviKvsObjectFunctionCall *c)
 {
-    KviKvsVariant * pColArray;
+	KviKvsVariant * pColArray;
 	kvs_int_t iParagraph,iColR,iColG,iColB;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("paragraph",KVS_PT_INT,0,iParagraph)
@@ -1020,7 +1017,7 @@ bool KviKvsObject_mledit::functionsetParagraphBackgroundColor(KviKvsObjectFuncti
 					c->warning(__tr2qs("Not an hex digits"));
 				return true;
 				}
-			if (widget()) ((KviTalMultiLineEdit *)widget())->setParagraphBackgroundColor(iParagraph,QColor(iColR,iColG,iColB));
+			if (widget()) ((QTextEdit *)widget())->setParagraphBackgroundColor(iParagraph,QColor(iColR,iColG,iColB));
 			return true;
 			}
 		if(c->params()->count() < 3)
@@ -1034,7 +1031,7 @@ bool KviKvsObject_mledit::functionsetParagraphBackgroundColor(KviKvsObjectFuncti
 			return false;
 		}
 	}
-   	if (widget()) ((KviTalMultiLineEdit *)widget())->setParagraphBackgroundColor(iParagraph,QColor(iColR,iColG,iColB));
+	if (widget()) ((QTextEdit *)widget())->setParagraphBackgroundColor(iParagraph,QColor(iColR,iColG,iColB));
 	return true;
 }
 
@@ -1045,7 +1042,7 @@ bool KviKvsObject_mledit::functionclearParagraphBackground(KviKvsObjectFunctionC
 		KVSO_PARAMETER("paragraph",KVS_PT_INT,0,iParagraph)
 	KVSO_PARAMETERS_END(c)
 	if(widget())
-		((KviTalMultiLineEdit*)widget())->clearParagraphBackground(iParagraph);
+		((QTextEdit*)widget())->clearParagraphBackground(iParagraph);
 	return true;
 }
 
@@ -1062,26 +1059,25 @@ bool KviKvsObject_mledit::functionloadFile(KviKvsObjectFunctionCall *c)
 	}
 
 	QFile file( szFile );
-    if ( !file.open( IO_ReadOnly ) )
+	if ( !file.open( IO_ReadOnly ) )
 	{
 		c->warning(__tr2qs(" I cannot read the file %Q'."),&szFile);
         return true;
 	}
 
 	QTextStream ts( &file );
-    QString txt = ts.read();
+	QString txt = ts.read();
 
 	if ( !Q3StyleSheet::mightBeRichText( txt ) )
 	txt = Q3StyleSheet::convertFromPlainText( txt, Q3StyleSheetItem::WhiteSpacePre );
 
-	((KviTalMultiLineEdit *)widget())->setText( txt );
+	((QTextEdit *)widget())->setText( txt );
 
 	file.close();
 	return true;
 }
 
 bool KviKvsObject_mledit::functionsetAlignment(KviKvsObjectFunctionCall *c)
-
 {
 	QString szAlignment;
 	KVSO_PARAMETERS_BEGIN(c)
@@ -1089,19 +1085,18 @@ bool KviKvsObject_mledit::functionsetAlignment(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_END(c)
 	if(!widget()) return true;
 	if(KviQString::equalCI(szAlignment,"Left"))
-		((KviTalMultiLineEdit *)widget())->setAlignment(Qt::AlignLeft);
+		((QTextEdit *)widget())->setAlignment(Qt::AlignLeft);
 	else if(KviQString::equalCI(szAlignment,"Right"))
-		((KviTalMultiLineEdit *)widget())->setAlignment(Qt::AlignRight);
+		((QTextEdit *)widget())->setAlignment(Qt::AlignRight);
 	else if(KviQString::equalCI(szAlignment,"Center"))
-		((KviTalMultiLineEdit *)widget())->setAlignment(Qt::AlignCenter);
+		((QTextEdit *)widget())->setAlignment(Qt::AlignCenter);
 	else if(KviQString::equalCI(szAlignment,"Justify"))
-		((KviTalMultiLineEdit *)widget())->setAlignment(Qt::AlignJustify);
+		((QTextEdit *)widget())->setAlignment(Qt::AlignJustify);
 	else c->warning(__tr2qs("Unknown alignment '%Q'"),&szAlignment);
 	return true;
 }
 
 bool KviKvsObject_mledit::functionsetAutoFormatting(KviKvsObjectFunctionCall *c)
-
 {
 	QString szAutoformatting;
 	KVSO_PARAMETERS_BEGIN(c)
@@ -1109,17 +1104,16 @@ bool KviKvsObject_mledit::functionsetAutoFormatting(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_END(c)
 	if(!widget()) return true;
 	if(KviQString::equalCI(szAutoformatting,"AutoNone"))
-		((KviTalMultiLineEdit *)widget())->setAutoFormatting(QTEXTEDIT_AUTO_NONE);
+		((QTextEdit *)widget())->setAutoFormatting(QTextEdit::AutoNone);
 	else if(KviQString::equalCI(szAutoformatting,"BulletList"))
-		((KviTalMultiLineEdit *)widget())->setAutoFormatting(QTEXTEDIT_AUTO_BULLET_LIST);
+		((QTextEdit *)widget())->setAutoFormatting(QTextEdit::AutoBulletList);
 	else if(KviQString::equalCI(szAutoformatting,"AutoAll"))
-		((KviTalMultiLineEdit *)widget())->setAutoFormatting(QTEXTEDIT_AUTO_ALL);
+		((QTextEdit *)widget())->setAutoFormatting(QTextEdit::AutoAll);
 	else c->warning(__tr2qs("Unknown auto formatting mode '%Q'"),&szAutoformatting);
 	return true;
 }
 
 bool KviKvsObject_mledit::functionsetVerticalAlignment(KviKvsObjectFunctionCall *c)
-
 {
 	QString szValignment;
 	KVSO_PARAMETERS_BEGIN(c)
@@ -1127,11 +1121,11 @@ bool KviKvsObject_mledit::functionsetVerticalAlignment(KviKvsObjectFunctionCall 
 	KVSO_PARAMETERS_END(c)
 	if(!widget()) return true;
 	if(KviQString::equalCI(szValignment,"Normal"))
-		((KviTalMultiLineEdit *)widget())->setVerticalAlignment(KviTalMultiLineEdit::AlignNormal);
+		((QTextEdit *)widget())->setVerticalAlignment(QTextEdit::AlignNormal);
 	else if(KviQString::equalCI(szValignment,"SuperScript"))
-		((KviTalMultiLineEdit *)widget())->setVerticalAlignment(KviTalMultiLineEdit::AlignSuperScript);
+		((QTextEdit *)widget())->setVerticalAlignment(QTextEdit::AlignSuperScript);
 	else if(KviQString::equalCI(szValignment,"SubScript"))
-		((KviTalMultiLineEdit *)widget())->setVerticalAlignment(KviTalMultiLineEdit::AlignSubScript);
+		((QTextEdit *)widget())->setVerticalAlignment(QTextEdit::AlignSubScript);
 	else c->warning(__tr2qs("Unknown vertical alignment '%Q'"),&szValignment);
 	return true;
 }
@@ -1139,7 +1133,7 @@ bool KviKvsObject_mledit::functionsetVerticalAlignment(KviKvsObjectFunctionCall 
 bool KviKvsObject_mledit::functionparagraphs(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setInteger(((KviTalMultiLineEdit *)widget())->paragraphs());
+		c->returnValue()->setInteger(((QTextEdit *)widget())->paragraphs());
 	return true;
 
 }
@@ -1147,7 +1141,7 @@ bool KviKvsObject_mledit::functionparagraphs(KviKvsObjectFunctionCall *c)
 bool KviKvsObject_mledit::functionlines(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
-		c->returnValue()->setInteger(((KviTalMultiLineEdit *)widget())->lines());
+		c->returnValue()->setInteger(((QTextEdit *)widget())->lines());
 	return true;
 }
 
@@ -1159,7 +1153,7 @@ bool KviKvsObject_mledit::functionlineOfChar(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("index",KVS_PT_INT,0,iIndex)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		c->returnValue()->setInteger(((KviTalMultiLineEdit *)widget())->lineOfChar(iPara,iIndex));
+		c->returnValue()->setInteger(((QTextEdit *)widget())->lineOfChar(iPara,iIndex));
 	return true;
 }
 
@@ -1170,7 +1164,7 @@ bool KviKvsObject_mledit::functionlinesOfParagraph(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("paragraph",KVS_PT_INT,0,iLine)
 	KVSO_PARAMETERS_END(c)
 	if(widget())
-		c->returnValue()->setInteger(((KviTalMultiLineEdit *)widget())->linesOfParagraph(iLine));
+		c->returnValue()->setInteger(((QTextEdit *)widget())->linesOfParagraph(iLine));
 	return true;
 }
 
@@ -1182,9 +1176,8 @@ bool KviKvsObject_mledit::functionparagraphLength(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("paragraph",KVS_PT_INT,0,iParagraph)
 	KVSO_PARAMETERS_END(c)
 	if(widget())
-		c->returnValue()->setInteger(((KviTalMultiLineEdit *)widget())->paragraphLength(iParagraph));
+		c->returnValue()->setInteger(((QTextEdit *)widget())->paragraphLength(iParagraph));
 	return true;
-
 }
 
 bool KviKvsObject_mledit::functionselectAll(KviKvsObjectFunctionCall *c)
@@ -1194,8 +1187,7 @@ bool KviKvsObject_mledit::functionselectAll(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("bSelectall",KVS_PT_BOOL,0,bFlag)
 	KVSO_PARAMETERS_END(c)
 	if (widget())
-		((KviTalMultiLineEdit *)widget())->selectAll(bFlag);
+		((QTextEdit *)widget())->selectAll(bFlag);
 	return true;
 }
-
-
+#endif

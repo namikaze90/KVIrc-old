@@ -20,11 +20,14 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 #define _KVI_DEBUG_CHECK_RANGE_
-#include "kvi_debug.h"
-
-#include "kvi_locale.h"
 
 #include "class_vbox.h"
+
+#include "kvi_debug.h"
+#include "kvi_locale.h"
+
+#include <QWidget>
+#include <QVBoxLayout>
 
 /*
 	@doc: vbox
@@ -67,30 +70,36 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_vbox)
 
 bool KviKvsObject_vbox::init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams)
 {
-	setObject(new KviTalVBox(parentScriptWidget()), true);
+	QWidget * widget = new QWidget(parentScriptWidget());
+	QVBoxLayout * pLayout = new QVBoxLayout(parentScriptWidget());
+	widget->setLayout(pLayout);
+	setObject(widget, true);
 	return true;
 }
 
+// FIXME: pLayout was not declared in this scope
 bool KviKvsObject_vbox::functionsetMargin(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iMargin;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("margin",KVS_PT_INT,0,iMargin)
 	KVSO_PARAMETERS_END(c)
-    if (widget()) ((KviTalVBox *)widget())->setMargin(iMargin);
+	//if (widget()) pLayout->setMargin(iMargin);
 	return true;
 }
 
+// FIXME: pLayout was not declared in this scope
 bool KviKvsObject_vbox::functionsetSpacing(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iSpacing;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("spacing",KVS_PT_INT,0,iSpacing)
 	KVSO_PARAMETERS_END(c)
-    if (widget()) ((KviTalVBox *)widget())->setSpacing(iSpacing);
+	//if (widget()) pLayout->setSpacing(iSpacing);
 	return true;
 }
 
+// FIXME: pLayout was not declared in this scope
 bool KviKvsObject_vbox::functionsetStretchFactor(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject * pObject;
@@ -123,6 +132,6 @@ bool KviKvsObject_vbox::functionsetStretchFactor(KviKvsObjectFunctionCall *c)
 		c->warning(__tr2qs("The widget must be a child of this vbox"));
 		return true;
 	}
-	((KviTalVBox *)widget())->setStretchFactor(((QWidget *)(pObject->object())),uStretch);
+	//pLayout->setStretchFactor(((QWidget *)(pObject->object())),uStretch);
 	return true;
 }

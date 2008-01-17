@@ -21,26 +21,27 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include <kvi_tal_groupbox.h>
 #include "class_groupbox.h"
+
+#include <kvi_tal_groupbox.h>
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 
 // Tables used in $setAlignment , $alignment and in $setOrientation & $orientation
 
 const char * const align_tbl[] = {
-			"Left",
-			"Right",
-			"HCenter"
-			   };
+	"Left",
+	"Right",
+	"HCenter"
+};
 const int align_cod[] = {
-		Qt::AlignLeft,
-		Qt::AlignRight,
-		Qt::AlignHCenter
-			};
+	Qt::AlignLeft,
+	Qt::AlignRight,
+	Qt::AlignHCenter
+};
+
 #define align_num	(sizeof(align_tbl) / sizeof(align_tbl[0]))
 
 
@@ -201,11 +202,13 @@ bool KviKvsObject_groupbox::functionSetTitle(KviKvsObjectFunctionCall *c)
 		((KviTalGroupBox *)widget())->setTitle(szTitle);
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionTitle(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setString(((KviTalGroupBox *)widget())->title());
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionSetFlat(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -216,11 +219,13 @@ bool KviKvsObject_groupbox::functionSetFlat(KviKvsObjectFunctionCall *c)
 		((KviTalGroupBox *)widget())->setFlat(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionIsFlat(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setBoolean(((KviTalGroupBox *)widget())->isFlat());
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionSetCheckable(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -231,11 +236,13 @@ bool KviKvsObject_groupbox::functionSetCheckable(KviKvsObjectFunctionCall *c)
 		((KviTalGroupBox *)widget())->setCheckable(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionIsCheckable(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setBoolean(((KviTalGroupBox *)widget())->isCheckable());
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionSetChecked(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -246,11 +253,13 @@ bool KviKvsObject_groupbox::functionSetChecked(KviKvsObjectFunctionCall *c)
 		((KviTalGroupBox *)widget())->setChecked(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionIsChecked(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setBoolean(((KviTalGroupBox *)widget())->isChecked());
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionSetInsideMargin(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uMargin;
@@ -260,11 +269,13 @@ bool KviKvsObject_groupbox::functionSetInsideMargin(KviKvsObjectFunctionCall *c)
     if (widget()) ((KviTalGroupBox *)widget())->setInsideMargin(uMargin);
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionInsideMargin(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setInteger(((KviTalGroupBox *)widget())->insideMargin());
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionSetInsideSpacing(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uSpacing;
@@ -274,11 +285,13 @@ bool KviKvsObject_groupbox::functionSetInsideSpacing(KviKvsObjectFunctionCall *c
     if (widget()) ((KviTalGroupBox *)widget())->setInsideSpacing(uSpacing);
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionInsideSpacing(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setInteger(((KviTalGroupBox *)widget())->insideSpacing());
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionSetColumns(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uColums;
@@ -288,11 +301,13 @@ bool KviKvsObject_groupbox::functionSetColumns(KviKvsObjectFunctionCall *c)
     if (widget()) ((KviTalGroupBox *)widget())->setColumns(uColums);
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionColumns(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setInteger(((KviTalGroupBox *)widget())->columns());
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionAddSpace(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t iSpace;
@@ -321,6 +336,7 @@ bool KviKvsObject_groupbox::functionSetAlignment(KviKvsObjectFunctionCall *c)
 	c->warning(__tr2qs("Unknown alignment"));
 	return true;
 }
+
 bool KviKvsObject_groupbox::functionAlignment(KviKvsObjectFunctionCall *c)
 {
 	int mode = ((KviTalGroupBox *)widget())->alignment();
@@ -370,4 +386,3 @@ bool KviKvsObject_groupbox::functionSetColumnLayout(KviKvsObjectFunctionCall *c)
 		else c->warning( __tr2qs("Unknown orientation: "));
 	return true;
 }
-

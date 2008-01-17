@@ -22,13 +22,12 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#include "object_macros.h"
 
-#include <qpainter.h>
-#include <qpaintdevice.h>
 #include "kvi_string.h"
 
-
-#include "object_macros.h"
+#include <QPainter>
+#include <QPaintDevice>
 
 
 class KviKvsObject_painter : public KviKvsObject
@@ -88,6 +87,3 @@ private:
 	KviKvsObject * m_pDeviceObject;
 };
 #endif	// !_CLASS_PAINTER_H_
-
-
-

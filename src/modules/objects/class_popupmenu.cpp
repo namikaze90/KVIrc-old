@@ -23,10 +23,9 @@
 
 
 #include "class_popupmenu.h"
+
 #include "kvi_error.h"
-
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 
@@ -201,12 +200,11 @@ bool KviKvsObject_popupmenu::functioninsertItem(KviKvsObjectFunctionCall *c)
 	if(!widget())return true;
 	QPixmap *pix = 0;
 	QAction * action;
-    if(!szIcon.isEmpty())
+	if(!szIcon.isEmpty())
 	{
 		pix = g_pIconManager->getImage(szIcon);
-        if (pix) action = ((KviTalPopupMenu *)widget())->insertItem(*pix,szItem);
+		if (pix) action = ((KviTalPopupMenu *)widget())->insertItem(*pix,szItem);
 		else c->warning(__tr2qs("pix '%Q' doesn't exists"),&szIcon);
-
 	}
 	else
 	{
@@ -260,19 +258,18 @@ bool KviKvsObject_popupmenu::functioninsertHandle(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_END(c)
 	ob=KviKvsKernel::instance()->objectController()->lookupObject(hObject);
 	if(!ob->object()->inherits("KviKvsObject_popupmenu"))
-    {
+	{
 		c->warning(__tr2qs("Can't add a non - popupmenu  object"));
-        return TRUE;
-    }
+		return TRUE;
+	}
 	if(!widget())return true;
 	QPixmap *pix = 0;
 	QAction * action;
-    if(!szIcon.isEmpty())
+	if(!szIcon.isEmpty())
 	{
 		pix = g_pIconManager->getImage(szIcon);
-        if (pix) action=((KviTalPopupMenu *)widget())->insertItem(*pix,szLabel,((KviTalPopupMenu  *)(ob->object())));
+		if (pix) action=((KviTalPopupMenu *)widget())->insertItem(*pix,szLabel,((KviTalPopupMenu  *)(ob->object())));
 		else c->warning(__tr2qs("pix '%Q' doesn't exists"),&szIcon);
-
 	}
 	else
 	{
@@ -283,6 +280,7 @@ bool KviKvsObject_popupmenu::functioninsertHandle(KviKvsObjectFunctionCall *c)
 	c->returnValue()->setInteger(m_ActionList.indexOf(action)); //return id
 	return true;
 }
+
 bool KviKvsObject_popupmenu::functionexec(KviKvsObjectFunctionCall *c)
 {
 	if(!c->params()->count())
@@ -321,6 +319,7 @@ bool KviKvsObject_popupmenu::functionexec(KviKvsObjectFunctionCall *c)
 
 	return true;
 }
+
 bool KviKvsObject_popupmenu::functionremoveItem(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uItem;
@@ -330,6 +329,7 @@ bool KviKvsObject_popupmenu::functionremoveItem(KviKvsObjectFunctionCall *c)
 	if(widget()) ((KviTalPopupMenu *)widget())->removeItem(uItem);
 	return true;
 }
+
 bool KviKvsObject_popupmenu::functionremoveItemAt(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uIndex;
@@ -355,19 +355,21 @@ void KviKvsObject_popupmenu::slothighlighted(QAction * action)
 	KviKvsVariantList params(new KviKvsVariant((kvs_int_t)m_ActionList.indexOf(action)));
 	callFunction(this,"highlightedEvent",&params);
 }
+
 bool KviKvsObject_popupmenu::functionhighlightedEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("highlighted",c,c->params());
 	return true;
 }
+
 void KviKvsObject_popupmenu::slotactivated(QAction * action)
 {
 	KviKvsVariantList params(new KviKvsVariant((kvs_int_t)m_ActionList.indexOf(action)));
 	callFunction(this,"activatedEvent",&params);
 }
+
 bool KviKvsObject_popupmenu::functionactivatedEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("activated",c,c->params());
 	return true;
 }
-

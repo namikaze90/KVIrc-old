@@ -22,14 +22,12 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
-#include <qlineedit.h>
 #include "class_widget.h"
+#include "object_macros.h"
+
+#include <QLineEdit>
 
 //#warning "Signals !"
-
-#include "object_macros.h"
 
 class KviKvsObject_lineedit : public KviKvsObject_widget
 {
@@ -40,8 +38,6 @@ public:
 	QWidget * widget() { return (QWidget *)object(); };
 protected:
 	virtual bool init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams);
-
-	
 
 	bool functionText(KviKvsObjectFunctionCall *c);
 	bool functionSetText(KviKvsObjectFunctionCall *c);
@@ -65,9 +61,7 @@ protected:
 	bool functionSetReadOnly(KviKvsObjectFunctionCall *c);
 
 	bool functionreturnPressedEvent(KviKvsObjectFunctionCall *c);
-
 	bool functionlostFocusEvent(KviKvsObjectFunctionCall *c);
-
 	bool functiontextChangedEvent(KviKvsObjectFunctionCall *c);
 
 protected slots:

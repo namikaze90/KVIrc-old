@@ -22,11 +22,10 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
-#include <qlabel.h>
 #include "class_widget.h"
 #include "object_macros.h"
+
+#include <QLabel>
 
 class KviKvsObject_label : public KviKvsObject_widget
 {

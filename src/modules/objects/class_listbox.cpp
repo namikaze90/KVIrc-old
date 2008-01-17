@@ -20,16 +20,13 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#include "class_list.h"
+#include "class_listbox.h"
 
 #include "kvi_error.h"
 #include "kvi_locale.h"
 #include "kvi_debug.h"
-
-
 #include "kvi_tal_listbox.h"
-
-#include "class_list.h"
-#include "class_listbox.h"
 
 /*
 	@doc: listbox
@@ -124,8 +121,6 @@ KVSO_BEGIN_REGISTERCLASS(KviKvsObject_listbox,"listbox","widget")
 	KVSO_REGISTER_HANDLER(KviKvsObject_listbox,"itemAt", functionitemAt);
 	KVSO_REGISTER_HANDLER(KviKvsObject_listbox,"itemRect", functionitemRect);
 	KVSO_REGISTER_HANDLER(KviKvsObject_listbox,"setCurrentItem", functionsetCurrentItem);
-
-
 	KVSO_REGISTER_HANDLER(KviKvsObject_listbox,"setSelectionMode",functionsetSelectionMode);
 	KVSO_REGISTER_HANDLER(KviKvsObject_listbox,"selectionMode",functionselectionMode);
 	KVSO_REGISTER_HANDLER(KviKvsObject_listbox,"setSelected",functionsetSelected);

@@ -20,12 +20,11 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 #define _KVI_DEBUG_CHECK_RANGE_
-#include "kvi_debug.h"
-
-#include "kvi_locale.h"
 
 #include "class_layout.h"
 
+#include "kvi_debug.h"
+#include "kvi_locale.h"
 
 #define QLAYOUT_AUTO_CONSTRAINT QLayout::SetDefaultConstraint
 #define QLAYOUT_FIXED QLayout::SetFixedSize
@@ -147,6 +146,7 @@ bool KviKvsObject_layout::functionAddWidget(KviKvsObjectFunctionCall *c)
 	((QGridLayout *)object())->addWidget(((QWidget *)(pObject->object())),uRow,uCol);
 	return true;
 }
+
 bool KviKvsObject_layout::functionAddMultiCellWidget(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject * pObject;
@@ -179,6 +179,7 @@ bool KviKvsObject_layout::functionAddMultiCellWidget(KviKvsObjectFunctionCall *c
 	((QGridLayout *)object())->addMultiCellWidget(((QWidget *)(pObject->object())),uStartRow,uEndRow,uStartCol,uEndCol);
 	return true;
 }
+
 bool KviKvsObject_layout::functionSetRowStretch(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uRow,uStretch;
@@ -190,6 +191,7 @@ bool KviKvsObject_layout::functionSetRowStretch(KviKvsObjectFunctionCall *c)
 	((QGridLayout *)object())->setRowStretch(uRow,uStretch);
 	return true;
 }
+
 bool KviKvsObject_layout::functionSetColStretch(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uCol,uStretch;
@@ -221,7 +223,6 @@ bool KviKvsObject_layout::functionSetSpacing(KviKvsObjectFunctionCall *c)
     if (widget()) ((QGridLayout *)object())->setSpacing(uSpacing);
 	return true;
 }
-
 
 bool KviKvsObject_layout::functionAddRowSpacing(KviKvsObjectFunctionCall *c)
 {
@@ -263,4 +264,3 @@ bool KviKvsObject_layout::functionSetResizeMode(KviKvsObjectFunctionCall *c)
 	return true;
 
 }
-

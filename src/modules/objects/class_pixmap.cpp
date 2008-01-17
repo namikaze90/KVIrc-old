@@ -22,10 +22,11 @@
 //
 
 #include "class_pixmap.h"
-#include "kvi_debug.h"
 
+#include "kvi_debug.h"
 #include "kvi_locale.h"
-#include <qfile.h>
+
+#include <QFile>
 
 /*
 	@doc:	pixmap
@@ -133,7 +134,7 @@ bool KviKvsObject_pixmap::functionscale(KviKvsObjectFunctionCall *c)
 	bPixmapModified=true;
 	return true;
 }
-  
+
 bool KviKvsObject_pixmap::functionrotate(KviKvsObjectFunctionCall *c)
 {
 	kvs_real_t uDegrees;
@@ -161,7 +162,6 @@ bool KviKvsObject_pixmap::functionresize(KviKvsObjectFunctionCall *c)
 	return true;
 }
 
-
 bool KviKvsObject_pixmap::functionload(KviKvsObjectFunctionCall *c)
 {
 	QString szFile;
@@ -172,22 +172,25 @@ bool KviKvsObject_pixmap::functionload(KviKvsObjectFunctionCall *c)
 	if(!QFile::exists(szFile))
 	{
 		c->warning(__tr2qs("I can't find the specified file %Q."),&szFile);
-        return true;
+	return true;
 	}
 	m_pPixmap->load(szFile);
 	bPixmapModified=true;
 	return true;
 }
+
 bool KviKvsObject_pixmap::functionheight(KviKvsObjectFunctionCall *c)
 {
 	c->returnValue()->setInteger(m_pPixmap->height());	
 	return true;
 }
+
 bool KviKvsObject_pixmap::functionwidth(KviKvsObjectFunctionCall *c)
 {
 	c->returnValue()->setInteger(m_pPixmap->width());	
 	return true;
 }
+
 bool KviKvsObject_pixmap::functionsetOpacity(KviKvsObjectFunctionCall *c)
 {
 	if(!m_pPixmap)return true; 
@@ -248,7 +251,7 @@ bool KviKvsObject_pixmap::functionsetOpacity(KviKvsObjectFunctionCall *c)
 	}
 
 
-if(uXoffset+uWidth>m_pImage->width())
+	if(uXoffset+uWidth>m_pImage->width())
 	{
 		c->warning(__tr2qs("Offset width area is out of pixmap size "));
 		return true;
@@ -294,6 +297,7 @@ QPixmap * KviKvsObject_pixmap::getPixmap()
 	}
 	return m_pPixmap;
 }
+
 QImage * KviKvsObject_pixmap::getImage()
 {
 	if (bPixmapModified) {

@@ -21,11 +21,10 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
 #include "class_lcd.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 
@@ -89,7 +88,9 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_lcd)
 
 bool KviKvsObject_lcd::init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams)
 {
-	setObject(new QLCDNumber(parentScriptWidget(), name()), true);
+	QLCDNumber * lcd = new QLCDNumber(parentScriptWidget());
+	lcd->setObjectName(name());
+	setObject(lcd, true);
 	return true;
 }
 
@@ -99,8 +100,8 @@ bool KviKvsObject_lcd::functiondisplayInt(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("number",KVS_PT_INT,0,iDigit)
 	KVSO_PARAMETERS_END(c)
-    if(widget())((QLCDNumber *)widget())->display((int)iDigit);
-    return true;
+	if(widget())((QLCDNumber *)widget())->display((int)iDigit);
+	return true;
 }
 
 bool KviKvsObject_lcd::functiondisplayStr(KviKvsObjectFunctionCall *c)
@@ -109,8 +110,8 @@ bool KviKvsObject_lcd::functiondisplayStr(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("number",KVS_PT_STRING,0,szText)
 	KVSO_PARAMETERS_END(c)
-    if(widget()) ((QLCDNumber *)widget())->display(szText);
-    return true;
+	if(widget()) ((QLCDNumber *)widget())->display(szText);
+	return true;
 }
 
 bool KviKvsObject_lcd::functiondisplayDouble(KviKvsObjectFunctionCall *c)
@@ -119,9 +120,10 @@ bool KviKvsObject_lcd::functiondisplayDouble(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("number",KVS_PT_DOUBLE,0,dDigit)
 	KVSO_PARAMETERS_END(c)
-    if(widget()) ((QLCDNumber *)widget())->display(dDigit);
-    return true;
+	if(widget()) ((QLCDNumber *)widget())->display(dDigit);
+	return true;
 }
+
 bool KviKvsObject_lcd::functionsetMode(KviKvsObjectFunctionCall *c)
 {
 	QString szMode;
@@ -136,6 +138,7 @@ bool KviKvsObject_lcd::functionsetMode(KviKvsObjectFunctionCall *c)
 	else c->warning( __tr2qs("Unknown mode "));
 	return true;
 }
+
 bool KviKvsObject_lcd::functionsetSegmentStyle(KviKvsObjectFunctionCall *c)
 {
 	QString szStyle;
@@ -149,14 +152,15 @@ bool KviKvsObject_lcd::functionsetSegmentStyle(KviKvsObjectFunctionCall *c)
 	else c->warning( __tr2qs("Unknown segment style "));
 	return true;
 }
+
 bool KviKvsObject_lcd::functionsetNumDigits(KviKvsObjectFunctionCall *c)
 {
 	kvs_real_t digit;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("digit",KVS_PT_DOUBLE,0,digit)
 	KVSO_PARAMETERS_END(c)
-    if(widget()) ((QLCDNumber *)widget())->setNumDigits(digit);
-    return true;
+	if(widget()) ((QLCDNumber *)widget())->setNumDigits(digit);
+	return true;
 }
 bool KviKvsObject_lcd::functionsetSmallDecimalPoint(KviKvsObjectFunctionCall *c)
 {
@@ -164,7 +168,7 @@ bool KviKvsObject_lcd::functionsetSmallDecimalPoint(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("bflag",KVS_PT_BOOLEAN,0,bFlag)
 	KVSO_PARAMETERS_END(c)
-    if(widget()) ((QLCDNumber *)widget())->setSmallDecimalPoint(bFlag);
+	if(widget()) ((QLCDNumber *)widget())->setSmallDecimalPoint(bFlag);
 	return true;
 }
 bool KviKvsObject_lcd::functioncheckOverflow(KviKvsObjectFunctionCall *c)
@@ -173,8 +177,6 @@ bool KviKvsObject_lcd::functioncheckOverflow(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("digit",KVS_PT_DOUBLE,0,iDigit)
 	KVSO_PARAMETERS_END(c)
-    if(widget())c->returnValue()->setBoolean(((QLCDNumber *)widget())->checkOverflow(iDigit));
-    return true;
+	if(widget())c->returnValue()->setBoolean(((QLCDNumber *)widget())->checkOverflow(iDigit));
+	return true;
 }
-
-

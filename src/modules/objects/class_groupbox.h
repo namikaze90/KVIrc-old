@@ -23,11 +23,10 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
-#include <kvi_tal_groupbox.h>
 #include "class_widget.h"
 #include "object_macros.h"
+
+#include <kvi_tal_groupbox.h>
 
 class KviKvsObject_groupbox : public KviKvsObject_widget
 {
@@ -38,7 +37,6 @@ public:
 protected:
 	virtual bool init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams);
 
-	
 	bool functionSetTitle(KviKvsObjectFunctionCall *c);
 	bool functionTitle(KviKvsObjectFunctionCall *c);
 	bool functionSetFlat(KviKvsObjectFunctionCall *c);
@@ -61,4 +59,3 @@ protected:
 
 };
 #endif	//!_CLASS_GROUPBOX_H_
-

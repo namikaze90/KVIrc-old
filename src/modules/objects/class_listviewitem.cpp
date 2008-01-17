@@ -22,12 +22,11 @@
 
 #include "class_listviewitem.h"
 #include "class_pixmap.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
-
 
 
 /*
@@ -237,7 +236,6 @@ bool KviKvsObject_listviewitem::function_nextSibling(KviKvsObjectFunctionCall *c
 	return true;
 }
 
-
 bool KviKvsObject_listviewitem::function_setRenameEnabled(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uCol;
@@ -294,7 +292,6 @@ bool KviKvsObject_listviewitem::function_isOpen(KviKvsObjectFunctionCall *c)
 	c->returnValue()->setBoolean(m_pListViewItem->isOpen());
 	return true;
 }
-
 
 bool KviKvsObject_listviewitem::function_setChecked(KviKvsObjectFunctionCall *c)
 {
@@ -407,7 +404,7 @@ bool KviKvsObject_listviewitem::function_setPixmap(KviKvsObjectFunctionCall *c)
 		QString szPix;
 		vPixmap->asString(szPix);
 		pix=g_pIconManager->getImage(szPix);
-	    if(!pix)
+		if(!pix)
 		{
 			c->warning(__tr2qs("Error occured: the suitable file '%Q' is not of the correct format or it is not a valid icon number."),&szPix);
 			return true;

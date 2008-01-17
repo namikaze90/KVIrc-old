@@ -23,10 +23,10 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-#include <qcombobox.h>
 #include "class_widget.h"
 #include "object_macros.h"
+
+#include <QComboBox>
 
 class KviKvsObject_combobox : public KviKvsObject_widget
 {
@@ -56,9 +56,7 @@ protected:
 	bool functiontextAt(KviKvsObjectFunctionCall *c);
 	bool functiontextLineEdit(KviKvsObjectFunctionCall *c);
 	bool functionsetTextLineEdit(KviKvsObjectFunctionCall *c);
-
 	bool functionsetInsertionPolicy(KviKvsObjectFunctionCall *c);
-
 	bool functionsetCurrentItem(KviKvsObjectFunctionCall *c);
 	bool functionpopup(KviKvsObjectFunctionCall *c);
 	bool functiontextChangedEvent(KviKvsObjectFunctionCall *c);

@@ -26,12 +26,12 @@
 //
 //=================================================================================
 
-#include "kvi_tal_listview.h"
-#include "kvi_draganddrop.h"
 #include "class_widget.h"
 #include "class_listviewitem.h"
-
 #include "object_macros.h"
+
+#include "kvi_draganddrop.h"
+#include "kvi_tal_listview.h"
 
 class KviKvsObject_listview : public KviKvsObject_widget
 {
@@ -69,7 +69,6 @@ protected:
 	bool function_listViewHeaderIsVisible(KviKvsObjectFunctionCall *c);
 	bool function_showListViewHeader(KviKvsObjectFunctionCall *c);
 	bool function_hideListViewHeader(KviKvsObjectFunctionCall *c);
-
 	bool function_setAcceptDrops(KviKvsObjectFunctionCall *c);
 
 protected slots:

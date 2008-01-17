@@ -21,76 +21,75 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include <qfont.h>
-#include <qpixmap.h>
-#include <qmessagebox.h>
 #include "class_label.h"
+
 //#include "kvi_fileutils.h"
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 
-
+#include <QFont>
+#include <QPixmap>
+#include <QMessageBox>
 
 // Tables used in $setAlignment & $alignment
 const char * const align_tbl[] = {
-			"Left", 
-			"Right",
-			"HCenter",
-			"VCenter",
-			"Center",
-			"Top",
-			"Bottom",
-			"WordBreak"
-			   };
+	"Left",
+	"Right",
+	"HCenter",
+	"VCenter",
+	"Center",
+	"Top",
+	"Bottom",
+	"WordBreak"
+};
 
 #define QT_LABEL_ALIGNLEFT Qt::AlignLeft
-#define	QT_LABEL_ALIGNRIGHT Qt::AlignRight
+#define QT_LABEL_ALIGNRIGHT Qt::AlignRight
 #define QT_LABEL_ALIGNHCENTER Qt::AlignHCenter
 #define QT_LABEL_ALIGNVCENTER Qt::AlignVCenter
 #define QT_LABEL_ALIGNCENTER Qt::AlignCenter
-#define	QT_LABEL_ALIGNTOP Qt::AlignTop
+#define QT_LABEL_ALIGNTOP Qt::AlignTop
 #define QT_LABEL_ALIGNBOTTOM Qt::AlignBottom
 #define QT_LABEL_JUSTIFY Qt::AlignJustify
 
 const int align_cod[] = {
-		QT_LABEL_ALIGNLEFT,
-		QT_LABEL_ALIGNRIGHT,
-	    QT_LABEL_ALIGNHCENTER,
-	    QT_LABEL_ALIGNVCENTER,
-	    QT_LABEL_ALIGNCENTER,
-	 	QT_LABEL_ALIGNTOP,
-	    QT_LABEL_ALIGNBOTTOM,
-	    QT_LABEL_JUSTIFY,
-	};
+	QT_LABEL_ALIGNLEFT,
+	QT_LABEL_ALIGNRIGHT,
+	QT_LABEL_ALIGNHCENTER,
+	QT_LABEL_ALIGNVCENTER,
+	QT_LABEL_ALIGNCENTER,
+	QT_LABEL_ALIGNTOP,
+	QT_LABEL_ALIGNBOTTOM,
+	QT_LABEL_JUSTIFY,
+};
 
 #define align_num	(sizeof(align_tbl) / sizeof(align_tbl[0]))
-		  
+
 // used in $frameStyle & $setFrameStyle
 const char * const frame_tbl[] = {
-				"NoFrame",
-				"Box",
-				"Panel",
-				"WinPanel",
-				"Hline",
-			// shadow styles
-				"Plain",
-				"Raised",
-				"Sunken"
-			   };
+	"NoFrame",
+	"Box",
+	"Panel",
+	"WinPanel",
+	"Hline",
+	// shadow styles
+	"Plain",
+	"Raised",
+	"Sunken"
+};
 
 const int frame_cod[] = {
-				QFrame::NoFrame,
-				QFrame::Box,
-				QFrame::Panel,
-				QFrame::WinPanel,
-				QFrame::HLine,
-				QFrame::Plain,
-				QFrame::Raised,
-				QFrame::Sunken
-			 };
+	QFrame::NoFrame,
+	QFrame::Box,
+	QFrame::Panel,
+	QFrame::WinPanel,
+	QFrame::HLine,
+	QFrame::Plain,
+	QFrame::Raised,
+	QFrame::Sunken
+ };
 
 #define frame_num	(sizeof(frame_tbl) / sizeof(frame_tbl[0]))
 
@@ -260,7 +259,7 @@ bool KviKvsObject_label::functionMargin(KviKvsObjectFunctionCall *c)
 	return true;
 }
 
-// FIX ME
+// FIXME
 bool KviKvsObject_label::functionSetAutoResize(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -270,12 +269,14 @@ bool KviKvsObject_label::functionSetAutoResize(KviKvsObjectFunctionCall *c)
 	return true;
 
 }
+
 bool KviKvsObject_label::functionAutoResize(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setBoolean(true);
 	return true;
 }
 //
+
 bool KviKvsObject_label::functionSetAlignment(KviKvsObjectFunctionCall *c)
 {
 	QStringList alignment;
@@ -305,6 +306,7 @@ bool KviKvsObject_label::functionSetAlignment(KviKvsObjectFunctionCall *c)
 	((QLabel *)widget())->setAlignment(sum);
 	return true;
 }
+
 bool KviKvsObject_label::functionAlignment(KviKvsObjectFunctionCall *c)
 {
 	int mode = ((QLabel *)widget())->alignment();
@@ -320,13 +322,13 @@ bool KviKvsObject_label::functionAlignment(KviKvsObjectFunctionCall *c)
 	c->returnValue()->setString(szAlignment);
 	return true;
 }
+
 bool KviKvsObject_label::functionClear(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
 		((QLabel *)widget())->clear();
 	return true;
 }
-
 
 bool KviKvsObject_label::functionSetFrameStyle(KviKvsObjectFunctionCall *c)
 {
@@ -361,6 +363,7 @@ bool KviKvsObject_label::functionSetFrameStyle(KviKvsObjectFunctionCall *c)
 
 
 }
+
 bool KviKvsObject_label::functionFrameStyle(KviKvsObjectFunctionCall *c)
 {
 	int mode = ((QLabel *)widget())->frameStyle();
@@ -376,6 +379,7 @@ bool KviKvsObject_label::functionFrameStyle(KviKvsObjectFunctionCall *c)
 	c->returnValue()->setString(szStyle);
 	return true;
 }
+
 bool KviKvsObject_label::functionSetImage(KviKvsObjectFunctionCall *c)
 {
 	

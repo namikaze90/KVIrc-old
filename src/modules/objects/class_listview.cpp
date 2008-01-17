@@ -24,21 +24,16 @@
 //
 //=================================================================================
 
-
-#include "kvi_tal_listview.h"
-
-// TODO: Qt4
-#include <q3header.h>
-#include <qevent.h>
-
 #include "class_listview.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
+#include "kvi_tal_listview.h"
 
-
+#include <QHeaderView>  //FIXME: line 362
+#include <QEvent>
 
 /*
 	@doc: listview
@@ -185,8 +180,6 @@ KVSO_BEGIN_REGISTERCLASS(KviKvsObject_listview,"listview","widget")
 	KVSO_REGISTER_HANDLER(KviKvsObject_listview,"currentItem",function_currentItem)
 	KVSO_REGISTER_HANDLER(KviKvsObject_listview,"setSelectionMode",function_setSelectionMode)
 	KVSO_REGISTER_HANDLER(KviKvsObject_listview,"listViewHeaderIsVisible",function_listViewHeaderIsVisible)
-
-
 	KVSO_REGISTER_HANDLER(KviKvsObject_listview,"hideListViewHeader",function_hideListViewHeader)
 	KVSO_REGISTER_HANDLER(KviKvsObject_listview,"showListViewHeader",function_showListViewHeader)
 	KVSO_REGISTER_HANDLER(KviKvsObject_listview,"firstChild",function_firstChild)
@@ -332,7 +325,6 @@ bool KviKvsObject_listview::function_setSorting(KviKvsObjectFunctionCall *c)
     return true;
 }
 
-
 bool KviKvsObject_listview::function_setRootIsDecorated(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -358,14 +350,16 @@ bool KviKvsObject_listview::function_hideListViewHeader(KviKvsObjectFunctionCall
 //	((KviTalListView *)widget())->header()->hide();
 	return true;
 }
+
 bool KviKvsObject_listview::function_showListViewHeader(KviKvsObjectFunctionCall *c)
 {
 //	((KviTalListView *)widget())->header()->show();
 	return true;
 }
+
 bool KviKvsObject_listview::function_listViewHeaderIsVisible(KviKvsObjectFunctionCall *c)
 {
-	c->returnValue()->setBoolean(((KviTalListView *)widget())->header()->isVisible());
+	//c->returnValue()->setBoolean(((KviTalListView *)widget())->header()->isVisible());
 	return true;
 }
 
@@ -399,7 +393,6 @@ void KviKvsObject_listview::slotMultipleSelectionChanged()
 	callFunction(this,"selectionChangedEvent",0,&params);
 }
 
-
 bool KviKvsObject_listview::function_currentChangedEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("currentChanged",c,c->params());
@@ -411,7 +404,6 @@ void KviKvsObject_listview::slotCurrentChanged(KviTalListViewItem * i)
 	KviKvsVariantList params(new KviKvsVariant(KviKvsObject_listviewitem::itemToHandle(i)));
 	callFunction(this,"currentChangedEvent",0,&params);
 }
-
 
 bool KviKvsObject_listview::function_returnPressedEvent(KviKvsObjectFunctionCall *c)
 {
@@ -448,7 +440,6 @@ void KviKvsObject_listview::slotOnItem(KviTalListViewItem * i)
 	KviKvsVariantList params(new KviKvsVariant(KviKvsObject_listviewitem::itemToHandle(i)));
 	callFunction(this,"onItemEvent",0,&params);
 }
-
 
 bool KviKvsObject_listview::function_itemExpandedEvent(KviKvsObjectFunctionCall *c)
 {
@@ -502,6 +493,7 @@ void KviKvsObject_listview::slotItemRenamed(KviTalListViewItem *item,int col,con
 	KviKvsVariantList params(new KviKvsVariant(KviKvsObject_listviewitem::itemToHandle(item)),column,txt);
 	callFunction(this,"itemRenamedEvent",0,&params);
 }
+
 void KviKvsObject_listview::fileDropped(QString &szFile,KviTalListViewItem *item)
 {
 	KviKvsVariant *file=new KviKvsVariant(szFile);
@@ -531,7 +523,6 @@ void KviKvsMdmListView::contentsDragEnterEvent( QDragEnterEvent *e )
 
 }
 
-
 void KviKvsMdmListView::contentsDropEvent(QDropEvent *e)
 {
 	QStringList list;
@@ -551,5 +542,4 @@ void KviKvsMdmListView::contentsDropEvent(QDropEvent *e)
 			}
 		}
 	}
-
 }

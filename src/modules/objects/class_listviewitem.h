@@ -22,12 +22,10 @@
 //   along with this program. If not, write to the Free Software Foundation,
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-#include "kvi_tal_listview.h"
 #include "class_widget.h"
-
-
-
 #include "object_macros.h"
+
+#include "kvi_tal_listview.h"
 
 class KviKvsObject_listviewitem : public KviKvsObject
 {
@@ -60,7 +58,6 @@ public:
 };
 
 
-
 class KviKvsMdmStandardListViewItem : public KviTalListViewItem
 {
 public:
@@ -72,6 +69,7 @@ protected:
 public:
 	KviKvsObject_listviewitem * masterObject(){ return m_pMasterObject; }
 };
+
 
 class KviKvsMdmCheckListViewItem : public KviTalCheckListItem
 {
