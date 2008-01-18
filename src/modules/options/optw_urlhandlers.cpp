@@ -24,12 +24,11 @@
 
 #include "optw_urlhandlers.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
 
-#include <qlabel.h>
+#include <QLayout>
+#include <QLabel>
 
 
 KviUrlHandlersOptionsWidget::KviUrlHandlersOptionsWidget(QWidget * parent)

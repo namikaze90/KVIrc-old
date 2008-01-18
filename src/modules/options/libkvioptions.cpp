@@ -22,6 +22,10 @@
 //
 //============================================================================================
 
+#include "container.h"
+#include "instances.h"
+#include "dialog.h"
+
 #include "kvi_module.h"
 #include "kvi_options.h"
 #include "kvi_app.h"
@@ -32,13 +36,7 @@
 #include "kvi_out.h"
 #include "kvi_splash.h"
 
-#include "container.h"
-#include "instances.h"
-
-#include "dialog.h"
-
-#include <qsplitter.h>
-
+#include <QSplitter>
 
 
 QHash<QString,KviOptionsDialog*> * g_pOptionsDialogDict = 0;
@@ -252,7 +250,7 @@ static bool options_kvs_cmd_edit(KviKvsModuleCommandCall * c)
 */
 
 static bool options_kvs_fnc_isdialog(KviKvsModuleFunctionCall * c)
-{ 
+{
 	QString szGroup;
 	KVSM_PARAMETERS_BEGIN(c)
 		KVSM_PARAMETER("options_group",KVS_PT_STRING,KVS_PF_OPTIONAL,szGroup)
@@ -286,7 +284,7 @@ static bool options_module_cleanup(KviModule *m)
 	}
 	delete g_pOptionsDialogDict;
 	g_pOptionsDialogDict = 0;
-    
+
 	delete KviOptionsManager::instance();
 
 	return true;

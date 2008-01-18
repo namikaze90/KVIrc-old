@@ -24,19 +24,20 @@
 
 #include "optw_nickserv.h"
 
-#include <qlayout.h>
-#include "kvi_tal_tooltip.h"
-#include "kvi_tal_listview.h"
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qmessagebox.h>
-
 #include "kvi_qstring.h"
 #include "kvi_options.h"
 #include "kvi_locale.h"
 #include "kvi_nickserv.h"
 #include "kvi_ircmask.h"
+#include "kvi_tal_tooltip.h"
+#include "kvi_tal_listview.h"
+
+#include <QLayout>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QMessageBox>
+
 
 // kvi_app.cpp
 extern KVIRC_API KviNickServRuleSet * g_pNickServRuleSet;
@@ -68,10 +69,10 @@ KviNickServRuleEditor::KviNickServRuleEditor(QWidget * par,bool bUseServerMaskFi
 #ifdef COMPILE_INFO_TIPS
 	KviTalToolTip::add(m_pNickServMaskEdit,
 		html_center_begin + __tr2qs_ctx("This is the mask that NickServ must match to be correctly identified as the NickServ service. "  \
-			"This usually will be something like <b>NickServ!service@services.dalnet</b>.<br>" \
-			"You can use wildcards for this field, but generally it is a security flaw. " \
-			"If you're 100%% sure that NO user on the network can use the nickname \"NickServ\", " \
-			"the mask <b>NickServ!*@*</b> may be safe to use in this field.","options") + html_center_end);
+		"This usually will be something like <b>NickServ!service@services.dalnet</b>.<br>" \
+		"You can use wildcards for this field, but generally it is a security flaw. " \
+		"If you're 100%% sure that NO user on the network can use the nickname \"NickServ\", " \
+		"the mask <b>NickServ!*@*</b> may be safe to use in this field.","options") + html_center_end);
 #endif
 	gl->addMultiCellWidget(m_pNickServMaskEdit,1,1,1,3);
 	
@@ -84,10 +85,10 @@ KviNickServRuleEditor::KviNickServRuleEditor(QWidget * par,bool bUseServerMaskFi
 #ifdef COMPILE_INFO_TIPS
 	KviTalToolTip::add(m_pMessageRegexpEdit,
 		html_center_begin + __tr2qs_ctx("This is the simple regular expression that the identification request message "  \
-			"from NickServ must match in order to be correctly recognized.<br>" \
-			"The message is usually something like \"To identify yourself please use /ns IDENTIFY password\" " \
-			"and it is sent when the NickServ wants you to authenticate yourself. " \
-			"You can use the * and ? wildcards.","options") + html_center_end);
+		"from NickServ must match in order to be correctly recognized.<br>" \
+		"The message is usually something like \"To identify yourself please use /ns IDENTIFY password\" " \
+		"and it is sent when the NickServ wants you to authenticate yourself. " \
+		"You can use the * and ? wildcards.","options") + html_center_end);
 #endif
 	l = new QLabel(__tr2qs_ctx("Identify Command","options"),this);
 	gl->addWidget(l,3,0);
@@ -96,10 +97,10 @@ KviNickServRuleEditor::KviNickServRuleEditor(QWidget * par,bool bUseServerMaskFi
 #ifdef COMPILE_INFO_TIPS
 	KviTalToolTip::add(m_pIdentifyCommandEdit,
 		html_center_begin + __tr2qs_ctx("This is the command that will be executed when NickServ requests authentication " \
-			"for the nickname described in this rule (if the both server and NickServ mask are matched). " \
-			"This usually will be something like <b>msg NickServ identify &lt;yourpassword&gt;</b>.<br>" \
-			"You can use <b>msg -q</b> if you don't want the password echoed on the screen. " \
-			"Please note that there is no leading slash in this command.","options") + html_center_end);
+		"for the nickname described in this rule (if the both server and NickServ mask are matched). " \
+		"This usually will be something like <b>msg NickServ identify &lt;yourpassword&gt;</b>.<br>" \
+		"You can use <b>msg -q</b> if you don't want the password echoed on the screen. " \
+		"Please note that there is no leading slash in this command.","options") + html_center_end);
 #endif
 	gl->addMultiCellWidget(m_pIdentifyCommandEdit,3,3,1,3);
 
@@ -155,8 +156,6 @@ KviNickServRuleEditor::~KviNickServRuleEditor()
 {
 }
 
-
-
 bool KviNickServRuleEditor::validate()
 {
 	QString s = m_pRegisteredNickEdit->text();
@@ -209,7 +208,6 @@ void KviNickServRuleEditor::okPressed()
 	accept();
 }
 
-
 bool KviNickServRuleEditor::editRule(KviNickServRule * r)
 {
 	m_pRegisteredNickEdit->setText(r->registeredNick().isEmpty() ? QString("MyNick") : r->registeredNick());
@@ -230,7 +228,6 @@ bool KviNickServRuleEditor::editRule(KviNickServRule * r)
 }
 
 
-
 KviNickServOptionsWidget::KviNickServOptionsWidget(QWidget * parent)
 : KviOptionsWidget(parent,"nickserv_options_widget")
 {
@@ -245,7 +242,7 @@ KviNickServOptionsWidget::KviNickServOptionsWidget(QWidget * parent)
 	gl->addMultiCellWidget(m_pNickServCheck,0,0,0,2);
 #ifdef COMPILE_INFO_TIPS
 	KviTalToolTip::add(m_pNickServCheck,
-			__tr2qs_ctx("This check enables the automatic identification with NickServ","options"));
+		__tr2qs_ctx("This check enables the automatic identification with NickServ","options"));
 #endif
 	m_pNickServCheck->setChecked(bNickServEnabled);
 
@@ -263,14 +260,14 @@ KviNickServOptionsWidget::KviNickServOptionsWidget(QWidget * parent)
 #ifdef COMPILE_INFO_TIPS
 	KviTalToolTip::add(m_pNickServListView,
 		__tr2qs_ctx("<center>This is a list of NickServ identification rules. " \
-			"KVIrc will use them to model its automatic interaction with NickServ on all the networks.<br>" \
-			"Please be aware that this feature can cause your NickServ passwords to be stolen " \
-			"if used improperly. Make sure that you fully understand the NickServ authentication protocol.<br>" \
-			"In other words, be sure to know what you're doing.<br>" \
-			"Also note that the password that you provide is stored as <b>PLAIN TEXT</b>.<br>" \
-			"KVIrc supports also per-network NickServ authentication rules that can be " \
-			"created in the \"Advanced...\" network options (accessible from the servers dialog)."
-			"</center>","options"));
+		"KVIrc will use them to model its automatic interaction with NickServ on all the networks.<br>" \
+		"Please be aware that this feature can cause your NickServ passwords to be stolen " \
+		"if used improperly. Make sure that you fully understand the NickServ authentication protocol.<br>" \
+		"In other words, be sure to know what you're doing.<br>" \
+		"Also note that the password that you provide is stored as <b>PLAIN TEXT</b>.<br>" \
+		"KVIrc supports also per-network NickServ authentication rules that can be " \
+		"created in the \"Advanced...\" network options (accessible from the servers dialog)."
+		"</center>","options"));
 #endif
 
 	m_pAddRuleButton = new QPushButton(__tr2qs_ctx("Add Rule","options"),this);
@@ -298,8 +295,6 @@ KviNickServOptionsWidget::KviNickServOptionsWidget(QWidget * parent)
 	enableDisableNickServControls();
 
 	gl->setRowStretch(1,1);
-
-
 }
 
 KviNickServOptionsWidget::~KviNickServOptionsWidget()
@@ -363,4 +358,3 @@ void KviNickServOptionsWidget::commit()
 	}
 	KviOptionsWidget::commit();
 }
-

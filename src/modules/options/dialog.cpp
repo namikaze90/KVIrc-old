@@ -31,25 +31,26 @@
 #include "kvi_iconmanager.h"
 #include "kvi_module.h"
 #include "kvi_styled_controls.h"
-
-#include <qlayout.h>
 #include "kvi_accel.h"
-#include <qlabel.h>
-#include "kvi_tal_vbox.h"
-#include <qsplitter.h>
-#include <qpushbutton.h>
 #include "kvi_tal_tooltip.h"
-
-// TODO: Qt4
 #include "kvi_tal_popupmenu.h"
-#include <qtoolbutton.h>
-#include <qcheckbox.h>
 #include <kvi_tal_groupbox.h>
-#include <qpainter.h>
-#include <qfont.h>
-#include <qevent.h>
+
+#include <QLayout>
+#include <QLabel>
+#include <QSplitter>
+#include <QPushButton>
+#include <QToolButton>
+#include <QCheckBox>
+#include <QPainter>
+#include <QFont>
+#include <QEvent>
 #include <QStackedWidget>
 #include <QHeaderView>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+
 
 //extern KviModule * g_pOptionsModule;
 extern QHash<QString,KviOptionsDialog*> * g_pOptionsDialogDict;
@@ -70,8 +71,6 @@ KviGeneralOptionsFrontWidget::KviGeneralOptionsFrontWidget(QWidget *parent,const
 KviGeneralOptionsFrontWidget::~KviGeneralOptionsFrontWidget()
 {
 }
-
-
 
 
 KviOptionsItem::KviOptionsItem(QTreeWidget *parent,KviOptionsPageDescriptorBase * e)
@@ -114,47 +113,47 @@ KviOptionsDialog::KviOptionsDialog(QWidget * par,const QString &szGroup)
 		szDialogTitle = __tr2qs_ctx("KVIrc Preferences","options");
 	}
 	QString szDialog = __tr2qs_ctx("This dialog contains a set of KVIrc settings.<br> Use the icons " \
-							"on the left to navigate through the option pages. The text box in the " \
-							"bottom left corner is a small search engine. It will highlight the " \
-							"pages that contain options related to the search term you have entered.","options");
+		"on the left to navigate through the option pages. The text box in the " \
+		"bottom left corner is a small search engine. It will highlight the " \
+		"pages that contain options related to the search term you have entered.","options");
 
 	QString szInfoTips;
 #ifdef COMPILE_INFO_TIPS
 	szInfoTips = __tr2qs_ctx("Many settings have tooltips that can be shown by holding " \
-							"the cursor over their label for a few seconds.","options"); 
+		"the cursor over their label for a few seconds.","options"); 
 #else
 	szInfoTips = "";
 #endif
 	QString szOkCancelButtons = __tr2qs_ctx("When you have finished, click \"<b>OK</b>\" to accept your changes " \
-						"or \"<b>Cancel</b>\" to discard them. Clicking \"<b>Apply</b>\" will commit your " \
-						"changes without closing the window.","options");
+		"or \"<b>Cancel</b>\" to discard them. Clicking \"<b>Apply</b>\" will commit your " \
+		"changes without closing the window.","options");
 
 
 	QString szFrontText = QString(
-			"<table width=\"100%\" height=\"100%\" valign=\"top\" align=\"center\" cellpadding=\"4\">" \
-				"<tr>" \
-					"<td bgcolor=\"#303030\" valign=\"top\">" \
-						"<center><h1><font color=\"#FFFFFF\">%1</font></h1></center>" \
-					"</td>" \
-				"</tr>" \
-				"<tr>" \
-					"<td valign=\"bottom\">" \
-						"<br>" \
-						"<br>" \
-						"<p>" \
-							"%2" \
-						"</p>" \
-						"<br>" \
-						"<p>" \
-							"%3" \
-						"</p>" \
-						"<br>" \
-						"<p>" \
-							"%4" \
-						"</p>" \
-					"</td>" \
-				"</tr>" \
-			"</table>"
+		"<table width=\"100%\" height=\"100%\" valign=\"top\" align=\"center\" cellpadding=\"4\">" \
+		"<tr>" \
+		"<td bgcolor=\"#303030\" valign=\"top\">" \
+		"<center><h1><font color=\"#FFFFFF\">%1</font></h1></center>" \
+		"</td>" \
+		"</tr>" \
+		"<tr>" \
+		"<td valign=\"bottom\">" \
+		"<br>" \
+		"<br>" \
+		"<p>" \
+		"%2" \
+		"</p>" \
+		"<br>" \
+		"<p>" \
+		"%3" \
+		"</p>" \
+		"<br>" \
+		"<p>" \
+		"%4" \
+		"</p>" \
+		"</td>" \
+		"</tr>" \
+		"</table>"
 		).arg(szDialogTitle).arg(szDialog).arg(szInfoTips).arg(szOkCancelButtons);
 
 	QString szCaption = szDialogTitle + " - KVIrc";
@@ -165,9 +164,11 @@ KviOptionsDialog::KviOptionsDialog(QWidget * par,const QString &szGroup)
 
 	g1->addMultiCellWidget(spl,0,0,0,4);
 
-	KviTalVBox * vbox = new KviTalVBox(spl);
-	vbox->setSpacing(2);
-	vbox->setMargin(0);
+	QWidget * vbox = new QWidget(spl);
+	QVBoxLayout * pVLayout = new QVBoxLayout(spl);
+	vbox->setLayout(pVLayout);
+	pVLayout->setSpacing(2);
+	pVLayout->setMargin(0);
 
 	// Controlling list view
 	m_pTree = new QTreeWidget(vbox);
@@ -175,52 +176,63 @@ KviOptionsDialog::KviOptionsDialog(QWidget * par,const QString &szGroup)
 	m_pTree->header()->hide();
 //	m_pTree->setRootIsDecorated(true);
 	m_pTree->setSortingEnabled(false);
+	pVLayout->addWidget(m_pTree);
 	//connect(m_pListView,SIGNAL(selectionChanged(KviTalListViewItem *)),this,SLOT(listViewItemSelectionChanged(KviTalListViewItem *)));
 
-	KviTalHBox * hbox = new KviTalHBox(vbox);
-	vbox->setSpacing(2);
-	vbox->setMargin(0);
+	QWidget * hbox = new QWidget(vbox);
+	QHBoxLayout * pHLayout = new QHBoxLayout(vbox);
+	hbox->setLayout(pHLayout);
+	pHLayout->setSpacing(2);
+	pHLayout->setMargin(0);
+	pVLayout->addWidget(hbox);
 
 	m_pSearchLineEdit = new QLineEdit(hbox);
+	pHLayout->addWidget(m_pSearchLineEdit);
 	connect(m_pSearchLineEdit,SIGNAL(returnPressed()),this,SLOT(searchClicked()));
+	connect(m_pSearchLineEdit,SIGNAL(textChanged(const QString &)),this,SLOT(searchLineEditTextChanged(const QString &)));
+	
 	m_pSearchButton = new KviStyledToolButton(hbox);
 	m_pSearchButton->setUsesBigPixmap(false);
 	m_pSearchButton->setIconSet(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SEARCH)));
+	pHLayout->addWidget(m_pSearchButton);
 	connect(m_pSearchButton,SIGNAL(clicked()),this,SLOT(searchClicked()));
-	connect(m_pSearchLineEdit,SIGNAL(textChanged(const QString &)),this,SLOT(searchLineEditTextChanged(const QString &)));
 
 #ifdef COMPILE_INFO_TIPS
 	QString szTip = __tr2qs_ctx("<p>This is the search tool for this options dialog.</p>" \
-								"<p>You can enter a search term either in your native " \
-								"language or in english and press the button on the right. " \
-								"The pages that contain some options related to the " \
-								"search term will be highlighted and you will be able " \
-								"to quickly find them.</p><p>Try \"nickname\" for example.</p>","options");
+		"<p>You can enter a search term either in your native " \
+		"language or in english and press the button on the right. " \
+		"The pages that contain some options related to the " \
+		"search term will be highlighted and you will be able " \
+		"to quickly find them.</p><p>Try \"nickname\" for example.</p>","options");
 	KviTalToolTip::add(m_pSearchLineEdit,szTip);
 	KviTalToolTip::add(m_pSearchButton,szTip);
 #endif
 
-	vbox = new KviTalVBox(spl);
-	vbox->setSpacing(2);
-	vbox->setMargin(0);
+	vbox = new QWidget(spl);
+	QVBoxLayout * pV2Layout = new QVBoxLayout(spl);
+	vbox->setLayout(pV2Layout);
+	pV2Layout->setSpacing(2);
+	pV2Layout->setMargin(0);
 
 	m_pCategoryLabel = new QLabel("<b>&nbsp;</b>",vbox,"labgeneraloptions");
+	pV2Layout->addWidget(m_pCategoryLabel);
 	//m_pCategoryLabel->setMargin(3);
 
 	QFrame * f = new QFrame(vbox);
 	f->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+	pV2Layout->addWidget(f);
 
 	// Widget stack
 	m_pWidgetStack = new QStackedWidget(vbox);
-	vbox->setStretchFactor(m_pWidgetStack,1);
+	pV2Layout->addWidget(m_pWidgetStack);
+	pV2Layout->setStretchFactor(m_pWidgetStack,1);
 
 	// First widget visible
 	m_pFrontWidget = new KviGeneralOptionsFrontWidget(m_pWidgetStack,szFrontText);
 	m_pWidgetStack->addWidget(m_pFrontWidget);
 	m_pWidgetStack->setCurrentWidget(m_pFrontWidget);
 
-//  Ok,Cancel,Help
-
+	//  Ok,Cancel,Help
 	QPushButton * b = new QPushButton(__tr2qs_ctx("&OK","options"),this,"btnok");
 	KviTalToolTip::add(b,__tr2qs_ctx("Close this dialog, accepting all changes.","options"));
 	connect(b,SIGNAL(clicked()),this,SLOT(okClicked()));
@@ -250,7 +262,6 @@ KviOptionsDialog::KviOptionsDialog(QWidget * par,const QString &szGroup)
 	
 	if(!parent())
 	{
-
 		if(KVI_OPTION_RECT(KviOption_rectGeneralOptionsDialogGeometry).y() < 5)
 		{
 			KVI_OPTION_RECT(KviOption_rectGeneralOptionsDialogGeometry).setY(5);
@@ -263,8 +274,7 @@ KviOptionsDialog::KviOptionsDialog(QWidget * par,const QString &szGroup)
 	}
 
 	KviAccel *a = new KviAccel( this );
-        a->connectItem( a->insertItem(Qt::Key_Escape), this,SLOT(close()) );
-	
+	a->connectItem( a->insertItem(Qt::Key_Escape), this,SLOT(close()) );
 }
 
 KviOptionsDialog::~KviOptionsDialog()
@@ -428,8 +438,7 @@ void KviOptionsDialog::search(const QString &szKeywords)
 void KviOptionsDialog::searchClicked()
 {
 	QString szTxt = m_pSearchLineEdit->text().stripWhiteSpace();
-	if(!szTxt.isEmpty())
-		search(szTxt);
+	if(!szTxt.isEmpty()) search(szTxt);
 }
 
 //void KviOptionsDialog::fillListView(KviTalListViewItem * p,QList<KviOptionsWidgetInstanceEntry*> * l,const QString &szGroup,bool bNotContainedOnly)

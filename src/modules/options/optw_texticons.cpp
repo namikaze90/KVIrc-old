@@ -27,9 +27,10 @@
 #include "kvi_locale.h"
 #include "kvi_filedialog.h"
 
-#include <qlayout.h>
-#include <qcursor.h>
-#include "kvi_tal_hbox.h"
+#include <QLayout>
+#include <QCursor>
+#include <QWidget>
+#include <QHBoxLayout>
 
 
 KviTextIconEditor::KviTextIconEditor(QWidget * par,KviTextIcon * icon,KviTextIconTableItem* item)
@@ -91,21 +92,19 @@ void KviTextIconEditor::updateIcon()
 	if(m_pIcon)
 	{
 		QPixmap* pix=m_pIcon->pixmap();
-		if(pix)
-			m_pIconButton->setPixmap(*pix);
+		if(pix) m_pIconButton->setPixmap(*pix);
 	}
 }
 
-KviTextIconTableItem::KviTextIconTableItem(KviTalTable * t,KviTextIcon * icon)
-: KviTalTableItem(t,KviTalTableItem::WhenCurrent,QString::null)
+KviTextIconTableItem::KviTextIconTableItem(QTableWidget * t,KviTextIcon * icon)
+: QTableWidgetItem(QString::null)
 {
 	if(icon)
 		m_pIcon=icon;
 	else
 		m_pIcon=new KviTextIcon(0);
 	QPixmap* pix=m_pIcon->pixmap();
-	if(pix)
-		setPixmap(*pix);
+	if(pix) setIcon(*pix);
 }
 
 KviTextIconTableItem::~KviTextIconTableItem()
@@ -117,23 +116,20 @@ void KviTextIconTableItem::setId(int id)
 {
 	m_pIcon->setId(id);
 	QPixmap* pix=m_pIcon->pixmap();
-	if(pix)
-		setPixmap(*pix);
+	if(pix) setIcon(*pix);
 }
 
 QWidget * KviTextIconTableItem::createEditor() const
 {
-	return new KviTextIconEditor(table()->viewport(),m_pIcon,(KviTextIconTableItem*)this);
+	return new KviTextIconEditor(tableWidget()->viewport(),m_pIcon,(KviTextIconTableItem*)this);
 }
-
 
 void KviTextIconTableItem::setContentFromEditor(QWidget * w)
 {
 	if(w->inherits("KviTextIconEditor"))
 	{
 		QPixmap* pix=m_pIcon->pixmap();
-		if(pix)
-			setPixmap(*pix);
+		if(pix) setIcon(*pix);
 	}
 }
 
@@ -144,18 +140,18 @@ KviTextIconsOptionsWidget::KviTextIconsOptionsWidget(QWidget * parent)
 
 	QHash<QString,KviTextIcon*>::iterator it(g_pTextIconManager->textIconDict()->begin());
 
-	m_pTable = new KviTalTable(g_pTextIconManager->textIconDict()->count(),2,this);
+	m_pTable = new QTableWidget(g_pTextIconManager->textIconDict()->count(),2,this);
 
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(m_pTable->viewport(),__tr2qs_ctx("This table contains the text icon associations.<br>" \
-			"KVirc will use them to display the CTRL+I escape sequences and eventually the " \
-			"emoticons.","options"));
+		"KVirc will use them to display the CTRL+I escape sequences and eventually the " \
+		"emoticons.","options"));
 #endif
 
 	int idx = 0;
 	while(it != g_pTextIconManager->textIconDict()->begin())
 	{
-		m_pTable->setText(idx,0,it.key());
+		m_pTable->item(idx,0)->setText(it.key());
 		m_pTable->setItem(idx,1,new KviTextIconTableItem(m_pTable,new KviTextIcon(it.value())));
 		++idx;
 		++it;
@@ -183,14 +179,14 @@ KviTextIconsOptionsWidget::~KviTextIconsOptionsWidget()
 void KviTextIconsOptionsWidget::selectionChanged()
 {
 	int i = m_pTable->currentRow();
-	m_pDel->setEnabled(i >= 0 && i < m_pTable->numRows());
+	m_pDel->setEnabled(i >= 0 && i < m_pTable->rowCount());
 }
 
 void KviTextIconsOptionsWidget::addClicked()
 {
-	m_pTable->setNumRows(m_pTable->numRows() + 1);
-	m_pTable->setText(m_pTable->numRows() - 1,0,__tr2qs_ctx("unnamed","options"));
-	m_pTable->setItem(m_pTable->numRows() - 1,1,new KviTextIconTableItem(m_pTable,0));
+	m_pTable->setRowCount(m_pTable->rowCount() + 1);
+	m_pTable->item(m_pTable->rowCount() - 1,0)->setText(__tr2qs_ctx("unnamed","options"));
+	m_pTable->setItem(m_pTable->rowCount() - 1,1,new KviTextIconTableItem(m_pTable,0));
 	m_pDel->setEnabled(true);
 }
 
@@ -198,20 +194,20 @@ void KviTextIconsOptionsWidget::delClicked()
 {
 	int i = m_pTable->currentRow();
 
-	if((i > -1) && (i < m_pTable->numRows()))
+	if((i > -1) && (i < m_pTable->rowCount()))
 	{
 		// remove row i
-		m_pTable->clearCell(i,0);
-		m_pTable->clearCell(i,1);
-		m_pTable->clearCell(i,2);
+		m_pTable->removeCellWidget(i,0);
+		m_pTable->removeCellWidget(i,1);
+		m_pTable->removeCellWidget(i,2);
 
-		for(;i < (m_pTable->numRows() - 1);i++)
+		for(;i < (m_pTable->rowCount() - 1);i++)
 		{
-			m_pTable->swapRows(i,i+1);
+			m_pTable->takeItem(i,i+1);
 		}
 
-		m_pTable->setNumRows(m_pTable->numRows() - 1);
-		if(m_pTable->numRows() == 0)m_pDel->setEnabled(false);
+		m_pTable->setRowCount(m_pTable->rowCount() - 1);
+		if(m_pTable->rowCount() == 0)m_pDel->setEnabled(false);
 	}
 }
 
@@ -220,10 +216,10 @@ void KviTextIconsOptionsWidget::commit()
 
 	KviOptionsWidget::commit();
 	g_pTextIconManager->clear();
-	int n = m_pTable->numRows();
+	int n = m_pTable->rowCount();
 	for(int i=0;i < n;i++)
 	{
-		QString szVal = m_pTable->text(i,0);
+		QString szVal = m_pTable->item(i,0)->text();
 		if(!szVal.isEmpty())
 		{
 			KviTextIconTableItem * it = (KviTextIconTableItem *)m_pTable->item(i,1);
@@ -236,8 +232,8 @@ void KviTextIconsOptionsWidget::commit()
 	g_pTextIconManager->checkDefaultAssociations();
 	
 	for(int i=0; i<n; i++)
-		for (int j=0; j<m_pTable->numCols(); j++)
+		for (int j=0; j<m_pTable->columnCount(); j++)
 			if (m_pTable->item(i,j))
-				m_pTable->clearCell(i,j);
+				m_pTable->removeCellWidget(i,j);
 	
 }

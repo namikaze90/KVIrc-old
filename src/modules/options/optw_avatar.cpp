@@ -27,7 +27,6 @@
 #include "kvi_locale.h"
 #include "kvi_selectors.h"
 #include "kvi_options.h"
-
 #include "kvi_tal_tooltip.h"
 
 KviAvatarAdvancedOptionsWidget::KviAvatarAdvancedOptionsWidget(QWidget * parent)
@@ -39,12 +38,12 @@ KviAvatarAdvancedOptionsWidget::KviAvatarAdvancedOptionsWidget(QWidget * parent)
 	// 1st Box
 	KviTalGroupBox *g = addGroupBox(0,0,0,0,1,Qt::Horizontal,__tr2qs_ctx("Scaling in userlist","options"));
 	KviBoolSelector *b = addBoolSelector(g,__tr2qs_ctx("Scale avatar images in userlist (recommended)","options"),KviOption_boolScaleAvatars);
-#ifdef COMPILE_INFO_TIPS	
+#ifdef COMPILE_INFO_TIPS
 	KviTalToolTip::add(b,__tr2qs_ctx("<center>This option will force KVIrc to scale avatars" \
-			" shown in the userlist.<br>" \
-			"Avatars will be scaled to fit the " \
-			"constraints set below. Better keep this option on. :)</center>","options"));
-#endif	
+		" shown in the userlist.<br>" \
+		"Avatars will be scaled to fit the " \
+		"constraints set below. Better keep this option on. :)</center>","options"));
+#endif
 	addBoolSelector(g,__tr2qs_ctx("Do not scale avatar if it is less than required size","options"),KviOption_boolDoNotStretchAvatars);
 	
 	KviUIntSelector *u = addUIntSelector(g,__tr2qs_ctx("Image width:","options"),KviOption_uintAvatarScaleWidth,0,512,80,KVI_OPTION_BOOL(KviOption_boolScaleAvatars));
@@ -126,5 +125,3 @@ KviAvatarAdvancedOptionsWidget::KviAvatarAdvancedOptionsWidget(QWidget * parent)
 KviAvatarAdvancedOptionsWidget::~KviAvatarAdvancedOptionsWidget()
 {
 }
-
-

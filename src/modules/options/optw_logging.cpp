@@ -23,10 +23,10 @@
 
 #include "optw_logging.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
+
+#include <QLayout>
 
 //#warning "Info tips"
 
@@ -50,7 +50,7 @@ KviLoggingOptionsWidget::KviLoggingOptionsWidget(QWidget * parent)
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(us,
 		__tr2qs_ctx("<center>Save logs with the current interval<br>" \
-			"Set to 0 to disable this feature</center>","options"));
+		"Set to 0 to disable this feature</center>","options"));
 #endif
 	addRowSpacer(0,4,0,4);
 }
@@ -58,6 +58,3 @@ KviLoggingOptionsWidget::KviLoggingOptionsWidget(QWidget * parent)
 KviLoggingOptionsWidget::~KviLoggingOptionsWidget()
 {
 }
-
-
-

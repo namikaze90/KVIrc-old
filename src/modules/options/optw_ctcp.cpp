@@ -33,15 +33,14 @@
 KviCtcpOptionsWidget::KviCtcpOptionsWidget(QWidget * parent)
 : KviOptionsWidget(parent,"ctcp_options_widget")
 {
-
 	createLayout(4,1);
 
 	QLabel * l;
 	l = addLabel(0,0,0,0,__tr2qs_ctx("<center><b>Settings for CTCP.</b></center>"\
-					"<p>The <b>Client-To-Client Protocol</b> (CTCP) " \
-					"is used to transmit special control messages over an IRC connection. " \
-					"These messages can request information from clients or negotiate file transfers." \
-					"<br><br></p>","options"));
+		"<p>The <b>Client-To-Client Protocol</b> (CTCP) " \
+		"is used to transmit special control messages over an IRC connection. " \
+		"These messages can request information from clients or negotiate file transfers." \
+		"<br><br></p>","options"));
 
 
 	KviTalGroupBox *gs = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("CTCP Replies","options"));
@@ -85,5 +84,3 @@ KviCtcpOptionsWidget::KviCtcpOptionsWidget(QWidget * parent)
 KviCtcpOptionsWidget::~KviCtcpOptionsWidget()
 {
 }
-
-

@@ -20,15 +20,13 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
 #include "optw_uparser.h"
-
-#include <qlayout.h>
 
 #include "kvi_options.h"
 #include "kvi_locale.h"
 
-#include <qlabel.h>
+#include <QLayout>
+#include <QLabel>
 
 
 KviUParserOptionsWidget::KviUParserOptionsWidget(QWidget * parent)
@@ -57,5 +55,3 @@ KviUParserOptionsWidget::KviUParserOptionsWidget(QWidget * parent)
 KviUParserOptionsWidget::~KviUParserOptionsWidget()
 {
 }
-
-

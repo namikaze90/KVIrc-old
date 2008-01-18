@@ -37,7 +37,7 @@ public:
 protected: 
 	KviBoolSelector		* m_pEnableAwayNick;
 	KviBoolSelector		* m_pEnableCustomAwayNick;
-	KviStringSelector   * m_pCustomAwayNick;
+	KviStringSelector	* m_pCustomAwayNick;
 public slots:
 	void enableCustomAwayText(bool);
 

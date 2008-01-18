@@ -22,12 +22,13 @@
 
 #include "optw_mediatypes.h"
 
-#include <qlayout.h>
-#include <qlabel.h>
-#include "kvi_tal_tooltip.h"
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
+#include "kvi_tal_tooltip.h"
+
+#include <QLayout>
+#include <QLabel>
+
 
 // kvi_app.cpp
 extern KVIRC_API KviMediaManager * g_pMediaManager;
@@ -138,7 +139,6 @@ KviMediaTypesOptionsWidget::KviMediaTypesOptionsWidget(QWidget * parent)
 	m_pDelete = new QPushButton(__tr2qs_ctx("Re&move","options"),this);
 	connect(m_pDelete,SIGNAL(clicked()),this,SLOT(delMediaType()));
 	layout()->addWidget(m_pDelete,10,2);
-	
 
 	layout()->setColStretch(1,1);
 	layout()->setColStretch(2,1);
@@ -257,4 +257,3 @@ void KviMediaTypesOptionsWidget::commit()
 	}
 	g_pMediaManager->unlock();
 }
-

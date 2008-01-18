@@ -22,14 +22,13 @@
 
 #include "optw_ircoutput.h"
 
-#include <qlayout.h>
-
 #include "kvi_settings.h"
 #include "kvi_options.h"
 #include "kvi_locale.h"
 
-#include <qcombobox.h>
-#include <qlabel.h>
+#include <QComboBox>
+#include <QLabel>
+#include <QLayout>
 
 #ifdef COMPILE_INFO_TIPS
 	#include "kvi_tal_tooltip.h"

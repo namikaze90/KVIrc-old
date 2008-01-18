@@ -1,3 +1,5 @@
+#ifndef OPTW_TOPICLABEL_H
+#define OPTW_TOPICLABEL_H
 //
 //   File : optw_topiclabel.cpp
 //   Creation date : Mon Sep 24 02:44:55 CEST 2001 by Krzysztof Godlewski
@@ -19,9 +21,6 @@
 //   along with this program. If not, write to the Free Software Foundation,
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
-
-#ifndef OPTW_TOPICLABEL_H
-#define OPTW_TOPICLABEL_H
 
 #include "kvi_optionswidget.h"
 

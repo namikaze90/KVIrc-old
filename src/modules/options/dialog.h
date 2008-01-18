@@ -25,13 +25,12 @@
 //
 //=============================================================================
 
-
-#include <qdialog.h>
-#include <qstringlist.h>
-#include "kvi_optionswidget.h"
-
 #include "instances.h"
 
+#include "kvi_optionswidget.h"
+
+#include <QDialog>
+#include <QStringList>
 #include <QTreeWidgetItem>
 
 class QTreeWidget;

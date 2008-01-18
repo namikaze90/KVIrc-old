@@ -28,7 +28,7 @@
 #include "kvi_options.h"
 #include "kvi_ircmask.h"
 
-#include <qcombobox.h>
+#include <QComboBox>
 
 
 KviIrcOptionsWidget::KviIrcOptionsWidget(QWidget * parent)
@@ -89,9 +89,6 @@ KviIrcAdvancedOptionsWidget::~KviIrcAdvancedOptionsWidget()
 }
 
 
-
-
-
 KviChannelOptionsWidget::KviChannelOptionsWidget(QWidget * pParent)
 : KviOptionsWidget(pParent)
 {
@@ -119,9 +116,9 @@ KviChannelGeneralOptionsWidget::KviChannelGeneralOptionsWidget(QWidget * pParent
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>This option will cause KVIrc to keep " \
-			"the channel window open after being kicked.<br>" \
-			"It might be a good idea to also enable the " \
-			"\"Rejoin channel\" option.</center>","options"));
+		"the channel window open after being kicked.<br>" \
+		"It might be a good idea to also enable the " \
+		"\"Rejoin channel\" option.</center>","options"));
 #endif 
 
 	g = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("On Channel Part","options"));
@@ -130,19 +127,19 @@ KviChannelGeneralOptionsWidget::KviChannelGeneralOptionsWidget(QWidget * pParent
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>This option will cause KVIrc to keep " \
-			"the channel window open after leaving it.</center>","options"));
+		"the channel window open after leaving it.</center>","options"));
 #endif 
 
 	b = addBoolSelector(0,2,0,2,__tr2qs_ctx("Automatically join channel on invite","options"),KviOption_boolAutoJoinOnInvite);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>This option will cause KVIrc to automatically " \
-			"join a channel when an INVITE message for that channel is received.<br>" \
-			"<b>Warning:</b> This may help spammers harass you. :)</center>","options"));
+		"join a channel when an INVITE message for that channel is received.<br>" \
+		"<b>Warning:</b> This may help spammers harass you. :)</center>","options"));
 #endif
 
 	b = addBoolSelector(0,3,0,3, __tr2qs_ctx("Always open channels as minimized","options"),KviOption_boolCreateMinimizedChannels);
-    
+
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>This option causes newly created " \
@@ -178,7 +175,6 @@ KviChannelAdvancedOptionsWidget::KviChannelAdvancedOptionsWidget(QWidget * pPare
 	QString tmp2;
 	for(int i=0;i<=26;i++)
 	{
-		
 		hostmask.mask(tmp1,(KviIrcMask::MaskType)i);
 		ipmask.mask(tmp2,(KviIrcMask::MaskType)i);
 		m_pBanTypeCombo->insertItem(QString("%1 (%2)").arg(tmp1).arg(tmp2));
@@ -195,8 +191,8 @@ KviChannelAdvancedOptionsWidget::KviChannelAdvancedOptionsWidget(QWidget * pPare
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>KVIrc sends out a channel /WHO message every now and then to keep " \
-			"the channel away list in sync. Use this option to disable this feature (and to save " \
-			"your IRC bandwidth.</center>","options"));
+		"the channel away list in sync. Use this option to disable this feature (and to save " \
+		"your IRC bandwidth.</center>","options"));
 #endif
 
 	g = addGroupBox(0,4,4,4,1,Qt::Horizontal,__tr2qs_ctx("On Channel Join","options"));
@@ -216,4 +212,3 @@ void KviChannelAdvancedOptionsWidget::commit()
 	if((KVI_OPTION_UINT(KviOption_uintDefaultBanType)<0 )|| (KVI_OPTION_UINT(KviOption_uintDefaultBanType)>26)) KVI_OPTION_UINT(KviOption_uintDefaultBanType)=7;
 	KviOptionsWidget::commit();
 }
-

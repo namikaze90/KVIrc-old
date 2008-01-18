@@ -26,19 +26,6 @@
 
 #include "optw_messages.h"
 
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include "kvi_tal_vbox.h"
-#include <qcursor.h>
-#include <qpainter.h>
-#include "kvi_styled_controls.h"
-
-#include "kvi_settings.h"
-
-#ifndef COMPILE_ON_WINDOWS
-	#include <unistd.h> // symlink()
-#endif
-
 #include "kvi_options.h"
 #include "kvi_app.h"
 #include "kvi_locale.h"
@@ -46,6 +33,22 @@
 #include "kvi_mirccntrl.h"
 #include "kvi_config.h"
 #include "kvi_filedialog.h"
+#include "kvi_settings.h"
+#include "kvi_styled_controls.h"
+
+#include <QLayout>
+#include <QPushButton>
+#include <QCursor>
+#include <QPainter>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+
+#ifndef COMPILE_ON_WINDOWS
+	#include <unistd.h> // symlink()
+#endif
+
+
 
 //#warning "Info tips"
 
@@ -83,8 +86,6 @@ KviPrivmsgOptionsWidget::KviPrivmsgOptionsWidget(QWidget * parent)
 	addBoolSelector(g,__tr2qs_ctx("Don't show colors in user messages","options"),KviOption_boolStripMircColorsInUserMessages);
 
 
-
-
 	g = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("Nicknames","options"));
 
 	b1 = addBoolSelector(g,__tr2qs_ctx("\"Smart\" nickname colors","options"),KviOption_boolColorNicks);
@@ -103,8 +104,10 @@ KviPrivmsgOptionsWidget::KviPrivmsgOptionsWidget(QWidget * parent)
 		l,
 		SLOT(setEnabled(bool)));
 
-	KviTalVBox * vb = new KviTalVBox(g);
-	vb->setSpacing(5);
+	QWidget * vb = new QWidget(g);
+	QVBoxLayout * pLayout = new QVBoxLayout(g);
+	vb->setLayout(pLayout);
+	pLayout->setSpacing(5);
 
 	connect(
 		b,
@@ -135,14 +138,18 @@ KviTimestampOptionsWidget::KviTimestampOptionsWidget(QWidget * pParent)
 	
 	connect(m_pUseTimestampSelector,SIGNAL(toggled(bool)),b,SLOT(setEnabled(bool)));
 	
-	KviTalHBox *hb = new KviTalHBox(this);
+	QWidget *hb = new QWidget(this);
+	QHBoxLayout * pHLayout = new QHBoxLayout(this);
+	hb->setLayout(pHLayout);
 	addWidgetToLayout(hb,0,2,0,2);
 	
 	m_pSpecialTimestampColorSelector = addBoolSelector(hb,__tr2qs_ctx("Use special color for timestamps","options"),KviOption_boolUseSpecialColorForTimestamp,KVI_OPTION_BOOL(KviOption_boolIrcViewTimestamp));
+	pHLayout->addWidget(m_pSpecialTimestampColorSelector);
 	connect(m_pSpecialTimestampColorSelector,SIGNAL(toggled(bool)),this,SLOT(enableDisableTimestampSelector(bool)));
 	connect(m_pUseTimestampSelector,SIGNAL(toggled(bool)),m_pSpecialTimestampColorSelector,SLOT(setEnabled(bool)));
 	
 	m_pTimestampColorSelector = addMircTextColorSelector(hb,"",KviOption_uintTimeStampForeground,KviOption_uintTimeStampBackground,KVI_OPTION_BOOL(KviOption_boolIrcViewTimestamp) && KVI_OPTION_BOOL(KviOption_boolUseSpecialColorForTimestamp));
+	pHLayout->addWidget(m_pTimestampColorSelector);
 
 	KviStringSelector * st=addStringSelector(0,3,0,3,__tr2qs_ctx("Timestamp format:","options"),KviOption_stringIrcViewTimestampFormat);
 	connect(m_pUseTimestampSelector,SIGNAL(toggled(bool)),st,SLOT(setEnabled(bool)));
@@ -236,9 +243,6 @@ void KviMessageListView::paintEmptyArea(QPainter * p,const QRect &rct)
 	paintEmptyAreaInternal(p,rct,rct);
 	KviTalListView::paintEmptyArea(p,rct);
 }
-
-
-
 
 
 
@@ -393,12 +397,17 @@ KviMessageColorsOptionsWidget::KviMessageColorsOptionsWidget(QWidget * parent)
 
 	addWidgetToLayout(m_pListView,0,0,2,0);
 
-	KviTalVBox * box = new KviTalVBox(this);
+	QWidget * box = new QWidget(this);
+	QVBoxLayout * pVLayout = new QVBoxLayout(this);
+	box->setLayout(pVLayout);
 	addWidgetToLayout(box,3,0,3,0);
 
 	QLabel * l = new QLabel(__tr2qs_ctx("Background:","options"),box);
+	pVLayout->addWidget(l);
 
 	m_pBackListBox = new KviTalListBox(box);
+	pVLayout->addWidget(m_pBackListBox);
+
 	m_pBackItems[16] = new KviMessageColorListBoxItem(m_pBackListBox,Qt::gray,KVI_TRANSPARENT);
 	for(i=0;i<16;i++)
 	{
@@ -406,16 +415,21 @@ KviMessageColorsOptionsWidget::KviMessageColorsOptionsWidget(QWidget * parent)
 	}
 
 	l = new QLabel(__tr2qs_ctx("Foreground:","options"),box);
+	pVLayout->addWidget(l);
 
 	m_pForeListBox = new KviTalListBox(box);
+	pVLayout->addWidget(m_pForeListBox);
 	for(i=0;i<16;i++)
 	{
 		m_pForeItems[i] = new KviMessageColorListBoxItem(m_pForeListBox,KVI_OPTION_MIRCCOLOR(i),i);
 	}
 
 	l = new QLabel(__tr2qs_ctx("Alert level:","options"),box);
+	pVLayout->addWidget(l);
 
 	m_pLevelListBox = new KviTalListBox(box);
+	pVLayout->addWidget(m_pLevelListBox);
+
 	KviTalListBoxText * lbt;
 	for(i=0;i<6;i++)
 	{
@@ -425,6 +439,7 @@ KviMessageColorsOptionsWidget::KviMessageColorsOptionsWidget(QWidget * parent)
 	}
 
 	m_pIconButton = new KviStyledToolButton(box);
+	pVLayout->addWidget(m_pIconButton);
 	connect(m_pIconButton,SIGNAL(clicked()),this,SLOT(iconButtonClicked()));
 
 	m_pIconPopup = new KviTalPopupMenu(this);
@@ -437,12 +452,19 @@ KviMessageColorsOptionsWidget::KviMessageColorsOptionsWidget(QWidget * parent)
 
 
 	m_pEnableLogging = new KviStyledCheckBox(__tr2qs_ctx("Log this","options"),box);
+	pVLayout->addWidget(m_pEnableLogging);
 
-	KviTalHBox * h = new KviTalHBox(this);
+	QWidget * h = new QWidget(this);
+	QHBoxLayout * pHLayout = new QHBoxLayout(this);
+	h->setLayout(pHLayout);
 	addWidgetToLayout(h,0,1,3,1);
+
 	QPushButton * b = new QPushButton(__tr2qs_ctx("Load From...","options"),h);
+	pHLayout->addWidget(b);
 	connect(b,SIGNAL(clicked()),this,SLOT(load()));
+
 	b = new QPushButton(__tr2qs_ctx("Save As...","options"),h);
+	pHLayout->addWidget(b);
 	connect(b,SIGNAL(clicked()),this,SLOT(save()));
 
 
@@ -606,7 +628,6 @@ void KviMessageColorsOptionsWidget::save()
 
 void KviMessageColorsOptionsWidget::load()
 {
-
 	//KviStr szName;
 	QString szName;
 	//KviStr szInit;
@@ -630,9 +651,7 @@ void KviMessageColorsOptionsWidget::load()
 
 	if(KviFileDialog::askForOpenFileName(szName,__tr2qs_ctx("Choose a Filename - KVIrc ","options"),szInit))
 	{
-
 		itemChanged(0);
-		
 
 		KviConfig cfg(szName,KviConfig::Read);
 
@@ -671,7 +690,5 @@ void KviMessageColorsOptionsWidget::load()
 
 			it = (KviMessageListViewItem *)(it->nextSibling());
 		}
-
 	}
 }
-

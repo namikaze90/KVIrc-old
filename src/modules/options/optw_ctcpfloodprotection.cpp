@@ -22,12 +22,11 @@
 
 #include "optw_ctcpfloodprotection.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
 
-#include <qlabel.h>
+#include <QLabel>
+#include <QLayout>
 
 /*
 	@doc: ctcpfloodprotectionoptions
@@ -111,5 +110,3 @@ KviCtcpFloodProtectionOptionsWidget::KviCtcpFloodProtectionOptionsWidget(QWidget
 KviCtcpFloodProtectionOptionsWidget::~KviCtcpFloodProtectionOptionsWidget()
 {
 }
-
-

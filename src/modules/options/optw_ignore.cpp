@@ -22,10 +22,10 @@
 
 #include "optw_ignore.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
+
+#include <QLayout>
 
 //#warning "Info tips"
 
@@ -42,8 +42,8 @@ KviIgnoreOptionsWidget::KviIgnoreOptionsWidget(QWidget * parent)
 	connect(m_pIgnorePrivmsg,SIGNAL(toggled(bool)),this,SLOT(enableVerbose(bool)));
 
 	m_pVerboseIgnore = addBoolSelector(0,1,0,1,__tr2qs_ctx("Use verbose ignore (show messages in console)","options"),
-				KviOption_boolVerboseIgnore,
-				KVI_OPTION_BOOL(KviOption_boolEnableIgnoreOnPrivMsg) || KVI_OPTION_BOOL(KviOption_boolEnableIgnoreOnNotice));
+		KviOption_boolVerboseIgnore,
+		KVI_OPTION_BOOL(KviOption_boolEnableIgnoreOnPrivMsg) || KVI_OPTION_BOOL(KviOption_boolEnableIgnoreOnNotice));
 
 	addRowSpacer(0,2,0,2);
 }
@@ -56,6 +56,3 @@ void KviIgnoreOptionsWidget::enableVerbose(bool)
 {
 	m_pVerboseIgnore->setEnabled(m_pIgnorePrivmsg->isChecked() || m_pIgnoreNotice->isChecked());
 }
-
-
-

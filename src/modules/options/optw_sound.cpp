@@ -28,14 +28,15 @@
 #include "kvi_locale.h"
 #include "kvi_options.h"
 #include "kvi_modulemanager.h"
-
 #include "kvi_string.h"
-
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include "kvi_tal_hbox.h"
-
 #include "kvi_tal_tooltip.h"
+
+#include <QLabel>
+#include <QPushButton>
+#include <QWidget>
+#include <QHBoxLayout>
+
+
 
 // FIXME: This module doesn't Cancel properly when auto-detection is performed!
 
@@ -63,14 +64,19 @@ KviSoundGeneralOptionsWidget::KviSoundGeneralOptionsWidget(QWidget * parent)
 
 	KviTalToolTip::add(g,__tr2qs_ctx("This allows you to select the sound system to be used with KVIrc.","options"));
 
-	KviTalHBox * h = new KviTalHBox(g);
+	QWidget * h = new QWidget(g);
+	QHBoxLayout * pLayout = new QHBoxLayout(g);
+	h->setLayout(pLayout);
 
 	m_pSoundSystemBox = new QComboBox(false,h);
+	pLayout->addWidget(m_pSoundSystemBox);
 
 	m_pSoundAutoDetectButton = new QPushButton(__tr2qs_ctx("Auto-detect","options"),h);
+	pLayout->addWidget(m_pSoundAutoDetectButton);
 	connect(m_pSoundAutoDetectButton,SIGNAL(clicked()),this,SLOT(soundAutoDetect()));
 
 	m_pSoundTestButton = new QPushButton(__tr2qs_ctx("Test","options"),h);
+	pLayout->addWidget(m_pSoundTestButton);
 	connect(m_pSoundTestButton,SIGNAL(clicked()),this,SLOT(soundTest()));
 
 
@@ -79,14 +85,19 @@ KviSoundGeneralOptionsWidget::KviSoundGeneralOptionsWidget(QWidget * parent)
 	KviTalToolTip::add(g,__tr2qs_ctx("This allows you to select the preferred media player to be used with " \
 		"the mediaplayer.* module commands and functions.","options"));
 
-	h = new KviTalHBox(g);
+	h = new QWidget(g);
+	QHBoxLayout * pHLayout = new QHBoxLayout(g);
+	h->setLayout(pHLayout);
 
 	m_pMediaPlayerBox = new QComboBox(false,h);
+	pHLayout->addWidget(m_pMediaPlayerBox);
 
 	m_pMediaAutoDetectButton = new QPushButton(__tr2qs_ctx("Auto-detect","options"),h);
+	pHLayout->addWidget(m_pMediaAutoDetectButton);
 	connect(m_pMediaAutoDetectButton,SIGNAL(clicked()),this,SLOT(mediaAutoDetect()));
 
 	m_pMediaTestButton = new QPushButton(__tr2qs_ctx("Test","options"),h);
+	pHLayout->addWidget(m_pMediaTestButton);
 	connect(m_pMediaTestButton,SIGNAL(clicked()),this,SLOT(mediaTest()));
 
 	addRowSpacer(0,2,0,2);
@@ -101,10 +112,13 @@ KviSoundGeneralOptionsWidget::KviSoundGeneralOptionsWidget(QWidget * parent)
 
 	KviTalToolTip::add(g,__tr2qs_ctx("This allows you to select encoding of mp3 tags.","options"));
 
-	h = new KviTalHBox(g);
+	h = new QWidget(g);
+	QHBoxLayout * pH2Layout = new QHBoxLayout(g);
+	h->setLayout(pH2Layout);
 
 	m_pTagsEncodingCombo = new QComboBox(false,h);
 	m_pTagsEncodingCombo->insertItem(__tr2qs_ctx("Use Language Encoding","options"));
+	pH2Layout->addWidget(m_pTagsEncodingCombo);
 
 	int i = 0;
 	int iMatch = 0;
@@ -124,11 +138,14 @@ KviSoundGeneralOptionsWidget::KviSoundGeneralOptionsWidget(QWidget * parent)
 
 	KviTalToolTip::add(g,__tr2qs_ctx("This allows you to select encoding of winamp messages.","options"));
 
-	h = new KviTalHBox(g);
+	h = new QWidget(g);
+	QHBoxLayout * pH3Layout = new QHBoxLayout(g);
+	h->setLayout(pH3Layout);
 
 	m_pWinampEncodingCombo = new QComboBox(false,h);
-	
 	m_pWinampEncodingCombo->insertItem(__tr2qs_ctx("Use Language Encoding","options"));
+	pH3Layout->addWidget(m_pWinampEncodingCombo);
+
 	i = 0;
 	iMatch = 0;
 	
@@ -157,7 +174,6 @@ void KviSoundGeneralOptionsWidget::mediaTest()
 {
 }
 
-
 void KviSoundGeneralOptionsWidget::soundAutoDetect()
 {
 	KviModule * m = g_pModuleManager->getModule("snd");
@@ -174,10 +190,8 @@ void KviSoundGeneralOptionsWidget::mediaAutoDetect()
 	mediaFillBox();
 }
 
-
 void KviSoundGeneralOptionsWidget::soundFillBox()
 {
-
 	QStringList l;
 	QStringList::Iterator it;
 	int cnt;
@@ -280,6 +294,7 @@ void KviSoundGeneralOptionsWidget::commit()
 	}
 #endif
 }
+
 
 KviSoundsOptionsWidget::KviSoundsOptionsWidget(QWidget * parent)
 : KviOptionsWidget(parent,"sound_options_widget")

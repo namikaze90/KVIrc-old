@@ -21,10 +21,10 @@
 //
 #include "optw_input.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
+
+#include <QLayout>
 
 //#warning "Info tips"
 
@@ -91,7 +91,6 @@ KviInputLookOptionsWidget::KviInputLookOptionsWidget(QWidget * parent)
 			m_pVerticalAlign->setCurrentItem(0);
 	}
 
-
 	layout()->setRowStretch(7,1);
 }
 
@@ -132,7 +131,6 @@ void KviInputLookOptionsWidget::commit()
 }
 
 
-
 KviInputFeaturesOptionsWidget::KviInputFeaturesOptionsWidget(QWidget * parent)
 : KviOptionsWidget(parent,"ircviewfeatures_options_widget")
 {
@@ -152,4 +150,3 @@ KviInputFeaturesOptionsWidget::KviInputFeaturesOptionsWidget(QWidget * parent)
 KviInputFeaturesOptionsWidget::~KviInputFeaturesOptionsWidget()
 {
 }
-

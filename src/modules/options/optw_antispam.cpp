@@ -22,13 +22,11 @@
 
 #include "optw_antispam.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
 
-#include <qlabel.h>
-
+#include <QLabel>
+#include <QLayout>
 
 
 KviAntispamOptionsWidget::KviAntispamOptionsWidget(QWidget * parent)
@@ -59,5 +57,3 @@ void KviAntispamOptionsWidget::reenableStuff(bool)
 	m_b3->setEnabled(m_b1->isChecked() || m_b2->isChecked());
 	m_sl->setEnabled(m_b1->isChecked() || m_b2->isChecked());
 }
-
-

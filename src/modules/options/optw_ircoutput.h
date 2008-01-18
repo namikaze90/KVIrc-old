@@ -24,6 +24,7 @@
 //
 
 #include "kvi_optionswidget.h"
+
 #include "kvi_tal_listview.h"
 
 class QComboBox;

@@ -23,11 +23,11 @@
 
 #include "optw_tray.h"
 
-#include <qlayout.h>
-#include "kvi_tal_tooltip.h"
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
+#include "kvi_tal_tooltip.h"
+
+#include <QLayout>
 
 //#warning "Info tips"
 
@@ -47,12 +47,12 @@ KviTrayOptionsWidget::KviTrayOptionsWidget(QWidget * parent)
 	m_pLevelsGroup = addGroupBox(0,5,0,5,1,Qt::Horizontal,__tr2qs_ctx("Select message levels to notify","options"));
 	
 	addUIntSelector(m_pLevelsGroup,__tr2qs_ctx("Minimum level for low-priority messages","options"),
-				KviOption_uintMinTrayLowLevelMessage,
-				1,5,1,true);
+		KviOption_uintMinTrayLowLevelMessage,
+		1,5,1,true);
 		
 	addUIntSelector(m_pLevelsGroup,__tr2qs_ctx("Minimum level for high-priority message","options"),
-				KviOption_uintMinTrayHighLevelMessage,
-				1,5,4,true);
+		KviOption_uintMinTrayHighLevelMessage,
+		1,5,4,true);
 	
 	addRowSpacer(0,6,0,6);
 	
@@ -86,5 +86,3 @@ void KviTrayOptionsWidget::setEnabled(bool bEnabled)
 		m_pLevelsGroup->setEnabled(false);
 	}
 }
-
-

@@ -22,11 +22,12 @@
 
 #include "optw_ssl.h"
 
-#include <qlayout.h>
-#include <kvi_tal_groupbox.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
+#include <kvi_tal_groupbox.h>
+
+#include <QLayout>
+
 
 //#warning "Info tips"
 

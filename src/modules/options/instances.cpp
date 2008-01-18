@@ -32,14 +32,14 @@
 #include "instances.h"
 
 KviOptionsPageDescriptorBase::KviOptionsPageDescriptorBase(
-				const QString& szName,
-				const QString& szKeywords,
-				const QString& szKeywordsNoLocale,
-				const QString& szGroup,
-				const QString& szParent,
-				int iIcon,
-				int iPriority
-				)
+	const QString& szName,
+	const QString& szKeywords,
+	const QString& szKeywordsNoLocale,
+	const QString& szGroup,
+	const QString& szParent,
+	int iIcon,
+	int iPriority
+)
 :m_szName(szName),m_szKeywords(szKeywords),m_szParent(szParent),
 m_szKeywordsNoLocale(szKeywords),m_szGroup(szGroup),
 m_iIcon(iIcon),m_iPriority(iPriority),m_pInstance(0)
@@ -56,7 +56,7 @@ KviOptionsPageDescriptorBase::~KviOptionsPageDescriptorBase()
 
 // private
 static KviOptionsManager  *g_pInstance = 0;
-				
+
 KviOptionsManager::KviOptionsManager()
 {
 	m_pRegistrationMutex = new QMutex;
@@ -118,4 +118,3 @@ void KviOptionsManager::registrationFinished()
 	g_pInstance->m_groupAndWidgetCache.squeeze();
 	g_pInstance->m_pRegistrationMutex->unlock();
 }
-

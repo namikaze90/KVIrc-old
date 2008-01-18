@@ -22,11 +22,11 @@
 
 #include "optw_notify.h"
 
-#include <qlayout.h>
 #include "kvi_settings.h"
 #include "kvi_options.h"
 #include "kvi_locale.h"
 
+#include <QLayout>
 
 //#warning "Info tips"
 
@@ -43,17 +43,17 @@ KviNotifyOptionsWidget::KviNotifyOptionsWidget(QWidget * parent)
 	connect(b,
 		SIGNAL(toggled(bool)),
 		addBoolSelector(g,__tr2qs_ctx("Show notifications in active window","options"),
-				KviOption_boolNotifyListChangesToActiveWindow,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
+			KviOption_boolNotifyListChangesToActiveWindow,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
 		SLOT(setEnabled(bool)));
 	connect(b,
 		SIGNAL(toggled(bool)),
 		addBoolSelector(g,__tr2qs_ctx("Flash window when users are going online","options"),
-				KviOption_boolFlashWindowOnNotifyOnLine,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
+			KviOption_boolFlashWindowOnNotifyOnLine,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
 		SLOT(setEnabled(bool)));
 	connect(b,
 		SIGNAL(toggled(bool)),
 		addBoolSelector(g,__tr2qs_ctx("Popup notifier when users are going online","options"),
-				KviOption_boolPopupNotifierOnNotifyOnLine,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
+			KviOption_boolPopupNotifierOnNotifyOnLine,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
 		SLOT(setEnabled(bool)));
 
 	g = addGroupBox(0,2,0,2,1,Qt::Horizontal,__tr2qs_ctx("Advanced configuration","options"));
@@ -62,35 +62,35 @@ KviNotifyOptionsWidget::KviNotifyOptionsWidget(QWidget * parent)
 	connect(b,
 		SIGNAL(toggled(bool)),
 		addBoolSelector(g,__tr2qs_ctx("Check USERHOST for online users","options"),
-				KviOption_boolNotifyListSendUserhostForOnlineUsers,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
+			KviOption_boolNotifyListSendUserhostForOnlineUsers,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
 		SLOT(setEnabled(bool)));
 	connect(b,
 		SIGNAL(toggled(bool)),
 		addBoolSelector(g,__tr2qs_ctx("Use \"smart\" notify list manager","options"),
-				KviOption_boolUseIntelligentNotifyListManager,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
+			KviOption_boolUseIntelligentNotifyListManager,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
 		SLOT(setEnabled(bool)));
 	connect(b,
 		SIGNAL(toggled(bool)),
 		addBoolSelector(g,__tr2qs_ctx("Use the WATCH method if available","options"),
-				KviOption_boolUseWatchListIfAvailable,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
+			KviOption_boolUseWatchListIfAvailable,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
 		SLOT(setEnabled(bool)));
 	connect(b,
 		SIGNAL(toggled(bool)),
 		addUIntSelector(g,__tr2qs_ctx("Check interval (in seconds)","options"),
-				KviOption_uintNotifyListCheckTimeInSecs,
-				5,3600,180,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
+			KviOption_uintNotifyListCheckTimeInSecs,
+			5,3600,180,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
 		SLOT(setEnabled(bool)));
 	connect(b,
 		SIGNAL(toggled(bool)),
 		addUIntSelector(g,__tr2qs_ctx("ISON delay (in seconds)","options"),
-				KviOption_uintNotifyListIsOnDelayTimeInSecs,
-				5,180,6,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
+			KviOption_uintNotifyListIsOnDelayTimeInSecs,
+			5,180,6,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
 		SLOT(setEnabled(bool)));
 	connect(b,
 		SIGNAL(toggled(bool)),
 		addUIntSelector(g,__tr2qs_ctx("USERHOST delay (in seconds)","options"),
-				KviOption_uintNotifyListUserhostDelayTimeInSecs,
-				5,180,6,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
+			KviOption_uintNotifyListUserhostDelayTimeInSecs,
+			5,180,6,KVI_OPTION_BOOL(KviOption_boolUseNotifyList)),
 		SLOT(setEnabled(bool)));
 
 	addLabel(0,3,0,3,__tr2qs_ctx("<p><b>Note:</b><br>The notify list is managed using the \"Registered Users\" settings.</p>","options"));
@@ -102,8 +102,6 @@ KviNotifyOptionsWidget::~KviNotifyOptionsWidget()
 }
 
 
-
-
 KviNotifierOptionsWidget::KviNotifierOptionsWidget(QWidget * parent)
 : KviOptionsWidget(parent,"notifier_options_widget")
 {
@@ -113,10 +111,10 @@ KviNotifierOptionsWidget::KviNotifierOptionsWidget(QWidget * parent)
 #ifdef COMPILE_INFO_TIPS
 	QString tip = "<center>";
 	tip += __tr2qs_ctx("This is an option for the impatient: it allows to forcibly and permanently disable " \
-					"the notifier window. Please note that if this option is activated then " \
-					"the notifier will NOT popup even if all the other options around specify " \
-					"to use it in response to particular events. Also note that this option " \
-					"will make all the /notifier.* commands fail silently.","options");
+		"the notifier window. Please note that if this option is activated then " \
+		"the notifier will NOT popup even if all the other options around specify " \
+		"to use it in response to particular events. Also note that this option " \
+		"will make all the /notifier.* commands fail silently.","options");
 	tip += "</center>";
 	mergeTip(b,tip);
 #endif
@@ -129,5 +127,3 @@ KviNotifierOptionsWidget::KviNotifierOptionsWidget(QWidget * parent)
 KviNotifierOptionsWidget::~KviNotifierOptionsWidget()
 {
 }
-
-

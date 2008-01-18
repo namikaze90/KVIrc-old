@@ -1,5 +1,3 @@
-
-
 #ifndef __OPTIONS_INSTANCES_H__
 #define __OPTIONS_INSTANCES_H__
 
@@ -32,6 +30,7 @@
 //
 
 #include "kvi_optionswidget.h"
+
 #include <QMap>
 #include <QMutex>
 
@@ -53,14 +52,14 @@ private:
 	int                                       m_iPriority;
 public:
 	KviOptionsPageDescriptorBase(
-				const QString& szName,
-				const QString& szKeywords,
-				const QString& szKeywordsNoLocale,
-				const QString& szGroup,
-				const QString& szParent,
-				int iIcon,
-				int iPriority
-				);
+		const QString& szName,
+		const QString& szKeywords,
+		const QString& szKeywordsNoLocale,
+		const QString& szGroup,
+		const QString& szParent,
+		int iIcon,
+		int iPriority
+	);
 	virtual ~KviOptionsPageDescriptorBase();
 	virtual KviOptionsWidget* createInstance(QWidget* pParent) = 0;
 	virtual KviOptionsWidget* instance() { return m_pInstance; };
@@ -71,7 +70,7 @@ public:
 	int icon() { return m_iIcon; };
 };
 
-template <typename T> class KviOptionsPageDescriptor : public KviOptionsPageDescriptorBase 
+template <typename T> class KviOptionsPageDescriptor : public KviOptionsPageDescriptorBase
 {
 public:
 	virtual KviOptionsWidget* createInstance(QWidget* pParent)
@@ -107,4 +106,3 @@ public:
 };
 
 #endif //__OPTIONS_INSTANCES_H__
-

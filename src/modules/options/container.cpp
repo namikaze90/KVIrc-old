@@ -26,13 +26,12 @@
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 #include "kvi_app.h"
-
-#include <qlayout.h>
-#include <qpushbutton.h>
 #include "kvi_tal_tooltip.h"
-#include <qevent.h>
 
-#include <qdesktopwidget.h>
+#include <QLayout>
+#include <QPushButton>
+#include <QEvent>
+#include <QDesktopWidget>
 
 KviOptionsWidgetContainer::KviOptionsWidgetContainer(QWidget * par,bool bModal)
 : QDialog(par,"container","options")

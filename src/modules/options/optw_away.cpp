@@ -23,13 +23,12 @@
 
 #include "optw_away.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
 
-//#warning "Info tips"
+#include <QLayout>
 
+//#warning "Info tips"
 
 KviAwayOptionsWidget::KviAwayOptionsWidget(QWidget * parent)
 : KviOptionsWidget(parent,"away_options_widget")
@@ -66,5 +65,3 @@ void KviAwayOptionsWidget::enableCustomAwayText(bool)
 	m_pCustomAwayNick->setEnabled(m_pEnableAwayNick->isChecked() && !(m_pEnableCustomAwayNick->isChecked()));
 
 }
-
-

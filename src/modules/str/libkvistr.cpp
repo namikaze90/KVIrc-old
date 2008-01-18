@@ -25,17 +25,16 @@
 //#warning: FIXME: Incomplete documentation ('seealso', 'example', etc)
 
 #include "kvi_module.h"
-
 #include "kvi_locale.h"
 #include "kvi_mirccntrl.h"
 #include "kvi_qstring.h"
 #include "kvi_debug.h"
 #include "kvi_settings.h"
 #include "kvi_malloc.h"
-
 #include "kvi_kvs_arraycast.h"
-#include <qregexp.h>
-#include <qclipboard.h>
+
+#include <QRegExp>
+#include <QClipboard>
 
 #ifdef COMPILE_SSL_SUPPORT
 	#include <openssl/evp.h>
@@ -109,7 +108,8 @@ static bool str_kvs_fnc_fromclipboard(KviKvsModuleFunctionCall * c)
 }
 
 /*
-	@doc: system.toClipboard
+	@doc:
+		system.toClipboard
 	@type:
 		command
 	@title:
@@ -138,7 +138,8 @@ static bool str_kvs_cmd_toClipboard(KviKvsModuleCommandCall * c)
 }
 
 /*
-	@doc: str.len
+	@doc:
+		str.len
 	@type:
 		function
 	@title:
@@ -153,7 +154,8 @@ static bool str_kvs_cmd_toClipboard(KviKvsModuleCommandCall * c)
 */
 
 /*
-	@doc: str.length
+	@doc:
+		str.length
 	@type:
 		function
 	@title:
@@ -178,16 +180,17 @@ static bool str_kvs_fnc_len(KviKvsModuleFunctionCall * c)
 }
 
 /*
-    @doc: str.lowcase
-    @type:
-        function
-    @title:
-        $str.lowcase
-    @short:
-        Returns the given string with all characters turned to lower case
-    @syntax:
-        <string> $str.lowcase(<string_to_convert:string>)
-    @description:
+	@doc:
+		str.lowcase
+	@type:
+		function
+	@title:
+		$str.lowcase
+	@short:
+		Returns the given string with all characters turned to lower case
+	@syntax:
+		<string> $str.lowcase(<string_to_convert:string>)
+	@description:
 		Returns the <string_to_convert> with all characters turned to lower case.
 		Warning: this function uses ISO-8859-1 locale to make the case translation.
 		If you want to use a locale aware translation mapping then please
@@ -204,7 +207,8 @@ static bool str_kvs_fnc_lowcase(KviKvsModuleFunctionCall * c)
 	return true;
 }
 /*
-	@doc: str.upcase
+	@doc:
+		str.upcase
 	@type:
 		function
 	@title:
@@ -230,7 +234,8 @@ static bool str_kvs_fnc_upcase(KviKvsModuleFunctionCall * c)
 	return true;
 }
 /*
-	@doc: str.localelowcase
+	@doc:
+		str.localelowcase
 	@type:
 		function
 	@title:
@@ -257,7 +262,8 @@ static bool str_kvs_fnc_localelowcase(KviKvsModuleFunctionCall * c)
 }
 
 /*
-	@doc: str.localeupcase
+	@doc:
+		str.localeupcase
 	@type:
 		function
 	@title:
@@ -284,16 +290,17 @@ static bool str_kvs_fnc_localeupcase(KviKvsModuleFunctionCall * c)
 }
 
 /*
-    @doc: str.isnumber
-    @type:
-        function
-    @title:
-        $str.isnumber
-    @short:
-        Returns 1 if the given string represents a number
-    @syntax:
-        <bool> $str.isnumber(<givenstring:string>)
-    @description:
+	@doc:
+		str.isNumber
+	@type:
+		function
+	@title:
+		$str.isNumber
+	@short:
+		Returns 1 if the given string represents a number
+	@syntax:
+		<bool> $str.isNumber(<givenstring:string>)
+	@description:
 		Returns 1 if the given string represents a number, 0 if not.
 */
 
@@ -310,16 +317,17 @@ static bool str_kvs_fnc_isnumber(KviKvsModuleFunctionCall * c)
 
 
 /*
-    @doc: str.isunsignednumber
-    @type:
-        function
-    @title:
-        $str.isunsignednumber
-    @short:
-        Returns 1 if the given string represents an unsigned number
-    @syntax:
-        <bool> $str.isunsignednumber(<givenstring:string>)
-    @description:
+	@doc:
+		str.isunsignednumber
+	@type:
+		function
+	@title:
+		$str.isunsignednumber
+	@short:
+		Returns 1 if the given string represents an unsigned number
+	@syntax:
+		<bool> $str.isunsignednumber(<givenstring:string>)
+	@description:
 		Returns 1 if the given string represents an unsigned number, 0 if not.
 */
 
@@ -438,16 +446,16 @@ static bool str_kvs_fnc_containsnocase(KviKvsModuleFunctionCall * c)
 }
 
 /*
-    @doc: str.equal
-    @type:
-        function
-    @title:
-        $str.equal
-    @short:
-        Returns 1 if the two string parameters are equal
-    @syntax:
-        <bool> $str.equal(<fromcompare:string>,<tocompare:string>)
-    @description:
+	@doc: str.equal
+	@type:
+		function
+	@title:
+		$str.equal
+	@short:
+		Returns 1 if the two string parameters are equal
+	@syntax:
+		<bool> $str.equal(<fromcompare:string>,<tocompare:string>)
+	@description:
 		Returns 1 if the two string parameters are equal. This function is case sensitive.
 	@seealso:
 		[fnc]$str.equalnocase[/fnc]()
@@ -466,16 +474,16 @@ static bool str_kvs_fnc_equal(KviKvsModuleFunctionCall * c)
 	return true;
 }
 /*
-    @doc: str.equalnocase
-    @type:
-        function
-    @title:
-        $str.equalnocase
-    @short:
-        Returns 1 if the two string parameters are equal, case insensitive
-    @syntax:
-        <bool> $str.equalnocase(<fromcompare:string>,<tocompare:string>)
-    @description:
+	@doc: str.equalnocase
+	@type:
+		function
+	@title:
+		$str.equalnocase
+	@short:
+		Returns 1 if the two string parameters are equal, case insensitive
+	@syntax:
+		<bool> $str.equalnocase(<fromcompare:string>,<tocompare:string>)
+	@description:
 		Returns 1 if the two strngs parameters are equal, without taking the case of the
 		characters in consideration.
 	@seealso:
@@ -2317,8 +2325,8 @@ KVIRC_MODULE(
 	"4.0.0",                                                // module version
 	"Copyright (C) 2002 Szymon Stefanek (pragma at kvirc dot net)"\
 	"          (C) 2002 Juanjo Alvarez (juanjux@yahoo.es)" \
-    "          (C) 2005 Tonino Imbesi (grifisx at barmes dot org)" \
-    "          (C) 2005 Alessandro Carbone (noldor at barmes dot org)", // author & (C)
+	"          (C) 2005 Tonino Imbesi (grifisx at barmes dot org)" \
+	"          (C) 2005 Alessandro Carbone (noldor at barmes dot org)", // author & (C)
 	"Interface to the str system",
 	str_module_init,
 	0,

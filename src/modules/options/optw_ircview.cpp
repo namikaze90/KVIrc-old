@@ -21,9 +21,10 @@
 //
 #include "optw_ircview.h"
 
-#include <qlayout.h>
 #include "kvi_options.h"
 #include "kvi_locale.h"
+
+#include <QLayout>
 
 //#warning "Info tips"
 
@@ -162,6 +163,3 @@ KviIrcViewFeaturesOptionsWidget::KviIrcViewFeaturesOptionsWidget(QWidget * paren
 KviIrcViewFeaturesOptionsWidget::~KviIrcViewFeaturesOptionsWidget()
 {
 }
-
-
-

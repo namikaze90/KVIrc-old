@@ -24,10 +24,12 @@
 
 #include "optw_dcc.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
+
+#include <QLayout>
+#include <QWidget>
+#include <QHBoxLayout>
 
 //#warning "Info tips"
 
@@ -52,8 +54,8 @@ KviDccGeneralOptionsWidget::KviDccGeneralOptionsWidget(QWidget * parent)
 
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,__tr2qs_ctx("<center>Enable this option if you can't accept incoming connections.<br>" \
-			"KVIrc will try to use different methods to send and receive files.<br>" \
-			"Please note that these methods may NOT work when communicating with a non-KVIrc client.</center>","options"));
+		"KVIrc will try to use different methods to send and receive files.<br>" \
+		"Please note that these methods may NOT work when communicating with a non-KVIrc client.</center>","options"));
 #endif
 
 	addRowSpacer(0,1,0,1);
@@ -97,12 +99,17 @@ KviDccAdvancedOptionsWidget::KviDccAdvancedOptionsWidget(QWidget * parent)
 	mergeTip(b,__tr2qs_ctx("<center>Enable this option if you want specify a local port range for DCC.</center>","options"));
 #endif
 
-	KviTalHBox * hb = new KviTalHBox(g);
-	hb->setSpacing(4);
+	QWidget * hb = new QWidget(g);
+	QHBoxLayout * pLayout = new QHBoxLayout(g);
+	hb->setLayout(pLayout);
+	pLayout->setSpacing(4);
+
 	KviUIntSelector * u = addUIntSelector(hb,__tr2qs_ctx("Lowest port:","options"),KviOption_uintDccMinPort,1,65535,5000,KVI_OPTION_BOOL(KviOption_boolUserDefinedPortRange));
+	pLayout->addWidget(u);
 	connect(b,SIGNAL(toggled(bool)),u,SLOT(setEnabled(bool)));
 
 	u = addUIntSelector(hb,__tr2qs_ctx("Highest port:","options"),KviOption_uintDccMaxPort,1,65535,30000,KVI_OPTION_BOOL(KviOption_boolUserDefinedPortRange));
+	pLayout->addWidget(u);
 	connect(b,SIGNAL(toggled(bool)),u,SLOT(setEnabled(bool)));
 
 	b = addBoolSelector(g,__tr2qs_ctx("Send a fixed address in requests","options"),KviOption_boolDccSendFakeAddressByDefault);
@@ -121,41 +128,41 @@ KviDccAdvancedOptionsWidget::KviDccAdvancedOptionsWidget(QWidget * parent)
 
 	KviBoolSelector * b2;
 	b2 = addBoolSelector(g,__tr2qs_ctx("Guess address from IRC server if unroutable","options"),
-									KviOption_boolDccGuessIpFromServerWhenLocalIsUnroutable,!KVI_OPTION_BOOL(KviOption_boolDccSendFakeAddressByDefault));
+		KviOption_boolDccGuessIpFromServerWhenLocalIsUnroutable,!KVI_OPTION_BOOL(KviOption_boolDccSendFakeAddressByDefault));
 	connect(b,SIGNAL(toggled(bool)),b2,SLOT(setNotEnabled(bool)));
 
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b2,__tr2qs_ctx("<center>You can enable this option if you are behind a router that forwards all or a range of ports.<br>" \
-			"KVIrc will try to guess the IP address to use for DCC by looking up the local hostname as seen " \
-			"by the IRC server you're connected to.<br>This method is an exclusive alternative to the \"fixed address\" above.<br>" \
-			"It might guess the correct address automatically if certain conditions are met (e.g. the IRC server does not mask hostnames).</center>","options"));
+		"KVIrc will try to guess the IP address to use for DCC by looking up the local hostname as seen " \
+		"by the IRC server you're connected to.<br>This method is an exclusive alternative to the \"fixed address\" above.<br>" \
+		"It might guess the correct address automatically if certain conditions are met (e.g. the IRC server does not mask hostnames).</center>","options"));
 #endif
 
 	b = addBoolSelector(g,__tr2qs_ctx("Use \"broken bouncer hack\" to detect address","options"),
-									KviOption_boolDccBrokenBouncerHack,KVI_OPTION_BOOL(KviOption_boolDccGuessIpFromServerWhenLocalIsUnroutable));
+		KviOption_boolDccBrokenBouncerHack,KVI_OPTION_BOOL(KviOption_boolDccGuessIpFromServerWhenLocalIsUnroutable));
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,__tr2qs_ctx("<center>When you're behind a dialup router and also tunneling through a psyBNC bouncer, " \
-				"you can use a bug in the bouncer to force KVIrc to bind the DCC connections to the dialup router's address.<br>" \
-				"It's an ugly hack - use it only if nothing else works.</center>","options"));
+		"you can use a bug in the bouncer to force KVIrc to bind the DCC connections to the dialup router's address.<br>" \
+		"It's an ugly hack - use it only if nothing else works.</center>","options"));
 #endif
 									
 	connect(b2,SIGNAL(toggled(bool)),b,SLOT(setEnabled(bool)));
 
 	b = addBoolSelector(0,1,1,1,__tr2qs_ctx("Notify failed DCC handshakes to the remote end","options"),
-									KviOption_boolNotifyFailedDccHandshakes);
+		KviOption_boolNotifyFailedDccHandshakes);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,__tr2qs_ctx("<center>If you enable this option, when a DCC request from a remote " \
-					"user can't be satisfied KVIrc will notify him by a CTCP ERRMSG. This is " \
-					"a nice feature so it is a good idea to leave it on unless for some reason " \
-					"you have deactivated the antiflood system: in this case turning off this option " \
-					"might help if you often get attacked by CTCP floods.</center>","options"));
+		"user can't be satisfied KVIrc will notify him by a CTCP ERRMSG. This is " \
+		"a nice feature so it is a good idea to leave it on unless for some reason " \
+		"you have deactivated the antiflood system: in this case turning off this option " \
+		"might help if you often get attacked by CTCP floods.</center>","options"));
 #endif
 
 	u = addUIntSelector(0,2,1,2,__tr2qs_ctx("Maximum number of DCC sessions","options"),KviOption_uintMaxDccSlots,0,1000,64);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(u,__tr2qs_ctx("<center>This is the maximum number of concurrent DCC sessions " \
-					"and it includes all the DCC types (send,chat,recv...). " \
-					"KVIrc will refuse the requests when this limit is reached.</center>","options"));
+		"and it includes all the DCC types (send,chat,recv...). " \
+		"KVIrc will refuse the requests when this limit is reached.</center>","options"));
 #endif
 
 	addUIntSelector(0,3,1,3,__tr2qs_ctx("DCC socket timeout:","options"),KviOption_uintDccSocketTimeout,10,65536,180);
@@ -213,7 +220,7 @@ KviDccSendGeneralOptionsWidget::KviDccSendGeneralOptionsWidget(QWidget * parent)
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>This option will cause succesfully terminated transfers " \
-				"to be automatically removed from the transfer window.</center>","options"));
+		"to be automatically removed from the transfer window.</center>","options"));
 #endif //COMPILE_INFO_TIPS
 
 
@@ -240,44 +247,55 @@ KviDccSendAdvancedOptionsWidget::KviDccSendAdvancedOptionsWidget(QWidget * paren
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>This option causes KVIrc to send a zero-byte acknowledge to kick-start " \
-				"the DCC transfer with some buggy IRC clients.<br>" \
-				"Use it only if your DCC transfers stall just after establishing a connection without sending any data.</center>","options"));
+		"the DCC transfer with some buggy IRC clients.<br>" \
+		"Use it only if your DCC transfers stall just after establishing a connection without sending any data.</center>","options"));
 #endif //COMPILE_INFO_TIPS
 
 	b = addBoolSelector(g,__tr2qs_ctx("Accept broken RESUME (mIRC file.ext)","options"),KviOption_boolAcceptBrokenFileNameDccResumeRequests);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>This option causes KVIrc to accept RESUME requests with invalid filenames.<br>" \
-				"Use it if KVIrc fails to accept RESUME requests from other clients (e.g. some versions of mIRC).</center>","options"));
+		"Use it if KVIrc fails to accept RESUME requests from other clients (e.g. some versions of mIRC).</center>","options"));
 #endif //COMPILE_INFO_TIPS
 
 	b = addBoolSelector(g,__tr2qs_ctx("Replace spaces with underscores in outgoing filenames","options"),KviOption_boolDCCFileTransferReplaceOutgoingSpacesWithUnderscores);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>This option causes KVIrc to replace spaces with underscores in filenames " \
-				"for all the outgoing file transfers. This will fix filename handling with some buggy clients (e.g. some versions of mIRC).","options"));
+		"for all the outgoing file transfers. This will fix filename handling with some buggy clients (e.g. some versions of mIRC).","options"));
 #endif //COMPILE_INFO_TIPS
 
 
 	g = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("Limits","options"));
 
-	KviTalHBox * hb = new KviTalHBox(g);
+	QWidget * hb = new QWidget(g);
+	QHBoxLayout * pHLayout = new QHBoxLayout(g);
+	hb->setLayout(pHLayout);
+
 	b = addBoolSelector(hb,__tr2qs_ctx("Limit upload bandwidth to","options"),KviOption_boolLimitDccSendSpeed);
+	pHLayout->addWidget(b);
+
 	KviUIntSelector * u = addUIntSelector(hb,"",KviOption_uintMaxDccSendSpeed,0,0xffffff1,1024,KVI_OPTION_BOOL(KviOption_boolLimitDccSendSpeed));
 	u->setSuffix(" " + __tr2qs_ctx("bytes/sec","options"));
+	pHLayout->addWidget(u);
 	connect(b,SIGNAL(toggled(bool)),u,SLOT(setEnabled(bool)));
 	
-	hb = new KviTalHBox(g);
+	hb = new QWidget(g);
+	QHBoxLayout * pH2Layout = new QHBoxLayout(g);
+	hb->setLayout(pH2Layout);
+
 	b = addBoolSelector(hb,__tr2qs_ctx("Limit download bandwidth to","options"),KviOption_boolLimitDccRecvSpeed);
+	pH2Layout->addWidget(b);
+
 	u = addUIntSelector(hb,"",KviOption_uintMaxDccRecvSpeed,0,0xffffff1,1024,KVI_OPTION_BOOL(KviOption_boolLimitDccRecvSpeed));
 	u->setSuffix(" " + __tr2qs_ctx("bytes/sec","options"));
+	pH2Layout->addWidget(u);
 	connect(b,SIGNAL(toggled(bool)),u,SLOT(setEnabled(bool)));
-
 
 	u = addUIntSelector(g,__tr2qs_ctx("Maximum number of DCC transfers","options"),KviOption_uintMaxDccSendTransfers,0,1000,10);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(u,__tr2qs_ctx("<center>This is the maximum number of concurrent DCC transfers. " \
-					"KVIrc will refuse the requests when this limit is reached.</center>","options"));
+		"KVIrc will refuse the requests when this limit is reached.</center>","options"));
 #endif
 
 	g = addGroupBox(0,2,0,2,1,Qt::Horizontal,__tr2qs_ctx("Tweaks","options"));
@@ -290,27 +308,31 @@ KviDccSendAdvancedOptionsWidget::KviDccSendAdvancedOptionsWidget(QWidget * paren
 				"Most clients can handle this kind of optimisation so disable it only if you have problems.</center>","options"));
 #endif //COMPILE_INFO_TIPS
 
-	hb = new KviTalHBox(g);
+	hb = new QWidget(g);
+	QHBoxLayout * pH3Layout = new QHBoxLayout(g);
+	hb->setLayout(pH3Layout);
 
 	b = addBoolSelector(hb,__tr2qs_ctx("Force idle step","options"),KviOption_boolDccSendForceIdleStep);
+	pH3Layout->addWidget(b);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
 		__tr2qs_ctx("<center>Enable this option when the dcc file transfers " \
-				"tend to block your computer by consuming too much CPU time. " \
-				"When this option is enabled the idle interval below will be " \
-				"forcibly inserted between each sent/received data packet.</center>","options"));
+		"tend to block your computer by consuming too much CPU time. " \
+		"When this option is enabled the idle interval below will be " \
+		"forcibly inserted between each sent/received data packet.</center>","options"));
 #endif // COMPILE_INFO_TIPS
 
 	u = addUIntSelector(hb,__tr2qs_ctx("","options"),KviOption_uintDccSendIdleStepInMSec,1,65536,30,KVI_OPTION_BOOL(KviOption_boolDccSendForceIdleStep));
+	pH3Layout->addWidget(u);
 	connect(b,SIGNAL(toggled(bool)),u,SLOT(setEnabled(bool)));
 	u->setSuffix(__tr2qs_ctx(" msec","options"));
 	
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(u,
 		__tr2qs_ctx("<center>This parameter controls the average delay between two packets sent or received.<br>" \
-				"A smaller interval will cause you to send data faster but will also " \
-				"add load to your CPU, disk and network interface.<br>" \
-				"Reasonable values are from 5 to 50 milliseconds.</center>","options"));
+		"A smaller interval will cause you to send data faster but will also " \
+		"add load to your CPU, disk and network interface.<br>" \
+		"Reasonable values are from 5 to 50 milliseconds.</center>","options"));
 #endif //COMPILE_INFO_TIPS
 
 	u = addUIntSelector(g,__tr2qs_ctx("Packet size:","options"),KviOption_uintDccSendPacketSize,16,65536,1024);
@@ -318,12 +340,11 @@ KviDccSendAdvancedOptionsWidget::KviDccSendAdvancedOptionsWidget(QWidget * paren
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(u,
 		__tr2qs_ctx("<center>This parameter controls the packet size used for DCC SEND.<br>" \
-				"With bigger packets you will be probably send data faster, but " \
-				"you will also saturate your bandwidth and in some cases " \
-				"cause more disk activity.<br>" \
-				"Reasonable values are from 512 to 4096 bytes.</center>","options"));
+		"With bigger packets you will be probably send data faster, but " \
+		"you will also saturate your bandwidth and in some cases " \
+		"cause more disk activity.<br>" \
+		"Reasonable values are from 512 to 4096 bytes.</center>","options"));
 #endif //COMPILE_INFO_TIPS
-
 
 	addRowSpacer(0,3,0,3);
 
@@ -389,4 +410,3 @@ KviDccVoiceOptionsWidget::KviDccVoiceOptionsWidget(QWidget *p):KviOptionsWidget(
 KviDccVoiceOptionsWidget::~KviDccVoiceOptionsWidget()
 {
 }
-

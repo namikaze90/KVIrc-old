@@ -24,17 +24,6 @@
 
 #include "optw_identity.h"
 
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include "kvi_tal_tooltip.h"
-#include <qtabwidget.h>
-#include <qcombobox.h>
-#include <qmessagebox.h>
-#include <qtimer.h>
-#include <qvalidator.h>
-
 #include "kvi_defaults.h"
 #include "kvi_settings.h"
 #include "kvi_options.h"
@@ -46,7 +35,19 @@
 #include "kvi_filedialog.h"
 #include "kvi_iconmanager.h"
 #include "kvi_http.h"
+#include "kvi_tal_tooltip.h"
 
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QPushButton>
+#include <QLayout>
+#include <QTabWidget>
+#include <QComboBox>
+#include <QMessageBox>
+#include <QTimer>
+#include <QValidator>
+#include <QWidget>
+#include <QHBoxLayout>
 
 //#warning "Info tips"
 
@@ -112,15 +113,6 @@ void KviNickAlternativesDialog::fill(QString &n1,QString &n2,QString &n3)
 	n2 = m_pNickEdit2->text();
 	n3 = m_pNickEdit3->text();
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -217,10 +209,10 @@ KviAvatarSelectionDialog::KviAvatarSelectionDialog(QWidget * par,const QString &
 
 	QString msg = "<center>";
 	msg += __tr2qs_ctx("Please select an avatar image. " \
-				"The full path to a local file or an image on the Web can be used.<br>" \
-				"If you wish to use a local image file, click the \"<b>Browse</b>\"" \
-				"button to browse local folders.<br>" \
-				"The full URL for an image (including <b>http://</b>) can be entered manually.","options");
+		"The full path to a local file or an image on the Web can be used.<br>" \
+		"If you wish to use a local image file, click the \"<b>Browse</b>\"" \
+		"button to browse local folders.<br>" \
+		"The full URL for an image (including <b>http://</b>) can be entered manually.","options");
 	msg += "</center><br>";
 
 	QLabel * l = new QLabel(msg,this);
@@ -237,15 +229,24 @@ KviAvatarSelectionDialog::KviAvatarSelectionDialog(QWidget * par,const QString &
 	QPushButton * b = new QPushButton(__tr2qs_ctx("&Browse...","options"),this);
 	connect(b,SIGNAL(clicked()),this,SLOT(chooseFileClicked()));
 	g->addWidget(b,1,2);
-	KviTalHBox * h = new KviTalHBox(this);h->setSpacing(8);g->addMultiCellWidget(h,2,2,1,2);
+
+	QWidget * h = new QWidget(this);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	h->setLayout(pLayout);
+	pLayout->setSpacing(8);
+
+	g->addMultiCellWidget(h,2,2,1,2);
+
 	b = new QPushButton(__tr2qs_ctx("&OK","options"),h);
 	b->setMinimumWidth(80);
 	b->setDefault(true);
+	pLayout->addWidget(b);
 	connect(b,SIGNAL(clicked()),this,SLOT(okClicked()));
 	//g->addWidget(b,2,1);
 
 	b = new QPushButton(__tr2qs_ctx("Cancel","options"),h);
 	b->setMinimumWidth(80);
+	pLayout->addWidget(b);
 	connect(b,SIGNAL(clicked()),this,SLOT(cancelClicked()));
 	//g->addWidget(b,2,2);
 	
@@ -286,10 +287,6 @@ void KviAvatarSelectionDialog::closeEvent(QCloseEvent * e)
 }
 
 
-
-
-
-
 KviIdentityOptionsWidget::KviIdentityOptionsWidget(QWidget * parent)
 : KviOptionsWidget(parent)
 {
@@ -298,8 +295,6 @@ KviIdentityOptionsWidget::KviIdentityOptionsWidget(QWidget * parent)
 KviIdentityOptionsWidget::~KviIdentityOptionsWidget()
 {
 }
-
-
 
 
 KviIdentityGeneralOptionsWidget::KviIdentityGeneralOptionsWidget(QWidget * parent)
@@ -314,37 +309,42 @@ KviIdentityGeneralOptionsWidget::KviIdentityGeneralOptionsWidget(QWidget * paren
 	layout()->setMargin(10);
 
 	KviTalGroupBox * gbox = addGroupBox(0,0,0,0,1,Qt::Horizontal,__tr2qs_ctx("Basic Properties","options"));
-	KviTalHBox * hb = new KviTalHBox(gbox);
-	hb->setSpacing(3);
+
+	QWidget * hb = new QWidget(gbox);
+	QHBoxLayout * pHLayout = new QHBoxLayout(gbox);
+	hb->setLayout(pHLayout);
+	pHLayout->setSpacing(3);
 
 	KviStringSelector * sel = addStringSelector(hb,__tr2qs_ctx("Nickname:","options"),KviOption_stringNickname1);
 	sel->setMinimumLabelWidth(120);
+	pHLayout->addWidget(sel);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(sel,__tr2qs_ctx("<center>Your <b>nickname</b> is your primary form of identification on IRC.<br>" \
-			"Since servers cannot accept multiple users sharing the same nickname " \
-			"(case insensitive), you can provide alternative nicknames to be used in case"\
-			"the server refuses to accept the default one.</center>","options"));
+		"Since servers cannot accept multiple users sharing the same nickname " \
+		"(case insensitive), you can provide alternative nicknames to be used in case"\
+		"the server refuses to accept the default one.</center>","options"));
 #endif
 	QValidator * v = new QRegExpValidator(QRegExp("[^-0-9 ][^ ]*"),hb);
 	sel->setValidator(v);
 	
 	QPushButton * pb = new QPushButton(__tr2qs_ctx("Alternatives...","options"),hb);
+	pHLayout->addWidget(pb);
 	connect(pb,SIGNAL(clicked()),this,SLOT(setNickAlternatives()));
 
 	sel = addStringSelector(gbox,__tr2qs_ctx("Username:","options"),KviOption_stringUsername);
 	sel->setMinimumLabelWidth(120);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(sel,__tr2qs_ctx("<center>This is the <b>username</b> that you will use to connect to the server.<br>" \
-				"In the past, it was used as a form of authentication, but it normally has no special use now.<br>" \
-				"In addition to your nickname, you are identified on IRC by your <b>username@hostname</b>.</br>" \
-				"Basically, you can enter any word you like here. :D</center>","options"));
+		"In the past, it was used as a form of authentication, but it normally has no special use now.<br>" \
+		"In addition to your nickname, you are identified on IRC by your <b>username@hostname</b>.</br>" \
+		"Basically, you can enter any word you like here. :D</center>","options"));
 #endif
 	sel = addStringSelector(gbox,__tr2qs_ctx("Real name:","options"),KviOption_stringRealname);
 	sel->setMinimumLabelWidth(120);
 
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(sel,__tr2qs_ctx("<center>This text will appear when someone does a /WHOIS on you.<br>" \
-				"It is intended to be your real name, but people tend to put random quotes and phrases here too.</center>","options"));
+		"It is intended to be your real name, but people tend to put random quotes and phrases here too.</center>","options"));
 #endif
 
 
@@ -355,13 +355,17 @@ KviIdentityGeneralOptionsWidget::KviIdentityGeneralOptionsWidget(QWidget * paren
 
 	gbox = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("Profile","options"));
 
-	hb = new KviTalHBox(gbox);
-	hb->setSpacing(4);
+	hb = new QWidget(gbox);
+	QHBoxLayout * pH2Layout = new QHBoxLayout(gbox);
+	hb->setLayout(pH2Layout);
+	pH2Layout->setSpacing(4);
 	
 	QLabel * l = new QLabel(__tr2qs_ctx("Age:","options"),hb);
 	l->setMinimumWidth(120);
+	pH2Layout->addWidget(l);
 	
 	m_pAgeCombo = new QComboBox(hb);
+	pH2Layout->addWidget(m_pAgeCombo);
 #ifdef COMPILE_INFO_TIPS
 	QString szTip1 = szCenterBegin + __tr2qs_ctx("Here you can specify your age.","options") + szTrailing;
 	KviTalToolTip::add(l,szTip1);
@@ -382,16 +386,20 @@ KviIdentityGeneralOptionsWidget::KviIdentityGeneralOptionsWidget(QWidget * paren
 	if(i > 120)i = 120;
 	m_pAgeCombo->setCurrentItem(i);
 
-	hb->setStretchFactor(m_pAgeCombo,1);
+	pH2Layout->setStretchFactor(m_pAgeCombo,1);
 
 
-	hb = new KviTalHBox(gbox);
-	hb->setSpacing(4);
+	hb = new QWidget(gbox);
+	QHBoxLayout * pH3Layout = new QHBoxLayout(gbox);
+	hb->setLayout(pH3Layout);
+	pH3Layout->setSpacing(4);
 	
 	l = new QLabel(__tr2qs_ctx("Gender:","options"),hb);
 	l->setMinimumWidth(120);
+	pH3Layout->addWidget(l);
 
 	m_pGenderCombo = new QComboBox(hb);
+	pH3Layout->addWidget(m_pGenderCombo);
 #ifdef COMPILE_INFO_TIPS
 	QString szTip2 =  szCenterBegin + __tr2qs_ctx("Here you can specify your gender.","options") + szTrailing;
 	KviTalToolTip::add(l,szTip2);
@@ -409,30 +417,30 @@ KviIdentityGeneralOptionsWidget::KviIdentityGeneralOptionsWidget(QWidget * paren
 	else
 		m_pGenderCombo->setCurrentItem(0);
 
-	hb->setStretchFactor(m_pGenderCombo,1);
+	pH3Layout->setStretchFactor(m_pGenderCombo,1);
 
 	sel = addStringSelector(gbox,__tr2qs_ctx("Location:","options"),KviOption_stringCtcpUserInfoLocation);
 	sel->setMinimumLabelWidth(120);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(sel,szCenterBegin + __tr2qs_ctx("You can describe here your approximate physical location. " \
-				"Something like \"Region, Country\" will be ok. Please note that this information will be viewable " \
-				"by anyone so putting more data (like the exact address), generally, <b>is not a good idea</b>.","options") + szTrailing);
+		"Something like \"Region, Country\" will be ok. Please note that this information will be viewable " \
+		"by anyone so putting more data (like the exact address), generally, <b>is not a good idea</b>.","options") + szTrailing);
 #endif
 
 	sel = addStringSelector(gbox,__tr2qs_ctx("Languages:","options"),KviOption_stringCtcpUserInfoLanguages);
 	sel->setMinimumLabelWidth(120);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(sel,szCenterBegin + __tr2qs_ctx("You can put here the short names of the languages you can speak. " \
-				"An example might be \"EN,IT\" that would mean that you speak both Italian and English.","options") + szTrailing);
+		"An example might be \"EN,IT\" that would mean that you speak both Italian and English.","options") + szTrailing);
 #endif
 
 	sel = addStringSelector(gbox,__tr2qs_ctx("Other:","options"),KviOption_stringCtcpUserInfoOther);
 	sel->setMinimumLabelWidth(120);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(sel,szCenterBegin + __tr2qs_ctx("You can put here some additional personal data. " \
-				"It might be a funny quote or your homepage url... " \
-				"Please note that this information will be viewable " \
-				"by anyone so <b>don't put any sensible data</b> (passwords, telephone or credit card numbers).","options") + szTrailing);
+		"It might be a funny quote or your homepage url... " \
+		"Please note that this information will be viewable " \
+		"by anyone so <b>don't put any sensible data</b> (passwords, telephone or credit card numbers).","options") + szTrailing);
 #endif
 
 	addRowSpacer(0,2,0,2);
@@ -449,7 +457,6 @@ void KviIdentityGeneralOptionsWidget::setNickAlternatives()
 	dlg->fill(m_szAltNicknames[0],m_szAltNicknames[1],m_szAltNicknames[2]);
 	delete dlg;
 }
-
 
 void KviIdentityGeneralOptionsWidget::commit()
 {
@@ -483,8 +490,6 @@ void KviIdentityGeneralOptionsWidget::commit()
 			KVI_OPTION_STRING(KviOption_stringCtcpUserInfoGender) = "";
 		break;
 	}
-
-	
 }
 
 
@@ -500,12 +505,12 @@ KviIdentityAvatarOptionsWidget::KviIdentityAvatarOptionsWidget(QWidget * parent)
 
 #ifdef COMPILE_INFO_TIPS
 	QString szTip = __tr2qs_ctx("Here you can choose your avatar image. It will be visible<br>" \
-							"by other people that request it. Choose a nice image of yourself,<br>" \
-							"possibly avoiding obscenity and offending images. It is a good idea<br>" \
-							"to choose a relatively small file (say 150 Kb max) because<br>" \
-							"most clients have a limit on the size of avatars being downloaded.<br>" \
-							"The image also should be smaller than 800x600 pixels since<br>" \
-							"it will have to be viewable in everyone's monitor.","options");
+		"by other people that request it. Choose a nice image of yourself,<br>" \
+		"possibly avoiding obscenity and offending images. It is a good idea<br>" \
+		"to choose a relatively small file (say 150 Kb max) because<br>" \
+		"most clients have a limit on the size of avatars being downloaded.<br>" \
+		"The image also should be smaller than 800x600 pixels since<br>" \
+		"it will have to be viewable in everyone's monitor.","options");
 #endif
 
 	m_pUseAvatarCheck = new KviStyledCheckBox(__tr2qs_ctx("Use avatar","options"),this);
@@ -524,18 +529,22 @@ KviIdentityAvatarOptionsWidget::KviIdentityAvatarOptionsWidget(QWidget * parent)
 	mergeTip(m_pAvatarPreview,szTip);
 #endif
 
-	KviTalHBox * hb = new KviTalHBox(this);
-	hb->setSpacing(4);
+	QWidget * hb = new QWidget(this);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	hb->setLayout(pLayout);
+	pLayout->setSpacing(4);
 	addWidgetToLayout(hb,0,2,0,2);
 
 	m_pAvatarNameEdit = new QLineEdit(hb);
 	m_pAvatarNameEdit->setReadOnly(true);
 	m_pAvatarNameEdit->setEnabled(bHaveAvatar);
 	m_pAvatarNameEdit->setText(KVI_OPTION_STRING(KviOption_stringMyAvatar));
+	pLayout->addWidget(m_pAvatarNameEdit);
 	connect(m_pUseAvatarCheck,SIGNAL(toggled(bool)),m_pAvatarNameEdit,SLOT(setEnabled(bool)));
 
 	m_pChooseAvatarButton = new QPushButton(__tr2qs_ctx("Choose...","options"),hb);
 	m_pChooseAvatarButton->setEnabled(bHaveAvatar);
+	pLayout->addWidget(m_pChooseAvatarButton);
 	connect(m_pUseAvatarCheck,SIGNAL(toggled(bool)),m_pChooseAvatarButton,SLOT(setEnabled(bool)));
 
 	connect(m_pChooseAvatarButton,SIGNAL(clicked()),this,SLOT(chooseAvatar()));
@@ -547,7 +556,6 @@ KviIdentityAvatarOptionsWidget::~KviIdentityAvatarOptionsWidget()
 {
 	delete m_pLocalAvatar;
 }
-
 
 void KviIdentityAvatarOptionsWidget::commit(void)
 {
@@ -564,9 +572,7 @@ void KviIdentityAvatarOptionsWidget::commit(void)
 		KVI_OPTION_STRING(KviOption_stringMyAvatar) = "";
 		KVI_OPTION_PIXMAP(KviOption_pixmapMyAvatar) = KviPixmap();
 	}
-
 }
-
 
 void KviIdentityAvatarOptionsWidget::chooseAvatar()
 {
@@ -597,8 +603,8 @@ void KviIdentityAvatarOptionsWidget::chooseAvatar()
 					szCurrent = "";
 					QMessageBox::warning(this,__tr2qs_ctx("Failed to Load Avatar - KVIrc","options"),
 						__tr2qs_ctx("Failed to load the avatar image.<br>" \
-							"It may be an unaccessible file or an " \
-							"unsupported image format.","options"),QMessageBox::Ok,QMessageBox::NoButton);
+						"It may be an unaccessible file or an " \
+						"unsupported image format.","options"),QMessageBox::Ok,QMessageBox::NoButton);
 				} // else loaded!
 			} else {
 				// unloadable
@@ -635,9 +641,9 @@ void KviIdentityAvatarOptionsWidget::chooseAvatar()
 		} else {
 			// unloadable
 			QMessageBox::warning(this,__tr2qs_ctx("Failed to Load Avatar - KVIrc","options"),
-					__tr2qs_ctx("Failed to load the avatar image.<br>" \
-						"It may be an unaccessible file or an " \
-						"unsupported image format.","options"),QMessageBox::Ok,QMessageBox::NoButton);
+				__tr2qs_ctx("Failed to load the avatar image.<br>" \
+				"It may be an unaccessible file or an " \
+				"unsupported image format.","options"),QMessageBox::Ok,QMessageBox::NoButton);
 			szCurrent = "";
 		}
 	}
@@ -647,21 +653,17 @@ void KviIdentityAvatarOptionsWidget::chooseAvatar()
 		if((m_pLocalAvatar->pixmap()->width() > 1024) || (m_pLocalAvatar->pixmap()->height() > 768))
 		{
 			QMessageBox::warning(this,__tr2qs_ctx("Avatar Might Be Too Big - KVIrc","options"),
-						__tr2qs_ctx("The avatar you have choosen is bigger than 1024x768 pixels.<br>" \
-							"Such a big image will not be seen on all the user monitors<br>" \
-							"and will probably be scaled by the remote clients with poor quality<br>" \
-							"algorithms to improve performance. You *should* scale it manually<br>" \
-							"to a sane size (like 800x600) or choose a different image.","options"));
+				__tr2qs_ctx("The avatar you have choosen is bigger than 1024x768 pixels.<br>" \
+				"Such a big image will not be seen on all the user monitors<br>" \
+				"and will probably be scaled by the remote clients with poor quality<br>" \
+				"algorithms to improve performance. You *should* scale it manually<br>" \
+				"to a sane size (like 800x600) or choose a different image.","options"));
 		}
 	}
 
 	m_pAvatarNameEdit->setText(szCurrent);
 	m_pAvatarPreview->setPixmap(m_pLocalAvatar);
 }
-
-
-
-
 
 
 KviIdentityAdvancedOptionsWidget::KviIdentityAdvancedOptionsWidget(QWidget * parent)
@@ -675,7 +677,6 @@ KviIdentityAdvancedOptionsWidget::KviIdentityAdvancedOptionsWidget(QWidget * par
 	m_bI = m_sModeStr.contains('i');
 	m_bW = m_sModeStr.contains('w');
 	m_bS = m_sModeStr.contains('s');
-    
 
 	createLayout(2,1);
 	layout()->setMargin(10);
@@ -693,14 +694,14 @@ KviIdentityAdvancedOptionsWidget::KviIdentityAdvancedOptionsWidget(QWidget * par
 
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(sel,__tr2qs_ctx("<center>This is the default part message that will be used when you<br>" \
-				"leave a channel by closing a channel window.</center>","options"));
+		"leave a channel by closing a channel window.</center>","options"));
 #endif
 
 	sel = addStringSelector(gbox, __tr2qs_ctx("Quit message:","options"),KviOption_stringQuitMessage);
 	sel->setMinimumLabelWidth(120);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(sel,__tr2qs_ctx("<center>This is the default quit message that will be used when you<br>" \
-				"quit your IRC session by closing the console window or disconnecting by pressing the disconnect button.</center>","options"));
+		"quit your IRC session by closing the console window or disconnecting by pressing the disconnect button.</center>","options"));
 #endif
 
 	addRowSpacer(0,2,0,2);
@@ -720,9 +721,3 @@ void KviIdentityAdvancedOptionsWidget::commit()
 
 	KVI_OPTION_STRING(KviOption_stringDefaultUserMode) = m_sModeStr.ptr();
 }
-
-
-
-
-
-

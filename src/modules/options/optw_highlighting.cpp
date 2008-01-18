@@ -24,12 +24,11 @@
 
 #include "optw_highlighting.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
 
-#include <qlabel.h>
+#include <QLabel>
+#include <QLayout>
 
 KviAlertHighlightingOptionsWidget::KviAlertHighlightingOptionsWidget(QWidget * parent)
 : KviOptionsWidget(parent,"highlighting_options_widget")
@@ -39,7 +38,6 @@ KviAlertHighlightingOptionsWidget::KviAlertHighlightingOptionsWidget(QWidget * p
 KviAlertHighlightingOptionsWidget::~KviAlertHighlightingOptionsWidget()
 {
 }
-
 
 
 KviHighlightingOptionsWidget::KviHighlightingOptionsWidget(QWidget * parent)
@@ -75,10 +73,6 @@ KviHighlightingOptionsWidget::KviHighlightingOptionsWidget(QWidget * parent)
 KviHighlightingOptionsWidget::~KviHighlightingOptionsWidget()
 {
 }
-
-
-
-
 
 
 KviAlertOptionsWidget::KviAlertOptionsWidget(QWidget * parent)

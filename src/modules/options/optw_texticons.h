@@ -25,23 +25,18 @@
 
 #include "kvi_optionswidget.h"
 #include "kvi_texticonmanager.h"
+#include "kvi_tal_popupmenu.h"
+
+#include <QToolButton>
+#include <QTableWidget>
+
+class KviTextIconTableItem;
+
 #define KVI_OPTIONS_WIDGET_ICON_KviTextIconsOptionsWidget KVI_SMALLICON_BIGGRIN
 #define KVI_OPTIONS_WIDGET_NAME_KviTextIconsOptionsWidget __tr2qs_no_lookup("Text icons")
 #define KVI_OPTIONS_WIDGET_PARENT_KviTextIconsOptionsWidget KviToolsOptionsWidget
 #define KVI_OPTIONS_WIDGET_KEYWORDS_KviTextIconsOptionsWidget __tr2qs_no_lookup("smileys,emoticons")
 
-
-
-#include <qtoolbutton.h>
-#include "kvi_tal_popupmenu.h"
-#include "kvi_tal_hbox.h" 
-
-// TODO: Qt4
-#include <q3table.h>
-#define KviTalTable Q3Table
-#define KviTalTableItem Q3TableItem
-
-class KviTextIconTableItem;
 
 class KviTextIconEditor : public KviTalHBox
 {
@@ -50,11 +45,11 @@ public:
 	KviTextIconEditor(QWidget * par,KviTextIcon * icon,KviTextIconTableItem* item);
 	~KviTextIconEditor();
 protected:
-	KviTextIconTableItem *m_pTableItem;
-	KviTextIcon     *m_pIcon;
-	KviTalPopupMenu      *m_pPopup;
-	QToolButton     *m_pIconButton;
-	QToolButton     *m_pBrowseButton;
+	KviTextIconTableItem  *m_pTableItem;
+	KviTextIcon           *m_pIcon;
+	KviTalPopupMenu       *m_pPopup;
+	QToolButton           *m_pIconButton;
+	QToolButton           *m_pBrowseButton;
 public:
 	void updateIcon();
 	KviTextIcon*	icon() { return m_pIcon; };
@@ -64,11 +59,11 @@ protected slots:
 	void chooseFromFile();
 };
 
-class KviTextIconTableItem : public KviTalTableItem
+class KviTextIconTableItem : public QTableWidgetItem
 {
 	friend class KviTextIconsOptionsWidget;
 public:
-	KviTextIconTableItem(KviTalTable * t,KviTextIcon * icon);
+	KviTextIconTableItem(QTableWidget * t,KviTextIcon * icon);
 	~KviTextIconTableItem();
 protected:
 	KviTextIcon * m_pIcon;
@@ -86,11 +81,11 @@ public:
 	KviTextIconsOptionsWidget(QWidget * parent);
 	~KviTextIconsOptionsWidget();
 protected:
-	KviTalTable     * m_pTable;
-	QPushButton * m_pAdd;
-	QPushButton * m_pDel;
+	QTableWidget  * m_pTable;
+	QPushButton   * m_pAdd;
+	QPushButton   * m_pDel;
 public:
-    virtual void commit();
+	virtual void commit();
 protected slots:
 	void selectionChanged();
 	void addClicked();

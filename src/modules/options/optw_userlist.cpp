@@ -21,11 +21,13 @@
 //
 #include "optw_userlist.h"
 
-#include <qlayout.h>
-
 #include "kvi_options.h"
 #include "kvi_locale.h"
 #include "kvi_userlistview.h"
+
+#include <QLayout>
+#include <QWidget>
+#include <QHBoxLayout>
 
 //#warning "Info tips"
 
@@ -61,10 +63,15 @@ KviUserListLookForegroundOptionsWidget::KviUserListLookForegroundOptionsWidget(Q
 	addColorSelector(g,__tr2qs_ctx("User-op:","options"),KviOption_colorUserListViewUserOpForeground);
 	addColorSelector(g,__tr2qs_ctx("Away:","options"),KviOption_colorUserListViewAwayForeground);
 	
-	KviTalHBox * hb = new KviTalHBox(g);
-	hb->setSpacing(4);
+	QWidget * hb = new QWidget(g);
+	QHBoxLayout * pLayout = new QHBoxLayout(g);
+	hb->setLayout(pLayout);
+	pLayout->setSpacing(4);
+
 	KviBoolSelector * b = addBoolSelector(hb,__tr2qs_ctx("Use different color for own nick:","options"),KviOption_boolUseDifferentColorForOwnNick);
 	KviColorSelector * s = addColorSelector(hb,"",KviOption_colorUserListViewOwnForeground,KVI_OPTION_BOOL(KviOption_boolUseDifferentColorForOwnNick));
+	pLayout->addWidget(b);
+	pLayout->addWidget(s);
 	connect(b,SIGNAL(toggled(bool)),s,SLOT(setEnabled(bool)));
 
 	addRowSpacer(0,3,0,3);
@@ -83,13 +90,17 @@ KviUserListGridOptionsWidget::KviUserListGridOptionsWidget(QWidget * parent)
 	KviColorSelector* s = addColorSelector(0,1,0,1,__tr2qs_ctx("Grid color:","options"),KviOption_colorUserListViewGrid,KVI_OPTION_BOOL(KviOption_boolUserListViewDrawGrid));
 	connect(b,SIGNAL(toggled(bool)),s,SLOT(setEnabled(bool)));
 
-	KviTalHBox* hb = new KviTalHBox(this);
+	QWidget * hb = new QWidget(this);
+	QHBoxLayout * pHLayout = new QHBoxLayout(this);
+	hb->setLayout(pHLayout);
 	addWidgetToLayout(hb,0,2,0,2);
-	hb->setSpacing(4);
+	pHLayout->setSpacing(4);
 
 	QLabel * l = new QLabel(__tr2qs_ctx("Grid type:","options"),hb);
 	l->setEnabled(KVI_OPTION_BOOL(KviOption_boolUserListViewDrawGrid));
+	pHLayout->addWidget(l);
 	connect(b,SIGNAL(toggled(bool)),l,SLOT(setEnabled(bool)));
+
 	m_pGridTypeCombo = new QComboBox(false,hb);
 	m_pGridTypeCombo->insertItem(__tr2qs_ctx("3D Grid","options"));
 	m_pGridTypeCombo->insertItem(__tr2qs_ctx("3D Buttons","options"));
@@ -97,6 +108,7 @@ KviUserListGridOptionsWidget::KviUserListGridOptionsWidget(QWidget * parent)
 	m_pGridTypeCombo->insertItem(__tr2qs_ctx("Dotted Grid","options"));
 	m_pGridTypeCombo->setCurrentItem(KVI_OPTION_UINT(KviOption_uintUserListViewGridType));
 	m_pGridTypeCombo->setEnabled(KVI_OPTION_BOOL(KviOption_boolUserListViewDrawGrid));
+	pHLayout->addWidget(m_pGridTypeCombo);
 	connect(b,SIGNAL(toggled(bool)),m_pGridTypeCombo,SLOT(setEnabled(bool)));
 	addRowSpacer(0,3,0,3);
 }
@@ -186,7 +198,6 @@ KviUserListLookBackgroundOptionsWidget::~KviUserListLookBackgroundOptionsWidget(
 {
 }
 
-
 void KviUserListLookBackgroundOptionsWidget::commit()
 {
 	KviOptionsWidget::commit();
@@ -241,4 +252,3 @@ KviUserListFeaturesOptionsWidget::KviUserListFeaturesOptionsWidget(QWidget * par
 KviUserListFeaturesOptionsWidget::~KviUserListFeaturesOptionsWidget()
 {
 }
-

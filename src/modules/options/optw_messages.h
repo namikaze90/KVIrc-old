@@ -24,14 +24,13 @@
 //
 
 #include "kvi_optionswidget.h"
-
 #include "kvi_msgtype.h"
-
 #include "kvi_tal_listview.h"
 #include "kvi_tal_listbox.h"
-#include <qcheckbox.h>
-#include <qtoolbutton.h>
 #include "kvi_tal_popupmenu.h"
+
+#include <QCheckBox>
+#include <QToolButton>
 
 #define KVI_OPTIONS_WIDGET_ICON_KviMessageOptionsWidget KVI_SMALLICON_MESSAGES
 #define KVI_OPTIONS_WIDGET_NAME_KviMessageOptionsWidget __tr2qs_no_lookup("Text")
@@ -133,8 +132,6 @@ public:
 };
 
 
-
-
 class KviMessageColorsOptionsWidget : public KviOptionsWidget
 {
 	Q_OBJECT
@@ -143,15 +140,15 @@ public:
 	~KviMessageColorsOptionsWidget();
 public:
 	KviMessageListView         * m_pListView;
-	KviTalListBox                   * m_pForeListBox;
-	KviTalListBox                   * m_pBackListBox;
-	KviTalListBox                   * m_pLevelListBox;
+	KviTalListBox              * m_pForeListBox;
+	KviTalListBox              * m_pBackListBox;
+	KviTalListBox              * m_pLevelListBox;
 	KviMessageColorListBoxItem * m_pForeItems[16];
 	KviMessageColorListBoxItem * m_pBackItems[17];
 	KviMessageListViewItem     * m_pLastItem;
 	QCheckBox                  * m_pEnableLogging;
 	QToolButton                * m_pIconButton;
-	KviTalPopupMenu                 * m_pIconPopup;
+	KviTalPopupMenu            * m_pIconPopup;
 public:
 	void saveLastItem();
 protected slots:

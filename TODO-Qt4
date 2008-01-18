@@ -24,6 +24,7 @@ sharedfile
 snd
 socketspy
 spaste
+str
 system
 term
 texticons
@@ -46,6 +47,7 @@ http
 list
 logview
 objects
+options
 popupeditor
 raweditor
 setup
@@ -58,9 +60,7 @@ trayicon
 help
 iograph
 notifier
-options
 reguser
-str
 torrent
 url
 window
