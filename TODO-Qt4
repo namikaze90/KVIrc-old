@@ -31,6 +31,8 @@ texticons
 tmphighlight
 toolbar
 toolbareditor
+torrent
+window
 
 [first port] No Qt3 code but perhaps through tal files
 about
@@ -61,6 +63,4 @@ help
 iograph
 notifier
 reguser
-torrent
 url
-window

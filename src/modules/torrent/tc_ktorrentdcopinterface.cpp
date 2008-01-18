@@ -27,16 +27,14 @@
 
 #ifdef COMPILE_KDE_SUPPORT
 
-#include "kvi_app.h"
+#include "tc_ktorrentdcopinterface.h"
 
+#include "kvi_app.h"
+#include "kvi_locale.h"
 
 #include "dcopclient.h" // <-- this include should be hidden in kvilib
 
-#include "tc_ktorrentdcopinterface.h"
-
-
-#include "kvi_locale.h"
-#include <qtimer.h>
+#include <QTimer>
 
 TORR_IMPLEMENT_DESCRIPTOR(
 	KviKTorrentDCOPInterface,
@@ -397,7 +395,7 @@ float KviKTorrentDCOPInterface::trafficDown()
 bool	KviKTorrentDCOPInterface::makeTorrentInfo(TorrentInfo &ti, const KviQCStringList &ret)
 {
 	if (ret.size() != 10)
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 
 	ti.name = ret[0];
 	if (ret[1] == "Seeding")
@@ -415,44 +413,44 @@ bool	KviKTorrentDCOPInterface::makeTorrentInfo(TorrentInfo &ti, const KviQCStrin
 	QStringList tmp;
 	tmp = QStringList::split(" ", ret[2]);
 	if (tmp.size()!=2 || !makeSize(ti.trafficDown, tmp[0], tmp[1]))
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 
 	tmp = QStringList::split(" ", ret[3]);
 	if (tmp.size()!=2 || !makeSize(ti.size, tmp[0], tmp[1]))
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 
 	tmp = QStringList::split(" ", ret[4]);
 	if (tmp.size()!=2 || !makeSize(ti.trafficUp, tmp[0], tmp[1]))
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 
 
 	bool ok;
 	tmp = QStringList::split(" ", ret[5]);
 	if (tmp.size()!=2)
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 	ti.speedDown = tmp[0].toFloat(&ok);
 	if (!ok)
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 
 	tmp = QStringList::split(" ", ret[6]);
 	if (tmp.size()!=2)
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 	ti.speedUp = tmp[0].toFloat(&ok);
 	if (!ok)
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 	
 
 	// torrent name, status, downloaded, size, uploaded, down spd, up spd, none, peers, % complete
 	ti.peers = ret[8].toInt(&ok);
 	if (!ok)
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 
 	tmp = QStringList::split(" ", ret[9]);
 	if (tmp.size()!=2)
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 	ti.percent = tmp[0].toFloat(&ok);
 	if (!ok)
-  		ERROR_RET_BOOL
+		ERROR_RET_BOOL
 
 	return true;
 }
@@ -496,4 +494,3 @@ bool KviKTorrentDCOPInterface::setMaxDownloadSpeed(int kbytes_per_sec)
 
 
 #endif // COMPILE_KDE_SUPPORT
-

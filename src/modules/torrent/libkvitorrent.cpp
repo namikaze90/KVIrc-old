@@ -22,14 +22,13 @@
 //
 //=============================================================================
 
-#include "kvi_module.h"
-#include "kvi_options.h"
-#include "kvi_frame.h"
-
 #include "tc_interface.h"
 #include "tc_ktorrentdcopinterface.h"
 #include "tc_statusbarapplet.h"
 
+#include "kvi_module.h"
+#include "kvi_options.h"
+#include "kvi_frame.h"
 #include "kvi_locale.h"
 #include "kvi_out.h"
 

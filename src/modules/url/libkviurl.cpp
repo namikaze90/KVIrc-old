@@ -17,15 +17,14 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#include "libkviurl.h"
 
 #include "kvi_styled_controls.h"
 #include "kvi_module.h"
-#include "libkviurl.h"
 #include "kvi_app.h"
 #include "kvi_frame.h"
 #include "kvi_kvs_eventmanager.h"
 #include "kvi_tal_popupmenu.h"
-
 #include "kvi_menubar.h"
 #include "kvi_internalcmd.h"
 #include "kvi_iconmanager.h"
@@ -34,10 +33,11 @@
 #include "kvi_taskbar.h"
 #include "icons.h"
 
-#include <qfiledialog.h>
-#include <qmessagebox.h>
-#include <qcursor.h>
-#include <qdatetime.h>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QCursor>
+#include <QDateTime>
+#include <QTextStream>
 
 
 static QPixmap * g_pUrlIconPixmap = 0;
@@ -520,7 +520,7 @@ void loadUrlList()
 	file.setName(QString::fromUtf8(urllist.ptr()));
 	if (!file.open(IO_ReadOnly))return;
 
-	Q3TextStream stream(&file);
+	QTextStream stream(&file);
 
 	g_pList->clear();
 
@@ -580,7 +580,7 @@ void loadBanList()
 	file.setName(QString::fromUtf8(banlist.ptr()));
 	if (!file.open(IO_ReadOnly))return;
 
-	Q3TextStream stream(&file);
+	QTextStream stream(&file);
 
 	g_pBanList->clear();
 

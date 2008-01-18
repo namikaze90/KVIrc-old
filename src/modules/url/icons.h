@@ -1,3 +1,24 @@
+#ifndef _H_ICONS
+#define _H_ICONS
+//
+//   This file is part of the KVIrc irc client distribution
+//   Copyright (C) 1999-2000 Andrea Parrella (anandrea@iname.com)
+//
+//   This program is FREE software. You can redistribute it and/or
+//   modify it under the terms of the GNU General Public License
+//   as published by the Free Software Foundation; either version 2
+//   of the License, or (at your opinion) any later version.
+//
+//   This program is distributed in the HOPE that it will be USEFUL,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//   See the GNU General Public License for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   along with this program. If not, write to the Free Software Foundation,
+//   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+
 const char * url_icon_xpm[] = {
 "16 16 104 2",
 "  	c None",
@@ -552,3 +573,5 @@ const char * urlconf_toolbar_xpm[] = {
 ". . . b+a.}+c+d+2+}+e+^+^+f+g+h+i+j+k+l+R m++ + 8 7 ( n+. . . . ",
 ". . . . T.o+. . T.2+q.E.p+r.q+r+s+t+u+v+w+R x++ # 8 7 8 y+. . . ",
 ". . . . . . . . . z+A+p.1+}+/ . B+C+D+C+D+E+v+F++ 7 G+7 A . . . "};
+
+#endif

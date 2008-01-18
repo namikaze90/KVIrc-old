@@ -22,8 +22,9 @@
 //
 //=================================================================================
 
-#include "kvi_module.h"
+#include "userwindow.h"
 
+#include "kvi_module.h"
 #include "kvi_console.h"
 #include "kvi_options.h"
 #include "kvi_ircsocket.h"
@@ -37,12 +38,9 @@
 #include "kvi_modulemanager.h"
 #include "kvi_memmove.h"
 #include "kvi_malloc.h"
-
 #include "kvi_channel.h"
-#include "userwindow.h"
 
-
-#include <qtimer.h>
+#include <QTimer>
 
 
 #ifdef COMPILE_CRYPT_SUPPORT
