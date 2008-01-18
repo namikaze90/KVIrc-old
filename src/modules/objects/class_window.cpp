@@ -20,17 +20,12 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
 #include "class_window.h"
 
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_frame.h"
-
-
 
 KviKvsScriptWindowWindow::KviKvsScriptWindowWindow(KviFrame * pParent,const QString &szName)
 : KviWindow(KVI_WINDOW_TYPE_SCRIPTOBJECT,pParent,szName)
@@ -119,6 +114,7 @@ bool KviKvsObject_window::init(KviKvsRunTimeContext * pContext,KviKvsVariantList
 
 	return true;
 }
+
 bool KviKvsObject_window::functionsetCaption(KviKvsObjectFunctionCall *c)
 {
 	QString szCaption;
@@ -129,6 +125,7 @@ bool KviKvsObject_window::functionsetCaption(KviKvsObjectFunctionCall *c)
 		((KviKvsScriptWindowWindow *)widget())->setCaptionString(szCaption);
 	return true;
 }
+
 bool KviKvsObject_window::functionsetCentralWidget(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;

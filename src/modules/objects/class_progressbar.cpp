@@ -22,16 +22,13 @@
 //
 
 #include "class_progressbar.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 
-// TODO: Qt4
-#include <q3progressbar.h>
-#define KVI_PROGRESS_BAR Q3ProgressBar
-
+#include <QProgressBar>
 
 /*
 	@doc:	progressbar
@@ -49,37 +46,51 @@
 	@description:
 		This widget can be used to display a horizontal progress bar.
 	@functions:
-		!fn: $setProgress(<steps_value:uinteger>)
-		Set the amount of steps completed.
-		See also [classfnc]$settotalSteps[/classfnc]()
-		!fn: $settotalSteps(<total_steps:uinteger>)
+		!fn: $setValue(<value:uinteger>)
+		Set the current value.
+		See also [classfnc]$setRange[/classfnc]()
+		!fn: $setMinimum(<min_steps:uinteger>)
 		The progress bar uses the concept of steps; you give it the total number of steps
-		and the number of steps completed so far and it will display the percentage of steps that have been completed. 
-		See also [classfnc]$setProgress[/classfnc]() 
+		and the number of steps completed so far and it will display the percentage of steps that have been completed.
+		See also [classfnc]$setMaximum[/classfnc](), [classfnc]$setRange[/classfnc]()
+		!fn: $setMaximum(<max_steps:uinteger>)
+		See also [classfnc]$setMinimum[/classfnc](), [classfnc]$setRange[/classfnc]()
 		!fn: $reset()
-		Reset the progress bar. 
-		!fn: $setCenterIndicator(<bEnabled:boolean>)
-		Sets whether the indicator string should be centered to on.
-		See also [classfnc]$isCenterIndicator[/classfnc]() 
-		!fn: <boolean> $isCenterIndicator()
-		This property holds whether the indicator string should be centered.
-		See also [classfnc]$setCenterIndicator[/classfnc]() 
-		!fn: $setPercentageVisible(<bVisible,boolean>)
-		Sets whether the current progress value is displayed.
-		See also [classfnc]$isPercentageVisible[/classfnc]() 
-		!fn: <boolean> $ispercentageVisible()
-		This property holds whether the current progress value is displayed.
-		See also [classfnc]$setPercentageVisible[/classfnc]() 
+		Reset the progress bar.
+		!fn: $setTextVisible(<bVisible,boolean>)
+		Sets whether the current completed percentage is displayed.
+		See also [classfnc]$isTextVisible[/classfnc]()
+		!fn: <boolean> $isTextVisible()
+		This property holds whether the current completed percentage is displayed.
+		See also [classfnc]$setTextVisible[/classfnc]()
+		!fn: $setTextDirection(<text:string>)
+		Sets the reading direction of the text for vertical progress bar.
+		Possible values are TopToBottom or BottomToTop.
+		See also [classfnc]$isTextVisible[/classfnc], [classfnc]$orientation[/classfnc]
+		!fn: <string> $text()
+		This holds the descriptive text shown with the progress bar.
+		See also [classfnc]$setTextVisibile[/classfnc](), [classfnc]$setOrientation[/classfnc]()
+		!fn: $setOrientation(<text:string>)
+		Sets the orientation of the progress bar.
+		Possible values are Horizontal or Vertical
+		See also [classfnc]$orientation()[/classfnc]
+		!fn: <string> $orientation()
+		This property holds the orientation of the progress bar.
+		See also [classfnc]$setOrientation[/classfnc](), [classfnc]$setTextDirection[/classfnc]
 */
 
 KVSO_BEGIN_REGISTERCLASS(KviKvsObject_progressbar,"progressbar","widget")
-	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setProgress", functionSetProgress)
-	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setTotalSteps", functionSetTotalSteps)
-	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"reset", functionReset)
-	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setCenterIndicator", functionSetCenterIndicator)
-	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setPercentageVisible", functionSetPercentageVisible)
-	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"isCenterIndicator", functionCenterIndicator)
-	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"isPercentageVisible", functionPercentageVisible)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setValue", functionSetValue)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setMinimum", functionSetMinimum)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setMaximum", functionSetMaximum)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setRange", functionSetRange)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"reset",functionReset)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setTextVisible", functionSetTextVisible)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"isTextVisible", functionTextVisible)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setTextDirection", functionSetTextDirection)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"text",functionText)
+	KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"setOrientation", functionSetOrientation)
+	//KVSO_REGISTER_HANDLER(KviKvsObject_progressbar,"orientation", functionOrientation)
 KVSO_END_REGISTERCLASS(KviKvsObject_progressbar)
 
 KVSO_BEGIN_CONSTRUCTOR(KviKvsObject_progressbar,KviKvsObject_widget)
@@ -93,65 +104,123 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_progressbar)
 
 bool KviKvsObject_progressbar::init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams)
 {	
-	Q3ProgressBar *pbar=new Q3ProgressBar(parentScriptWidget());
+	QProgressBar *pbar=new QProgressBar(parentScriptWidget());
 	pbar->setObjectName(name());
 	setObject(pbar,true);
 
 	return true;
 }
 
-bool KviKvsObject_progressbar::functionSetProgress(KviKvsObjectFunctionCall *c)
+bool KviKvsObject_progressbar::functionSetValue(KviKvsObjectFunctionCall *c)
 {
-	kvs_uint_t iProgress;
+	kvs_uint_t iValue;
 	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("step_value",KVS_PT_UNSIGNEDINTEGER,0,iProgress)
+		KVSO_PARAMETER("value",KVS_PT_UNSIGNEDINTEGER,0,iValue)
 	KVSO_PARAMETERS_END(c)
-	if (widget()) ((KVI_PROGRESS_BAR *)widget())->setProgress(iProgress);
-    return true;
+	if (widget()) ((QProgressBar *)widget())->setValue(iValue);
+	return true;
 }
-bool KviKvsObject_progressbar::functionSetTotalSteps(KviKvsObjectFunctionCall *c)
+
+bool KviKvsObject_progressbar::functionSetMinimum(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t iSteps;
 	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("total_steps",KVS_PT_UNSIGNEDINTEGER,0,iSteps)
+		KVSO_PARAMETER("min_steps",KVS_PT_UNSIGNEDINTEGER,0,iSteps)
 	KVSO_PARAMETERS_END(c)
-	if (widget()) ((KVI_PROGRESS_BAR *)widget())->setTotalSteps(iSteps);
-    return true;
+	if(widget()) ((QProgressBar *)widget())->setMinimum(iSteps);
+	return true;
+}
+
+bool KviKvsObject_progressbar::functionSetMaximum(KviKvsObjectFunctionCall *c)
+{
+	kvs_uint_t iSteps;
+	KVSO_PARAMETERS_BEGIN(c)
+		KVSO_PARAMETER("max_steps",KVS_PT_UNSIGNEDINTEGER,0,iSteps)
+	KVSO_PARAMETERS_END(c)
+	if(widget()) ((QProgressBar *)widget())->setMaximum(iSteps);
+	return true;
+}
+
+bool KviKvsObject_progressbar::functionSetRange(KviKvsObjectFunctionCall *c)
+{
+	kvs_uint_t minSteps;
+	kvs_uint_t maxSteps;
+	KVSO_PARAMETERS_BEGIN(c)
+		KVSO_PARAMETER("min_steps",KVS_PT_UNSIGNEDINTEGER,0,minSteps)
+		KVSO_PARAMETER("max_steps",KVS_PT_UNSIGNEDINTEGER,0,maxSteps)
+	KVSO_PARAMETERS_END(c)
+	if(widget()) ((QProgressBar *)widget())->setRange(minSteps,maxSteps);
+	return true;
 }
 
 bool KviKvsObject_progressbar::functionReset(KviKvsObjectFunctionCall *c)
 {
-	if (widget()) ((KVI_PROGRESS_BAR *)widget())->reset();
+	if (widget()) ((QProgressBar *)widget())->reset();
 	return true;
 }
 
-bool KviKvsObject_progressbar::functionSetCenterIndicator(KviKvsObjectFunctionCall *c)
-{
-	bool bFlag;
-	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bFlag)
-	KVSO_PARAMETERS_END(c)
-	if(widget()) ((KVI_PROGRESS_BAR *)widget())->setCenterIndicator(bFlag);
-	return true;
-}
-bool KviKvsObject_progressbar::functionCenterIndicator(KviKvsObjectFunctionCall *c)
-{
-	if (widget()) c->returnValue()->setBoolean(((KVI_PROGRESS_BAR *)widget())->centerIndicator());
-	return true;
-}
-
-bool KviKvsObject_progressbar::functionSetPercentageVisible(KviKvsObjectFunctionCall *c)
+bool KviKvsObject_progressbar::functionSetTextVisible(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
 	KVSO_PARAMETERS_END(c)
-	if(widget())
-		((KVI_PROGRESS_BAR *)widget())->setPercentageVisible(bEnabled);
+	if(widget()) ((QProgressBar *)widget())->setTextVisible(bEnabled);
 	return true;
 }
-bool KviKvsObject_progressbar::functionPercentageVisible(KviKvsObjectFunctionCall *c)
+
+bool KviKvsObject_progressbar::functionTextVisible(KviKvsObjectFunctionCall *c)
 {
-	if (widget()) c->returnValue()->setBoolean(((KVI_PROGRESS_BAR *)widget())->percentageVisible());
+	if (widget()) c->returnValue()->setBoolean(((QProgressBar *)widget())->isTextVisible());
 	return true;
 }
+
+bool KviKvsObject_progressbar::functionSetTextDirection(KviKvsObjectFunctionCall *c)
+{
+	QProgressBar::Direction szDirection;
+	QString szTextDir;
+	
+	KVSO_PARAMETERS_BEGIN(c)
+		KVSO_PARAMETER("szTextDir",KVS_PT_STRING,0,szTextDir)
+	KVSO_PARAMETERS_END(c)
+
+	if(szDirection=="TopToBottom")
+		szDirection = QProgressBar::TopToBottom;
+	else if(szDirection=="BottomToTop")
+		szDirection = QProgressBar::BottomToTop;
+	else c->warning(__tr2qs("Unknown text direction '%Q'"),&szTextDir);
+
+	if(widget()) ((QProgressBar *)widget())->setTextDirection(szDirection);
+	return true;
+}
+
+bool KviKvsObject_progressbar::functionText(KviKvsObjectFunctionCall *c)
+{
+	if(widget()) c->returnValue()->setString(((QProgressBar *)widget())->text());
+	return true;
+}
+
+bool KviKvsObject_progressbar::functionSetOrientation(KviKvsObjectFunctionCall *c)
+{
+	Qt::Orientation szOrientation;
+	QString szTextOrientation;
+
+	KVSO_PARAMETERS_BEGIN(c)
+		KVSO_PARAMETER("szTextOrientation",KVS_PT_STRING,0,szTextOrientation)
+	KVSO_PARAMETERS_END(c)
+
+	if(szOrientation=="Horizontal") szOrientation = Qt::Horizontal;
+	else if(szOrientation=="Vertical") szOrientation = Qt::Vertical;
+	else c->warning(__tr2qs("Unknown text orientation '%Q'"),&szTextOrientation);
+
+	if(widget()) ((QProgressBar *)widget())->setOrientation(szOrientation);
+	return true;
+}
+
+/*
+bool KviKvsObject_progressbar::functionOrientation(KviKvsObjectFunctionCall *c)
+{
+	if(widget()) c->returnValue()->setString(((QProgressBar *)widget())->orientation());
+	return true;
+}
+*/

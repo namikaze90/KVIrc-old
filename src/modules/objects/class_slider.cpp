@@ -21,10 +21,9 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 #include "class_slider.h"
+
 #include "kvi_error.h"
-
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 
@@ -146,7 +145,6 @@ bool KviKvsObject_slider::functionsetTracking(KviKvsObjectFunctionCall *c)
 	return true;
 }
 
-
 bool KviKvsObject_slider::functionsetValue(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iValue;
@@ -156,6 +154,7 @@ bool KviKvsObject_slider::functionsetValue(KviKvsObjectFunctionCall *c)
     if (widget()) ((QSlider *)widget())->setValue(iValue);
 	return true;
 }
+
 bool KviKvsObject_slider::functionsetMinValue(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iMinvalue;
@@ -165,6 +164,7 @@ bool KviKvsObject_slider::functionsetMinValue(KviKvsObjectFunctionCall *c)
     if (widget()) ((QSlider *)widget())->setMinValue(iMinvalue);
 	return true;
 }
+
 bool KviKvsObject_slider::functionsetMaxValue(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iMaxvalue;
@@ -184,6 +184,7 @@ bool KviKvsObject_slider::functionsetLineStep(KviKvsObjectFunctionCall *c)
     if (widget()) ((QSlider *)widget())->setLineStep(iLinestep);
 	return true;
 }
+
 bool KviKvsObject_slider::functionsetPageStep(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iPagestep;
@@ -215,11 +216,13 @@ bool KviKvsObject_slider::functionminValue(KviKvsObjectFunctionCall *c)
 	if (widget()) c->returnValue()->setInteger(((QSlider *)widget())->minValue());
 	return true;
 }
+
 bool KviKvsObject_slider::functionmaxValue(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setInteger(((QSlider *)widget())->maxValue());
 	return true;
 }
+
 bool KviKvsObject_slider::functionlineStep(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setInteger(((QSlider *)widget())->lineStep());
@@ -231,7 +234,6 @@ bool KviKvsObject_slider::functionpageStep(KviKvsObjectFunctionCall *c)
 	if (widget()) c->returnValue()->setInteger(((QSlider *)widget())->pageStep());
 	return true;
 }
-
 
 bool KviKvsObject_slider::functionsetTickmarks(KviKvsObjectFunctionCall *c)
 {
@@ -256,6 +258,7 @@ bool KviKvsObject_slider::functionsetTickmarks(KviKvsObjectFunctionCall *c)
 	else c->warning( __tr2qs("Unknown tickmark '%Q'"),&szTick);
 	return true;
 }
+
 bool KviKvsObject_slider::functionsetOrientation(KviKvsObjectFunctionCall *c)
 {
 
@@ -271,6 +274,7 @@ bool KviKvsObject_slider::functionsetOrientation(KviKvsObjectFunctionCall *c)
 	else c->warning( __tr2qs("Unknown orientation '%Q'"),&szOrientation);
 	return true;
 }
+
 bool KviKvsObject_slider::functionvalueChangedEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("valueChanged",c,c->params());
@@ -282,4 +286,3 @@ void KviKvsObject_slider::valueChanged(int value)
 	KviKvsVariantList params(new KviKvsVariant((kvs_int_t)value));
 	callFunction(this,"valueChangedEvent",&params);
 }
-

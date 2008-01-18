@@ -23,9 +23,9 @@
 //
 
 #include "class_widget.h"
-#include "kvi_window.h"
-
 #include "object_macros.h"
+
+#include "kvi_window.h"
 
 class KviKvsObject_window : public KviKvsObject_widget
 {
@@ -37,7 +37,7 @@ public:
 protected:
 	virtual bool init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams);
 
-    bool functionsetCaption(KviKvsObjectFunctionCall *c);
+	bool functionsetCaption(KviKvsObjectFunctionCall *c);
 	bool functionsetCentralWidget(KviKvsObjectFunctionCall *c);
 
 };

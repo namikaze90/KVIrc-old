@@ -21,9 +21,9 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 #include "class_tabwidget.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 
@@ -186,6 +186,7 @@ bool KviKvsObject_tabwidget::init(KviKvsRunTimeContext * pContext,KviKvsVariantL
 	connect(widget(),SIGNAL(currentChanged(int)),this,SLOT(slotcurrentChanged(int)));
 	return true;
 }
+
 bool KviKvsObject_tabwidget::functionaddTab(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -266,8 +267,9 @@ bool KviKvsObject_tabwidget::functionsetCurrentPage(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("index",KVS_PT_UNSIGNEDINTEGER,0,uIndex)
 	KVSO_PARAMETERS_END(c)
 	if (widget()) ((QTabWidget *)widget())->setCurrentPage(uIndex);
-    return true;
+	return true;
 }
+
 bool KviKvsObject_tabwidget::functionsetTabToolTip(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -303,6 +305,7 @@ bool KviKvsObject_tabwidget::functionsetTabToolTip(KviKvsObjectFunctionCall *c)
 	((QTabWidget *)widget())->setTabToolTip(((QWidget *)(ob->object())),szTooltip);
 	return true;
 }
+
 bool KviKvsObject_tabwidget::functionremoveTabToolTip(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -371,12 +374,14 @@ bool KviKvsObject_tabwidget::functionsetTabLabel(KviKvsObjectFunctionCall *c)
 	((QTabWidget *)widget())->setTabLabel(((QWidget *)(ob->object())),szLabel);
 	return true;
 }
+
 bool KviKvsObject_tabwidget::functioncurrentPageIndex(KviKvsObjectFunctionCall *c)
 {
 	int index=((QTabWidget *)widget())->currentPageIndex();
 	if (widget()) c->returnValue()->setInteger(index);
 	return true;
 }
+
 bool KviKvsObject_tabwidget::functiontabLabel(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uIndex;
@@ -386,8 +391,9 @@ bool KviKvsObject_tabwidget::functiontabLabel(KviKvsObjectFunctionCall *c)
 	if (!widget()) return true;
 	QString label=((QTabWidget *)widget())->label(uIndex);
 	c->returnValue()->setString(label);
-    return true;
+	return true;
 }
+
 bool KviKvsObject_tabwidget::functionsetMargin(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iMargin;
@@ -395,8 +401,9 @@ bool KviKvsObject_tabwidget::functionsetMargin(KviKvsObjectFunctionCall *c)
 		KVSO_PARAMETER("margin",KVS_PT_INT,0,iMargin)
 	KVSO_PARAMETERS_END(c)
 	if (widget()) ((QTabWidget *)widget())->setMargin(iMargin);
-    return true;
+	return true;
 }
+
 bool KviKvsObject_tabwidget::functionmargin(KviKvsObjectFunctionCall *c)
 {
 
@@ -416,12 +423,13 @@ bool KviKvsObject_tabwidget::functioncurrentTabLabel(KviKvsObjectFunctionCall *c
 {
 	if (widget())
 	{
-			int i= ((QTabWidget *)widget())->currentPageIndex();
-			QString label=((QTabWidget *)widget())->label(i);
-			c->returnValue()->setString(label);
+		int i= ((QTabWidget *)widget())->currentPageIndex();
+		QString label=((QTabWidget *)widget())->label(i);
+		c->returnValue()->setString(label);
 	}
-    return true;
+	return true;
 }
+
 bool KviKvsObject_tabwidget::functionremovePage(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -496,6 +504,7 @@ bool KviKvsObject_tabwidget::functionchangeTab(KviKvsObjectFunctionCall *c)
 	else ((QTabWidget *)widget())->changeTab(((QWidget *)(ob->object())),szLabel);	
 	return true;
 }
+
 bool KviKvsObject_tabwidget::functionsetTabPosition(KviKvsObjectFunctionCall *c)
 {
 	QString szPos;
@@ -511,11 +520,8 @@ bool KviKvsObject_tabwidget::functionsetTabPosition(KviKvsObjectFunctionCall *c)
 	return true;
 }
 
-
-
 bool KviKvsObject_tabwidget::functionCurrentChangedEvent(KviKvsObjectFunctionCall *c)
 {
-
 	emitSignal("valueChanged",c,c->params());
 	return true;
 }

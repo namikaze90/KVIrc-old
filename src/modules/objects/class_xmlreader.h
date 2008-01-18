@@ -24,10 +24,11 @@
 //
 //=============================================================================
 
+#include "object_macros.h"
+
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
 
-#include "object_macros.h"
 
 class KviKvsObject_xmlreader : public KviKvsObject
 {
@@ -40,7 +41,7 @@ public:
 	
 	void fatalError(const QString &szError);
 protected:
-	QString m_szLastError;	
+	QString m_szLastError;
 };
 
 #endif //!_CLASS_XMLREADER_H_

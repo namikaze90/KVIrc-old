@@ -22,13 +22,15 @@
 //
 
 #include "class_toolbar.h"
+#include "class_mainwindow.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
 #include "kvi_tal_toolbar.h"
 #include "kvi_tal_mainwindow.h"
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
-#include "class_mainwindow.h"
+
 
 /*
 	@doc:	toolbar
@@ -80,12 +82,12 @@ KVSO_END_CONSTRUCTOR(KviKvsObject_toolbar)
 bool KviKvsObject_toolbar::init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams)
 {
 	if (!parentObject())
-	{	
+	{
 		pContext->warning(__tr2qs("the toolbar cannot be a parent-widget!"));
 		return true;
 	}
 	if(parentObject()->inherits("KviKvsObject_mainwindow"))
-	{ 
+	{
 		setObject(new KviTalToolBar(name(), ((KviTalMainWindow *)parentScriptWidget())), true);
 	}
 	else
@@ -101,6 +103,7 @@ bool KviKvsObject_toolbar::functionaddSeparator(KviKvsObjectFunctionCall *c)
 	if(widget()) ((KviTalToolBar *)widget())->addSeparator();
 	return true;
 }
+
 bool KviKvsObject_toolbar::functionsetLabel(KviKvsObjectFunctionCall *c)
 {
 	QString szLabel;
@@ -110,11 +113,13 @@ bool KviKvsObject_toolbar::functionsetLabel(KviKvsObjectFunctionCall *c)
 	if (widget()) ((KviTalToolBar *)widget())->setLabel(szLabel);
 	return true;
 }
+
 bool KviKvsObject_toolbar::functionlabel(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setString(((KviTalToolBar *)widget())->label());
 	return true;
 }
+
 bool KviKvsObject_toolbar::functionsetStretchableWidget(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -135,17 +140,16 @@ bool KviKvsObject_toolbar::functionsetStretchableWidget(KviKvsObjectFunctionCall
 		return true;
 	}
 	if(!ob->object()->inherits("KviKvsObject_widget"))
-    {
+	{
 		c->warning(__tr2qs("Widget object required"));
-        return TRUE;
-    }
+		return TRUE;
+	}
 	//if(widget()) ((KviTalToolBar *)widget())->setStretchableWidget(((QWidget  *)(ob->object())));
-	return true;	
-}
-bool KviKvsObject_toolbar::functionclear(KviKvsObjectFunctionCall *c)
-{
-	if (widget())
-		((KviTalToolBar *)object())->clear();
 	return true;
 }
 
+bool KviKvsObject_toolbar::functionclear(KviKvsObjectFunctionCall *c)
+{
+	if (widget()) ((KviTalToolBar *)object())->clear();
+	return true;
+}

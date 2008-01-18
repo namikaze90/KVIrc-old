@@ -22,11 +22,11 @@
 //   along with this program. If not, write to the Free Software Foundation,
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
-#include <kvi_tal_wizard.h>
+
 #include "class_widget.h"
-
-
 #include "object_macros.h"
+
+#include <kvi_tal_wizard.h>
 
 class KviKvsObject_wizard : public KviKvsObject_widget
 {
@@ -43,7 +43,7 @@ public:
 protected:
 	virtual bool init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams);
 
-    bool functionaddPage(KviKvsObjectFunctionCall *c);
+	bool functionaddPage(KviKvsObjectFunctionCall *c);
 	bool functioninsertPage(KviKvsObjectFunctionCall *c);
 	bool functionremovePage(KviKvsObjectFunctionCall *c);
 	bool functionsetTitle(KviKvsObjectFunctionCall *c);
@@ -61,6 +61,8 @@ protected:
 	bool functionbackClickedEvent(KviKvsObjectFunctionCall *c);
 
 };
+
+
 class KviKvsMdmWizard :  public KviTalWizard
 
 {

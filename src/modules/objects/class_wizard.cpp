@@ -21,15 +21,15 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include <kvi_tal_wizard.h>
-#include <qpushbutton.h>
+
 #include "class_wizard.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
+#include <kvi_tal_wizard.h>
 
-
+#include <QPushButton>
 
 /*
 	@doc:	wizard
@@ -131,6 +131,7 @@ bool KviKvsObject_wizard::init(KviKvsRunTimeContext * pContext,KviKvsVariantList
 
 	return true;
 }
+
 bool KviKvsObject_wizard::functionaddPage(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -150,6 +151,7 @@ bool KviKvsObject_wizard::functionaddPage(KviKvsObjectFunctionCall *c)
 	((KviTalWizard *)widget())->addPage(((QWidget *)(ob->object())),szLabel);
 	return true;
 }
+
 bool KviKvsObject_wizard::functioninsertPage(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -189,6 +191,7 @@ bool KviKvsObject_wizard::functionremovePage(KviKvsObjectFunctionCall *c)
 	((KviTalWizard *)widget())->removePage(((QWidget *)(ob->object())));
 	return true;
 }
+
 bool KviKvsObject_wizard::functionsetTitle(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -208,6 +211,7 @@ bool KviKvsObject_wizard::functionsetTitle(KviKvsObjectFunctionCall *c)
 	((KviTalWizard *)widget())->setTitle(((QWidget *)(ob->object())),szTitle);
 	return true;
 }
+
 bool KviKvsObject_wizard::functionsetBackEnabled(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -247,6 +251,7 @@ bool KviKvsObject_wizard::functionsetNextEnabled(KviKvsObjectFunctionCall *c)
 	((KviTalWizard *)widget())->setNextEnabled(((QWidget *)(ob->object())),bEnabled);
 	return true;
 }
+
 bool KviKvsObject_wizard::functionsetFinishEnabled(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -266,6 +271,7 @@ bool KviKvsObject_wizard::functionsetFinishEnabled(KviKvsObjectFunctionCall *c)
 	((KviTalWizard *)widget())->setFinishEnabled(((QWidget *)(ob->object())),bEnabled);
 	return true;
 }
+
 bool KviKvsObject_wizard::functionsetHelpEnabled(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -285,6 +291,7 @@ bool KviKvsObject_wizard::functionsetHelpEnabled(KviKvsObjectFunctionCall *c)
 	((KviTalWizard *)widget())->setHelpEnabled(((QWidget *)(ob->object())),bEnabled);
 	return true;
 }
+
 bool KviKvsObject_wizard::functionsetBackBtnText(KviKvsObjectFunctionCall *c)
 {
 	QString szText;
@@ -295,6 +302,7 @@ bool KviKvsObject_wizard::functionsetBackBtnText(KviKvsObjectFunctionCall *c)
 		((KviTalWizard *)widget())->KviTalWizard::backButton()->setText(szText);
 	return true;
 }
+
 bool KviKvsObject_wizard::functionsetNextBtnText(KviKvsObjectFunctionCall *c)
 {
 	QString szText;
@@ -305,6 +313,7 @@ bool KviKvsObject_wizard::functionsetNextBtnText(KviKvsObjectFunctionCall *c)
 		((KviTalWizard *)widget())->KviTalWizard::nextButton()->setText(szText);
 	return true;
 }
+
 bool KviKvsObject_wizard::functionsetHelpBtnText(KviKvsObjectFunctionCall *c)
 {
 	QString szText;
@@ -315,6 +324,7 @@ bool KviKvsObject_wizard::functionsetHelpBtnText(KviKvsObjectFunctionCall *c)
 		((KviTalWizard *)widget())->KviTalWizard::helpButton()->setText(szText);
 	return true;
 }
+
 bool KviKvsObject_wizard::functionsetFinishBtnText(KviKvsObjectFunctionCall *c)
 {
 	QString szText;
@@ -325,18 +335,21 @@ bool KviKvsObject_wizard::functionsetFinishBtnText(KviKvsObjectFunctionCall *c)
 		((KviTalWizard *)widget())->KviTalWizard::finishButton()->setText(szText);
 	return true;
 }
+
 bool KviKvsObject_wizard::accept()
 {
 	KviKvsVariantList * pParams = 0;
 	callFunction(this,"acceptEvent",0,pParams);
 	return true;
 }
+
 bool KviKvsObject_wizard::reject()
 {
 	KviKvsVariantList * pParams = 0;
 	callFunction(this,"rejectEvent",0,pParams);
 	return true;
 }
+
 bool KviKvsObject_wizard::functionnextClickedEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("nextClicked",c);
@@ -348,6 +361,7 @@ void KviKvsObject_wizard::nextClicked()
 	KviKvsVariantList *params=0;
 	callFunction(this,"nextClickedEvent",params);
 }
+
 bool KviKvsObject_wizard::functionbackClickedEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("backClicked",c);
@@ -359,6 +373,7 @@ void KviKvsObject_wizard::backClicked()
 	KviKvsVariantList *params=0;
 	callFunction(this,"backClickedEvent",params);
 }
+
 KviKvsMdmWizard::KviKvsMdmWizard(QWidget * par,const char * name,KviKvsObject_wizard * parent)
 :KviTalWizard( par,name)
 {
@@ -366,24 +381,29 @@ KviKvsMdmWizard::KviKvsMdmWizard(QWidget * par,const char * name,KviKvsObject_wi
 	connect (this->backButton(),SIGNAL(clicked()),this,SLOT(slotBackClicked()));
 	connect (this->nextButton(),SIGNAL(clicked()),this,SLOT(slotNextClicked()));
 }
+
 void KviKvsMdmWizard::accept()
 {
 	if(m_pParentScript->accept())KviTalWizard::accept();
 
 }
+
 void KviKvsMdmWizard::reject()
 {
 	if(m_pParentScript->reject())KviTalWizard::reject();
 
 }
+
 void KviKvsMdmWizard::slotNextClicked()
 {
 	m_pParentScript->nextClicked();
 }
+
 void KviKvsMdmWizard::slotBackClicked()
 {
 	m_pParentScript->backClicked();
 }
+
 KviKvsMdmWizard::~KviKvsMdmWizard()
 {
 }

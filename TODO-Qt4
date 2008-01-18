@@ -45,6 +45,7 @@ filetransferwindow
 http
 list
 logview
+objects
 popupeditor
 raweditor
 setup
@@ -57,7 +58,6 @@ trayicon
 help
 iograph
 notifier
-objects
 options
 reguser
 str

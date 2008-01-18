@@ -99,8 +99,6 @@ const Qt::WindowType widgettypes_cod[] = {
 #define QT_WIDGET_STRONGFOCUS Qt::StrongFocus
 #define QT_WIDGET_NOFOCUS Qt::NoFocus
 
-
-
 #define widgettypes_num (sizeof(widgettypes_tbl) / sizeof(widgettypes_tbl[0]))
 
 /*
@@ -853,7 +851,6 @@ bool KviKvsObject_widget::eventFilter(QObject *o,QEvent *e)
 	return KviKvsObject::eventFilter(o,e);
 }
 
-
 bool KviKvsObject_widget::function_show(KviKvsObjectFunctionCall *c)
 {
 	if(!widget())return true; // should we warn here ?
@@ -871,19 +868,21 @@ bool KviKvsObject_widget::function_setEnabled(KviKvsObjectFunctionCall *c)
 	widget()->setEnabled(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_widget::function_isEnabled(KviKvsObjectFunctionCall *c)
 {
 	if(!widget()) return true;
 	c->returnValue()->setBoolean(widget()->isEnabled());
 	return true;
 }
+
 bool KviKvsObject_widget::function_fontDescent(KviKvsObjectFunctionCall * c)
 {
 	if(!widget()) return true;
 	QFontMetrics fm = widget()->fontMetrics();
-    int d = fm.descent();
+	int d = fm.descent();
 	c->returnValue()->setInteger(d);
-    return true;
+	return true;
 }
 
 bool KviKvsObject_widget::function_fontAscent(KviKvsObjectFunctionCall * c)
@@ -922,10 +921,11 @@ bool KviKvsObject_widget::function_fontMetricsWidth(KviKvsObjectFunctionCall * c
 bool KviKvsObject_widget::function_fontMetricsHeight(KviKvsObjectFunctionCall * c)
 {
 	if(!widget())return true;
-    int fm = widget()->fontMetrics().height();
+	int fm = widget()->fontMetrics().height();
 	c->returnValue()->setInteger(fm);
-    return true;
+	return true;
 }
+
 bool KviKvsObject_widget::function_screenResolution(KviKvsObjectFunctionCall * c)
 {
 	KviKvsArray * a = new KviKvsArray();
@@ -1020,8 +1020,8 @@ bool KviKvsObject_widget::function_setGeometry(KviKvsObjectFunctionCall *c)
 
 	return true;
 }
-bool KviKvsObject_widget::function_mapToGlobal(KviKvsObjectFunctionCall *c)
 
+bool KviKvsObject_widget::function_mapToGlobal(KviKvsObjectFunctionCall *c)
 {
 	if(!widget())return true;
 	kvs_int_t iX,iY;
@@ -1038,7 +1038,6 @@ bool KviKvsObject_widget::function_mapToGlobal(KviKvsObjectFunctionCall *c)
 }
 
 bool KviKvsObject_widget::function_mapFromGlobal(KviKvsObjectFunctionCall *c)
-
 {
 	if(!widget())return true;
 	kvs_int_t iX,iY;
@@ -1053,6 +1052,7 @@ bool KviKvsObject_widget::function_mapFromGlobal(KviKvsObjectFunctionCall *c)
 	c->returnValue()->setArray(a);
 	return true;
 }
+
 bool KviKvsObject_widget::function_centerToScreen(KviKvsObjectFunctionCall *c)
 {
 	if(widget()) widget()->move((g_pApp->desktop()->width() - widget()->width())/2,(g_pApp->desktop()->height() - widget()->height())/2);
@@ -1239,9 +1239,10 @@ bool KviKvsObject_widget::function_parentWidget(KviKvsObjectFunctionCall *c)
 	if(parentScriptWidget()) c->returnValue()->setHObject(parentObject()->handle());
 	else
 		c->returnValue()->setHObject((kvs_hobject_t)0);
-    return true;
+	return true;
 
 }
+
 bool KviKvsObject_widget::function_setMouseTracking(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -1303,6 +1304,7 @@ bool KviKvsObject_widget::function_setFocus(KviKvsObjectFunctionCall *c)
 	if (widget())widget()->setFocus();
 	return true;
 }
+
 bool KviKvsObject_widget::function_hide(KviKvsObjectFunctionCall *)
 {
 	if(widget())widget()->hide();
@@ -1430,6 +1432,7 @@ bool KviKvsObject_widget::function_move(KviKvsObjectFunctionCall *c)
 	widget()->move(QPoint(iX,iY));
 	return true;
 }
+
 bool KviKvsObject_widget::function_sizeHint(KviKvsObjectFunctionCall *c)
 {
 	if(!widget())return true;
@@ -1487,6 +1490,7 @@ bool KviKvsObject_widget::function_resize(KviKvsObjectFunctionCall *c)
 	widget()->resize(QSize(iW,iH));
 	return true;
 }
+
 bool KviKvsObject_widget::function_setFocusPolicy(KviKvsObjectFunctionCall *c)
 {
 	QString szMode;
@@ -1546,7 +1550,6 @@ bool KviKvsObject_widget::function_setWFlags(KviKvsObjectFunctionCall *c)
 
 bool KviKvsObject_widget::function_setFont(KviKvsObjectFunctionCall *c)
 {
-
 	QString szFamily,szStyle;
 	kvs_int_t uSize;
 	KVSO_PARAMETERS_BEGIN(c)
@@ -1605,6 +1608,7 @@ bool KviKvsObject_widget::function_addWidgetToWrappedLayout(KviKvsObjectFunction
 	lay->add(((QWidget *)(ob->object())));
 	return true;
 }
+
 bool KviKvsObject_widget::function_reparent(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -1628,9 +1632,9 @@ bool KviKvsObject_widget::function_reparent(KviKvsObjectFunctionCall *c)
 	widget()->reparent(((QWidget *)(ob->object())),QPoint(((QWidget *)(ob->object()))->x(),((QWidget *)(ob->object()))->y()));
 	return true;
 }
+
 bool KviKvsObject_widget::function_setIcon(KviKvsObjectFunctionCall *c)
 {
-
 	QString icon;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("icon",KVS_PT_STRING,0,icon)
@@ -1652,16 +1656,19 @@ bool KviKvsObject_widget::function_setBackgroundImage(KviKvsObjectFunctionCall *
 	if(pix)widget()->setPaletteBackgroundPixmap(*pix);
 	return true;
 }
+
 bool KviKvsObject_widget::function_globalCursorX(KviKvsObjectFunctionCall *c)
 {
 	if(widget())c->returnValue()->setInteger(QCursor::pos().x());
 	return true;
 }
+
 bool KviKvsObject_widget::function_globalCursorY(KviKvsObjectFunctionCall *c)
 {
 	if(widget())c->returnValue()->setInteger(QCursor::pos().y());
 	return true;
 }
+
 bool KviKvsObject_widget::function_setMask(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *obj;

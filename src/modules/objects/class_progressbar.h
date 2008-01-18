@@ -24,7 +24,6 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-//#include <qprogressbar.h>
 #include "class_widget.h"
 #include "object_macros.h"
 
@@ -37,15 +36,18 @@ public:
 protected:
 	virtual bool init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams);
 
-	bool functionSetProgress(KviKvsObjectFunctionCall *c);
-	bool functionSetTotalSteps(KviKvsObjectFunctionCall *c);
+	bool functionSetValue(KviKvsObjectFunctionCall *c);
+	bool functionSetMinimum(KviKvsObjectFunctionCall *c);
+	bool functionSetMaximum(KviKvsObjectFunctionCall *c);
+	bool functionSetRange(KviKvsObjectFunctionCall *c);
 	bool functionReset(KviKvsObjectFunctionCall *c);
-	bool functionSetPercentageVisible(KviKvsObjectFunctionCall *c);
-	bool functionSetCenterIndicator(KviKvsObjectFunctionCall *c);
-	bool functionCenterIndicator(KviKvsObjectFunctionCall *c);
-	bool functionPercentageVisible(KviKvsObjectFunctionCall *c);
+	bool functionSetTextVisible(KviKvsObjectFunctionCall *c);
+	bool functionTextVisible(KviKvsObjectFunctionCall *c);
+	bool functionSetTextDirection(KviKvsObjectFunctionCall *c);
+	bool functionText(KviKvsObjectFunctionCall *c);
+	bool functionSetOrientation(KviKvsObjectFunctionCall *c);
+	//bool functionOrientation(KviKvsObjectFunctionCall *c);
 };
 
 
 #endif	//!_CLASS_PROGRESSBAR_H_
-

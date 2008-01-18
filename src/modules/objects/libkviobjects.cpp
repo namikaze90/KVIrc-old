@@ -176,7 +176,6 @@ static bool objects_kvs_cmd_killClass(KviKvsModuleCommandCall * c)
 	return true;
 }
 
-
 static bool objects_kvs_cmd_clearObjects(KviKvsModuleCommandCall * c)
 {
 	/*
@@ -206,7 +205,6 @@ static bool objects_kvs_cmd_clearObjects(KviKvsModuleCommandCall * c)
 	if(!c->switches()->find('i',"ii")) KviKvsKernel::instance()->objectController()->clearUserClasses();
 	return true;
 }
-
 
 static bool objects_kvs_cmd_connect(KviKvsModuleCommandCall * c)
 {
@@ -259,7 +257,6 @@ static bool objects_kvs_cmd_connect(KviKvsModuleCommandCall * c)
 	obSrc->connectSignal(szSignal,obTrg,szSlot);
 	return true;
 }
-
 
 static bool objects_kvs_fnc_exists(KviKvsModuleFunctionCall * c)
 {
@@ -557,8 +554,6 @@ static bool objects_kvs_cmd_disconnect(KviKvsModuleCommandCall * c)
 	obSrc->disconnectSignal(szSignal,obTrg,szSlot);
 	return true;
 }
-
-
 
 static bool objects_kvs_cmd_bitBlt(KviKvsModuleCommandCall * c)
 {
@@ -896,7 +891,8 @@ static bool objects_module_can_unload(KviModule *m)
 	// FIXME: unlock when no more instances & derived classes!
 	return false;
 }
-    static bool objects_module_init(KviModule * m)
+
+static bool objects_module_init(KviModule * m)
 {
 	// functions
 	KVSM_REGISTER_FUNCTION(m,"exists",objects_kvs_fnc_exists);
@@ -933,9 +929,6 @@ static bool objects_module_can_unload(KviModule *m)
 	KviKvsObject_lineedit::registerSelf();
 	KviKvsObject_menubar::registerSelf();
 	KviKvsObject_workspace::registerSelf();
-	
-
-
 	KviKvsObject_combobox::registerSelf();
 	KviKvsObject_listbox::registerSelf();
 	KviKvsObject_listview::registerSelf();
@@ -961,7 +954,6 @@ static bool objects_module_can_unload(KviModule *m)
 	KviKvsObject_socket::registerSelf();
 	KviKvsObject_process::registerSelf();
 
-	
 	return true;
 }
 

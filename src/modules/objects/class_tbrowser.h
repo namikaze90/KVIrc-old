@@ -23,11 +23,12 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include <qtextbrowser.h>
 #include "class_widget.h"
-#include <qfile.h>
 #include "class_multilineedit.h"
 #include "object_macros.h"
+
+#include <QTextBrowser>
+#include <QFile>
 
 class KviKvsObject_textbrowser : public KviKvsObject_mledit
 {

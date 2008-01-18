@@ -22,18 +22,16 @@
 //
 
 #include "class_wrapper.h"
+#include "class_widget.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
-
-#include "class_widget.h"
-#include <qwidget.h>
-
 #include "kvi_app.h"
 #include "kvi_frame.h"
 
+#include <QWidget>
 
 /*
         @doc:        wrapper
@@ -129,42 +127,42 @@ bool KviKvsObject_wrapper::init(KviKvsRunTimeContext * pContext,KviKvsVariantLis
 		pParams->value(i)->asString(s);
 		if (!s.isEmpty())
 		{
-		int idx = s.find("::");
-		if( idx != -1 ) {
-			szClass = s.left(idx);
-			szName  = s.right(s.length() - idx - 2);
-		} else {
-			szClass = s;
-			szName  = "";
-		}
-		debug ("szClass %s",szClass.latin1());
-		debug ("szName %s",szName.latin1());
-		debug ("s %s",s.latin1());
-
-		if(KviQString::equalCI(szClass,"WinId"))
-		{
-			if(pWidget)
-			{
-				pContext->warning(__tr2qs("The window identifier preceeded by WinId must be the first object in the search path"));
-				return false;
+			int idx = s.find("::");
+			if( idx != -1 ) {
+				szClass = s.left(idx);
+				szName  = s.right(s.length() - idx - 2);
 			} else {
-				pWidget = g_pApp->findWindow(szName);
+				szClass = s;
+				szName  = "";
 			}
-		} 		else {
-		if(pWidget) {
-    pWidget = findWidgetToWrap(
-     !szClass.isEmpty() ? szClass : KviQString::empty, !szName.isEmpty() ? szName : KviQString::empty, pWidget
-    );
-   } else {
-    pWidget = findTopLevelWidgetToWrap(szClass.isEmpty() ? szClass : KviQString::empty, !szName.isEmpty() ? szName : KviQString::empty);
-   }
+			debug ("szClass %s",szClass.latin1());
+			debug ("szName %s",szName.latin1());
+			debug ("s %s",s.latin1());
+	
+			if(KviQString::equalCI(szClass,"WinId"))
+			{
+				if(pWidget)
+				{
+					pContext->warning(__tr2qs("The window identifier preceeded by WinId must be the first object in the search path"));
+					return false;
+				} else {
+					pWidget = g_pApp->findWindow(szName);
+				}
+			} else {
+				if(pWidget) {
+					pWidget = findWidgetToWrap(
+					!szClass.isEmpty() ? szClass : KviQString::empty, !szName.isEmpty() ? szName : KviQString::empty, pWidget
+					);
+				} else {
+					pWidget = findTopLevelWidgetToWrap(szClass.isEmpty() ? szClass : KviQString::empty, !szName.isEmpty() ? szName : KviQString::empty);
+				}
+			}
+			if( !pWidget )
+			{
+				pContext->warning(__tr2qs("Failed to find one of the wrap path widgets (%Q::%Q)"),&szClass,&szName);
+				return false;
+			}
 		}
-		if( !pWidget )
-		{
-			pContext->warning(__tr2qs("Failed to find one of the wrap path widgets (%Q::%Q)"),&szClass,&szName);
-			return false;
-		}
-	}
 		i++;
 
 	}
@@ -177,6 +175,7 @@ bool KviKvsObject_wrapper::init(KviKvsRunTimeContext * pContext,KviKvsVariantLis
 
 	return true;
 }
+
 QWidget *KviKvsObject_wrapper::findTopLevelWidgetToWrap(const QString szClass, const QString szName)
 {
 	QWidgetList list = g_pApp->topLevelWidgets();

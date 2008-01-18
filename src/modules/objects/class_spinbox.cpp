@@ -21,13 +21,15 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include <qspinbox.h>
 #include "class_spinbox.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
 
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
+
+#include <QSpinBox>
 
 /*
 	@doc:	spinbox
@@ -137,33 +139,33 @@ bool KviKvsObject_spinbox::init(KviKvsRunTimeContext * pContext,KviKvsVariantLis
 	return true;
 }
 
-
-
 bool KviKvsObject_spinbox::functionsetValue(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iValue;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("value",KVS_PT_INT,0,iValue)
 	KVSO_PARAMETERS_END(c)
-    if (widget()) ((QSpinBox *)widget())->setValue(iValue);
+	if (widget()) ((QSpinBox *)widget())->setValue(iValue);
 	return true;
 }
+
 bool KviKvsObject_spinbox::functionsetMinValue(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iMinvalue;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("min_value",KVS_PT_INT,0,iMinvalue)
 	KVSO_PARAMETERS_END(c)
-    if (widget()) ((QSpinBox *)widget())->setMinValue(iMinvalue);
+	if (widget()) ((QSpinBox *)widget())->setMinValue(iMinvalue);
 	return true;
 }
+
 bool KviKvsObject_spinbox::functionsetMaxValue(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t iMaxvalue;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("max_value",KVS_PT_INT,0,iMaxvalue)
 	KVSO_PARAMETERS_END(c)
-    if (widget()) ((QSpinBox *)widget())->setMaxValue(iMaxvalue);
+	if (widget()) ((QSpinBox *)widget())->setMaxValue(iMaxvalue);
 	return true;
 }
 
@@ -173,10 +175,9 @@ bool KviKvsObject_spinbox::functionsetLineStep(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("line_step",KVS_PT_INT,0,iLinestep)
 	KVSO_PARAMETERS_END(c)
-    if (widget()) ((QSpinBox *)widget())->setLineStep(iLinestep);
+	if (widget()) ((QSpinBox *)widget())->setLineStep(iLinestep);
 	return true;
 }
-
 
 bool KviKvsObject_spinbox::functionvalue(KviKvsObjectFunctionCall *c)
 {
@@ -189,6 +190,7 @@ bool KviKvsObject_spinbox::functionminValue(KviKvsObjectFunctionCall *c)
 	if (widget()) c->returnValue()->setInteger(((QSpinBox *)widget())->minValue());
 	return true;
 }
+
 bool KviKvsObject_spinbox::functionmaxValue(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setInteger(((QSpinBox *)widget())->maxValue());
@@ -196,21 +198,15 @@ bool KviKvsObject_spinbox::functionmaxValue(KviKvsObjectFunctionCall *c)
 }
 bool KviKvsObject_spinbox::functionlineStep(KviKvsObjectFunctionCall *c)
 {
-	if (widget())
-	{
-		c->returnValue()->setInteger(((QSpinBox *)widget())->singleStep());
-	}
-	
+	if (widget()) c->returnValue()->setInteger(((QSpinBox *)widget())->singleStep());
 	return true;
 }
-
 
 bool KviKvsObject_spinbox::functionspecialValueText(KviKvsObjectFunctionCall *c)
 {
 	if (widget()) c->returnValue()->setString(((QSpinBox *)widget())->specialValueText());
 	return true;
 }
-
 
 bool KviKvsObject_spinbox::functionsetSpecialValueText(KviKvsObjectFunctionCall *c)
 {
@@ -219,10 +215,10 @@ bool KviKvsObject_spinbox::functionsetSpecialValueText(KviKvsObjectFunctionCall 
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("text",KVS_PT_STRING,0,szText)
 	KVSO_PARAMETERS_END(c)
-	if(widget())
-		((QSpinBox *)widget())->setSpecialValueText(szText);
+	if(widget()) ((QSpinBox *)widget())->setSpecialValueText(szText);
 	return true;
 }
+
 bool KviKvsObject_spinbox::functionsetPrefix(KviKvsObjectFunctionCall *c)
 {
 	
@@ -230,10 +226,10 @@ bool KviKvsObject_spinbox::functionsetPrefix(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("text",KVS_PT_STRING,0,szPrefix)
 	KVSO_PARAMETERS_END(c)
-	if(widget())
-		((QSpinBox *)widget())->setPrefix(szPrefix);
+	if(widget()) ((QSpinBox *)widget())->setPrefix(szPrefix);
 	return true;
 }
+
 bool KviKvsObject_spinbox::functionsetSuffix(KviKvsObjectFunctionCall *c)
 {
 	
@@ -241,8 +237,7 @@ bool KviKvsObject_spinbox::functionsetSuffix(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("text",KVS_PT_STRING,0,szSuffix)
 	KVSO_PARAMETERS_END(c)
-	if(widget())
-		((QSpinBox *)widget())->setSuffix(szSuffix);
+	if(widget()) ((QSpinBox *)widget())->setSuffix(szSuffix);
 	return true;
 }
 

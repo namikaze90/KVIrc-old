@@ -21,13 +21,13 @@
 //   along with this program. If not, write to the Free Software Foundation,
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
+
+#include "object_macros.h"
+
 #include "kvi_socket.h"
 
-
-
-
-#include <qsocketnotifier.h>
-#include <qtimer.h>
+#include <QSocketNotifier>
+#include <QTimer>
 
 #define KVI_SCRIPT_SOCKET_STATUS_DISCONNECTED 0
 #define KVI_SCRIPT_SOCKET_STATUS_DNS 1
@@ -37,6 +37,7 @@
 
 class KviDns;
 class KviDataBuffer;
+
 /*
 class KviScriptSocketObject : public KviScriptObject
 {
@@ -109,8 +110,6 @@ public:
 };
 */
 //===============================================================
-#include "object_macros.h"
-
 
 class KviKvsObject_socket : public KviKvsObject
 {

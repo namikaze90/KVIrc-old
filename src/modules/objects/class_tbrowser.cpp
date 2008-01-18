@@ -21,13 +21,14 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-#include <qtextbrowser.h>
 #include "class_tbrowser.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
+
+#include <QTextBrowser>
 
 /*
 	@doc: textbrowser

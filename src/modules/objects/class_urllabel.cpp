@@ -21,19 +21,17 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
 #include "class_urllabel.h"
 
 #include "kvi_debug.h"
 #include "kvi_locale.h"
 #include "kvi_error.h"
-
 #include "kvi_app.h"
-
 #include "kvi_window.h"
 #include "kvi_kvs_script.h"
 
 #include <QMouseEvent>
+
 #define QT_LEFT_BUTTON Qt::LeftButton
 
 //#warning "Functions to change colors for different states"
@@ -244,6 +242,7 @@ bool KviKvsObject_urlabel::eventFilter(QObject * o, QEvent * e)
 
 	return false;
 }
+
 bool KviKvsObject_urlabel::functionsetUrl(KviKvsObjectFunctionCall *c)
 {
 	QString szUrl;
@@ -258,11 +257,13 @@ bool KviKvsObject_urlabel::functionsetUrl(KviKvsObjectFunctionCall *c)
 	m_url = szUrl;
 	return true;
 }
+
 bool KviKvsObject_urlabel::functionurl(KviKvsObjectFunctionCall *c)
 {
 	c->returnValue()->setString(m_url);
 	return true;
 }
+
 bool KviKvsObject_urlabel::functionsetAction(KviKvsObjectFunctionCall *c)
 {
 	QString szAction;
@@ -277,6 +278,7 @@ bool KviKvsObject_urlabel::functionsetAction(KviKvsObjectFunctionCall *c)
 	m_action = szAction;
 	return true;
 }
+
 bool KviKvsObject_urlabel::functionsetText(KviKvsObjectFunctionCall *c)
 {
 	QString szText;
@@ -288,11 +290,13 @@ bool KviKvsObject_urlabel::functionsetText(KviKvsObjectFunctionCall *c)
 	((QLabel *)widget())->setFixedSize(((QLabel *)widget())->sizeHint());
 	return true;
 }
+
 bool KviKvsObject_urlabel::functionaction(KviKvsObjectFunctionCall *c)
 {
 	c->returnValue()->setString(m_action);
 	return true;
 }
+
 bool KviKvsObject_urlabel::functionsetCursorChange(KviKvsObjectFunctionCall *c)
 {
 	bool bFlag;
@@ -307,6 +311,7 @@ bool KviKvsObject_urlabel::functionsetCursorChange(KviKvsObjectFunctionCall *c)
 		widget()->setCursor(Qt::arrowCursor);
 	return true;
 }
+
 bool KviKvsObject_urlabel::functionsetUseSingleClick(KviKvsObjectFunctionCall *c)
 {
 	bool bFlag;
@@ -316,11 +321,13 @@ bool KviKvsObject_urlabel::functionsetUseSingleClick(KviKvsObjectFunctionCall *c
 	m_useSingleClick = bFlag;
 	return true;
 }
+
 bool KviKvsObject_urlabel::functionuseSingleClick(KviKvsObjectFunctionCall *c)
 {
 	c->returnValue()->setBoolean(m_useSingleClick);
 	return true;
 }
+
 bool KviKvsObject_urlabel::functioncursorChange(KviKvsObjectFunctionCall *c)
 {
 	c->returnValue()->setBoolean(m_changeCursor);

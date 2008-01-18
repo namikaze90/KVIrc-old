@@ -102,9 +102,7 @@ protected:
 	bool function_x(KviKvsObjectFunctionCall *);
 	bool function_y(KviKvsObjectFunctionCall *);
 	bool function_setMask(KviKvsObjectFunctionCall *c);
-	
 	bool function_setAttribute(KviKvsObjectFunctionCall *c);
-
 
 signals:
 	void aboutToDie();

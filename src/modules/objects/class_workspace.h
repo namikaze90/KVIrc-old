@@ -23,11 +23,9 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
-
-#include <qworkspace.h>
 #include "class_widget.h"
+
+#include <QWorkspace>
 
 class KviKvsObject_workspace : public KviKvsObject_widget
 {

@@ -22,12 +22,13 @@
 //
 
 #include "class_toolbutton.h"
+
 #include "kvi_error.h"
 #include "kvi_debug.h"
-
 #include "kvi_locale.h"
 #include "kvi_iconmanager.h"
 #include "kvi_tal_popupmenu.h"
+
 /*
 	@doc:	toolbutton
 	@keyterms:
@@ -142,61 +143,62 @@ bool KviKvsObject_toolbutton::functionsetImage(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_END(c)
 	if (!widget()) return true;
 	QPixmap * pix = g_pIconManager->getImage(icon);
-	if(pix){
-		((QToolButton *)widget())->setIconSet(QIconSet(*pix));
-	}
-	else
-		((QToolButton *)widget())->setIconSet(QIconSet());
+	if(pix) ((QToolButton *)widget())->setIconSet(QIconSet(*pix));
+	else ((QToolButton *)widget())->setIconSet(QIconSet());
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionsetUsesBigPixmap(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
 	KVSO_PARAMETERS_END(c)
-	if(widget())
-		((QToolButton *)widget())->setUsesBigPixmap(bEnabled);
+	if(widget()) ((QToolButton *)widget())->setUsesBigPixmap(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionusesBigPixmap(KviKvsObjectFunctionCall *c)
 {
 	if (widget())
 		c->returnValue()->setBoolean(((QToolButton *)widget())->usesBigPixmap());
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionsetUsesTextLabel(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
 	KVSO_PARAMETERS_END(c)
-	if(widget())
-		((QToolButton *)widget())->setUsesTextLabel(bEnabled);
+	if(widget()) ((QToolButton *)widget())->setUsesTextLabel(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionusesTextLabel(KviKvsObjectFunctionCall *c)
 {
 	if (widget())
 		c->returnValue()->setBoolean(((QToolButton *)widget())->usesTextLabel());
 	return true;
 }
+
 bool KviKvsObject_toolbutton::function_setAutoRaise(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
 	KVSO_PARAMETERS_END(c)
-	if(widget())
-		((QToolButton *)widget())->setAutoRaise(bEnabled);
+	if(widget()) ((QToolButton *)widget())->setAutoRaise(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_toolbutton::function_autoRaise(KviKvsObjectFunctionCall *c)
 {
 	if(widget())
 		c->returnValue()->setBoolean(((QToolButton *)widget())->autoRaise());
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionsetOn(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
@@ -214,10 +216,10 @@ bool KviKvsObject_toolbutton::functionsetToggleButton(KviKvsObjectFunctionCall *
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
 	KVSO_PARAMETERS_END(c)
-	if(widget())
-		((QToolButton *)widget())->setToggleButton(bEnabled);
+	if(widget()) ((QToolButton *)widget())->setToggleButton(bEnabled);
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functiontoggle(KviKvsObjectFunctionCall *c)
 {
 	if (widget())
@@ -238,12 +240,14 @@ bool KviKvsObject_toolbutton::functionsetTextLabel(KviKvsObjectFunctionCall *c)
 	if (!szTip.isEmpty()) ((QToolButton *)widget())->setToolTip(szTip);
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functiontextLabel(KviKvsObjectFunctionCall *c)
 {
 	if (widget())
 		c->returnValue()->setString(((QToolButton *)widget())->textLabel());
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionsetPopup(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -263,36 +267,38 @@ bool KviKvsObject_toolbutton::functionsetPopup(KviKvsObjectFunctionCall *c)
 		return true;
 	}
 	if(!ob->object()->inherits("KviKvsObject_popupmenu"))
-    {
+	{
 		c->warning(__tr2qs("Can't add a non - popupmenu  object"));
-        return TRUE;
-    }
+		return TRUE;
+	}
 	if(widget())
 		((QToolButton *)widget())->setPopup(((KviTalPopupMenu  *)(ob->object())));
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionopenPopup(KviKvsObjectFunctionCall *c)
 {
-	if(widget())
-		((QToolButton *)widget())->openPopup();
+	if(widget()) ((QToolButton *)widget())->openPopup();
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionsetPopupDelay(KviKvsObjectFunctionCall *c)
 {
 	kvs_int_t uDelay;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("delay",KVS_PT_UNSIGNEDINTEGER,0,uDelay)
 	KVSO_PARAMETERS_END(c)
-	if (widget())
-		  ((QToolButton *)widget())->setPopupDelay(uDelay);
+	if (widget()) ((QToolButton *)widget())->setPopupDelay(uDelay);
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionpopupDelay(KviKvsObjectFunctionCall *c)
 {
 	if (widget())
 		c->returnValue()->setInteger(((QToolButton *)widget())->popupDelay());
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functionsetTextPosition(KviKvsObjectFunctionCall *c)
 {
 	QString szPos;
@@ -301,21 +307,22 @@ bool KviKvsObject_toolbutton::functionsetTextPosition(KviKvsObjectFunctionCall *
 	KVSO_PARAMETERS_END(c)
 	if(!widget())return true;
 	if(KviQString::equalCI(szPos,"BesideIcon"))
-			((QToolButton *)widget())->setTextPosition(QToolButton::BesideIcon);
+		((QToolButton *)widget())->setTextPosition(QToolButton::BesideIcon);
 	else if(KviQString::equalCI(szPos,"BelowIcon"))
-			((QToolButton *)widget())->setTextPosition(QToolButton::BelowIcon);
+		((QToolButton *)widget())->setTextPosition(QToolButton::BelowIcon);
 	else c->warning(__tr2qs("Unknown text position '%Q'"),&szPos);
 	return true;
 }
+
 bool KviKvsObject_toolbutton::functiontextPosition(KviKvsObjectFunctionCall *c)
 {
 	if(!widget()) return true;
 	QString szPos="BelowIcon";
-	if ((((QToolButton *)widget())->textPosition())==(QToolButton::BesideIcon))
-		szPos="BesideIcon";
+	if ((((QToolButton *)widget())->textPosition())==(QToolButton::BesideIcon)) szPos="BesideIcon";
 	c->returnValue()->setString(szPos);
 	return true;
 }
+
 bool KviKvsObject_toolbutton::function_clickEvent(KviKvsObjectFunctionCall *c)
 {
 	emitSignal("clicked",c);
@@ -327,4 +334,3 @@ void KviKvsObject_toolbutton::slotClicked()
 	KviKvsVariantList *params=0;
 	callFunction(this,"clickEvent",params);
 }
-

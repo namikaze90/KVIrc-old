@@ -23,8 +23,6 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
-
-
 #include "class_label.h"
 #include "object_macros.h"
 
@@ -37,7 +35,7 @@ public:
 protected:
 	virtual bool eventFilter(QObject *, QEvent *);
 
-    bool functionsetUrl(KviKvsObjectFunctionCall *c);
+	bool functionsetUrl(KviKvsObjectFunctionCall *c);
 	bool functionsetAction(KviKvsObjectFunctionCall *c);
 	bool functionurl(KviKvsObjectFunctionCall *c);
 	bool functionaction(KviKvsObjectFunctionCall *c);

@@ -25,7 +25,6 @@
 #include "class_xmlreader.h"
 
 #include "kvi_locale.h"
-
 #include "kvi_kvs_variantlist.h"
 #include "kvi_kvs_hash.h"
 
@@ -128,7 +127,8 @@
 
 #ifndef QT_NO_XML
 
-#include <qxml.h>
+#include <QXmlReader>
+#include <QXmlInputSource>
 
 class KviXmlHandler : public QXmlDefaultHandler
 {

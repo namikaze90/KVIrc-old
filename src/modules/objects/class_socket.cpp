@@ -20,13 +20,13 @@
 //   Inc. ,59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 
+#define _KVI_DEBUG_CHECK_RANGE_
+
+#include "class_socket.h"
+
+#include "kvi_debug.h"
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
-
-#define _KVI_DEBUG_CHECK_RANGE_
-#include "kvi_debug.h"
-
-
 #include "kvi_locale.h"
 #include "kvi_error.h"
 #include "kvi_netutils.h"
@@ -38,12 +38,11 @@
 #include "kvi_databuffer.h"
 #include "kvi_qcstring.h"
 
-#include "class_socket.h"
-
 //#include <stdlib.h>
 
 #define KVI_IN_BUFFER_ALLOC_CHUNK 4096
 #define KVI_READ_CHUNK 1024
+
 /*
 static KviScriptObjectClass * g_pSocketClass = 0;
 
@@ -393,8 +392,6 @@ KVSO_END_REGISTERCLASS(KviKvsObject_socket)
 
 
 KVSO_BEGIN_CONSTRUCTOR(KviKvsObject_socket,KviKvsObject)
-
-
 	m_bUdp = false;
 	m_uConnectionId = 0;
 	m_sock = KVI_INVALID_SOCKET;
@@ -520,7 +517,6 @@ bool KviKvsObject_socket::functionAccept(KviKvsObjectFunctionCall *c)
 	return true;
 }
 
-
 bool  KviKvsObject_socket::functionSetProtocol(KviKvsObjectFunctionCall *c)
 {
 	QString m_szHex;
@@ -573,10 +569,6 @@ bool  KviKvsObject_socket::functionWriteHex(KviKvsObjectFunctionCall *c)
   return true;
 }
 
-
-
-
-
 bool  KviKvsObject_socket::functionConnect(KviKvsObjectFunctionCall *c)
 {
 	KVSO_PARAMETERS_BEGIN(c)
@@ -619,11 +611,6 @@ bool  KviKvsObject_socket::functionConnect(KviKvsObjectFunctionCall *c)
 	return true;
 }
 
-
-
-
-
-
 bool KviKvsObject_socket::functionListen(KviKvsObjectFunctionCall *c)
 {
 	if((m_sock != KVI_INVALID_SOCKET) || (m_iStatus != KVI_SCRIPT_SOCKET_STATUS_DISCONNECTED))
@@ -656,7 +643,6 @@ bool KviKvsObject_socket::functionListen(KviKvsObjectFunctionCall *c)
 
 	if(!m_szLocalIp.isEmpty())
 	{
-
 		// Check the address type
 		if(kvi_isValidStringIp(m_szLocalIp))bGotIp = true;
 		else {
@@ -867,7 +853,6 @@ void KviKvsObject_socket::doConnect()
 	if(m_pDelayTimer)delete m_pDelayTimer;
 	m_pDelayTimer = 0;
 
-
 	KviSockaddr sa(m_szRemoteIp,m_uRemotePort,!kvi_isValidStringIp(m_szRemoteIp),m_bUdp);
 
 	if(!sa.socketAddress())
@@ -888,7 +873,7 @@ void KviKvsObject_socket::doConnect()
 		// else it has already been called!
 		return;
 	}
-debug ("Socket created");
+	debug ("Socket created");
 
 	// create the socket
 #ifdef COMPILE_IPV6_SUPPORT
@@ -1216,6 +1201,7 @@ void KviKvsObject_socket::tryFlush()
 		}
 	}
 }
+
 void KviKvsObject_socket::reset()
 {
 	m_uConnectionId++; // this is the only place where this is incremented!
@@ -1263,6 +1249,7 @@ void KviKvsObject_socket::reset()
 	m_szLocalIp="";
 	m_bIpV6 = false;
 }
+
 unsigned int KviKvsObject_socket::readGetLength(KviKvsObjectFunctionCall *c)
 {
 	kvs_uint_t uLen;
@@ -1271,7 +1258,7 @@ unsigned int KviKvsObject_socket::readGetLength(KviKvsObjectFunctionCall *c)
 	KVSO_PARAMETERS_END(c)
 	if (uLen>m_uInDataLen || !uLen) return m_uInDataLen;
 	else return uLen;
-	}
+}
 
 bool KviKvsObject_socket::functionRead(KviKvsObjectFunctionCall *c)
 {
@@ -1310,20 +1297,16 @@ bool KviKvsObject_socket::functionReadHex(KviKvsObjectFunctionCall *c)
 
 bool KviKvsObject_socket::functionWrite(KviKvsObjectFunctionCall *c)
 {
- QString szData;
- KVSO_PARAMETERS_BEGIN(c)
-  KVSO_PARAMETER("szData",KVS_PT_STRING,0,szData)
- KVSO_PARAMETERS_END(c)
-
-KviQCString szData8 = szData.utf8();
- if(szData8.length() > 0)
- {
-  m_pOutBuffer->append((const unsigned char*)szData8.data(),szData8.length());
-  delayedFlush(0);
- }
- return true;
+	QString szData;
+	KVSO_PARAMETERS_BEGIN(c)
+		KVSO_PARAMETER("szData",KVS_PT_STRING,0,szData)
+	KVSO_PARAMETERS_END(c)
+	
+	KviQCString szData8 = szData.utf8();
+	if(szData8.length() > 0)
+	{
+		m_pOutBuffer->append((const unsigned char*)szData8.data(),szData8.length());
+		delayedFlush(0);
+	}
+	return true;
 }
-
-
-
-//-------------
