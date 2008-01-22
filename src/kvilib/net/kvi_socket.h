@@ -191,7 +191,7 @@ inline bool kvi_socket_recoverableError(int err)
 #ifdef COMPILE_ON_WINDOWS
 	return ((err == WSAEWOULDBLOCK) || (err == EINTR) || (err == EAGAIN));
 #else
-	return ((err == EINTR) || (err = EAGAIN));
+	return ((err == EINTR) || (err == EAGAIN));
 #endif
 }
 

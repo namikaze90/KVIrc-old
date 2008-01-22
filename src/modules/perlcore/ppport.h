@@ -218,12 +218,14 @@ __DATA__
 #endif
 
 #ifdef HASATTRIBUTE
+#  undef PERL_UNUSED_DECL
 #  if defined(__GNUC__) && defined(__cplusplus)
 #    define PERL_UNUSED_DECL
 #  else
 #    define PERL_UNUSED_DECL __attribute__((unused))
 #  endif
 #else
+#  undef PERL_UNUSED_DECL
 #  define PERL_UNUSED_DECL
 #endif
 
