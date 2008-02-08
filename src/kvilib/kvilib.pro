@@ -20,7 +20,6 @@ HEADERS += \
     tal/kvi_tal_application.h \
     tal/kvi_tal_filedialog.h \
     tal/kvi_tal_groupbox.h \
-    tal/kvi_tal_hbox.h \
     tal/kvi_tal_iconview.h \
     tal/kvi_tal_listbox.h \
     tal/kvi_tal_listview.h \
@@ -31,7 +30,6 @@ HEADERS += \
     tal/kvi_tal_toolbar.h \
     tal/kvi_tal_toolbardocktype.h \
     tal/kvi_tal_tooltip.h \
-    tal/kvi_tal_vbox.h \
     tal/kvi_tal_widgetstack.h \
     tal/kvi_tal_windowstate.h \
     tal/kvi_tal_wizard.h \
@@ -104,7 +102,6 @@ HEADERS += \
 SOURCES += tal/kvi_tal_application.cpp \
     tal/kvi_tal_filedialog.cpp \
     tal/kvi_tal_groupbox.cpp \
-    tal/kvi_tal_hbox.cpp \
     tal/kvi_tal_iconview.cpp \
     tal/kvi_tal_listbox.cpp \
     tal/kvi_tal_listview.cpp \
@@ -115,7 +112,6 @@ SOURCES += tal/kvi_tal_application.cpp \
     tal/kvi_tal_textedit.cpp \
     tal/kvi_tal_toolbar.cpp \
     tal/kvi_tal_tooltip.cpp \
-    tal/kvi_tal_vbox.cpp \
     tal/kvi_tal_widgetstack.cpp \
     tal/kvi_tal_wizard.cpp \
     system/kvi_env.cpp \
