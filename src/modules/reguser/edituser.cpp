@@ -83,7 +83,7 @@ KviReguserPropertiesDialog::KviReguserPropertiesDialog(QWidget * p,QHash<QString
 	g->addMultiCellWidget(m_pTable,0,1,0,1);
 
 	m_pTable->setColumnCount(2);
-	m_pTable->setSelectionMode(Kvi_Tal_Table::NoSelection);
+	m_pTable->setSelectionMode(QTableWidget::NoSelection);
 
 	QStringList m_szLabels;
 	m_szLabels << __tr2qs("Property") << __tr2qs("Value");
@@ -147,8 +147,8 @@ void KviReguserPropertiesDialog::fillData()
 	int row = 0;
 	while(it != m_pPropertyDict->end())
 	{
-		Kvi_Tal_TableItem * pColKey = new Kvi_Tal_TableItem(it.key(),QTableWidgetItem::Type);
-		Kvi_Tal_TableItem * pColValue = new Kvi_Tal_TableItem(it.value(),QTableWidgetItem::Type);
+		QTableWidgetItem * pColKey = new QTableWidgetItem(it.key(),QTableWidgetItem::Type);
+		QTableWidgetItem * pColValue = new QTableWidgetItem(it.value(),QTableWidgetItem::Type);
 		pColKey->setFlags(Qt::ItemIsEditable);
 		pColValue->setFlags(Qt::ItemIsEditable);
 		m_pTable->setItem(row,0,pColKey);
@@ -179,8 +179,8 @@ void KviReguserPropertiesDialog::okClicked()
 
 void KviReguserPropertiesDialog::addClicked()
 {
-	Kvi_Tal_TableItem * pColKey = new Kvi_Tal_TableItem("",QTableWidgetItem::Type);
-	Kvi_Tal_TableItem * pColValue = new Kvi_Tal_TableItem("",QTableWidgetItem::Type);
+	QTableWidgetItem * pColKey = new QTableWidgetItem("",QTableWidgetItem::Type);
+	QTableWidgetItem * pColValue = new QTableWidgetItem("",QTableWidgetItem::Type);
 	pColKey->setFlags(Qt::ItemIsEditable);
 	pColValue->setFlags(Qt::ItemIsEditable);
 

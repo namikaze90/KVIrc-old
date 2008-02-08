@@ -22,6 +22,10 @@
 //
 //=============================================================================
 
+#include "edituser.h"
+#include "wizard.h"
+#include "dialog.h"
+
 #include "kvi_module.h"
 #include "kvi_regusersdb.h"
 #include "kvi_ircuserdb.h"
@@ -33,11 +37,6 @@
 #include "kvi_window.h"
 #include "kvi_frame.h"
 #include "kvi_ircconnection.h"
-
-#include "edituser.h"
-#include "wizard.h"
-#include "dialog.h"
-
 
 //#warning "$reguser.matches..."
 //#warning "$reguser.clear"

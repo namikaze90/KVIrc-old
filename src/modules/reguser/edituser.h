@@ -38,9 +38,6 @@
 #include <QtGui>
 #include <QTableWidget>
 
-#define Kvi_Tal_Table QTableWidget
-#define Kvi_Tal_TableItem QTableWidgetItem
-
 #ifndef _EDITUSER_CPP_
 	extern KviRegisteredUserDataBase * g_pLocalRegisteredUserDataBase;
 #endif
@@ -54,11 +51,10 @@ public:
 	KviReguserPropertiesDialog(QWidget *p,QHash<QString,QString> * dict);
 	~KviReguserPropertiesDialog();
 protected:
-	QTableWidget *m_pTable;
-
-	QHash<QString,QString>     * m_pPropertyDict;
-	QPushButton        * m_pDelButton;
-	QPushButton        * m_pAddButton;
+	QTableWidget             * m_pTable;
+	QHash<QString,QString>   * m_pPropertyDict;
+	QPushButton              * m_pDelButton;
+	QPushButton              * m_pAddButton;
 protected:
 	void fillData();
 	virtual void closeEvent(QCloseEvent *);
@@ -77,10 +73,9 @@ public:
 	~KviReguserMaskDialog();
 protected:
 	KviIrcMask * m_pMask;
-
-	QLineEdit * m_pNickEdit;
-	QLineEdit * m_pUserEdit;
-	QLineEdit * m_pHostEdit;
+	QLineEdit  * m_pNickEdit;
+	QLineEdit  * m_pUserEdit;
+	QLineEdit  * m_pHostEdit;
 	
 	virtual void closeEvent(QCloseEvent *);
 protected slots:
@@ -92,7 +87,7 @@ class KviRegisteredUserEntryDialog : public QDialog
 {
 	Q_OBJECT
 private:
-	QTabWidget * m_pTabs;
+	QTabWidget       * m_pTabs;
 	QDialogButtonBox * m_pButtons;
 public:
 	KviRegisteredUserEntryDialog(QWidget * p,KviRegisteredUser * r,bool bModal = true);
@@ -103,23 +98,21 @@ protected:
 	QLineEdit          * m_pNameEdit;
 	QLineEdit          * m_pCommentEdit;
 
-	KviTalListBox           * m_pMaskListBox;
+	KviTalListBox      * m_pMaskListBox;
 
 	QPushButton        * m_pDelMaskButton;
 	QPushButton        * m_pEditMaskButton;
 	QPushButton        * m_pAddMaskButton;
-
 	QCheckBox          * m_pNotifyCheck;
 	QLineEdit          * m_pNotifyNick;
 
 	KviPixmap          * m_pAvatar;
 	KviPixmapSelector  * m_pAvatarSelector;
 
-	QHash<QString,QString>     * m_pPropertyDict;
-	
-	QCheckBox          * m_pCustomColorCheck;
-	QColor		   * m_pCustomColor;
-	KviColorSelector   * m_pCustomColorSelector;
+	QHash<QString,QString>   * m_pPropertyDict;
+	QCheckBox                * m_pCustomColorCheck;
+	QColor                   * m_pCustomColor;
+	KviColorSelector         * m_pCustomColorSelector;
 
 	//Ignore TAB
 	QCheckBox          * m_pIgnoreEnabled;
