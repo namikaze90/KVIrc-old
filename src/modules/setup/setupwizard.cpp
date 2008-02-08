@@ -72,7 +72,7 @@ extern QString szMircIni;
 #endif
 
 KviSetupPage::KviSetupPage(KviSetupWizard * w)
-: KviTalHBox(w)
+: QWidget(w)
 {
 	// we need this to set localized text on buttons (see QT doc/ KviTalWizard class)
 	w->KviTalWizard::backButton()->setText(__tr2qs("< &Back"));
@@ -81,7 +81,9 @@ KviSetupPage::KviSetupPage(KviSetupWizard * w)
 	w->KviTalWizard::cancelButton()->setText(__tr2qs("Cancel"));
 	//w->KviTalWizard::helpButton()->setText(__tr2qs("Help"));
 
-	setSpacing(8);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	this->setLayout(pLayout);
+	pLayout->setSpacing(8);
 
 	m_pPixmapLabel = new QLabel(this);
 

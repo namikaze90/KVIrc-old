@@ -27,7 +27,6 @@
 #define KVI_WINDOW_MIN_HEIGHT 100
 
 #define _KVI_WINDOW_CPP_
-
 #define _KVI_DEBUG_CHECK_RANGE_
 
 #include "kvi_debug.h"
@@ -52,9 +51,11 @@
 #include "kvi_toolwindows_container.h"
 #include "kvi_styled_controls.h"
 #include "kvi_kvs_script.h"
+#include "kvi_mdimanager.h"
+#include "kvi_tal_popupmenu.h"
+#include "kvi_tal_tooltip.h"
 
 #include <QPixmap>
-#include "kvi_tal_popupmenu.h"
 #include <QCursor>
 #include <QTimer>
 #include <QLayout>
@@ -64,16 +65,11 @@
 #include <QTextCodec>
 #include <QCloseEvent>
 #include <QResizeEvent>
-
 #include <QPushButton>
 #include <QDesktopWidget>
-
-
 #include <QVariant>
 #include <QToolButton>
-#include "kvi_tal_tooltip.h"
 #include <QMessageBox>
-#include "kvi_mdimanager.h"
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	#include "kvi_crypt.h"

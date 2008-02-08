@@ -34,7 +34,7 @@
 
 
 KviTextIconEditor::KviTextIconEditor(QWidget * par,KviTextIcon * icon,KviTextIconTableItem* item)
-: KviTalHBox(par),m_pTableItem(item)
+: QWidget(par),m_pTableItem(item)
 {
 	m_pIconButton=new QToolButton(this);
 	m_pBrowseButton=new QToolButton(this);

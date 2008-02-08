@@ -40,6 +40,9 @@
 #include <QColorDialog>
 #include <QPalette>
 #include <QFontDialog>
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 
 KviBoolSelector::KviBoolSelector(QWidget * par,const QString & txt,bool *pOption,bool bEnabled)
@@ -62,7 +65,7 @@ void KviBoolSelector::commit()
 
 KviUIntSelector::KviUIntSelector(QWidget * par,const QString & txt,unsigned int *pOption,
 	unsigned int uLowBound,unsigned int uHighBound,unsigned int uDefault,bool bEnabled,bool bShortInt)
-: KviTalHBox(par) , KviSelectorInterface()
+: QWidget(par) , KviSelectorInterface()
 {
 	m_pLabel = new QLabel(txt,this);
 	//m_pLineEdit = new QLineEdit(this);
@@ -86,8 +89,10 @@ KviUIntSelector::KviUIntSelector(QWidget * par,const QString & txt,unsigned int 
 	//m_pLineEdit->setText(tmp.ptr());
 	m_pSpinBox->setValue(bShortInt ? (unsigned int) *((unsigned short int *)pOption) : *pOption);
 
-	setSpacing(4);
-	setStretchFactor(m_pLabel,1);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	this->setLayout(pLayout);
+	pLayout->setSpacing(4);
+	pLayout->setStretchFactor(m_pLabel,1);
 }
 
 void KviUIntSelector::setPrefix(const QString & txt)
@@ -119,7 +124,7 @@ void KviUIntSelector::commit()
 
 void KviUIntSelector::setEnabled(bool bEnabled)
 {
-	KviTalHBox::setEnabled(bEnabled);
+	QWidget::setEnabled(bEnabled);
 	m_pLabel->setEnabled(bEnabled);
 	m_pSpinBox->setEnabled(bEnabled);
 }
@@ -127,7 +132,7 @@ void KviUIntSelector::setEnabled(bool bEnabled)
 
 
 KviStringSelector::KviStringSelector(QWidget * par,const QString & txt,QString * pOption,bool bEnabled)
-: KviTalHBox(par) , KviSelectorInterface()
+: QWidget(par) , KviSelectorInterface()
 {
 	m_pLabel = new QLabel(txt,this);
 	m_pLineEdit = new QLineEdit(this);
@@ -135,8 +140,10 @@ KviStringSelector::KviStringSelector(QWidget * par,const QString & txt,QString *
 	QString tmp = *pOption;
 	m_pLineEdit->setText(tmp);
 
-	setSpacing(4);
-	setStretchFactor(m_pLineEdit,1);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	this->setLayout(pLayout);
+	pLayout->setSpacing(4);
+	pLayout->setStretchFactor(m_pLineEdit,1);
 
 	m_pOption = pOption;
 
@@ -155,7 +162,7 @@ void KviStringSelector::commit()
 
 void KviStringSelector::setEnabled(bool bEnabled)
 {
-	KviTalHBox::setEnabled(bEnabled);
+	QWidget::setEnabled(bEnabled);
 	m_pLineEdit->setEnabled(bEnabled);
 	m_pLabel->setEnabled(bEnabled);
 }
@@ -306,7 +313,7 @@ void KviPixmapSelector::setEnabled(bool bEnabled)
 
 // FIXME: #warning "Option for DIR_MUST_EXISTS...(this widget could be turned into a file selector too)"
 KviFileSelector::KviFileSelector(QWidget * par,const QString & txt,QString * pOption,bool bEnabled,unsigned int uFlags,const QString &szFilter)
-: KviTalHBox(par), KviSelectorInterface()
+: QWidget(par), KviSelectorInterface()
 {
 	m_uFlags = uFlags;
 	m_szFilter = szFilter;
@@ -317,8 +324,10 @@ KviFileSelector::KviFileSelector(QWidget * par,const QString & txt,QString * pOp
 	m_pButton = new QPushButton(__tr2qs("&Browse..."),this);
 	connect(m_pButton,SIGNAL(clicked()),this,SLOT(browseClicked()));
 
-	setSpacing(4);
-	setStretchFactor(m_pLineEdit,1);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	this->setLayout(pLayout);
+	pLayout->setSpacing(4);
+	pLayout->setStretchFactor(m_pLineEdit,1);
 
 	m_pOption = pOption;
 
@@ -333,7 +342,7 @@ void KviFileSelector::commit()
 
 void KviFileSelector::setEnabled(bool bEnabled)
 {
-	KviTalHBox::setEnabled(bEnabled);
+	QWidget::setEnabled(bEnabled);
 	m_pLineEdit->setEnabled(bEnabled);
 	m_pLabel->setEnabled(bEnabled);
 	m_pButton->setEnabled(bEnabled);
@@ -388,31 +397,36 @@ void KviDirectorySelector::select()
 }
 
 
-
-
-
-
-
-
 KviStringListSelector::KviStringListSelector(QWidget * par,const QString & txt,QStringList * pOption,bool bEnabled)
-: KviTalVBox(par), KviSelectorInterface()
+: QWidget(par), KviSelectorInterface()
 {
 	m_pLabel = new QLabel(txt,this);
 	m_pListBox = new KviTalListBox(this);
 	m_pLineEdit = new QLineEdit(this);
 	connect(m_pLineEdit,SIGNAL(textChanged(const QString &)),this,SLOT(textChanged(const QString &)));
 	connect(m_pLineEdit,SIGNAL(returnPressed()),this,SLOT(addClicked()));
-	KviTalHBox * hBox = new KviTalHBox(this);
+
+	QWidget * hBox = new QWidget(this);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	hBox->setLayout(pLayout);
+
 	m_pAddButton = new QPushButton(__tr2qs("A&dd"),hBox);
+	pLayout->addWidget(m_pAddButton);
 	connect(m_pAddButton,SIGNAL(clicked()),this,SLOT(addClicked()));
+
 	m_pRemoveButton = new QPushButton(__tr2qs("Re&move"),hBox);
+	pLayout->addWidget(m_pRemoveButton);
 	connect(m_pRemoveButton,SIGNAL(clicked()),this,SLOT(removeClicked()));
+
 	m_pOption = pOption;
 	m_pListBox->insertStringList(*pOption);
 	m_pListBox->setSelectionMode(KviTalListBox::Extended);
 	connect(m_pListBox,SIGNAL(selectionChanged()),this,SLOT(selectionChanged()));
-	setSpacing(4);
-	setStretchFactor(m_pListBox,1);
+
+	QVBoxLayout * pVLayout = new QVBoxLayout(this);
+	this->setLayout(pVLayout);
+	pVLayout->setSpacing(4);
+	pVLayout->setStretchFactor(m_pListBox,1);
 	setEnabled(bEnabled);
 }
 
@@ -443,7 +457,7 @@ void KviStringListSelector::textChanged(const QString &str)
 
 void KviStringListSelector::setEnabled(bool bEnabled)
 {
-	KviTalVBox::setEnabled(bEnabled);
+	QWidget::setEnabled(bEnabled);
 	m_pLineEdit->setEnabled(bEnabled);
 	m_pLabel->setEnabled(bEnabled);
 	QString txt = m_pLineEdit->text();
@@ -494,7 +508,7 @@ void KviStringListSelector::removeClicked()
 
 
 KviColorSelector::KviColorSelector(QWidget * par,const QString & txt,QColor * pOption,bool bEnabled)
-: KviTalHBox(par), KviSelectorInterface()
+: QWidget(par), KviSelectorInterface()
 {
 	m_pLabel = new QLabel(txt,this);
 
@@ -502,8 +516,10 @@ KviColorSelector::KviColorSelector(QWidget * par,const QString & txt,QColor * pO
 	// m_pButton->setMinimumWidth(150);
 	connect(m_pButton,SIGNAL(clicked()),this,SLOT(changeClicked()));
 
-	setSpacing(4);
-	setStretchFactor(m_pLabel,1);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	this->setLayout(pLayout);
+	pLayout->setSpacing(4);
+	pLayout->setStretchFactor(m_pLabel,1);
 
 	setButtonPalette(pOption);
 
@@ -541,14 +557,14 @@ void KviColorSelector::commit()
 
 void KviColorSelector::setEnabled(bool bEnabled)
 {
-	KviTalHBox::setEnabled(bEnabled);
+	QWidget::setEnabled(bEnabled);
 	m_pLabel->setEnabled(bEnabled);
 	m_pButton->setEnabled(bEnabled);
 }
 
 
 KviFontSelector::KviFontSelector(QWidget * par,const QString & txt,QFont * pOption,bool bEnabled)
-: KviTalHBox(par), KviSelectorInterface()
+: QWidget(par), KviSelectorInterface()
 {
 	m_pLabel = new QLabel(txt,this);
 
@@ -556,8 +572,10 @@ KviFontSelector::KviFontSelector(QWidget * par,const QString & txt,QFont * pOpti
 	// m_pButton->setMinimumWidth(150);
 	connect(m_pButton,SIGNAL(clicked()),this,SLOT(changeClicked()));
 
-	setSpacing(4);
-	setStretchFactor(m_pLabel,1);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	this->setLayout(pLayout);
+	pLayout->setSpacing(4);
+	pLayout->setStretchFactor(m_pLabel,1);
 
 	setButtonFont(pOption);
 
@@ -590,7 +608,7 @@ void KviFontSelector::commit()
 
 void KviFontSelector::setEnabled(bool bEnabled)
 {
-	KviTalHBox::setEnabled(bEnabled);
+	QWidget::setEnabled(bEnabled);
 	m_pLabel->setEnabled(bEnabled);
 	m_pButton->setEnabled(bEnabled);
 }
@@ -600,7 +618,7 @@ void KviFontSelector::setEnabled(bool bEnabled)
 
 
 KviMircTextColorSelector::KviMircTextColorSelector(QWidget * par,const QString &txt,unsigned int * uFore,unsigned int * uBack,bool bEnabled)
-: KviTalHBox(par), KviSelectorInterface()
+: QWidget(par), KviSelectorInterface()
 {
 	m_pLabel = new QLabel(txt,this);
 
@@ -608,8 +626,10 @@ KviMircTextColorSelector::KviMircTextColorSelector(QWidget * par,const QString &
 	// m_pButton->setMinimumWidth(150);
 	connect(m_pButton,SIGNAL(clicked()),this,SLOT(buttonClicked()));
 
-	setSpacing(4);
-	setStretchFactor(m_pLabel,1);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	this->setLayout(pLayout);
+	pLayout->setSpacing(4);
+	pLayout->setStretchFactor(m_pLabel,1);
 
 	m_pUFore = uFore;
 	m_pUBack = uBack;
@@ -662,7 +682,7 @@ void KviMircTextColorSelector::commit()
 
 void KviMircTextColorSelector::setEnabled(bool bEnabled)
 {
-	KviTalHBox::setEnabled(bEnabled);
+	QWidget::setEnabled(bEnabled);
 	m_pLabel->setEnabled(bEnabled);
 	m_pButton->setEnabled(bEnabled);
 }
@@ -745,29 +765,37 @@ KviChanListViewItem::KviChanListViewItem(KviTalListView* pList,QString szChan,QS
 }
 
 KviCahnnelListSelector::KviCahnnelListSelector(QWidget * par,const QString & txt,QStringList * pOption,bool bEnabled)
-: KviTalVBox(par), KviSelectorInterface()
+: QWidget(par), KviSelectorInterface()
 {
 	m_pLabel = new QLabel(txt,this);
 	m_pListView = new KviTalListView(this);
 	m_pListView->addColumn(__tr2qs("Channel name"));
 	m_pListView->addColumn(__tr2qs("Channel password"));
 	
-	KviTalHBox* pEditsHBox = new KviTalHBox(this);
+	QWidget * pEditsHBox = new QWidget(this);
+	QHBoxLayout * pHLayout = new QHBoxLayout(this);
+	pEditsHBox->setLayout(pHLayout);
 	
 	m_pChanLineEdit = new QLineEdit(pEditsHBox);
+	pHLayout->addWidget(m_pChanLineEdit);
 	connect(m_pChanLineEdit,SIGNAL(textChanged(const QString &)),this,SLOT(textChanged(const QString &)));
 	connect(m_pChanLineEdit,SIGNAL(returnPressed()),this,SLOT(addClicked()));
 	
 	m_pPassLineEdit = new QLineEdit(pEditsHBox);
 	m_pPassLineEdit->setEchoMode(QLineEdit::Password);
+	pHLayout->addWidget(m_pPassLineEdit);
 	connect(m_pPassLineEdit,SIGNAL(textChanged(const QString &)),this,SLOT(textChanged(const QString &)));
 	connect(m_pPassLineEdit,SIGNAL(returnPressed()),this,SLOT(addClicked()));
 	
-	
-	KviTalHBox * hBox = new KviTalHBox(this);
+	QWidget * hBox = new QWidget(this);
+	QHBoxLayout * pH2Layout = new QHBoxLayout(this);
+	hBox->setLayout(pH2Layout);
+
 	m_pAddButton = new QPushButton(__tr2qs("A&dd"),hBox);
+	pH2Layout->addWidget(m_pAddButton);
 	connect(m_pAddButton,SIGNAL(clicked()),this,SLOT(addClicked()));
 	m_pRemoveButton = new QPushButton(__tr2qs("Re&move"),hBox);
+	pH2Layout->addWidget(m_pRemoveButton);
 	connect(m_pRemoveButton,SIGNAL(clicked()),this,SLOT(removeClicked()));
 	m_pOption = pOption;
 	
@@ -778,8 +806,11 @@ KviCahnnelListSelector::KviCahnnelListSelector(QWidget * par,const QString & txt
 	m_pListView->setSelectionMode(KviTalListView::Extended);
 	m_pListView->setAllColumnsShowFocus(TRUE);
 	connect(m_pListView,SIGNAL(selectionChanged()),this,SLOT(selectionChanged()));
-	setSpacing(4);
-	setStretchFactor(m_pListView,1);
+
+	QVBoxLayout * pVLayout = new QVBoxLayout(this);
+	this->setLayout(pVLayout);
+	pVLayout->setSpacing(4);
+	pVLayout->setStretchFactor(m_pListView,1);
 	setEnabled(bEnabled);
 }
 

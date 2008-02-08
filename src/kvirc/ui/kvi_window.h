@@ -28,6 +28,9 @@
 #include "kvi_qstring.h"
 #include "kvi_qcstring.h"
 #include "kvi_settings.h"
+#include "kvi_accel.h"
+#include "kvi_heapobject.h"
+#include "kvi_tal_widgetstack.h"
 
 #ifdef COMPILE_ON_WINDOWS
 	// The brain-damaged MSVC compiler can't instantiate QList templates without a destructor definition
@@ -37,7 +40,13 @@
 #endif
 
 #include <QFrame>
+#include <QMdiSubWindow>
+#include <QWidget>
 
+class QPixmap;
+class QSplitter;
+class QToolButton;
+class QTextCodec;
 class KviFrame;
 class KviTaskBarItem;
 class KviConfig;
@@ -47,26 +56,16 @@ class KviConsole;
 class KviIrcContext;
 class KviIrcConnection;
 class KviWindowToolPageButton;
-
 class KviTalPopupMenu;
-class QPixmap;
-class QSplitter;
-class KviTalHBox;
-class QToolButton;
-class QTextCodec;
 class KviTalWidgetStack;
 
-#include "kvi_tal_hbox.h"
-#include "kvi_tal_widgetstack.h"
-#include "kvi_accel.h"
-#include "kvi_heapobject.h"
-#include <QMdiSubWindow>
 #ifdef COMPILE_CRYPT_SUPPORT
 	class KviCryptController;
 	class KviCryptSessionInfo;
 #endif
 
-#include <QWidget>
+class QPushButton;
+#define BUTTON_CLASS QPushButton
 
 //
 // Window types
@@ -101,14 +100,8 @@ class KviTalWidgetStack;
 #define KVI_WINDOW_TYPE_USERWINDOW 22
 #define KVI_WINDOW_TYPE_DEBUG 23
 
-
 #define KVI_WINDOW_NUM_TYPES 24
-
-
 #define KVI_WINDOW_TYPE_USER 10000
-
-
-
 
 #define KVI_ACTIVITY_NONE 0
 #define KVI_ACTIVITY_VERYLOW 1
@@ -116,7 +109,6 @@ class KviTalWidgetStack;
 #define KVI_ACTIVITY_MEDIUM 3
 #define KVI_ACTIVITY_HIGH 4
 #define KVI_ACTIVITY_VERYHIGH 5
-
 #define KVI_ACTIVITY_ICE 0
 #define KVI_ACTIVITY_VERYCOLD 1
 #define KVI_ACTIVITY_COLD 2
@@ -124,13 +116,6 @@ class KviTalWidgetStack;
 #define KVI_ACTIVITY_HOT 4
 #define KVI_ACTIVITY_VERYHOT 5
 #define KVI_ACTIVITY_FIRE 6
-
-#ifdef COMPILE_USE_QT4
-    class QPushButton;
-	#define BUTTON_CLASS QPushButton
-#else
-	#define BUTTON_CLASS QToolButton
-#endif
 
 
 class KVIRC_API KviWindow : public QWidget, public KviHeapObject
@@ -163,7 +148,7 @@ protected: // almost private: don't touch :D
 	KviIrcView                          * m_pIrcView;
 	KviInput                            * m_pInput;
 	QSplitter                           * m_pSplitter;
-	QWidget								* m_pButtonBox;
+	QWidget                             * m_pButtonBox;
 	QFrame                              * m_pButtonGrid;
 	unsigned long int                     m_uId;
 	QString                               m_szTextEncoding;

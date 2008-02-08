@@ -86,16 +86,21 @@ KviNickAlternativesDialog::KviNickAlternativesDialog(QWidget * par,const QString
 	m_pNickEdit3 = new QLineEdit(this);
 	g->addMultiCellWidget(m_pNickEdit3,3,3,1,2);
 	m_pNickEdit3->setText(n3);
-	KviTalHBox * h = new KviTalHBox(this);
-	h->setSpacing(8);
+
+	QWidget * h = new QWidget(this);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	h->setLayout(pLayout);
+	pLayout->setSpacing(8);
 	g->addWidget(h,4,2);
 
 	QPushButton * pb = new QPushButton(__tr2qs_ctx("Cancel","options"),h);
 	//g->addWidget(pb,4,2);
+	pLayout->addWidget(pb);
 	connect(pb,SIGNAL(clicked()),this,SLOT(reject()));
 
 	pb = new QPushButton(__tr2qs_ctx("Ok","options"),h);
 	pb->setDefault(true);
+	pLayout->addWidget(pb);
 	connect(pb,SIGNAL(clicked()),this,SLOT(accept()));
 	
 	g->setColStretch(0,1);

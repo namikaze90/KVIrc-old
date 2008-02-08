@@ -53,7 +53,6 @@
 #include "kvi_styled_controls.h"
 #include "kvi_texticonmanager.h"
 #include "kvi_draganddrop.h"
-#include "kvi_tal_hbox.h"
 #include "kvi_tal_popupmenu.h"
 
 #include <QLabel>
@@ -63,9 +62,10 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QMessageBox>
-#include <QLayout> 
+#include <QLayout>
 #include <QStyle>
 #include <QEvent>
+#include <QHBoxLayout>
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -78,13 +78,11 @@
 #if QT_VERSION >= 300
 	#ifndef QT_CLEAN_NAMESPACE
 		#define QT_CLEAN_NAMESPACE
-		#include <qcursor.h>
+		#include <QCursor>
 		#undef QT_CLEAN_NAMESPACE
 	#else
-		#include <qcursor.h>
+		#include <QCursor>
 	#endif
-#else
-	#include <qcursor.h>
 #endif
 
 
@@ -2290,7 +2288,7 @@ int KviInputEditor::xPositionFromCharIndex(int chIdx,bool bContentsCoords)
 KviInput::KviInput(KviWindow *par,KviUserListView * view)
 : QWidget(par,"input")
 {
-	QBoxLayout* pLayout=new QHBoxLayout(this);
+	QHBoxLayout* pLayout=new QHBoxLayout(this);
 	pLayout->setAutoAdd(true);
 	pLayout->setDirection(QBoxLayout::RightToLeft);
 
@@ -2310,8 +2308,10 @@ KviInput::KviInput(KviWindow *par,KviUserListView * view)
 	
 	connect(m_pHideToolsButton,SIGNAL(clicked()),this,SLOT(toggleToolButtons()));
 	
-	m_pButtonContainer=new KviTalHBox(this);
-	m_pButtonContainer->setSpacing(0);
+	m_pButtonContainer=new QWidget(this);
+	QHBoxLayout * pHLayout = new QHBoxLayout(this);
+	m_pButtonContainer->setLayout(pHLayout);
+	pHLayout->setSpacing(0);
 
 #ifdef COMPILE_USE_QT4
 	m_pButtonContainer->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Preferred));
@@ -2321,6 +2321,7 @@ KviInput::KviInput(KviWindow *par,KviUserListView * view)
 
 	m_pHistoryButton = new KviStyledToolButton(m_pButtonContainer,"historybutton");
 	m_pHistoryButton->setUsesBigPixmap(false);
+	pHLayout->addWidget(m_pHistoryButton);
 	//m_pHistoryButton->setUpdatesEnabled(TRUE); ???
 	QIconSet is1;
 	if(!KVI_OPTION_BOOL(KviOption_boolDisableInputHistory))//G&N mar 2005
@@ -2339,6 +2340,7 @@ KviInput::KviInput(KviWindow *par,KviUserListView * view)
 
 	m_pIconButton = new KviStyledToolButton(m_pButtonContainer,"iconbutton");
 	m_pIconButton->setUsesBigPixmap(false);
+	pHLayout->addWidget(m_pIconButton);
 	QIconSet is3;
 	is3.setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_BIGGRIN)),QIconSet::Small);
 	m_pIconButton->setIconSet(is3);
@@ -2350,6 +2352,7 @@ KviInput::KviInput(KviWindow *par,KviUserListView * view)
 	m_pCommandlineModeButton = new KviStyledToolButton(m_pButtonContainer,"commandlinemodebutton");
 	m_pCommandlineModeButton->setUsesBigPixmap(false);
 	m_pCommandlineModeButton->setToggleButton(true);
+	pHLayout->addWidget(m_pCommandlineModeButton);
 	QIconSet is0;
 	is0.setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SAYSMILE)),QIconSet::Small,QIconSet::Normal,QIconSet::On);
 	is0.setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_SAYKVS)),QIconSet::Small,QIconSet::Normal,QIconSet::Off);
@@ -2362,6 +2365,7 @@ KviInput::KviInput(KviWindow *par,KviUserListView * view)
 	m_pMultiEditorButton = new KviStyledToolButton(m_pButtonContainer,"multieditorbutton");
 	m_pMultiEditorButton->setToggleButton(true);
 	m_pMultiEditorButton->setUsesBigPixmap(false);
+	pHLayout->addWidget(m_pMultiEditorButton);
 	QIconSet is2;
 	is2.setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TERMINAL)),QIconSet::Small,QIconSet::Normal,QIconSet::On);
 	is2.setPixmap(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_TERMINAL)),QIconSet::Small,QIconSet::Normal,QIconSet::Off);
@@ -2372,20 +2376,13 @@ KviInput::KviInput(KviWindow *par,KviUserListView * view)
 	
 	m_pInputEditor = new KviInputEditor(this,par,view);
 	connect(m_pInputEditor,SIGNAL(enterPressed()),this,SLOT(inputEditorEnterPressed()));
-#ifdef COMPILE_USE_QT4
 	m_pInputEditor->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Ignored));
-#else
-	m_pInputEditor->setSizePolicy(QSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored));
-#endif
-	
 
-#ifdef COMPILE_USE_QT4
 	m_pMultiEditorButton->setAutoRaise(true);
 	m_pCommandlineModeButton->setAutoRaise(true);
 	m_pIconButton->setAutoRaise(true);
 	m_pHistoryButton->setAutoRaise(true);
 	m_pHideToolsButton->setAutoRaise(true);
-#endif
 
 	pLayout->setStretchFactor(m_pInputEditor,100000);
 	pLayout->setStretchFactor(m_pButtonContainer,0);

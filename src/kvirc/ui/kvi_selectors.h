@@ -30,8 +30,6 @@
 #include "kvi_string.h"
 #include "kvi_pixmap.h"
 #include "kvi_styled_controls.h"
-#include "kvi_tal_hbox.h"
-#include "kvi_tal_vbox.h"
 #include "kvi_tal_scrollview.h"
 #include "kvi_tal_listbox.h"
 #include "kvi_tal_listview.h"
@@ -91,7 +89,7 @@ public slots:
 	void setNotEnabled(bool bNotEnabled);
 };
 
-class KVIRC_API KviStringSelector : public KviTalHBox, public KviSelectorInterface
+class KVIRC_API KviStringSelector : public QWidget, public KviSelectorInterface
 {
 	Q_OBJECT
 public:
@@ -155,7 +153,7 @@ protected slots:
 	void choosePixmap();
 };
 
-class KVIRC_API KviUIntSelector : public KviTalHBox, public KviSelectorInterface
+class KVIRC_API KviUIntSelector : public QWidget, public KviSelectorInterface
 {
 	Q_OBJECT
 public:
@@ -178,7 +176,7 @@ public:
 };
 
 
-class KVIRC_API KviFileSelector : public KviTalHBox, public KviSelectorInterface
+class KVIRC_API KviFileSelector : public QWidget, public KviSelectorInterface
 {
 	Q_OBJECT
 public:
@@ -219,7 +217,7 @@ protected:
 };
 
 
-class KVIRC_API KviColorSelector : public KviTalHBox, public KviSelectorInterface
+class KVIRC_API KviColorSelector : public QWidget, public KviSelectorInterface
 {
 	Q_OBJECT
 public:
@@ -241,7 +239,7 @@ private slots:
 	void changeClicked();
 };
 
-class KVIRC_API KviFontSelector : public KviTalHBox, public KviSelectorInterface
+class KVIRC_API KviFontSelector : public QWidget, public KviSelectorInterface
 {
 	Q_OBJECT
 public:
@@ -261,7 +259,7 @@ private slots:
 	void changeClicked();
 };
 
-class KVIRC_API KviStringListSelector : public KviTalVBox, public KviSelectorInterface
+class KVIRC_API KviStringListSelector : public QWidget, public KviSelectorInterface
 {
 	Q_OBJECT
 public:
@@ -286,7 +284,7 @@ private slots:
 
 class KviTalPopupMenu;
 
-class KVIRC_API KviMircTextColorSelector : public KviTalHBox, public KviSelectorInterface
+class KVIRC_API KviMircTextColorSelector : public QWidget, public KviSelectorInterface
 {
 	Q_OBJECT
 public:
@@ -339,7 +337,7 @@ public:
 	const QString& pass() { return m_szPass; }
 };
 
-class KVIRC_API KviCahnnelListSelector : public KviTalVBox, public KviSelectorInterface
+class KVIRC_API KviCahnnelListSelector : public QWidget, public KviSelectorInterface
 {
 	Q_OBJECT
 public:

@@ -26,7 +26,6 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-#include "kvi_tal_hbox.h"
 #include "kvi_string.h"
 
 #include <QWidget>
@@ -37,7 +36,6 @@
 class KviUserListView;
 class KviWindow;
 class KviInput;
-class KviTalHBox;
 class QFontMetrics;
 
 // Default maximum buffer size.
@@ -218,7 +216,7 @@ public:
 	KviWindow       * m_pWindow;
 	KviInputEditor  * m_pInputEditor;
 	KviScriptEditor * m_pMultiLineEditor;
-	KviTalHBox		* m_pButtonContainer;
+	QWidget         * m_pButtonContainer;
 	QToolButton     * m_pMultiEditorButton;
 	QToolButton     * m_pHistoryButton;
 	QToolButton     * m_pIconButton;

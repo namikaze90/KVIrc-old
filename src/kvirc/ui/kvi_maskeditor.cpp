@@ -35,6 +35,8 @@
 #include <QLayout>
 #include <QLabel>
 #include <QValidator>
+#include <QWidget>
+#include <QHBoxLayout>
 
 KviMaskItem::KviMaskItem(KviTalListView* parent,KviMaskEntry* entry)
 :KviTalListViewItem(parent), m_Mask(*entry)
@@ -49,11 +51,8 @@ KviMaskItem::KviMaskItem(KviTalListView* parent,KviMaskEntry* entry)
 KviMaskItem::~KviMaskItem()
 {
 }
-#ifdef COMPILE_USE_QT4
+
 int KviMaskItem::compare ( KviTalListViewItem * i, int col, bool ascending ) const
-#else
-int KviMaskItem::compare ( QListViewItem * i, int col, bool ascending ) const
-#endif
 {
 	if(col==2)
 	{
@@ -174,11 +173,14 @@ KviMaskEditor::KviMaskEditor(QWidget * par,KviWindowToolPageButton* button,QList
 	l = new QLabel(txt,this);
 	g->addWidget(l,0,1);
 
-	KviTalHBox * hb = new KviTalHBox(this);
+	QWidget * hb = new QWidget(this);
+	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	hb->setLayout(pLayout);
 	g->addMultiCellWidget(hb,1,1,0,1);
 
 	new QLabel(__tr2qs("Filter:"),hb);
 	m_pSearch = new QLineEdit(hb);
+	pLayout->addWidget(m_pSearch);
 	connect(m_pSearch,SIGNAL(textChanged ( const QString & ) ),this,SLOT(searchTextChanged ( const QString & )));
 
 	l = new QLabel(__tr2qs("Use doubleclick to edit item"),this);

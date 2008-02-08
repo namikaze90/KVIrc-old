@@ -31,7 +31,6 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QLineEdit>
-
 #include <QRadioButton>
 #include <QComboBox>
 #include <QCheckBox>
@@ -43,7 +42,7 @@
 
 class KviSetupWizard;
 
-class KviSetupPage : public KviTalHBox
+class KviSetupPage : public QWidget
 {
 	Q_OBJECT
 public:

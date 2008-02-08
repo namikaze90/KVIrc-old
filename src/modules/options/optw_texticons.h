@@ -38,7 +38,7 @@ class KviTextIconTableItem;
 #define KVI_OPTIONS_WIDGET_KEYWORDS_KviTextIconsOptionsWidget __tr2qs_no_lookup("smileys,emoticons")
 
 
-class KviTextIconEditor : public KviTalHBox
+class KviTextIconEditor : public QWidget
 {
 	Q_OBJECT
 public:

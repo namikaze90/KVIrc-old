@@ -49,7 +49,6 @@
 class KviFrame;
 
 class KviTalPopupMenu;
-class KviTalHBox;
 class KviSdiButtonBox;
 class KviMenuBarToolButton;
 

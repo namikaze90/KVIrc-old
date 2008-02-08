@@ -34,14 +34,13 @@
 //#include "kvi_mdicaption.h"
 #include "kvi_app.h"
 #include "kvi_tal_popupmenu.h"
-#include "kvi_tal_hbox.h"
 
 #include <QMenuBar>
 #include <QLayout>
 #include <QPainter>
 #include <QCursor>
 #include <QEvent>
-#include <qdrawutil.h>
+//#include <qdrawutil.h>
 
 #include <math.h>
 

@@ -25,8 +25,6 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
-
 #include "kvi_console.h"
 #include "kvi_window.h"
 #include "kvi_string.h"
@@ -47,7 +45,6 @@ class QToolButton;
 class KviTopicWidget;
 class KviIrcMask;
 class KviThemedLabel;
-class KviTalHBox;
 class KviModeWidget;
 
 #ifdef COMPILE_ON_WINDOWS

@@ -28,14 +28,13 @@
 
 class KviPixmap;
 class KviPixmapSelector;
-class KviTalVBoxLayout;
-class KviTalHBoxLayout;
+class KviRegisteredUserDataBase;
 class QGridLayout;
 class QCheckBox;
 class QLabel;
 class QLineEdit;
 class QWidget;
-class KviRegisteredUserDataBase;
+
 
 class KviRegistrationWizard : public KviTalWizard
 {
