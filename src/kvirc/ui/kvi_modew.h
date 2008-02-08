@@ -26,7 +26,6 @@
 
 #include "kvi_themedlabel.h"
 #include "kvi_channel.h"
-#include "kvi_tal_hbox.h" 
 
 #include <QFrame>
 #include <QLineEdit>

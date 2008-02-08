@@ -28,7 +28,6 @@
 #include "kvi_ircconnectionserverinfo.h"
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_qcstring.h"
-#include "kvi_tal_hbox.h" 
 
 #include <QFrame>
 #include <QLineEdit>

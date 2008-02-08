@@ -77,7 +77,6 @@
 
 #include "kvi_kvs_script.h"
 #include "kvi_kvs_eventtriggers.h"
-#include "kvi_tal_hbox.h"
 #include "kvi_tal_popupmenu.h"
 
 #include <QSplitter>
