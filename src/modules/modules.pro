@@ -13,7 +13,8 @@ SUBDIRS       = about action actioneditor addon aliaseditor avatar \
 		raweditor regchan reguser rijndael \
 		setup sharedfile sharedfileswindow snd socketspy spaste str system \
 		texticons term theme tip tmphighlight toolbar toolbareditor trayicon \
+		url \
 		window
 	
 		# broken modules
-		# url, notifier, torrent
+		# notifier, torrent
