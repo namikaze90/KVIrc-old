@@ -52,9 +52,9 @@ typedef struct _UrlDlgList
 const char *g_pUrlListFilename = "/list.kviurl";
 const char *g_pBanListFilename = "/list.kviban";
 
-KviPtrList<KviUrl> *g_pList;
-KviPtrList<UrlDlgList> *g_pUrlDlgList;
-KviPtrList<KviStr> *g_pBanList;
+QList<KviUrl*> *g_pList;
+QList<UrlDlgList*> *g_pUrlDlgList;
+QList<KviStr*> *g_pBanList;
 ConfigDialog *g_pConfigDialog;
 
 KviStr szConfigPath;
@@ -107,7 +107,7 @@ QPixmap * KviUrlAction::smallIcon()
 
 // ---------------------------- CLASS URLDIALOG ------------------------begin //
 
-UrlDialog::UrlDialog(KviPtrList<KviUrl> *g_pList)
+UrlDialog::UrlDialog(QList<KviUrl*> *g_pList)
 :KviWindow(KVI_WINDOW_TYPE_TOOL,g_pFrame,"URL List")
 {
 	m_pMenuBar = new KviTalMenuBar(this,"url menu");
@@ -173,7 +173,8 @@ void UrlDialog::loadList()
 void UrlDialog::clear()
 {
 	g_pList->clear();
-	for (UrlDlgList *tmpitem=g_pUrlDlgList->first();tmpitem;tmpitem=g_pUrlDlgList->next()) {
+	
+	foreach(UrlDlgList *tmpitem, *g_pUrlDlgList) {
 		if (tmpitem->dlg) tmpitem->dlg->m_pUrlList->clear();
 	}
 }
@@ -209,11 +210,10 @@ void UrlDialog::remove()
 		QMessageBox::warning(0,__tr2qs("Warning - KVIrc"),__tr2qs("Select an URL."),QMessageBox::Ok,QMessageBox::NoButton,QMessageBox::NoButton);
 		return;
 	}
-	for(KviUrl *tmp=g_pList->first();tmp;tmp=g_pList->next())
-	{
+	
+	foreach(KviUrl *tmp, *g_pList) {
 		if (tmp->url == m_pUrlList->currentItem()->text(0)) {
-			g_pList->find(tmp);
-			g_pList->remove();
+			g_pList->removeAt(g_pList->indexOf(tmp));
 			m_pUrlList->takeItem(m_pUrlList->currentItem());
 			return;
 		}
@@ -265,11 +265,12 @@ void UrlDialog::popup(KviTalListViewItem *item, const QPoint &point, int col)
 		connect(m_pListPopup,SIGNAL(triggered(QAction*)),this,SLOT(sayToWin(QAction*)));
 		QAction * action;
 
-		for(KviWindow *w=g_pFrame->windowList()->first();w;w=g_pFrame->windowList()->next()){
+		foreach(KviWindow *w, *(g_pFrame->windowList())) {
 			if ((w->type() <= 2) || (w->type() == 2) || (w->type() == 6)) {	// values defined in kvi_define.h (console,channel,query,chat,uwindow)
 				action = m_pListPopup->insertItem(QString(w->plainTextCaption()));
 			}
 		}
+
 		p.insertItem(__tr2qs("&Say to Window"),m_pListPopup);
 		p.exec(QCursor::pos());
 	}
@@ -421,7 +422,12 @@ BanFrame::BanFrame(QWidget *parent, const char *name, bool banEnabled)
 	m_pBanList = new KviTalListBox(this);
 	m_pBanList->setMinimumHeight(100);
 	loadBanList();
-	for(KviStr *tmp=g_pBanList->first();tmp;tmp=g_pBanList->next()) m_pBanList->insertItem(tmp->ptr()); // load ban list into listbox
+	
+	// Loads ban list into listbox
+	foreach(KviStr *tmp, *g_pBanList) {
+		m_pBanList->insertItem(tmp->ptr());
+	}
+	
 	m_pBanList->setEnabled(m_pEnable->isChecked());
 	g->addMultiCellWidget(m_pBanList,1,1,0,1);
 
@@ -462,9 +468,9 @@ void BanFrame::removeBan()
 		return;
 	}
 	KviStr item(m_pBanList->text(i).utf8().data());
-	for(KviStr *tmp=g_pBanList->first();tmp;tmp=g_pBanList->next())
-	{
-		if (*tmp == item) g_pBanList->remove();
+	
+	foreach(KviStr *tmp, *g_pBanList) {
+		if (*tmp == item) g_pBanList->removeAt(g_pBanList->indexOf(tmp));
 	}
 
 	m_pBanList->removeItem(i);
@@ -499,38 +505,39 @@ void saveUrlList()
 	QTextStream stream(&file);
 	
 	stream << g_pList->count() << endl;
-
-	for(KviUrl *tmp=g_pList->first();tmp;tmp=g_pList->next())
-	{
+	
+	foreach(KviUrl *tmp, *g_pList) {
 		stream << tmp->url << endl;
 		stream << tmp->window << endl;
 		stream << tmp->count << endl;
 		stream << tmp->timestamp << endl;
 	}
+	
 	file.flush();
 	file.close();
 }
 
 void loadUrlList()
 {
-	KviStr urllist;
+	QString urllist;
 	g_pApp->getLocalKvircDirectory(urllist,KviApp::ConfigPlugins);
 	urllist += g_pUrlListFilename;
 	QFile file;
-	file.setName(QString::fromUtf8(urllist.ptr()));
+	file.setName(urllist);
 	if (!file.open(IO_ReadOnly))return;
 
 	QTextStream stream(&file);
 
 	g_pList->clear();
 
-	for (UrlDlgList *tmpitem=g_pUrlDlgList->first();tmpitem;tmpitem=g_pUrlDlgList->next()) {
+	foreach(UrlDlgList *tmpitem, *g_pUrlDlgList) {
 		if (tmpitem->dlg) tmpitem->dlg->m_pUrlList->clear();
 	}
+	
 	KviUrl *tmp;
 	int i=0;
 	int num = stream.readLine().toInt();
-	while ((!stream.eof()) && (i<num)){
+	while ((!stream.atEnd()) && (i<num)){
 		tmp = new KviUrl();
 		tmp->url = stream.readLine();
 		tmp->window = stream.readLine();
@@ -539,7 +546,7 @@ void loadUrlList()
 
 		g_pList->append(tmp);
 
-		for (UrlDlgList *tmpitem=g_pUrlDlgList->first();tmpitem;tmpitem=g_pUrlDlgList->next()) {
+		foreach(UrlDlgList *tmpitem, *g_pUrlDlgList) {
 			if (tmpitem->dlg) {
 				QString tmpCount;
 				tmpCount.setNum(tmp->count);
@@ -553,18 +560,17 @@ void loadUrlList()
 
 void saveBanList()
 {
-	KviStr banlist;
+	QString banlist;
 	g_pApp->getLocalKvircDirectory(banlist,KviApp::ConfigPlugins);
 	banlist += g_pBanListFilename;
 	QFile file;
-	file.setName(QString::fromUtf8(banlist.ptr()));
+	file.setName(banlist);
 	file.open(IO_WriteOnly);
 
 	QTextStream stream(&file);
 
 	stream << g_pBanList->count() << endl;
-	for(KviStr *tmp=g_pBanList->first();tmp;tmp=g_pBanList->next())
-	{
+	foreach(KviStr *tmp, *g_pBanList) {
 		stream << tmp->ptr() << endl;
 	}
 	file.flush();
@@ -573,11 +579,11 @@ void saveBanList()
 
 void loadBanList()
 {
-	KviStr banlist;
+	QString banlist;
 	g_pApp->getLocalKvircDirectory(banlist,KviApp::ConfigPlugins);
 	banlist += g_pBanListFilename;
 	QFile file;
-	file.setName(QString::fromUtf8(banlist.ptr()));
+	file.setName(banlist);
 	if (!file.open(IO_ReadOnly))return;
 
 	QTextStream stream(&file);
@@ -586,7 +592,7 @@ void loadBanList()
 
 	int i=0;
 	int num = stream.readLine().toInt();
-	while ((!stream.eof()) && (i<num)){
+	while ((!stream.atEnd()) && (i<num)){
 		KviStr *tmp = new KviStr(stream.readLine());
 		g_pBanList->append(tmp);
 		i++;
@@ -635,7 +641,7 @@ UrlDlgList *findFrame()
 		udl->dlg = 0;
 		udl->menu_id = -1;
 		g_pUrlDlgList->append(udl);
-		tmpitem = g_pUrlDlgList->current();
+		tmpitem = g_pUrlDlgList->first();
 	}
 	return tmpitem;
 }
@@ -648,8 +654,7 @@ bool urllist()
 	tmpitem->dlg = new UrlDialog(g_pList);
 	g_pFrame->addWindow(tmpitem->dlg);
 
-	for(KviUrl *tmp=g_pList->first();tmp;tmp=g_pList->next())
-	{
+	foreach(KviUrl *tmp, *g_pList) {
 		QString tmpCount;
 		tmpCount.setNum(tmp->count);
 		tmpitem->dlg->addUrl(QString(tmp->url), QString(tmp->window), tmpCount, QString(tmp->timestamp));
@@ -691,14 +696,13 @@ int check_url(KviWindow *w,const QString &szUrl) // return 0 if no occurence of 
 {
 	int tmp = 0;
 
-	for(KviStr *tmpi=g_pBanList->first();tmpi;tmpi=g_pBanList->next())
-	{
+	foreach(KviStr *tmpi, *g_pBanList) {
 		if (szUrl.find(QString(tmpi->ptr())) != -1) tmp++;
 	}
+
 	if (tmp > 0) return tmp;
 
-	for(KviUrl *u = g_pList->first();u;u=g_pList->next())
-	{
+	foreach(KviUrl *u, *g_pList) {
 		if (u->url == szUrl) {
 			u->window = w->plainTextCaption();
 			u->count++;
@@ -706,7 +710,7 @@ int check_url(KviWindow *w,const QString &szUrl) // return 0 if no occurence of 
 		}
 	}
 
-	for (UrlDlgList *tmpitem=g_pUrlDlgList->first();tmpitem;tmpitem=g_pUrlDlgList->next()) {
+	foreach(UrlDlgList *tmpitem, *g_pUrlDlgList) {
 		if (tmpitem->dlg) {
 			KviTalListViewItemIterator lvi(tmpitem->dlg->m_pUrlList);
 			for(;lvi.current();++lvi)
@@ -746,7 +750,7 @@ bool urllist_module_event_onUrl(KviKvsModuleEventCall * c)
 		tmp->timestamp = tmpTimestamp;
 
 		g_pList->append(tmp);
-		for (UrlDlgList *tmpitem=g_pUrlDlgList->first();tmpitem;tmpitem=g_pUrlDlgList->next()) {
+		foreach(UrlDlgList *tmpitem, *g_pUrlDlgList) {
 			if (tmpitem->dlg) {
 				QString tmpCount;
 				tmpCount.setNum(tmp->count);
@@ -781,14 +785,14 @@ static bool url_module_init(KviModule *m)
 							url_extension_alloc);
 	if(d)d->setIcon(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_URL)));
 
-	g_pList = new KviPtrList<KviUrl>;
-	g_pList->setAutoDelete(true);
+	g_pList = new QList<KviUrl*>;
+	//g_pList->setAutoDelete(true);
 
-	g_pUrlDlgList = new KviPtrList<UrlDlgList>;
-	g_pUrlDlgList->setAutoDelete(true);
+	g_pUrlDlgList = new QList<UrlDlgList*>;
+	//g_pUrlDlgList->setAutoDelete(true);
 
-	g_pBanList = new KviPtrList<KviStr>;
-	g_pBanList->setAutoDelete(true);
+	g_pBanList = new QList<KviStr*>;
+	//g_pBanList->setAutoDelete(true);
 
 	g_pUrlIconPixmap = new QPixmap(url_icon_xpm);
 
@@ -799,7 +803,8 @@ static bool url_module_init(KviModule *m)
 
 	m->kvsRegisterAppEventHandler(KviEvent_OnUrl,urllist_module_event_onUrl);
 
-	g_pApp->getLocalKvircDirectory(szConfigPath,KviApp::ConfigPlugins,"url.conf");
+	QString cp = QString::fromUtf8(szConfigPath.ptr());
+	g_pApp->getLocalKvircDirectory(cp,KviApp::ConfigPlugins,"url.conf");
 
 	loadUrlList();
 	loadBanList();
@@ -816,7 +821,8 @@ static bool url_module_cleanup(KviModule *m)
 	KviConfig cfg(szConfigPath.ptr(),KviConfig::Read);
 	cfg.setGroup("ConfigDialog");
 	if (cfg.readBoolEntry("SaveUrlListOnUnload",false) == true) saveUrlList();
-	for (UrlDlgList *tmpitem=g_pUrlDlgList->first();tmpitem;tmpitem=g_pUrlDlgList->next()) {
+	
+	foreach(UrlDlgList *tmpitem, *g_pUrlDlgList) {
 		if (tmpitem->dlg) tmpitem->dlg->close();
 	}
 
