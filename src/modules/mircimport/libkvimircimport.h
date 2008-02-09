@@ -27,9 +27,10 @@
 #include "kvi_http.h"
 #include "kvi_heapobject.h"
 
-#include <kvi_tal_wizard.h>
 #include <QLineEdit>
 #include <QLabel>
+#include <QWizard>
+#include <QWizardPage>
 
 class KviMircServersIniImport : public KviMexServerImport
 {
@@ -56,7 +57,7 @@ public:
 	virtual void start();
 };
 
-class KviRemoteMircServerImportWizard : public KviTalWizard, public KviHeapObject
+class KviRemoteMircServerImportWizard : public QWizard, public KviHeapObject
 {
 	Q_OBJECT
 public:

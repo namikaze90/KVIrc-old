@@ -45,6 +45,7 @@ bool g_bFoundMirc;
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QTextEdit>
+#include <QWizard>
 
 #ifdef COMPILE_ON_WINDOWS
 	#include <windows.h>
@@ -72,21 +73,20 @@ extern QString szMircIni;
 #endif
 
 KviSetupPage::KviSetupPage(KviSetupWizard * w)
-: QWidget(w)
+: QWizardPage(w)
 {
-	// we need this to set localized text on buttons (see QT doc/ KviTalWizard class)
-	w->KviTalWizard::backButton()->setText(__tr2qs("< &Back"));
-	w->KviTalWizard::nextButton()->setText(__tr2qs("&Next >"));
-	w->KviTalWizard::finishButton()->setText(__tr2qs("Finish"));
-	w->KviTalWizard::cancelButton()->setText(__tr2qs("Cancel"));
-	//w->KviTalWizard::helpButton()->setText(__tr2qs("Help"));
+	// we need this to set localized text on buttons (see QT doc/ QWizard class)
+	w->setButtonText(QWizard::BackButton,__tr2qs("< &Back"));
+	w->setButtonText(QWizard::NextButton,__tr2qs("&Next >"));
+	w->setButtonText(QWizard::FinishButton,__tr2qs("Finish"));
+	w->setButtonText(QWizard::CancelButton,__tr2qs("Help"));
+	//w->setButtonText(QWizard::HelpButton,__tr2qs("Help"));
 
 	QHBoxLayout * pLayout = new QHBoxLayout(this);
 	this->setLayout(pLayout);
 	pLayout->setSpacing(8);
 
 	m_pPixmapLabel = new QLabel(this);
-
 	m_pPixmapLabel->setPixmap(*(w->m_pLabelPixmap));
 	m_pPixmapLabel->setFixedSize(w->m_pLabelPixmap->size());
 	m_pPixmapLabel->setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
@@ -96,7 +96,6 @@ KviSetupPage::KviSetupPage(KviSetupWizard * w)
 	QVBoxLayout * pVLayout = new QVBoxLayout(this);
 	pVLayout->setSpacing(8);
 	m_pVBox->setLayout(pVLayout);
-	
 
 	QLabel * l = new QLabel(m_pVBox);
 	l->setAlignment(Qt::AlignAuto | Qt::AlignTop);
@@ -119,8 +118,9 @@ KviSetupPage::~KviSetupPage()
 
 
 KviSetupWizard::KviSetupWizard()
-: KviTalWizard(0,0,true)
+: QWizard()
 {
+	setModal(true);
 	g_bFoundMirc = false;
 	QString szLabelText;
 
@@ -151,8 +151,8 @@ KviSetupWizard::KviSetupWizard()
 			"<p>Click \"<b>Next</b>\" to proceed.</p>");
 
 	m_pWelcome->m_pTextLabel->setText(szText);
-
-	addPage(m_pWelcome,__tr2qs("Welcome to KVIrc"));
+	m_pWelcome->setTitle(__tr2qs("Welcome to KVIrc"));
+	addPage(m_pWelcome);
 
 #ifdef COMPILE_ON_WINDOWS
 	m_pCreateUrlHandlers = new QCheckBox(__tr2qs("Make KVIrc default IRC client"),m_pWelcome->m_pVBox);
@@ -162,8 +162,8 @@ KviSetupWizard::KviSetupWizard()
 	m_pCreateDesktopShortcut = new QCheckBox(__tr2qs("Create desktop shortcut"),m_pWelcome->m_pVBox);
 	m_pCreateDesktopShortcut->setChecked(true);
 #endif
-	setBackEnabled(m_pWelcome,false);
-	setHelpEnabled(m_pWelcome,false);
+	button(QWizard::BackButton)->setEnabled(false);
+	button(QWizard::HelpButton)->setEnabled(false);
 
 
 
@@ -196,9 +196,10 @@ KviSetupWizard::KviSetupWizard()
 	
 	//m_pLicense->pVLayout->setStretchFactor(ed,1);
 
-	addPage(m_pLicense,__tr2qs("Dreaded License Agreement"));
+	m_pLicense->setTitle(__tr2qs("Dreaded License Agreement"));
+	addPage(m_pLicense);
 
-	setHelpEnabled(m_pLicense,false);
+	button(QWizard::HelpButton)->setEnabled(false);
 
 	setCaption(__tr2qs("KVIrc Setup"));
 #else
@@ -206,10 +207,7 @@ KviSetupWizard::KviSetupWizard()
 #endif
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Directories
-
 	m_pDirectory = new KviSetupPage(this);
-
-
 	m_pDirectory->m_pTextLabel->setText(__tr2qs("<p>Please choose a folder for " \
 		"KVIrc to store its settings and other data, and another for downloaded files. " \
 		"Make sure that you have permission to write to both folders.<br><br>" \
@@ -220,7 +218,8 @@ KviSetupWizard::KviSetupWizard()
 		"will be preserved." \
 		"</p>"));
 
-	addPage(m_pDirectory,__tr2qs("Application Folders"));
+	m_pDirectory->setTitle(__tr2qs("Application Folders"));
+	addPage(m_pDirectory);
 
 	QString tmp;
 
@@ -317,7 +316,7 @@ KviSetupWizard::KviSetupWizard()
 
 	//m_pDirectory->m_pVBox->setStretchFactor(m_pDirectory->m_pTextLabel,1);
 
-	setHelpEnabled(m_pDirectory,false);
+	button(QWizard::HelpButton)->setEnabled(false);
 
 	connect(m_pDataPathEdit,SIGNAL(textChanged ( const QString & )),this,SLOT(newDataTextChanged ( const QString & )));
 	connect(m_pIncomingPathEdit,SIGNAL(textChanged ( const QString & )),this,SLOT(newIncomingTextChanged ( const QString & )));
@@ -420,11 +419,12 @@ KviSetupWizard::KviSetupWizard()
 	m_pOtherInfoSelector = new KviStringSelector(gbox,__tr2qs("Other:"),&(KVI_OPTION_STRING(KviOption_stringCtcpUserInfoOther)),true);
 	m_pOtherInfoSelector->setMinimumLabelWidth(120);
 
-	addPage(m_pIdentity,__tr2qs("Identity"));
+	m_pIdentity->setTitle(__tr2qs("Identity"));
+	addPage(m_pIdentity);
 
 	l = new QLabel(m_pIdentity->m_pVBox,"<b> </b>");
 
-	setHelpEnabled(m_pIdentity,false);
+	button(QWizard::HelpButton)->setEnabled(false);
 
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -537,9 +537,10 @@ KviSetupWizard::KviSetupWizard()
 	m_pServerConfigSelector->setEnabled(FALSE);
 
 	m_pServersChooseFromList->toggle();
-	addPage(m_pServers,__tr2qs("Choose a server to connect"));
-	setFinishEnabled(m_pServers,true);
-	setHelpEnabled(m_pServers,false);
+	m_pServers->setTitle(__tr2qs("Choose a server to connect"));
+	button(QWizard::FinishButton)->setEnabled(true);
+	button(QWizard::HelpButton)->setEnabled(false);
+	addPage(m_pServers);
 
 	// Preconfigured values
 #ifdef COMPILE_ON_WINDOWS
@@ -645,27 +646,29 @@ void KviSetupWizard::oldDirClicked()
 	m_pNewPathBox->setEnabled(false);
 	m_pNewIncomingBox->setEnabled(false);
 	
-	if(m_pIdentity) setAppropriate(m_pIdentity,false);
+	//if(m_pIdentity) setAppropriate(m_pIdentity,false);
 //	if(m_pTheme) setAppropriate(m_pTheme,false);
-	if(m_pServers) setAppropriate(m_pServers,false);
+	//if(m_pServers) setAppropriate(m_pServers,false);
 	
-	if(m_pOldDataPathEdit->text().isEmpty()) setFinishEnabled(m_pDirectory,false);
-	else setFinishEnabled(m_pDirectory,true);
+	bool pState;
+	if(m_pOldDataPathEdit->text().isEmpty()) pState=false;
+	else pState=true;
+	button(QWizard::FinishButton)->setEnabled(pState);
 }
 
 void KviSetupWizard::oldDataTextChanged ( const QString & str)
 {
-	setNextEnabled(m_pDirectory,!str.isEmpty());
+	button(QWizard::NextButton)->setEnabled(!str.isEmpty());
 }
 
 void KviSetupWizard::newDataTextChanged ( const QString & str)
 {
-	setNextEnabled(m_pDirectory,!str.isEmpty() && !m_pIncomingPathEdit->text().isEmpty());
+	button(QWizard::NextButton)->setEnabled(!str.isEmpty() && !m_pIncomingPathEdit->text().isEmpty());
 }
 
 void KviSetupWizard::newIncomingTextChanged ( const QString & str)
 {
-	setNextEnabled(m_pDirectory,!str.isEmpty() && !m_pDataPathEdit->text().isEmpty());
+	button(QWizard::NextButton)->setEnabled(!str.isEmpty() && !m_pDataPathEdit->text().isEmpty());
 }
 
 void KviSetupWizard::newDirClicked()
@@ -674,12 +677,14 @@ void KviSetupWizard::newDirClicked()
 	m_pNewPathBox->setEnabled(true);
 	m_pNewIncomingBox->setEnabled(true);
 	
-	if(m_pIdentity) setAppropriate(m_pIdentity,true);
+	//if(m_pIdentity) setAppropriate(m_pIdentity,true);
 //	if(m_pTheme) setAppropriate(m_pTheme,true);
-	if(m_pServers) setAppropriate(m_pServers,true);
+	//if(m_pServers) setAppropriate(m_pServers,true);
 	
-	if(m_pDataPathEdit->text().isEmpty() || m_pIncomingPathEdit->text().isEmpty()) setNextEnabled(m_pDirectory,false);
-	else setNextEnabled(m_pDirectory,true);
+	bool pState;
+	if(m_pDataPathEdit->text().isEmpty() || m_pIncomingPathEdit->text().isEmpty()) pState=false;
+	else pState=true;
+	button(QWizard::NextButton)->setEnabled(pState);
 }
 void KviSetupWizard::chooseOldDataPath()
 {
@@ -893,7 +898,7 @@ void KviSetupWizard::reject()
 		__tr2qs("You have chosen to abort the setup.<br>KVIrc cannot run until you complete this procedure.<br><br>Do you really wish to abort?"),
 		QMessageBox::Yes,QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) != QMessageBox::Yes)return;
 
-	KviTalWizard::reject();
+	QWizard::reject();
 }
 
 void KviSetupWizard::accept()
@@ -924,7 +929,6 @@ void KviSetupWizard::accept()
 				KviMessageBox::warning(__tr("Cannot create directory %s.\n" \
 					"You may not have write permission " \
 					"for that path. Please go back and choose another directory."));
-				showPage(m_pDirectory);
 				return;
 			}
 		} /*else {
@@ -940,7 +944,7 @@ void KviSetupWizard::accept()
 
 		if(m_pDirUseNew->isOn()) {
 			szDir = m_pIncomingPathEdit->text();
-		} 
+		}
 #ifdef COMPILE_ON_WINDOWS
 		else { //portable
 			szDir = g_pApp->applicationDirPath()+KVI_PATH_SEPARATOR_CHAR+"Downloads";
@@ -955,7 +959,6 @@ void KviSetupWizard::accept()
 				KviMessageBox::warning(__tr("Cannot create directory %s.\n" \
 					"You may not have write permission " \
 					"for that path. Please go back and choose another directory."));
-				showPage(m_pDirectory);
 				return;
 			}
 		}
@@ -1084,5 +1087,5 @@ void KviSetupWizard::accept()
 #ifdef COMPILE_ON_WINDOWS
 	}
 #endif
-	KviTalWizard::accept();
+	QWizard::accept();
 }

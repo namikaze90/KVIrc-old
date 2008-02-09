@@ -56,9 +56,8 @@
 #include <QLabel>
 #include <QTextEdit>
 
-
 KviPackThemeDialog::KviPackThemeDialog(QWidget * pParent,QList<KviThemeInfo*> * pThemeInfoList)
-: KviTalWizard(pParent)
+: QWizard(pParent)
 {
 	m_pThemeInfoList = pThemeInfoList;
 
@@ -114,10 +113,10 @@ KviPackThemeDialog::KviPackThemeDialog(QWidget * pParent,QList<KviThemeInfo*> * 
 	setMinimumSize(400,350);
 
 	// welcome page ==================================================================================
-	QWidget * pPage = new QWidget(this);
-	QGridLayout * pLayout = new QGridLayout(pPage,2,1,4,4);
+	m_pPage = new QWizardPage(this);
+	QGridLayout * pLayout = new QGridLayout(m_pPage,2,1,4,4);
 	
-	QLabel * pLabel = new QLabel(pPage);
+	QLabel * pLabel = new QLabel(m_pPage);
 	QString szText = "<p>";
 	szText += __tr2qs_ctx("This procedure allows you to export the selected themes to a single package. It is useful when you want to distribute your themes to the public.","theme");
 	szText += "</p><p>";
@@ -130,18 +129,19 @@ KviPackThemeDialog::KviPackThemeDialog(QWidget * pParent,QList<KviThemeInfo*> * 
 	pLayout->addWidget(pLabel,0,0);
 	pLayout->setRowStretch(1,1);
 	
-	addPage(pPage,__tr2qs_ctx("Welcome","theme"));
-	setBackEnabled(pPage,false);
-	setNextEnabled(pPage,true);
-	setHelpEnabled(pPage,false);
-	setFinishEnabled(pPage,false);
+	m_pPage->setTitle(__tr2qs_ctx("Welcome","theme"));
+	addPage(m_pPage);
+	button(QWizard::BackButton)->setEnabled(false);
+	button(QWizard::NextButton)->setEnabled(true);
+	button(QWizard::HelpButton)->setEnabled(false);
+	button(QWizard::FinishButton)->setEnabled(false);
 
 	// theme data name ================================================================================
 
-	pPage = new QWidget(this);
-	pLayout = new QGridLayout(pPage,2,1,4,4);
+	m_pPage = new QWizardPage(this);
+	pLayout = new QGridLayout(m_pPage,2,1,4,4);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("This is the information list for the themes you're packaging. If it looks OK press \"Next\" to continue, otherwise press \"Cancel\" and rewiew your themes first.","theme"));
 	pLabel->setTextFormat(Qt::RichText);
 	pLayout->addWidget(pLabel,0,0);
@@ -185,58 +185,59 @@ KviPackThemeDialog::KviPackThemeDialog(QWidget * pParent,QList<KviThemeInfo*> * 
 	
 	szThemesDescription += "</body></html>";
 
-	QTextEdit * pTextEdit = new QTextEdit(pPage);
+	QTextEdit * pTextEdit = new QTextEdit(m_pPage);
 	//pTextEdit->setPaper(QBrush(QColor(255,255,255)));
 	pTextEdit->setReadOnly(true);
 	pTextEdit->setText(szThemesDescription);
 	pLayout->addWidget(pTextEdit,1,0);
 	pLayout->setRowStretch(1,1);
 
-	addPage(pPage,__tr2qs_ctx("Theme Data","theme"));
-	setBackEnabled(pPage,true);
-	setHelpEnabled(pPage,false);
-	setNextEnabled(pPage,true);
-	setFinishEnabled(pPage,false);
+	m_pPage->setTitle(__tr2qs_ctx("Theme Data","theme"));
+	addPage(m_pPage);
+	button(QWizard::BackButton)->setEnabled(true);
+	button(QWizard::HelpButton)->setEnabled(false);
+	button(QWizard::NextButton)->setEnabled(true);
+	button(QWizard::FinishButton)->setEnabled(false);
 
 	// packager informations ================================================================================
 
-	pPage = new QWidget(this);
-	pLayout = new QGridLayout(pPage,5,2,4,4);
+	m_pPage = new QWizardPage(this);
+	pLayout = new QGridLayout(m_pPage,5,2,4,4);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Here you need to provide informations about you (the packager) and a short description of the package you're creating.","theme"));
 	pLabel->setTextFormat(Qt::RichText);
 	pLayout->addMultiCellWidget(pLabel,0,0,0,1);
 	
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Package Name:","theme"));
 	pLayout->addWidget(pLabel,1,0);
 	
-	m_pPackageNameEdit = new QLineEdit(pPage);
+	m_pPackageNameEdit = new QLineEdit(m_pPage);
 	m_pPackageNameEdit->setText(szPackageName);
 	pLayout->addWidget(m_pPackageNameEdit,1,1);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Version:","theme"));
 	pLayout->addWidget(pLabel,2,0);
 	
-	m_pPackageVersionEdit = new QLineEdit(pPage);
+	m_pPackageVersionEdit = new QLineEdit(m_pPage);
 	m_pPackageVersionEdit->setText(szPackageVersion);
 	pLayout->addWidget(m_pPackageVersionEdit,2,1);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Description:","theme"));
 	pLayout->addWidget(pLabel,3,0);
 	
-	m_pPackageDescriptionEdit = new QTextEdit(pPage);
+	m_pPackageDescriptionEdit = new QTextEdit(m_pPage);
 	m_pPackageDescriptionEdit->setText(szPackageDescription);
 	pLayout->addWidget(m_pPackageDescriptionEdit,3,1);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Package Author:","theme"));
 	pLayout->addWidget(pLabel,4,0);
 	
-	m_pPackagerNameEdit = new QLineEdit(pPage);
+	m_pPackagerNameEdit = new QLineEdit(m_pPage);
 	m_pPackagerNameEdit->setText(szPackageAuthor);
 	pLayout->addWidget(m_pPackagerNameEdit,4,1);
 
@@ -244,68 +245,71 @@ KviPackThemeDialog::KviPackThemeDialog(QWidget * pParent,QList<KviThemeInfo*> * 
 	pLayout->setRowStretch(3,1);
 	pLayout->setColStretch(1,1);
 
-	addPage(pPage,__tr2qs_ctx("Package Informations","theme"));
-	setBackEnabled(pPage,true);
-	setHelpEnabled(pPage,false);
-	setNextEnabled(pPage,true);
-	setFinishEnabled(pPage,false);
+	m_pPage->setTitle(__tr2qs_ctx("Package Informations","theme"));
+	addPage(m_pPage);
+	button(QWizard::BackButton)->setEnabled(true);
+	button(QWizard::HelpButton)->setEnabled(false);
+	button(QWizard::NextButton)->setEnabled(true);
+	button(QWizard::FinishButton)->setEnabled(false);
 
 	// screenshot/logo/icon ================================================================================
 
-	pPage = new QWidget(this);
-	pLayout = new QGridLayout(pPage,3,1,4,4);
+	m_pPage = new QWizardPage(this);
+	pLayout = new QGridLayout(m_pPage,3,1,4,4);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Here you can choose the image that will appear in the installation dialog for your theme package. It can be an icon, a logo or a screenshot and it should be not larger than 300x225. If you don't provide an image a simple default icon will be used at installation stage.","theme"));
 	pLabel->setTextFormat(Qt::RichText);
 	pLayout->addWidget(pLabel,0,0);
 	
-	m_pImageLabel = new QLabel(pPage);
+	m_pImageLabel = new QLabel(m_pPage);
 	m_pImageLabel->setFrameStyle(QFrame::Sunken | QFrame::Panel);
 	m_pImageLabel->setMinimumSize(300,225);
 	m_pImageLabel->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 	pLayout->addWidget(m_pImageLabel,1,0);
 
 	QString szFilter = "*.png *.jpg *.xpm";
-	m_pImageSelector = new KviFileSelector(pPage,"",&m_szImagePath,true,0,szFilter);
+	m_pImageSelector = new KviFileSelector(m_pPage,"",&m_szImagePath,true,0,szFilter);
 	connect(m_pImageSelector,SIGNAL(selectionChanged(const QString &)),this,SLOT(imageSelectionChanged(const QString &)));
 	pLayout->addWidget(m_pImageSelector,2,0);
 	pLayout->setRowStretch(1,1);
 
-	m_pImageSelectionPage = pPage;
-	addPage(pPage,__tr2qs_ctx("Icon/Screenshot","theme"));
-	setBackEnabled(pPage,true);
-	setHelpEnabled(pPage,false);
-	setNextEnabled(pPage,true);
-	setFinishEnabled(pPage,false);
+	m_pImageSelectionPage = m_pPage;
+	m_pPage->setTitle(__tr2qs_ctx("Icon/Screenshot","theme"));
+	addPage(m_pPage);
+	button(QWizard::BackButton)->setEnabled(true);
+	button(QWizard::HelpButton)->setEnabled(false);
+	button(QWizard::NextButton)->setEnabled(true);
+	button(QWizard::FinishButton)->setEnabled(false);
 
 	// save file name ================================================================================
 
-	pPage = new QWidget(this);
-	pLayout = new QGridLayout(pPage,4,1,4,4);
+	m_pPage = new QWizardPage(this);
+	pLayout = new QGridLayout(m_pPage,4,1,4,4);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Here you must choose the file name for the theme package. It should have a *.%1 extension.","theme").arg(KVI_FILEEXTENSION_THEMEPACKAGE));
 	pLabel->setTextFormat(Qt::RichText);
 	pLayout->addWidget(pLabel,0,0);
 
 	szFilter = "*.";
 	szFilter += KVI_FILEEXTENSION_THEMEPACKAGE;
-	m_pPathSelector = new KviFileSelector(pPage,"",&m_szPackagePath,true,KviFileSelector::ChooseSaveFileName,szFilter);
+	m_pPathSelector = new KviFileSelector(m_pPage,"",&m_szPackagePath,true,KviFileSelector::ChooseSaveFileName,szFilter);
 	pLayout->addWidget(m_pPathSelector,1,0);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Finally hit the \"Finish\" button to complete the packaging operation.","theme"));
 	pLabel->setTextFormat(Qt::RichText);
 	pLayout->addWidget(pLabel,3,0);
 
 	pLayout->setRowStretch(2,1);
 
-	addPage(pPage,__tr2qs_ctx("Package Path","theme"));
-	setBackEnabled(pPage,true);
-	setHelpEnabled(pPage,false);
-	setNextEnabled(pPage,false);
-	setFinishEnabled(pPage,true);
+	m_pPage->setTitle(__tr2qs_ctx("Package Path","theme"));
+	addPage(m_pPage);
+	button(QWizard::BackButton)->setEnabled(true);
+	button(QWizard::HelpButton)->setEnabled(false);
+	button(QWizard::NextButton)->setEnabled(false);
+	button(QWizard::FinishButton)->setEnabled(true);
 
 	if(!szScreenshotPath.isEmpty())
 	{
@@ -345,7 +349,7 @@ void KviPackThemeDialog::imageSelectionChanged(const QString &szImagePath)
 void KviPackThemeDialog::accept()
 {
 	if(!packTheme())return;
-	KviTalWizard::accept();
+	QWizard::accept();
 }
 
 
@@ -372,7 +376,6 @@ bool KviPackThemeDialog::packTheme()
 		{
 			QMessageBox::critical(this,__tr2qs_ctx("Export Theme - KVIrc","theme"),__tr2qs_ctx("Failed to load the selected image: please fix it","theme"),
 				QMessageBox::Ok,QMessageBox::NoButton,QMessageBox::NoButton);
-			showPage(m_pImageSelectionPage);
 			return false;
 		}
 	}

@@ -40,14 +40,19 @@
 #include <QLayout>
 #include <QVariant>
 #include <QFrame>
+#include <QWizardPage>
 
 
 extern KVIRC_API KviRegisteredUserDataBase * g_pRegisteredUserDataBase;
 extern QList<KviRegistrationWizard*> * g_pRegistrationWizardList;
 
 KviRegistrationWizard::KviRegistrationWizard(const char * startMask,KviRegisteredUserDataBase * db,QWidget * par,bool bModal)
-: KviTalWizard(par,"regusers_wizard",bModal)
+: QWizard(par)
 {
+	setObjectName("regusers_wizard");
+	setModal(bModal);
+
+
 	m_pDb = db;
 	
 	m_bModal = bModal;
@@ -75,8 +80,8 @@ KviRegistrationWizard::KviRegistrationWizard(const char * startMask,KviRegistere
 
 	setSizeGripEnabled( TRUE );
 	
-	m_pPage1 = new QWidget(this);
-	m_pPage1Layout = new QGridLayout(m_pPage1); 
+	m_pPage1 = new QWizardPage(this);
+	m_pPage1Layout = new QGridLayout(m_pPage1);
 	m_pPage1Layout->setSpacing(4);
 	m_pPage1Layout->setMargin(8);
 	
@@ -89,14 +94,15 @@ KviRegistrationWizard::KviRegistrationWizard(const char * startMask,KviRegistere
 	//m_pEditRealName->setAlignment(int(QLineEdit::AlignHCenter));
 	
 	m_pPage1Layout->addWidget(m_pEditRealName,1,0);
-	addPage( m_pPage1,__tr2qs("Step 1: Entry Name"));
+	m_pPage1->setTitle(__tr2qs("Step 1: Entry Name"));
+	addPage(m_pPage1);
 
 	if(mask.nick() != "*")m_pEditRealName->setText(mask.nick());
 
 	connect(m_pEditRealName,SIGNAL(textChanged(const QString &)),this,SLOT(realNameChanged(const QString &)));
 
 	// PAGE 2
-	m_pPage2 = new QWidget(this);
+	m_pPage2 = new QWizardPage(this);
 	m_pPage2Layout = new QGridLayout( m_pPage2 ); 
 	m_pPage2Layout->setSpacing( 4 );
 	m_pPage2Layout->setMargin( 8 );
@@ -160,10 +166,11 @@ KviRegistrationWizard::KviRegistrationWizard(const char * startMask,KviRegistere
 	TextLabel10_3_2->setAlignment(int(Qt::AlignCenter));
 	m_pPage2Layout->addWidget(TextLabel10_3_2,2,3);
 	
-	addPage(m_pPage2,__tr2qs("Step 2: Mask Selection"));
+	m_pPage2->setTitle(__tr2qs("Step 2: Mask Selection"));
+	addPage(m_pPage2);
 
 	// PAGE 3
-	m_pPage3 = new QWidget(this);
+	m_pPage3 = new QWizardPage(this);
 	m_pPage3Layout = new QGridLayout(m_pPage3); 
 	m_pPage3Layout->setSpacing(4);
 	m_pPage3Layout->setMargin(8);
@@ -182,11 +189,12 @@ KviRegistrationWizard::KviRegistrationWizard(const char * startMask,KviRegistere
 
 	m_pPage3Layout->setRowStretch(0,1);
 
-	addPage(m_pPage3,__tr2qs( "Step 3: Avatar Selection"));
+	m_pPage3->setTitle(__tr2qs( "Step 3: Avatar Selection"));
+	addPage(m_pPage3);
 
 	// PAGE 4
-	m_pPage4 = new QWidget(this);
-	m_pPage4Layout = new QGridLayout(m_pPage4); 
+	m_pPage4 = new QWizardPage(this);
+	m_pPage4Layout = new QGridLayout(m_pPage4);
 	m_pPage4Layout->setSpacing(4);
 	m_pPage4Layout->setMargin(8);
 
@@ -224,10 +232,11 @@ KviRegistrationWizard::KviRegistrationWizard(const char * startMask,KviRegistere
 
 	m_pPage4Layout->setRowStretch(0,1);
 
-	addPage(m_pPage4,__tr2qs("Step 4: Notify List"));
+	m_pPage4->setTitle(__tr2qs("Step 4: Notify List"));
+	addPage(m_pPage4);
 
 	// PAGE 5
-	m_pPage5 = new QWidget(this);
+	m_pPage5 = new QWizardPage(this);
 	m_pPage5Layout = new QGridLayout(m_pPage5); 
 	m_pPage5Layout->setSpacing(4);
 	m_pPage5Layout->setMargin(8);
@@ -236,9 +245,10 @@ KviRegistrationWizard::KviRegistrationWizard(const char * startMask,KviRegistere
 	m_pTextLabel5->setText(__tr2qs("<p>That's it. The user registration has been completed.<br><br>Click \"<b>Finish</b>\" to close this dialog.</p>"));
 	m_pPage5Layout->addWidget(m_pTextLabel5,0,0);
 	
-	addPage(m_pPage5,__tr2qs("Registration Complete"));
+	m_pPage5->setTitle(__tr2qs("Registration Complete"));
+	addPage(m_pPage5);
 
-	setFinishEnabled(m_pPage5,true);
+	button(QWizard::FinishButton)->setEnabled(true);
 	QString dummy;
 	maskChanged(dummy);
 	realNameChanged(dummy);
@@ -257,7 +267,7 @@ KviRegistrationWizard::~KviRegistrationWizard()
 
 void KviRegistrationWizard::reject()
 {
-	KviTalWizard::reject();
+	QWizard::reject();
 	if(!m_bModal)delete this;
 	// hide();
 	// g_pApp->collectGarbage(this);
@@ -359,7 +369,7 @@ void KviRegistrationWizard::accept()
 	if(bSetAvatar && !bLocalDb)
 		g_pApp->resetAvatarForMatchingUsers(u);
 
-	KviTalWizard::accept();
+	QWizard::accept();
 
 	// if(!m_bModal)delete this;
 	// hide();
@@ -370,7 +380,7 @@ void KviRegistrationWizard::showEvent(QShowEvent *e)
 {
 	if(height() < 420)resize(width(),420);
 	move((g_pApp->desktop()->width() - width())/2,(g_pApp->desktop()->height() - height())/2);
-	KviTalWizard::showEvent(e);
+	QWizard::showEvent(e);
 }
 
 void KviRegistrationWizard::maskChanged(const QString &)
@@ -381,19 +391,19 @@ void KviRegistrationWizard::maskChanged(const QString &)
 
 	if(tmp1.isEmpty())
 	{
-		setNextEnabled(m_pPage2,false);
+		button(QWizard::NextButton)->setEnabled(false);
 		return;
 	}
 	
 	if(tmp2.isEmpty())
 	{
-		setNextEnabled(m_pPage2,false);
+		button(QWizard::NextButton)->setEnabled(false);
 		return;
 	}
 
 	if(tmp3.isEmpty())
 	{
-		setNextEnabled(m_pPage2,false);
+		button(QWizard::NextButton)->setEnabled(false);
 		return;
 	}
 
@@ -401,13 +411,13 @@ void KviRegistrationWizard::maskChanged(const QString &)
 
 	// KviIrcMask m(mask.ptr());
 
-	setNextEnabled(m_pPage2,mask!="*!*@*");
+	button(QWizard::NextButton)->setEnabled(mask!="*!*@*");
 }
 
 void KviRegistrationWizard::realNameChanged(const QString &)
 {
 	QString tmp = m_pEditRealName->text();
-	setNextEnabled(m_pPage1,!(tmp.isEmpty() || tmp.isNull()));
+	button(QWizard::NextButton)->setEnabled(!(tmp.isEmpty() || tmp.isNull()));
 }
 
 void KviRegistrationWizard::notifyNickChanged(const QString &)
@@ -427,7 +437,7 @@ void KviRegistrationWizard::notifyNickChanged(const QString &)
 		}
 	}
 
-	setNextEnabled(m_pPage4,bYes);
+	button(QWizard::NextButton)->setEnabled(bYes);
 }
 
 void KviRegistrationWizard::notifyCheckToggled(bool)

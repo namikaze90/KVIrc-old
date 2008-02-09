@@ -26,10 +26,11 @@
 
 #include "kvi_settings.h"
 #include "kvi_theme.h"
-#include <kvi_tal_wizard.h>
 
 #include <QDialog>
 #include <QTextEdit>
+#include <QWizard>
+#include <QWizardPage>
 
 class KviFileSelector;
 
@@ -39,22 +40,23 @@ class QCheckBox;
 class QLabel;
 
 
-class KviSaveThemeDialog : public KviTalWizard
+class KviSaveThemeDialog : public QWizard
 {
 	Q_OBJECT
 public:
 	KviSaveThemeDialog(QWidget * pParent);
 	virtual ~KviSaveThemeDialog();
 protected:
-	QString m_szScreenshotPath;
+	QString           m_szScreenshotPath;
 	KviFileSelector * m_pImageSelector;
-	QLabel * m_pImageLabel;
-	QLineEdit * m_pThemeNameEdit;
-	QTextEdit * m_pThemeDescriptionEdit;
-	QLineEdit * m_pThemeVersionEdit;
-	QLineEdit * m_pAuthorNameEdit;
-	QWidget * m_pImageSelectionPage;
-	QPushButton * m_pOkButton;
+	QLabel          * m_pImageLabel;
+	QLineEdit       * m_pThemeNameEdit;
+	QTextEdit       * m_pThemeDescriptionEdit;
+	QLineEdit       * m_pThemeVersionEdit;
+	QLineEdit       * m_pAuthorNameEdit;
+	QWidget         * m_pImageSelectionPage;
+	QPushButton     * m_pOkButton;
+	QWizardPage     * m_pPage;
 protected:
 	virtual void accept();
 	bool saveTheme();
@@ -63,7 +65,5 @@ protected slots:
 	void imageSelectionChanged(const QString &szImagePath);
 	//void themeNameChanged(const QString &txt);
 };
-
-
 
 #endif //!_SAVETHEMEDIALOG_H_

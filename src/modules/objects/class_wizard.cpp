@@ -27,12 +27,13 @@
 #include "kvi_error.h"
 #include "kvi_debug.h"
 #include "kvi_locale.h"
-#include <kvi_tal_wizard.h>
 
+#include <QWizard>
+#include <QWizardPage>
 #include <QPushButton>
 
 /*
-	@doc:	wizard
+	@doc:   wizard
 	@keyterms:
 		wizard object class,
 	@title:
@@ -55,26 +56,11 @@
 	Remove a page from the wizard sequence.
 	!fn: $setTitle(<page>,<title:string>)
 	Sets the title for page page to title text.
-	!fn: $setBackEnabled(<page_widget>,<bEnabled:boolean>)
-	If enable is set to 1, page page has a Back button; otherwise page has no Back button.[br]
-	By default all pages have this button.
-	!fn: $setNextEnabled(<page_widget>,<bEnabled:boolean>)
-	If enable is set to 1, page page has a Next button; otherwise the Next button on page is disabled.[br]
-	By default all pages have this button.
-	!fn: $setFinishEnabled(<page_widget>,<bEnabled:boolean>)
-	If enable is set to 1, page page has a Finish button; otherwise the Finish button on page is disabled.[br]
-	By default NO pages have this button.
-	!fn: $setHelpEnabled(<page_widget>,<bEnabled:boolean>)
-	If enable is set to 1, page page has a Help button; otherwise the Help button on page is disabled.[br]
-	By default all pages have this button.
-	!fn: $setNextBtnText(<text:string>)
-	Set the text for button Next.
-	!fn: $setBackBtnText(<text:string>)
-	Set the text for button Back.
-	!fn: $setFinishBtnText(<text:string>)
-	Set the text for button Finish.
-	!fn: $setHelpBtnText(<text:string>)
-	Set the text for button Help.
+	!fn: $setEnabled(<page_widget>,<btn:string>,<bEnabled:boolean>)
+	If enable is set to 1, page page has a btn button; otherwise page has no btn button.[br]
+	btn can be Back, Next, Finish, Cancel and Help.[br]
+	!fn: $setText(<btn:string>,<text:string>)
+	Set the text for button btn, which can be Back, Next, Finish, Cancel and Help.[br]
 	!fn: $acceptEvent()
 	This function is called when the user click on the Finish button.
 	!fn: $rejectEvent()
@@ -94,19 +80,13 @@
 KVSO_BEGIN_REGISTERCLASS(KviKvsObject_wizard,"wizard","widget")
 
 	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"addPage", functionaddPage)
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"insertPage", functioninsertPage)
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"removePage", functionremovePage)
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setTitle", functionsetTitle)
+	//KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"insertPage", functioninsertPage)
+	//KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"removePage", functionremovePage)
+	//KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setTitle", functionsetTitle)
 
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setBackEnabled", functionsetBackEnabled);
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setNextEnabled", functionsetNextEnabled);
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setFinishEnabled", functionsetFinishEnabled);
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setHelpEnabled", functionsetHelpEnabled);
+	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setEnabled", functionsetEnabled);
+	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setText", functionsetText);
 
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setBackBtnText", functionsetBackBtnText);
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setNextBtnText", functionsetNextBtnText);
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setFinishBtnText", functionsetFinishBtnText);
-	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"setHelpBtnText", functionsetHelpBtnText);
 	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"nextClickedEvent", functionnextClickedEvent);
 	KVSO_REGISTER_HANDLER(KviKvsObject_wizard,"backClickedEvent", functionbackClickedEvent);
 
@@ -136,6 +116,7 @@ bool KviKvsObject_wizard::functionaddPage(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
 	QString szLabel;
+	QWizardPage * page;
 	kvs_hobject_t hObject;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("page_widget",KVS_PT_HOBJECT,0,hObject)
@@ -148,10 +129,13 @@ bool KviKvsObject_wizard::functionaddPage(KviKvsObjectFunctionCall *c)
 		c->warning(__tr2qs("Can't add a non-widget object"));
 		return true;
 	}
-	((KviTalWizard *)widget())->addPage(((QWidget *)(ob->object())),szLabel);
+	page=(QWizardPage *)ob->object();
+	page->setTitle(szLabel);
+	((QWizard *)widget())->addPage(page);
 	return true;
 }
 
+/*
 bool KviKvsObject_wizard::functioninsertPage(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -170,7 +154,7 @@ bool KviKvsObject_wizard::functioninsertPage(KviKvsObjectFunctionCall *c)
 		c->warning(__tr2qs("Can't add a non-widget object"));
 		return true;
 	}
-	((KviTalWizard *)widget())->insertPage(((QWidget *)(ob->object())),szLabel,uIndex);
+	((QWizard *)widget())->insertPage(((QWidget *)(ob->object())),szLabel,uIndex);
 	return true;
 }
 
@@ -188,10 +172,12 @@ bool KviKvsObject_wizard::functionremovePage(KviKvsObjectFunctionCall *c)
 		c->warning(__tr2qs("Not a widget object"));
 		return true;
 	}
-	((KviTalWizard *)widget())->removePage(((QWidget *)(ob->object())));
+	((QWizard *)widget())->removePage(((QWidget *)(ob->object())));
 	return true;
 }
+*/
 
+/*
 bool KviKvsObject_wizard::functionsetTitle(KviKvsObjectFunctionCall *c)
 {
 	KviKvsObject *ob;
@@ -208,17 +194,21 @@ bool KviKvsObject_wizard::functionsetTitle(KviKvsObjectFunctionCall *c)
 		c->warning(__tr2qs("Widget object required"));
 		return true;
 	}
-	((KviTalWizard *)widget())->setTitle(((QWidget *)(ob->object())),szTitle);
+	((QWizard *)widget())->setTitle(((QWidget *)(ob->object())),szTitle);
 	return true;
 }
+*/
 
-bool KviKvsObject_wizard::functionsetBackEnabled(KviKvsObjectFunctionCall *c)
+bool KviKvsObject_wizard::functionsetEnabled(KviKvsObjectFunctionCall *c)
 {
 	bool bEnabled;
 	KviKvsObject *ob;
 	kvs_hobject_t hObject;
+	QString btnName;
+	QWizard::WizardButton btnType;
 	KVSO_PARAMETERS_BEGIN(c)
 		KVSO_PARAMETER("page_widget",KVS_PT_HOBJECT,0,hObject)
+		KVSO_PARAMETER("btn",KVS_PT_STRING,0,btnName)
 		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
 	KVSO_PARAMETERS_END(c)
 	ob=KviKvsKernel::instance()->objectController()->lookupObject(hObject);
@@ -228,111 +218,55 @@ bool KviKvsObject_wizard::functionsetBackEnabled(KviKvsObjectFunctionCall *c)
 		c->warning(__tr2qs("Widget object required"));
 		return true;
 	}
-	((KviTalWizard *)widget())->setBackEnabled(((QWidget *)(ob->object())),bEnabled);
-	return true;
-}
 
-bool KviKvsObject_wizard::functionsetNextEnabled(KviKvsObjectFunctionCall *c)
-{
-	bool bEnabled;
-	KviKvsObject *ob;
-	kvs_hobject_t hObject;
-	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("page_widget",KVS_PT_HOBJECT,0,hObject)
-		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
-	KVSO_PARAMETERS_END(c)
-	ob=KviKvsKernel::instance()->objectController()->lookupObject(hObject);
-	if(!widget())return true;
-	if(!ob->object()->isWidgetType())
+	if(btnName.length()==0)
 	{
-		c->warning(__tr2qs("Widget object required"));
+		c->warning(__tr2qs("Button name required"));
 		return true;
 	}
-	((KviTalWizard *)widget())->setNextEnabled(((QWidget *)(ob->object())),bEnabled);
-	return true;
-}
 
-bool KviKvsObject_wizard::functionsetFinishEnabled(KviKvsObjectFunctionCall *c)
-{
-	bool bEnabled;
-	KviKvsObject *ob;
-	kvs_hobject_t hObject;
-	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("page_widget",KVS_PT_HOBJECT,0,hObject)
-		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
-	KVSO_PARAMETERS_END(c)
-	ob=KviKvsKernel::instance()->objectController()->lookupObject(hObject);
-	if(!widget())return true;
-	if(!ob->object()->isWidgetType())
-	{
-		c->warning(__tr2qs("Widget object required"));
+	if(btnName=="Back") btnType=QWizard::BackButton;
+	else if(btnName=="Next") btnType=QWizard::NextButton;
+	else if(btnName=="Finish") btnType=QWizard::FinishButton;
+	else if(btnName=="Cancel") btnType=QWizard::CancelButton;
+	else if(btnName=="Help") btnType=QWizard::HelpButton;
+	else {
+		c->warning(__tr2qs("Button name mismatch"));
 		return true;
 	}
-	((KviTalWizard *)widget())->setFinishEnabled(((QWidget *)(ob->object())),bEnabled);
+
+	((QWizard *)widget())->button(btnType)->setEnabled(bEnabled);
 	return true;
 }
 
-bool KviKvsObject_wizard::functionsetHelpEnabled(KviKvsObjectFunctionCall *c)
+bool KviKvsObject_wizard::functionsetText(KviKvsObjectFunctionCall *c)
 {
-	bool bEnabled;
-	KviKvsObject *ob;
-	kvs_hobject_t hObject;
+	QString szText;
+	QString btnName;
+	QWizard::WizardButton btnType;
 	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("page_widget",KVS_PT_HOBJECT,0,hObject)
-		KVSO_PARAMETER("bEnabled",KVS_PT_BOOL,0,bEnabled)
+		KVSO_PARAMETER("btn",KVS_PT_STRING,0,btnName)
+		KVSO_PARAMETER("text",KVS_PT_STRING,0,szText)
 	KVSO_PARAMETERS_END(c)
-	ob=KviKvsKernel::instance()->objectController()->lookupObject(hObject);
-	if(!widget())return true;
-	if(!ob->object()->isWidgetType())
+	if(!widget()) return true;
+
+	if(btnName.length()==0)
 	{
-		c->warning(__tr2qs("Widget object required"));
+		c->warning(__tr2qs("Button name required"));
 		return true;
 	}
-	((KviTalWizard *)widget())->setHelpEnabled(((QWidget *)(ob->object())),bEnabled);
-	return true;
-}
 
-bool KviKvsObject_wizard::functionsetBackBtnText(KviKvsObjectFunctionCall *c)
-{
-	QString szText;
-	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("text",KVS_PT_STRING,0,szText)
-	KVSO_PARAMETERS_END(c)
-	if (widget())
-		((KviTalWizard *)widget())->KviTalWizard::backButton()->setText(szText);
-	return true;
-}
+	if(btnName=="Back") btnType=QWizard::BackButton;
+	else if(btnName=="Next") btnType=QWizard::NextButton;
+	else if(btnName=="Finish") btnType=QWizard::FinishButton;
+	else if(btnName=="Cancel") btnType=QWizard::CancelButton;
+	else if(btnName=="Help") btnType=QWizard::HelpButton;
+	else {
+		c->warning(__tr2qs("Button name mismatch"));
+		return true;
+	}
 
-bool KviKvsObject_wizard::functionsetNextBtnText(KviKvsObjectFunctionCall *c)
-{
-	QString szText;
-	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("text",KVS_PT_STRING,0,szText)
-	KVSO_PARAMETERS_END(c)
-	if (widget())
-		((KviTalWizard *)widget())->KviTalWizard::nextButton()->setText(szText);
-	return true;
-}
-
-bool KviKvsObject_wizard::functionsetHelpBtnText(KviKvsObjectFunctionCall *c)
-{
-	QString szText;
-	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("text",KVS_PT_STRING,0,szText)
-	KVSO_PARAMETERS_END(c)
-	if (widget())
-		((KviTalWizard *)widget())->KviTalWizard::helpButton()->setText(szText);
-	return true;
-}
-
-bool KviKvsObject_wizard::functionsetFinishBtnText(KviKvsObjectFunctionCall *c)
-{
-	QString szText;
-	KVSO_PARAMETERS_BEGIN(c)
-		KVSO_PARAMETER("text",KVS_PT_STRING,0,szText)
-	KVSO_PARAMETERS_END(c)
-	if (widget())
-		((KviTalWizard *)widget())->KviTalWizard::finishButton()->setText(szText);
+	((QWizard *)widget())->button(btnType)->setText(szText);
 	return true;
 }
 
@@ -375,22 +309,23 @@ void KviKvsObject_wizard::backClicked()
 }
 
 KviKvsMdmWizard::KviKvsMdmWizard(QWidget * par,const char * name,KviKvsObject_wizard * parent)
-:KviTalWizard( par,name)
+:QWizard(par)
 {
+	this->setObjectName(name);
 	m_pParentScript=parent;
-	connect (this->backButton(),SIGNAL(clicked()),this,SLOT(slotBackClicked()));
-	connect (this->nextButton(),SIGNAL(clicked()),this,SLOT(slotNextClicked()));
+	connect (this->button(QWizard::BackButton),SIGNAL(clicked()),this,SLOT(slotBackClicked()));
+	connect (this->button(QWizard::NextButton),SIGNAL(clicked()),this,SLOT(slotNextClicked()));
 }
 
 void KviKvsMdmWizard::accept()
 {
-	if(m_pParentScript->accept())KviTalWizard::accept();
+	if(m_pParentScript->accept())QWizard::accept();
 
 }
 
 void KviKvsMdmWizard::reject()
 {
-	if(m_pParentScript->reject())KviTalWizard::reject();
+	if(m_pParentScript->reject())QWizard::reject();
 
 }
 

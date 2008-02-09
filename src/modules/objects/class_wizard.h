@@ -1,5 +1,5 @@
-#ifndef	_CLASS_WIZARD_H_
-#define	_CLASS_WIZARD_H_
+#ifndef _CLASS_WIZARD_H_
+#define _CLASS_WIZARD_H_
 //
 //   File : class_wizard.h
 //   Creation date : Fri Jan 28 14:21:48 CEST 2005
@@ -26,7 +26,7 @@
 #include "class_widget.h"
 #include "object_macros.h"
 
-#include <kvi_tal_wizard.h>
+#include <QWizard>
 
 class KviKvsObject_wizard : public KviKvsObject_widget
 {
@@ -38,33 +38,21 @@ public:
 	bool reject();
 	void nextClicked();
 	void backClicked();
-
-
 protected:
 	virtual bool init(KviKvsRunTimeContext * pContext,KviKvsVariantList *pParams);
 
 	bool functionaddPage(KviKvsObjectFunctionCall *c);
 	bool functioninsertPage(KviKvsObjectFunctionCall *c);
 	bool functionremovePage(KviKvsObjectFunctionCall *c);
-	bool functionsetTitle(KviKvsObjectFunctionCall *c);
-	bool functionsetBackEnabled(KviKvsObjectFunctionCall *c);
-	bool functionsetNextEnabled(KviKvsObjectFunctionCall *c);
-	bool functionsetFinishEnabled(KviKvsObjectFunctionCall *c);
-	bool functionsetHelpEnabled(KviKvsObjectFunctionCall *c);
-
-	bool functionsetBackBtnText(KviKvsObjectFunctionCall *c);
-	bool functionsetNextBtnText(KviKvsObjectFunctionCall *c);
-	bool functionsetFinishBtnText(KviKvsObjectFunctionCall *c);
-	bool functionsetHelpBtnText(KviKvsObjectFunctionCall *c);
-
+	//bool functionsetTitle(KviKvsObjectFunctionCall *c);
+	bool functionsetEnabled(KviKvsObjectFunctionCall *c);
+	bool functionsetText(KviKvsObjectFunctionCall *c);
 	bool functionnextClickedEvent(KviKvsObjectFunctionCall *c);
 	bool functionbackClickedEvent(KviKvsObjectFunctionCall *c);
-
 };
 
 
-class KviKvsMdmWizard :  public KviTalWizard
-
+class KviKvsMdmWizard : public QWizard
 {
 	Q_OBJECT
 public:

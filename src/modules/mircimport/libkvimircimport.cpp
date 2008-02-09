@@ -21,20 +21,22 @@
 //
 
 #include "libkvimircimport.h"
-#include "kvi_module.h"
 
+#include "kvi_module.h"
 #include "kvi_filedialog.h"
 #include "kvi_fileutils.h"
 #include "kvi_locale.h"
 #include "kvi_config.h"
 #include "kvi_app.h"
 
-
 #include <QMessageBox>
 #include <QDir>
 #include <QPushButton>
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QWizard>
+
+#define KVI_WWWMIRCCOUK_SERVERSINI "http://www.mirc.co.uk/servers.ini"
 
 KviMircServersIniImport * g_pMircServersIniImport = 0;
 KviRemoteMircServersIniImport * g_pRemoteMircServersIniImport = 0;
@@ -125,17 +127,8 @@ void KviMircServersIniImport::start()
 }
 
 
-
-
-
-
-
-#define KVI_WWWMIRCCOUK_SERVERSINI "http://www.mirc.co.uk/servers.ini"
-
-
-
 KviRemoteMircServerImportWizard::KviRemoteMircServerImportWizard(KviRemoteMircServersIniImport * f)
-: KviTalWizard(0)
+: QWizard(0)
 {
 	QString capt = __tr2qs("Remote mIRC servers.ini Import Wizard");
 	setCaption(capt);
@@ -144,44 +137,48 @@ KviRemoteMircServerImportWizard::KviRemoteMircServerImportWizard(KviRemoteMircSe
 	m_pRequest = 0;
 	m_pFilter = f;
 
+	QWizardPage * vb = new QWizardPage(this);
+	QVBoxLayout * pLayout = new QVBoxLayout(this);
+	vb->setLayout(pLayout);
 	QLabel * l = new QLabel(this);
 	l->setText(__tr2qs("<center><b>Welcome!</b><br><br>This wizard will guide you in the process of " \
 			"downloading a list of IRC servers. Please click \"<b>Next</b>\" to begin the operation.</center>"));
-	addPage(l,capt);
+	pLayout->addWidget(l);
+	addPage(vb);
 
 
-	QWidget * vb = new QWidget(this);
+	vb = new QWizardPage(this);
+	vb->setTitle(__tr2qs("URL Selection"));
 	QVBoxLayout * pVLayout = new QVBoxLayout(this);
 	vb->setLayout(pVLayout);
 	l = new QLabel(vb);
 	l->setText(__tr2qs("<center>Here you can modify the URL that the list will be downloaded from. In most cases the default URL is acceptable.</center>"));
 	pVLayout->addWidget(l);
-
 	pVLayout->setStretchFactor(l,1);
 
 	m_pUrlEdit = new QLineEdit(vb);
 	m_pUrlEdit->setText(KVI_WWWMIRCCOUK_SERVERSINI);
 	pVLayout->addWidget(m_pUrlEdit);
+	addPage(vb);
 
-	addPage(vb,__tr2qs("URL Selection"));
-
-	vb = new QWidget(this);
+	vb = new QWizardPage(this);
+	vb->setTitle(__tr2qs("List Download"));
 	QVBoxLayout * pV2Layout = new QVBoxLayout(this);
 	vb->setLayout(pV2Layout);
 
 	l = new QLabel(__tr2qs("Please wait while the list is being downloaded"),vb);
-	pV2Layout->setStretchFactor(l,1);
 	pV2Layout->addWidget(l);
+	pV2Layout->setStretchFactor(l,1);
 
 	m_pOutput = new QLabel(vb);
 	m_pOutput->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 	pV2Layout->addWidget(m_pOutput);
 
-	addPage(vb,__tr2qs("List Download"));
+	addPage(vb);
 
-	setBackEnabled(vb,false);
-	setNextEnabled(vb,false);
-	setFinishEnabled(vb,true);
+	button(QWizard::BackButton)->setEnabled(false);
+	button(QWizard::NextButton)->setEnabled(false);
+	button(QWizard::FinishButton)->setEnabled(true);
 
 	connect(this,SIGNAL(selected(const QString &)),this,SLOT(pageSelected(const QString &)));
 }
@@ -217,7 +214,7 @@ void KviRemoteMircServerImportWizard::start()
 	QString url = m_pUrlEdit->text();
 	if(url.isEmpty())url = KVI_WWWMIRCCOUK_SERVERSINI;
 
-	finishButton()->setEnabled(false);
+	button(QWizard::FinishButton)->setEnabled(false);
 	if(m_pRequest)delete m_pRequest;
 
 	m_pRequest = new KviHttpRequest();
@@ -230,7 +227,7 @@ void KviRemoteMircServerImportWizard::start()
 		delete m_pRequest;
 		m_pRequest = 0;
 		m_pOutput->setText(__tr2qs("Failed to start the server list transfer :("));
-		finishButton()->setEnabled(true);
+		button(QWizard::FinishButton)->setEnabled(true);
 	}
 }
 
@@ -266,8 +263,8 @@ void KviRemoteMircServerImportWizard::getListTerminated(bool bSuccess)
 
 	delete m_pRequest;
 	m_pRequest = 0;
-	cancelButton()->setEnabled(false);
-	finishButton()->setEnabled(true);
+	button(QWizard::CancelButton)->setEnabled(false);
+	button(QWizard::FinishButton)->setEnabled(true);
 }
 
 

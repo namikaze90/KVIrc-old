@@ -31,7 +31,6 @@ HEADERS += \
     tal/kvi_tal_tooltip.h \
     tal/kvi_tal_widgetstack.h \
     tal/kvi_tal_windowstate.h \
-    tal/kvi_tal_wizard.h \
     system/kvi_byteorder.h \
     system/kvi_env.h \
     system/kvi_locale.h \
@@ -111,7 +110,6 @@ SOURCES += tal/kvi_tal_application.cpp \
     tal/kvi_tal_toolbar.cpp \
     tal/kvi_tal_tooltip.cpp \
     tal/kvi_tal_widgetstack.cpp \
-    tal/kvi_tal_wizard.cpp \
     system/kvi_env.cpp \
     system/kvi_locale.cpp \
     system/kvi_thread.cpp \

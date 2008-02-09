@@ -25,7 +25,6 @@
 #include "kvi_settings.h"
 #include "kvi_string.h"
 #include "kvi_selectors.h"
-#include <kvi_tal_wizard.h>
 #include "kvi_tal_groupbox.h"
 
 #include <QLabel>
@@ -38,11 +37,16 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QButtonGroup>
+#include <QWizard>
+#include <QWizardPage>
 
+#define THEME_APPLY_NONE 0
+#define THEME_APPLY_HIRES 1
+#define THEME_APPLY_LORES 2
 
 class KviSetupWizard;
 
-class KviSetupPage : public QWidget
+class KviSetupPage : public QWizardPage
 {
 	Q_OBJECT
 public:
@@ -54,12 +58,7 @@ public:
 	QLabel  * m_pTextLabel;
 };
 
-
-#define THEME_APPLY_NONE 0
-#define THEME_APPLY_HIRES 1
-#define THEME_APPLY_LORES 2
-
-class KviSetupWizard : public KviTalWizard
+class KviSetupWizard : public QWizard
 {
 	Q_OBJECT
 public:

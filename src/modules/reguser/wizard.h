@@ -24,7 +24,8 @@
 
 #include "kvi_string.h"
 
-#include <kvi_tal_wizard.h>
+#include <QWizard>
+#include <QWizardPage>
 
 class KviPixmap;
 class KviPixmapSelector;
@@ -33,10 +34,8 @@ class QGridLayout;
 class QCheckBox;
 class QLabel;
 class QLineEdit;
-class QWidget;
 
-
-class KviRegistrationWizard : public KviTalWizard
+class KviRegistrationWizard : public QWizard
 {
 	Q_OBJECT
 public:
@@ -49,10 +48,10 @@ public:
 
 	bool m_bModal;
 
-	QWidget     * m_pPage1;
+	QWizardPage * m_pPage1;
 	QLabel      * m_pLabel1;
 	QLineEdit   * m_pEditRealName;
-	QWidget     * m_pPage2;
+	QWizardPage * m_pPage2;
 	QLabel      * m_pLabel2;
 	QLineEdit   * m_pNicknameEdit1;
 	QLineEdit   * m_pNicknameEdit2;
@@ -60,16 +59,16 @@ public:
 	QLineEdit   * m_pHostEdit2;
 	QLineEdit   * m_pUsernameEdit1;
 	QLineEdit   * m_pUsernameEdit2;
-	QWidget     * m_pPage3;
+	QWizardPage * m_pPage3;
 	QLabel      * m_pLabel3;
-	QWidget     * m_pPage4;
+	QWizardPage * m_pPage4;
 	QCheckBox   * m_pNotifyCheck;
 	QLabel      * m_pNotifyNickLabel1;
 	QLabel      * m_pNotifyNickLabel2;
 	QLabel      * m_pLabel4;
 	QLineEdit   * m_pNotifyNickEdit1;
 	QLineEdit   * m_pNotifyNickEdit2;
-	QWidget     * m_pPage5;
+	QWizardPage * m_pPage5;
 	QLabel      * m_pTextLabel5;
 
 	KviPixmapSelector * m_pAvatarSelector;

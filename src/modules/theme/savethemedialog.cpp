@@ -55,19 +55,19 @@
 #include <QBuffer>
 #include <QLabel>
 #include <QTextEdit>
-
+#include <QWizard>
 
 KviSaveThemeDialog::KviSaveThemeDialog(QWidget * pParent)
-: KviTalWizard(pParent)
+: QWizard(pParent)
 {
 	setCaption(__tr2qs_ctx("Save Current Theme - KVIrc","theme"));
 	setMinimumSize(400,350);
 
 	// welcome page ==================================================================================
-	QWidget * pPage = new QWidget(this);
-	QGridLayout * pLayout = new QGridLayout(pPage,2,1,4,4);
+	m_pPage = new QWizardPage(this);
+	QGridLayout * pLayout = new QGridLayout(m_pPage,2,1,4,4);
 	
-	QLabel * pLabel = new QLabel(pPage);
+	QLabel * pLabel = new QLabel(m_pPage);
 	QString szText = "<p>";
 	szText += __tr2qs_ctx("This procedure allows you to save the current theme settings to a single directory. It is useful if you want to apply other themes or play with the theme settings and later come back to this theme with a single click. It will also allow you to manually modify the theme settings and later export them to a distributable package.","theme");
 	szText += "</p><p>";
@@ -80,98 +80,100 @@ KviSaveThemeDialog::KviSaveThemeDialog(QWidget * pParent)
 	pLayout->addWidget(pLabel,0,0);
 	pLayout->setRowStretch(1,1);
 	
-	addPage(pPage,__tr2qs_ctx("Welcome","theme"));
-	setBackEnabled(pPage,false);
-	setNextEnabled(pPage,true);
-	setHelpEnabled(pPage,false);
-	setFinishEnabled(pPage,false);
+	m_pPage->setTitle(__tr2qs_ctx("Welcome","theme"));
+	addPage(m_pPage);
+	button(QWizard::BackButton)->setEnabled(false);
+	button(QWizard::NextButton)->setEnabled(true);
+	button(QWizard::HelpButton)->setEnabled(false);
+	button(QWizard::FinishButton)->setEnabled(false);
 
 	// packager informations ================================================================================
 
-	pPage = new QWidget(this);
-	pLayout = new QGridLayout(pPage,5,2,4,4);
+	m_pPage = new QWizardPage(this);
+	pLayout = new QGridLayout(m_pPage,5,2,4,4);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Here you need to provide informations about you (the author) and a short description of the theme you're creating.","theme"));
 	pLabel->setTextFormat(Qt::RichText);
 	pLayout->addMultiCellWidget(pLabel,0,0,0,1);
 	
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Theme Name:","theme"));
 	pLayout->addWidget(pLabel,1,0);
 	
-	m_pThemeNameEdit = new QLineEdit(pPage);
+	m_pThemeNameEdit = new QLineEdit(m_pPage);
 	//m_pThemeNameEdit->setText(szThemeName);
 	pLayout->addWidget(m_pThemeNameEdit,1,1);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Version:","theme"));
 	pLayout->addWidget(pLabel,2,0);
 	
-	m_pThemeVersionEdit = new QLineEdit(pPage);
+	m_pThemeVersionEdit = new QLineEdit(m_pPage);
 	//m_pThemeVersionEdit->setText(szThemeVersion);
 	pLayout->addWidget(m_pThemeVersionEdit,2,1);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Description:","theme"));
 	pLayout->addWidget(pLabel,3,0);
 	
-	m_pThemeDescriptionEdit = new QTextEdit(pPage);
+	m_pThemeDescriptionEdit = new QTextEdit(m_pPage);
 	//m_pThemeDescriptionEdit->setText(szThemeDescription);
 	pLayout->addWidget(m_pThemeDescriptionEdit,3,1);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Theme Author:","theme"));
 	pLayout->addWidget(pLabel,4,0);
 	
-	m_pAuthorNameEdit = new QLineEdit(pPage);
+	m_pAuthorNameEdit = new QLineEdit(m_pPage);
 	//m_pAuthorNameEdit->setText(szThemeAuthor);
 	pLayout->addWidget(m_pAuthorNameEdit,4,1);
-
 
 	pLayout->setRowStretch(3,1);
 	pLayout->setColStretch(1,1);
 
-	addPage(pPage,__tr2qs_ctx("Theme Informations","theme"));
-	setBackEnabled(pPage,true);
-	setHelpEnabled(pPage,false);
-	setNextEnabled(pPage,true);
-	setFinishEnabled(pPage,false);
+	m_pPage->setTitle(__tr2qs_ctx("Theme Informations","theme"));
+	addPage(m_pPage);
+	button(QWizard::BackButton)->setEnabled(true);
+	button(QWizard::HelpButton)->setEnabled(false);
+	button(QWizard::NextButton)->setEnabled(true);
+	button(QWizard::FinishButton)->setEnabled(false);
 
 	// screenshot/logo/icon ================================================================================
 
-	pPage = new QWidget(this);
-	pLayout = new QGridLayout(pPage,4,1,4,4);
+	m_pPage = new QWizardPage(this);
+	pLayout = new QGridLayout(m_pPage,4,1,4,4);
 
-	pLabel = new QLabel(pPage);
+	pLabel = new QLabel(m_pPage);
 	pLabel->setText(__tr2qs_ctx("Here you can either choose a screenshot image from disk or make one now. The screenshot will be displayed in the tooltips of the theme management dialog and will be also visible in the package installation dialog if you will export the theme to a distributable package.","theme"));
 	pLabel->setTextFormat(Qt::RichText);
 	pLayout->addWidget(pLabel,0,0);
 	
-	m_pImageLabel = new QLabel(pPage);
+	m_pImageLabel = new QLabel(m_pPage);
 	m_pImageLabel->setFrameStyle(QFrame::Sunken | QFrame::Panel);
 	m_pImageLabel->setMinimumSize(300,225);
 	m_pImageLabel->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 	pLayout->addWidget(m_pImageLabel,1,0);
 
 	QString szFilter = "*.png *.jpg *.xpm";
-	m_pImageSelector = new KviFileSelector(pPage,"",&m_szScreenshotPath,true,0,szFilter);
+	m_pImageSelector = new KviFileSelector(m_pPage,"",&m_szScreenshotPath,true,0,szFilter);
 	connect(m_pImageSelector,SIGNAL(selectionChanged(const QString &)),this,SLOT(imageSelectionChanged(const QString &)));
 	pLayout->addWidget(m_pImageSelector,2,0);
 
-	QPushButton * pButton = new QPushButton(pPage);
+	QPushButton * pButton = new QPushButton(m_pPage);
 	pButton->setText(__tr2qs_ctx("Make Screenshot Now","theme"));
 	connect(pButton,SIGNAL(clicked()),this,SLOT(makeScreenshot()));
 	pLayout->addWidget(pButton,3,0);
 
 	pLayout->setRowStretch(1,1);
 
-	m_pImageSelectionPage = pPage;
-	addPage(pPage,__tr2qs_ctx("Screenshot","theme"));
-	setBackEnabled(pPage,true);
-	setHelpEnabled(pPage,false);
-	setNextEnabled(pPage,true);
-	setFinishEnabled(pPage,true);
+	m_pImageSelectionPage = m_pPage;
+	m_pPage->setTitle(__tr2qs_ctx("Screenshot","theme"));
+	addPage(m_pPage);
+	button(QWizard::BackButton)->setEnabled(true);
+	button(QWizard::HelpButton)->setEnabled(false);
+	button(QWizard::NextButton)->setEnabled(true);
+	button(QWizard::FinishButton)->setEnabled(true);
 }
 
 KviSaveThemeDialog::~KviSaveThemeDialog()
@@ -203,7 +205,7 @@ void KviSaveThemeDialog::imageSelectionChanged(const QString &szImagePath)
 void KviSaveThemeDialog::accept()
 {
 	if(!saveTheme())return;
-	KviTalWizard::accept();
+	QWizard::accept();
 }
 
 
@@ -274,7 +276,6 @@ bool KviSaveThemeDialog::saveTheme()
 		{
 			QMessageBox::critical(this,__tr2qs_ctx("Save Current Theme - KVIrc","theme"),__tr2qs_ctx("Failed to load the selected screenshot image: please fix it","theme"),
 				QMessageBox::Ok,QMessageBox::NoButton,QMessageBox::NoButton);
-			showPage(m_pImageSelectionPage);
 			return false;
 		}
 	}

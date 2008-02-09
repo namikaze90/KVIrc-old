@@ -148,9 +148,9 @@ static bool setup_module_can_unload(KviModule *m)
 }
 
 KVIRC_MODULE(
-    "Setup wizard",
+	"Setup wizard",
 	"4.0.0",
-	"Szymon Stefanek <pragma at kvirc dot net>" ,
+	"Szymon Stefanek <pragma at kvirc dot net>",
 	"First-time-run setup wizard",
 	setup_module_init ,
 	setup_module_can_unload,

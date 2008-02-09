@@ -26,34 +26,36 @@
 
 #include "kvi_settings.h"
 #include "kvi_theme.h"
-#include <kvi_tal_wizard.h>
 
 #include <QDialog>
 #include <QTextEdit>
+#include <QWizard>
+#include <QWizardPage>
 
 class KviFileSelector;
 class QLineEdit;
 class QLabel;
 
 
-class KviPackThemeDialog : public KviTalWizard
+class KviPackThemeDialog : public QWizard
 {
 	Q_OBJECT
 public:
 	KviPackThemeDialog(QWidget * pParent,QList<KviThemeInfo*> * pThemeInfoList);
 	virtual ~KviPackThemeDialog();
 protected:
-	QString m_szImagePath;
-	KviFileSelector * m_pImageSelector;
-	QString m_szPackagePath;
-	KviFileSelector * m_pPathSelector;
-	QLabel * m_pImageLabel;
+	QString                m_szImagePath;
+	KviFileSelector      * m_pImageSelector;
+	QString                m_szPackagePath;
+	KviFileSelector      * m_pPathSelector;
+	QLabel               * m_pImageLabel;
 	QList<KviThemeInfo*> * m_pThemeInfoList;
-	QLineEdit * m_pPackageNameEdit;
-	QTextEdit * m_pPackageDescriptionEdit;
-	QLineEdit * m_pPackageVersionEdit;
-	QLineEdit * m_pPackagerNameEdit;
-	QWidget * m_pImageSelectionPage;
+	QLineEdit            * m_pPackageNameEdit;
+	QTextEdit            * m_pPackageDescriptionEdit;
+	QLineEdit            * m_pPackageVersionEdit;
+	QLineEdit            * m_pPackagerNameEdit;
+	QWidget              * m_pImageSelectionPage;
+	QWizardPage          * m_pPage;
 protected:
 	virtual void accept();
 	bool packTheme();
