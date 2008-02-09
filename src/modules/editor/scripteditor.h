@@ -37,6 +37,8 @@
 #include <QCheckBox>
 #include <QEvent>
 
+class QTimer;
+
 class KviScriptEditorWidget : public QTextEdit
 {
 	Q_OBJECT
@@ -68,16 +70,16 @@ protected:
 
 class KviScriptSyntaxHighlighter : public QSyntaxHighlighter
 {
-    Q_OBJECT
+	Q_OBJECT
 
- public:
+public:
 	 KviScriptSyntaxHighlighter(QTextDocument *parent = 0);
 
- protected:
-     void highlightBlock(const QString &text);
+protected:
+	void highlightBlock(const QString &text);
 
- private:
-     
+private:
+
 };
 
 class KviScriptEditorWidgetColorOptions : public QDialog
@@ -94,8 +96,6 @@ protected:
 protected slots:
 	void okClicked();
 };
-
-class QTimer;
 
 class KviScriptEditorImplementation : public KviScriptEditor
 {
@@ -146,7 +146,7 @@ class KviScriptEditorReplaceDialog: public QDialog
 	Q_OBJECT
 public:
 	KviScriptEditorReplaceDialog( QWidget* parent = 0, const char* name = 0);
-    ~KviScriptEditorReplaceDialog();
+	~KviScriptEditorReplaceDialog();
 	QLineEdit *m_pFindlineedit;
 	QLineEdit *m_pReplacelineedit;
 protected:

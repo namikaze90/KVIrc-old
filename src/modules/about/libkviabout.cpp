@@ -24,11 +24,11 @@
 //
 //=============================================================================
 
-#include "kvi_module.h"
-#include "kvi_locale.h"
-
 #include "libkviabout.h"
 #include "aboutdialog.h"
+
+#include "kvi_module.h"
+#include "kvi_locale.h"
 
 KviAboutDialog * g_pAboutDialog = 0;
 
@@ -68,7 +68,7 @@ static bool about_kvs_command_kvirc(KviKvsModuleCommandCall *)
 static bool about_module_init(KviModule * m)
 {
 	KVSM_REGISTER_SIMPLE_COMMAND(m,"kvirc",about_kvs_command_kvirc)
-    return true;
+	return true;
 }
 
 static bool about_module_cleanup(KviModule *m)
@@ -88,13 +88,13 @@ static bool about_module_can_unload(KviModule * m)
 // =======================================
 
 KVIRC_MODULE(
-    "KVIrc about dialog",
+	"KVIrc about dialog",
 	"4.0.0",
-    "Till Bush <buti@geocities.com>\n" \
+	"Till Bush <buti@geocities.com>\n" \
 	"Szymon Stefanek <pragma at kvirc dot net>" ,
 	"Exports the /about.kvirc command\n",
-    about_module_init ,
-    about_module_can_unload,
-    0,
+	about_module_init ,
+	about_module_can_unload,
+	0,
 	about_module_cleanup
 )

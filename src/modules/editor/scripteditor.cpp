@@ -61,7 +61,7 @@ static QTextCharFormat functionFormat;
 static QTextCharFormat switchFormat;
 static QTextCharFormat variableFormat;
 static QTextCharFormat normalFormat;
-static QColor          bgColor; 
+static QColor          bgColor;
 
 
 KviScriptEditorWidgetColorOptions::KviScriptEditorWidgetColorOptions(QWidget * pParent)

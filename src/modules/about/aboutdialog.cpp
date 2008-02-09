@@ -23,14 +23,13 @@
 //=============================================================================
 
 #include "aboutdialog.h"
+#include "abouttext.inc"
 
 #include "kvi_defaults.h"
-
 #include "kvi_locale.h"
 #include "kvi_app.h"
 #include "kvi_fileutils.h"
 #include "kvi_sourcesdate.h"
-#include <kvi_tal_textedit.h>
 
 #include <QWidget>
 #include <QLayout>
@@ -68,18 +67,16 @@ extern KviAboutDialog * g_pAboutDialog;
 "<font size=\"2\" color=\"#808080\">Release date: Still unknown</font><br>\n" \
 */
 
-#include "abouttext.inc"
-
 KviAboutDialog::KviAboutDialog()
 : QDialog()
 {
 	_tabs = new QTabWidget();
 	_buttons = new QDialogButtonBox();
 	QPushButton * btnOk = _buttons->addButton(__tr2qs_ctx("Close","about"),QDialogButtonBox::AcceptRole);
-		
+
 	setModal(false);
 	setWindowTitle(__tr2qs_ctx("About KVIrc...","about"));
-		
+
 	QVBoxLayout * mainLayout = new QVBoxLayout();
 	mainLayout->addWidget(_tabs);
 	mainLayout->addWidget(_buttons);
@@ -120,7 +117,7 @@ KviAboutDialog::KviAboutDialog()
 	w = new QWidget(_tabs);
 	g = new QGridLayout(w,1,1,4,8);
 
-	KviTalTextEdit * v = new KviTalTextEdit(w);
+	QTextEdit * v = new QTextEdit(w);
 	v->setReadOnly(true);
 	g->addWidget(v,0,0);
 
@@ -133,9 +130,9 @@ KviAboutDialog::KviAboutDialog()
 	w = new QWidget(_tabs);
 	g = new QGridLayout(w,1,1,4,8);
 
-	v = new KviTalTextEdit(w);
+	v = new QTextEdit(w);
 	v->setReadOnly(true);
-	v->setWordWrap(KviTalTextEdit::NoWrap);
+	v->setWordWrapMode(QTextOption::NoWrap);
 	g->addWidget(v,0,0);
 
 	QString szLicense;
@@ -146,8 +143,8 @@ KviAboutDialog::KviAboutDialog()
 	if(!KviFileUtils::loadFile(szLicensePath,szLicense))
 	{
 		szLicense = __tr2qs_ctx("Oops... Can't find the license file...\n" \
-						"It MUST be included in the distribution...\n" \
-						"Please report to <pragma at kvirc dot net>","about");
+			"It MUST be included in the distribution...\n" \
+			"Please report to <pragma at kvirc dot net>","about");
 	}
 
 	v->setText(szLicense);
@@ -175,4 +172,3 @@ void KviAboutDialog::closeButtonPressed(bool checked)
 {
 	delete this;
 }
-

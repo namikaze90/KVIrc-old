@@ -27,7 +27,6 @@
 #include "kvi_qstring.h"
 #include "kvi_settings.h"
 
-
 #include <QPixmap>
 #include <QDialog>
 
@@ -81,7 +80,6 @@ protected slots:
 protected:
 	virtual void reject();
 };
-
 
 
 #endif //!_KVI_HTMLDIALOG_H_

@@ -31,12 +31,11 @@ bool g_bFoundMirc;
 #include "kvi_fileutils.h"
 #include "kvi_defaults.h"
 #include "kvi_msgbox.h"
-#include "kvi_tal_filedialog.h"
 #include "kvi_qstring.h"
 #include "kvi_env.h"
 #include "kvi_options.h"
 #include "kvi_config.h"
-#include <kvi_tal_textedit.h>
+#include "kvi_tal_filedialog.h"
 
 #include <QMessageBox>
 #include <QDir>
@@ -45,6 +44,7 @@ bool g_bFoundMirc;
 #include <QTextCodec>
 #include <QWidget>
 #include <QHBoxLayout>
+#include <QTextEdit>
 
 #ifdef COMPILE_ON_WINDOWS
 	#include <windows.h>
@@ -180,17 +180,17 @@ KviSetupWizard::KviSetupWizard()
 			"</ul></p>" \
 			"<p>The \"legalese\" version of the license is shown in the box below.</p>"));
 
-	KviTalTextEdit * ed = new KviTalTextEdit(m_pLicense->m_pVBox);
+	QTextEdit * ed = new QTextEdit(m_pLicense->m_pVBox);
 	ed->setReadOnly(true);
-	ed->setWordWrap(KviTalTextEdit::NoWrap);
+	ed->setWordWrapMode(QTextOption::NoWrap);
 	QString szLicense;
 	QString szLicensePath;
 	g_pApp->getGlobalKvircDirectory(szLicensePath,KviApp::License,"COPYING");
 	if(!KviFileUtils::loadFile(szLicensePath,szLicense))
 	{
 		szLicense = __tr("Oops... can't find the license file.\n" \
-						"It MUST be included in the distribution...\n" \
-						"Please report to <pragma at kvirc dot net>");
+			"It MUST be included in the distribution...\n" \
+			"Please report to <pragma at kvirc dot net>");
 	}
 	ed->setText(szLicense);
 	

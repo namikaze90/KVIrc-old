@@ -26,7 +26,6 @@ HEADERS += \
     tal/kvi_tal_mainwindow.h \
     tal/kvi_tal_menubar.h \
     tal/kvi_tal_scrollview.h \
-    tal/kvi_tal_textedit.h \
     tal/kvi_tal_toolbar.h \
     tal/kvi_tal_toolbardocktype.h \
     tal/kvi_tal_tooltip.h \
@@ -109,7 +108,6 @@ SOURCES += tal/kvi_tal_application.cpp \
     tal/kvi_tal_menubar.cpp \
     tal/kvi_tal_popupmenu.cpp \
     tal/kvi_tal_scrollview.cpp \
-    tal/kvi_tal_textedit.cpp \
     tal/kvi_tal_toolbar.cpp \
     tal/kvi_tal_tooltip.cpp \
     tal/kvi_tal_widgetstack.cpp \
