@@ -9,7 +9,7 @@ SUBDIRS       = about action actioneditor addon aliaseditor avatar \
 		lamerizer links list log logview \
 		mask math mediaplayer mircimport my \
 		objects options \
-		perl perlcore popupeditor \
+		popupeditor \
 		raweditor regchan reguser rijndael \
 		setup sharedfile sharedfileswindow snd socketspy spaste str system \
 		texticons term theme tip tmphighlight toolbar toolbareditor trayicon \
@@ -18,3 +18,6 @@ SUBDIRS       = about action actioneditor addon aliaseditor avatar \
 	
 		# broken modules
 		# notifier, torrent
+
+		# modules to deprecate ?
+		# perl, perlcore
