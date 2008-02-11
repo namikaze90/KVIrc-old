@@ -34,7 +34,6 @@
 #include "kvi_regchan.h"
 #include "kvi_kvs_script.h"
 #include "kvi_tal_listview.h"
-#include <kvi_tal_groupbox.h>
 
 #include <QLabel>
 #include <QLineEdit>
@@ -70,7 +69,7 @@ KviChannelsJoinWindow::KviChannelsJoinWindow(QWidget * par, const char * name)
 	connect(m_pListView,SIGNAL(doubleClicked(KviTalListViewItem *)),this,SLOT(itemDoubleClicked(KviTalListViewItem *)));
 
 
-	m_pGroupBox = new KviTalGroupBox(2,Qt::Horizontal,__tr2qs("Channel" ),this);
+	m_pGroupBox = new QGroupBox(__tr2qs("Channel" ),this);
 	QString szMsg = __tr2qs("Name");
 	szMsg.append(":");
 	QLabel * l = new QLabel(szMsg,m_pGroupBox);
@@ -281,7 +280,7 @@ void KviChannelsJoinWindow::itemDoubleClicked(KviTalListBoxItem * it)
 void KviChannelsJoinWindow::editReturnPressed()
 {
 	joinClicked();
-}	
+}
 
 void KviChannelsJoinWindow::closeEvent(QCloseEvent *e)
 {

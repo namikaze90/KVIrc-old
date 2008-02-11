@@ -38,7 +38,7 @@ KviQueryOptionsWidget::KviQueryOptionsWidget(QWidget * parent)
 {
 	createLayout(8,1);
 
-	KviTalGroupBox *g = addGroupBox(0,0,0,0,1,Qt::Horizontal,__tr2qs_ctx("Open Query For","options"));
+	QGroupBox *g = addGroupBox(0,0,0,0,__tr2qs_ctx("Open Query For","options"));
 	KviBoolSelector *b  = addBoolSelector(g, __tr2qs_ctx("Private messages","options"),KviOption_boolCreateQueryOnPrivmsg);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,

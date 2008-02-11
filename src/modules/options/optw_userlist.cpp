@@ -52,7 +52,7 @@ KviUserListLookForegroundOptionsWidget::KviUserListLookForegroundOptionsWidget(Q
 
 	addFontSelector(0,0,1,0,__tr2qs_ctx("Font:","options"),KviOption_fontUserListView);
 	
-	KviTalGroupBox * g = addGroupBox(0,1,1,1,1,Qt::Horizontal,__tr2qs_ctx("Nickname Colors","options"));
+	QGroupBox * g = addGroupBox(0,1,1,1,__tr2qs_ctx("Nickname Colors","options"));
 	addColorSelector(g,__tr2qs_ctx("Normal:","options"),KviOption_colorUserListViewNormalForeground);
 	addColorSelector(g,__tr2qs_ctx("Selected:","options"),KviOption_colorUserListViewSelectionForeground);
 	addColorSelector(g,__tr2qs_ctx("Channel owner:","options"),KviOption_colorUserListViewChanOwnerForeground);
@@ -133,7 +133,7 @@ KviUserListLookBackgroundOptionsWidget::KviUserListLookBackgroundOptionsWidget(Q
 {
 	createLayout(3,2);
 
-	KviTalGroupBox * g = addGroupBox(0,0,1,0,1,Qt::Horizontal,__tr2qs_ctx("Background Colors","options"));
+	QGroupBox * g = addGroupBox(0,0,1,0,__tr2qs_ctx("Background Colors","options"));
 	addColorSelector(g,__tr2qs_ctx("Normal:","options"),KviOption_colorUserListViewBackground);
 	addColorSelector(g,__tr2qs_ctx("Selected:","options"),KviOption_colorUserListViewSelectionBackground);
 

@@ -27,13 +27,12 @@
 #include "kvi_window.h"
 #include "kvi_string.h"
 #include "kvi_styled_controls.h"
-#include "kvi_tal_groupbox.h"
 #include "kvi_tal_listview.h"
 
 #include <QDialog>
+#include <QGroupBox>
 
 class KviConsole;
-class KviTalGroupBox;
 class QPushButton;
 class QLineEdit;
 
@@ -44,14 +43,14 @@ public:
 	KviChannelsJoinWindow(QWidget * par, const char * name);
 	~KviChannelsJoinWindow();
 protected:
-	QLineEdit   * m_pChannelEdit; 
-	KviTalListView   * m_pListView;
-	KviTalGroupBox   * m_pGroupBox;
-	QLineEdit   * m_pPass;
+	QLineEdit           * m_pChannelEdit;
+	KviTalListView      * m_pListView;
+	QGroupBox           * m_pGroupBox;
+	QLineEdit           * m_pPass;
 	KviStyledCheckBox   * m_pShowAtStartupCheck;
 	KviStyledCheckBox   * m_pCloseAfterJoinCheck;
-	QPushButton * m_pJoinButton;
-	KviConsole  * m_pConsole;
+	QPushButton         * m_pJoinButton;
+	KviConsole          * m_pConsole;
 public:
 	virtual void closeEvent(QCloseEvent *e);
 	void fillListView();

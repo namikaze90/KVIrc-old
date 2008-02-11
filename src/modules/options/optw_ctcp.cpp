@@ -43,7 +43,7 @@ KviCtcpOptionsWidget::KviCtcpOptionsWidget(QWidget * parent)
 		"<br><br></p>","options"));
 
 
-	KviTalGroupBox *gs = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("CTCP Replies","options"));
+	QGroupBox *gs = addGroupBox(0,1,0,1,__tr2qs_ctx("CTCP Replies","options"));
 	KviStringSelector * s = addStringSelector(gs, __tr2qs_ctx("Append to VERSION reply:","options"),KviOption_stringCtcpVersionPostfix);
 
 #ifdef COMPILE_INFO_TIPS

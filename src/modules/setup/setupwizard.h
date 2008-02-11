@@ -25,7 +25,6 @@
 #include "kvi_settings.h"
 #include "kvi_string.h"
 #include "kvi_selectors.h"
-#include "kvi_tal_groupbox.h"
 
 #include <QLabel>
 #include <QPixmap>

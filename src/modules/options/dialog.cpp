@@ -34,7 +34,6 @@
 #include "kvi_accel.h"
 #include "kvi_tal_tooltip.h"
 #include "kvi_tal_popupmenu.h"
-#include <kvi_tal_groupbox.h>
 
 #include <QLayout>
 #include <QLabel>

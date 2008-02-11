@@ -60,7 +60,7 @@ KviSoundGeneralOptionsWidget::KviSoundGeneralOptionsWidget(QWidget * parent)
 #else
 	createLayout(3,1);
 #endif
-	KviTalGroupBox * g = addGroupBox(0,0,0,0,1,Qt::Horizontal,__tr2qs_ctx("Sound System","options"),true);
+	QGroupBox * g = addGroupBox(0,0,0,0,__tr2qs_ctx("Sound System","options"),true);
 
 	KviTalToolTip::add(g,__tr2qs_ctx("This allows you to select the sound system to be used with KVIrc.","options"));
 
@@ -80,7 +80,7 @@ KviSoundGeneralOptionsWidget::KviSoundGeneralOptionsWidget(QWidget * parent)
 	connect(m_pSoundTestButton,SIGNAL(clicked()),this,SLOT(soundTest()));
 
 
-	g = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("Media Player","options"),true);
+	g = addGroupBox(0,1,0,1,__tr2qs_ctx("Media Player","options"),true);
 
 	KviTalToolTip::add(g,__tr2qs_ctx("This allows you to select the preferred media player to be used with " \
 		"the mediaplayer.* module commands and functions.","options"));
@@ -108,7 +108,7 @@ KviSoundGeneralOptionsWidget::KviSoundGeneralOptionsWidget(QWidget * parent)
 	m_pSoundTestButton->setEnabled(false);
 	m_pMediaTestButton->setEnabled(false);
 
-	g = addGroupBox(0,2,0,2,1,Qt::Horizontal,__tr2qs_ctx("ID3 tags' encoding","options"),true);
+	g = addGroupBox(0,2,0,2,__tr2qs_ctx("ID3 tags' encoding","options"),true);
 
 	KviTalToolTip::add(g,__tr2qs_ctx("This allows you to select encoding of mp3 tags.","options"));
 
@@ -134,7 +134,7 @@ KviSoundGeneralOptionsWidget::KviSoundGeneralOptionsWidget(QWidget * parent)
 	m_pTagsEncodingCombo->setCurrentItem(iMatch);
 
 #ifdef COMPILE_ON_WINDOWS
-	g = addGroupBox(0,3,0,3,1,Qt::Horizontal,__tr2qs_ctx("Winamp messages ecoding","options"),true);
+	g = addGroupBox(0,3,0,3,__tr2qs_ctx("Winamp messages ecoding","options"),true);
 
 	KviTalToolTip::add(g,__tr2qs_ctx("This allows you to select encoding of winamp messages.","options"));
 

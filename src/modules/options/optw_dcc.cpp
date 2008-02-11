@@ -30,6 +30,7 @@
 #include <QLayout>
 #include <QWidget>
 #include <QHBoxLayout>
+#include <QGroupBox>
 
 //#warning "Info tips"
 
@@ -72,7 +73,7 @@ KviDccAdvancedOptionsWidget::KviDccAdvancedOptionsWidget(QWidget * parent)
 {
 	createLayout(5,1);
 
-	KviTalGroupBox * g = addGroupBox(0,0,0,0,1,Qt::Horizontal,__tr2qs_ctx("Network Properties","options"));
+	QGroupBox * g = addGroupBox(0,0,0,0,__tr2qs_ctx("Network Properties","options"));
 	
 	KviBoolSelector * b = addBoolSelector(g,__tr2qs_ctx("Use user-defined address or network interface","options"),KviOption_boolDccListenOnSpecifiedInterfaceByDefault);
 
@@ -202,18 +203,18 @@ KviDccSendGeneralOptionsWidget::KviDccSendGeneralOptionsWidget(QWidget * parent)
 
 	KviBoolSelector * b;
 
-	KviTalGroupBox * g = addGroupBox(0,0,0,0,1,Qt::Horizontal,__tr2qs_ctx("On Incoming File","options"));
+	QGroupBox * g = addGroupBox(0,0,0,0,__tr2qs_ctx("On Incoming File","options"));
 	KviBoolSelector * b2 = addBoolSelector(g,__tr2qs_ctx("Automatically accept","options"),KviOption_boolAutoAcceptDccSend);
 	KviBoolSelector * b3 = addBoolSelector(g,__tr2qs_ctx("Open transfer window as minimized when auto-accepted","options"),KviOption_boolCreateMinimizedDccSendWhenAutoAccepted,!KVI_OPTION_BOOL(KviOption_boolCreateMinimizedDccSend));
 	KviBoolSelector * b4 = addBoolSelector(g,__tr2qs_ctx("Automatically resume when auto-accepted","options"),KviOption_boolAutoResumeDccSendWhenAutoAccepted,KVI_OPTION_BOOL(KviOption_boolAutoAcceptDccSend));
 
-	g = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("Save Location","options"));
+	g = addGroupBox(0,1,0,1,__tr2qs_ctx("Save Location","options"));
 	addDirectorySelector(g,__tr2qs_ctx("Download folder:","options"),KviOption_stringIncomingPath);
 	addBoolSelector(g,__tr2qs_ctx("Sort saved files by nicknames (create subfolders)","options"),KviOption_boolSortReceivedByDccFilesByNicks);
 	addBoolSelector(g,__tr2qs_ctx("Guess save path from media type","options"),KviOption_boolUseIncomingDccMediaTypeSavePath);
 
 
-	g = addGroupBox(0,2,0,2,1,Qt::Horizontal,__tr2qs_ctx("On Download Completion","options"));
+	g = addGroupBox(0,2,0,2,__tr2qs_ctx("On Download Completion","options"));
 	addBoolSelector(g,__tr2qs_ctx("Notify completion in console","options"),KviOption_boolNotifyDccSendSuccessInConsole);
 	addBoolSelector(g,__tr2qs_ctx("Notify completion in notifier","options"),KviOption_boolNotifyDccSendSuccessInNotifier);
 	b = addBoolSelector(g,__tr2qs_ctx("Automatically clear transfer","options"),KviOption_boolAutoCloseDccSendOnSuccess);
@@ -242,7 +243,7 @@ KviDccSendAdvancedOptionsWidget::KviDccSendAdvancedOptionsWidget(QWidget * paren
 {
 	createLayout(4,1);
 
-	KviTalGroupBox * g = addGroupBox(0,0,0,0,1,Qt::Horizontal,__tr2qs_ctx("Bug Compatibility","options"));
+	QGroupBox * g = addGroupBox(0,0,0,0,__tr2qs_ctx("Bug Compatibility","options"));
 	KviBoolSelector * b = addBoolSelector(g,__tr2qs_ctx("Send ACK for byte 0","options"),KviOption_boolSendZeroAckInDccRecv);
 #ifdef COMPILE_INFO_TIPS
 	mergeTip(b,
@@ -266,7 +267,7 @@ KviDccSendAdvancedOptionsWidget::KviDccSendAdvancedOptionsWidget(QWidget * paren
 #endif //COMPILE_INFO_TIPS
 
 
-	g = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("Limits","options"));
+	g = addGroupBox(0,1,0,1,__tr2qs_ctx("Limits","options"));
 
 	QWidget * hb = new QWidget(g);
 	QHBoxLayout * pHLayout = new QHBoxLayout(g);
@@ -298,7 +299,7 @@ KviDccSendAdvancedOptionsWidget::KviDccSendAdvancedOptionsWidget(QWidget * paren
 		"KVIrc will refuse the requests when this limit is reached.</center>","options"));
 #endif
 
-	g = addGroupBox(0,2,0,2,1,Qt::Horizontal,__tr2qs_ctx("Tweaks","options"));
+	g = addGroupBox(0,2,0,2,__tr2qs_ctx("Tweaks","options"));
 
 	b = addBoolSelector(g,__tr2qs_ctx("Use fast send (send ahead)","options"),KviOption_boolUseFastDccSend);
 #ifdef COMPILE_INFO_TIPS
@@ -367,7 +368,7 @@ KviDccChatOptionsWidget::KviDccChatOptionsWidget(QWidget * parent)
 {
 	createLayout(3,1);
 
-	KviTalGroupBox * g = addGroupBox(0,0,0,0,1,Qt::Horizontal,__tr2qs_ctx("On Chat Request","options"));
+	QGroupBox * g = addGroupBox(0,0,0,0,__tr2qs_ctx("On Chat Request","options"));
 	KviBoolSelector * b = addBoolSelector(g,__tr2qs_ctx("Automatically accept","options"),KviOption_boolAutoAcceptDccChat);
 	b = addBoolSelector(g,__tr2qs_ctx("Open minimized when auto-accepted","options"),KviOption_boolCreateMinimizedDccChatWhenAutoAccepted,!KVI_OPTION_BOOL(KviOption_boolCreateMinimizedDccChat));
 
@@ -388,7 +389,7 @@ KviDccVoiceOptionsWidget::KviDccVoiceOptionsWidget(QWidget *p):KviOptionsWidget(
 	createLayout(8, 1);
 
 	KviBoolSelector * b1 = addBoolSelector(0,0,0,0,__tr2qs_ctx("Open all minimized","options"),KviOption_boolCreateMinimizedDccVoice);
-	KviTalGroupBox * g = addGroupBox(0,1,0,1,1,Qt::Horizontal,__tr2qs_ctx("On Voice Request","options"));
+	QGroupBox * g = addGroupBox(0,1,0,1,__tr2qs_ctx("On Voice Request","options"));
 	KviBoolSelector * b = addBoolSelector(g,__tr2qs_ctx("Automatically accept","options"),KviOption_boolAutoAcceptDccVoice);
 
 	b = addBoolSelector(g,__tr2qs_ctx("Open minimized when auto-accepted","options"),KviOption_boolCreateMinimizedDccVoiceWhenAutoAccepted,!KVI_OPTION_BOOL(KviOption_boolCreateMinimizedDccVoice));

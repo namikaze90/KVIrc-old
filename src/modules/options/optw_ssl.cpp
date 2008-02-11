@@ -24,7 +24,6 @@
 
 #include "kvi_options.h"
 #include "kvi_locale.h"
-#include <kvi_tal_groupbox.h>
 
 #include <QLayout>
 

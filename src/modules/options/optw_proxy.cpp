@@ -30,7 +30,6 @@
 #include "kvi_settings.h"
 #include "kvi_options.h"
 #include "kvi_styled_controls.h"
-#include <kvi_tal_groupbox.h>
 #include "kvi_tal_popupmenu.h"
 #include "kvi_tal_tooltip.h"
 
@@ -111,7 +110,7 @@ KviProxyOptionsWidget::KviProxyOptionsWidget(QWidget * parent)
 	pLayout->setStretchFactor(lll,100);
 
 
-	KviTalGroupBox * gbox = addGroupBox(0,2,1,2,2,Qt::Horizontal,__tr2qs_ctx("Configuration","options"),this);
+	QGroupBox * gbox = addGroupBox(0,2,1,2,__tr2qs_ctx("Configuration","options"),this);
 	//QGridLayout * gl = new QGridLayout(gbox->layout());
 	//gl->setMargin(2);
 	//gl->setSpacing(4);

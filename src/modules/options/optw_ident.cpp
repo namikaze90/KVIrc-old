@@ -27,7 +27,6 @@
 #include "kvi_options.h"
 #include "kvi_locale.h"
 #include "kvi_settings.h"
-#include <kvi_tal_groupbox.h>
 
 //#warning "Info tips"
 

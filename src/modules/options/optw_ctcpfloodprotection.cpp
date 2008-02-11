@@ -92,7 +92,7 @@ KviCtcpFloodProtectionOptionsWidget::KviCtcpFloodProtectionOptionsWidget(QWidget
 #endif
 	connect(b,SIGNAL(toggled(bool)),u,SLOT(setEnabled(bool)));
 
-	KviTalGroupBox * g = addGroupBox(0,2,1,2,2,Qt::Horizontal,__tr2qs_ctx("Ignored Requests","options"));
+	QGroupBox * g = addGroupBox(0,2,1,2,__tr2qs_ctx("Ignored Requests","options"));
 	addBoolSelector(g,__tr2qs_ctx("PING","options"),KviOption_boolIgnoreCtcpPing);
 	addBoolSelector(g,__tr2qs_ctx("FINGER","options"),KviOption_boolIgnoreCtcpFinger);
 	addBoolSelector(g,__tr2qs_ctx("CLIENTINFO","options"),KviOption_boolIgnoreCtcpClientinfo);

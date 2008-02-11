@@ -26,8 +26,6 @@
 #include "class_widget.h"
 #include "object_macros.h"
 
-#include <kvi_tal_groupbox.h>
-
 class KviKvsObject_groupbox : public KviKvsObject_widget
 {
 public:
@@ -43,19 +41,9 @@ protected:
 	bool functionIsFlat(KviKvsObjectFunctionCall *c);
 	bool functionSetCheckable(KviKvsObjectFunctionCall *c);
 	bool functionIsCheckable(KviKvsObjectFunctionCall *c);
-	bool functionSetInsideMargin(KviKvsObjectFunctionCall *c);
-	bool functionInsideMargin(KviKvsObjectFunctionCall *c);
-	bool functionSetInsideSpacing(KviKvsObjectFunctionCall *c);
-	bool functionInsideSpacing(KviKvsObjectFunctionCall *c);
-	bool functionSetColumns(KviKvsObjectFunctionCall *c);
-	bool functionColumns(KviKvsObjectFunctionCall *c);
-	bool functionAddSpace(KviKvsObjectFunctionCall *c);
 	bool functionAlignment(KviKvsObjectFunctionCall *c);
 	bool functionSetAlignment(KviKvsObjectFunctionCall *c);
-	bool functionSetOrientation(KviKvsObjectFunctionCall *c);
 	bool functionIsChecked(KviKvsObjectFunctionCall *c);
 	bool functionSetChecked(KviKvsObjectFunctionCall *c);
-	bool functionSetColumnLayout(KviKvsObjectFunctionCall *c);
-
 };
 #endif	//!_CLASS_GROUPBOX_H_

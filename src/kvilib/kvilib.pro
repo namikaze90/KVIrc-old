@@ -19,7 +19,6 @@ HEADERS += \
     tal/kvi_tal_popupmenu.h \
     tal/kvi_tal_application.h \
     tal/kvi_tal_filedialog.h \
-    tal/kvi_tal_groupbox.h \
     tal/kvi_tal_iconview.h \
     tal/kvi_tal_listbox.h \
     tal/kvi_tal_listview.h \
@@ -99,7 +98,6 @@ HEADERS += \
     config/kvi_wincfg.h
 SOURCES += tal/kvi_tal_application.cpp \
     tal/kvi_tal_filedialog.cpp \
-    tal/kvi_tal_groupbox.cpp \
     tal/kvi_tal_iconview.cpp \
     tal/kvi_tal_listbox.cpp \
     tal/kvi_tal_listview.cpp \

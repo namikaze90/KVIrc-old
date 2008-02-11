@@ -40,7 +40,6 @@
 #include "kvi_action.h"
 #include "kvi_kvs_useraction.h"
 #include "kvi_customtoolbarmanager.h"
-#include <kvi_tal_groupbox.h>
 
 #include <QSplitter>
 #include <QLayout>

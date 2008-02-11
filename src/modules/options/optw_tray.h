@@ -25,6 +25,7 @@
 #include "kvi_optionswidget.h"
 
 #include <QComboBox>
+#include <QGroupBox>
 
 #define KVI_OPTIONS_WIDGET_ICON_KviTrayOptionsWidget KVI_SMALLICON_TRAYICON
 #define KVI_OPTIONS_WIDGET_NAME_KviTrayOptionsWidget __tr2qs_no_lookup("Tray icon")
@@ -43,7 +44,7 @@ protected:
 	KviBoolSelector * m_pLevelBasedNotify;
 	KviBoolSelector * m_pMinimizeInTray;
 	KviBoolSelector * m_pCloseInTray;
-	KviTalGroupBox * m_pLevelsGroup;
+	QGroupBox       * m_pLevelsGroup;
 protected slots:
 	void setEnabled(bool);
 };

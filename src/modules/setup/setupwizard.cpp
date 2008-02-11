@@ -46,6 +46,7 @@ bool g_bFoundMirc;
 #include <QHBoxLayout>
 #include <QTextEdit>
 #include <QWizard>
+#include <QGroupBox>
 
 #ifdef COMPILE_ON_WINDOWS
 	#include <windows.h>
@@ -340,7 +341,7 @@ KviSetupWizard::KviSetupWizard()
 	if(nick.isEmpty())nick = "newbie";
 	if(nick == "root")nick = "newbie";
 //m_pIdentity->m_pVBox
-	KviTalGroupBox * gbox = new KviTalGroupBox(1,Qt::Horizontal,__tr2qs("Basic Properties"),m_pIdentity->m_pVBox);
+	QGroupBox * gbox = new QGroupBox(__tr2qs("Basic Properties"),m_pIdentity->m_pVBox);
 
 	m_pNickSelector = new KviStringSelector(gbox,__tr2qs("Nickname:"),&(KVI_OPTION_STRING(KviOption_stringNickname1)),true);
 	m_pNickSelector->setMinimumLabelWidth(120);
@@ -357,7 +358,7 @@ KviSetupWizard::KviSetupWizard()
 	QString szCenterEnd("</center>");
 	QString szTrailing = "<br><br>" + szOptionalCtcpUserInfo + szCenterEnd;
 
-	gbox = new KviTalGroupBox(1,Qt::Horizontal,__tr2qs("Profile"),m_pIdentity->m_pVBox);
+	gbox = new QGroupBox(__tr2qs("Profile"),m_pIdentity->m_pVBox);
 
 	QWidget * hb = new QWidget(gbox);
 	QHBoxLayout * pH4Layout = new QHBoxLayout(gbox);
