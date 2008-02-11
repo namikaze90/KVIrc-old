@@ -21,12 +21,9 @@
 //
 
 
-
 #include "kvi_ctcppagedialog.h"
-
 #include "kvi_locale.h"
 #include "kvi_app.h"
-
 #include "kvi_iconmanager.h"
 
 #include <QDateTime>
@@ -43,7 +40,7 @@ KviCtcpPageDialog::KviCtcpPageDialog()
 	Qt::WindowStaysOnTopHint | Qt::Tool | Qt::Dialog | Qt::Window)
 {
 	QGridLayout * g = new QGridLayout(this,4,1,6,0);
-	m_pWidgetStack = new KviTalWidgetStack(this);
+	m_pWidgetStack = new QStackedWidget(this);
 	g->addWidget(m_pWidgetStack,0,0);
 	m_pTabBar = new QTabBar(this);
 	m_pTabBar->setShape(QTabBar::TriangularBelow);
@@ -83,7 +80,7 @@ void KviCtcpPageDialog::die()
 
 void KviCtcpPageDialog::tabSelected(int id)
 {
-	m_pWidgetStack->raiseWidget(id);
+	m_pWidgetStack->widget(id)->raise();
 }
 
 void KviCtcpPageDialog::addPage(const QString &szNick,const QString &szUser,const QString &szHost,const QString &szMsg)
@@ -109,8 +106,8 @@ void KviCtcpPageDialog::addPage(const QString &szNick,const QString &szUser,cons
 	tmp += "]</center>";
 
 	l->setText(tmp);
-	m_pWidgetStack->addWidget(l,id);
-	m_pWidgetStack->raiseWidget(l);
+	m_pWidgetStack->addWidget(l);
+	m_pWidgetStack->widget(id)->raise();
 	m_pTabBar->setCurrentTab(id);
 }
 

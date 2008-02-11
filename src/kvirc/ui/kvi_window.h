@@ -30,7 +30,6 @@
 #include "kvi_settings.h"
 #include "kvi_accel.h"
 #include "kvi_heapobject.h"
-#include "kvi_tal_widgetstack.h"
 
 #ifdef COMPILE_ON_WINDOWS
 	// The brain-damaged MSVC compiler can't instantiate QList templates without a destructor definition
@@ -42,6 +41,7 @@
 #include <QFrame>
 #include <QMdiSubWindow>
 #include <QWidget>
+#include <QStackedWidget>
 
 class QPixmap;
 class QSplitter;
@@ -57,7 +57,6 @@ class KviIrcContext;
 class KviIrcConnection;
 class KviWindowToolPageButton;
 class KviTalPopupMenu;
-class KviTalWidgetStack;
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	class KviCryptController;

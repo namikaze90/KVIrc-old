@@ -27,7 +27,6 @@
 #include "kvi_string.h"
 #include "kvi_toolbar.h"
 #include "kvi_console.h"
-#include "kvi_tal_widgetstack.h"
 
 #include <QWidget>
 #include <QToolButton>

@@ -26,7 +26,6 @@
 
 #include "kvi_heapobject.h"
 #include "kvi_styled_controls.h"
-#include "kvi_tal_widgetstack.h"
 
 #include <QToolButton>
 #include <QObjectCleanupHandler>

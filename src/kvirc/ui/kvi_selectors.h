@@ -30,7 +30,6 @@
 #include "kvi_string.h"
 #include "kvi_pixmap.h"
 #include "kvi_styled_controls.h"
-#include "kvi_tal_scrollview.h"
 #include "kvi_tal_listbox.h"
 #include "kvi_tal_listview.h"
 
@@ -44,6 +43,7 @@
 #include <QStringList>
 #include <QValidator>
 #include <QTextCharFormat>
+#include <QScrollArea>
 
 //#ifndef _KVI_SELECTORS_CPP_
 //	extern void commitAllSelectors(QWidget * par,const char * classname);
@@ -116,7 +116,7 @@ public:
 	~KviPasswordSelector(){};
 };
 
-class KVIRC_API KviPixmapPreview : public KviTalScrollView
+class KVIRC_API KviPixmapPreview : public QScrollArea
 {
 	Q_OBJECT
 public:

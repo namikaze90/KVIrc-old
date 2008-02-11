@@ -26,7 +26,6 @@
 
 
 #include "kvi_settings.h"
-#include "kvi_tal_scrollview.h"
 
 #include <QWidget>
 #include <QFrame>

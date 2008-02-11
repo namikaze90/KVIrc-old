@@ -55,14 +55,14 @@
 #include "kvi_sparser.h"
 #include "kvi_modew.h"
 #include "kvi_mirccntrl.h"
+#include "kvi_kvs_script.h"
+#include "kvi_kvs_eventtriggers.h"
+#include "kvi_tal_popupmenu.h"
 
 #ifdef COMPILE_CRYPT_SUPPORT
 	#include "kvi_crypt.h"
 	#include "kvi_cryptcontroller.h"
 #endif
-
-#include "kvi_kvs_script.h"
-#include "kvi_kvs_eventtriggers.h"
 
 #include <time.h>
 
@@ -70,12 +70,8 @@
 #include <QToolButton>
 #include <QLabel>
 #include <QEvent>
-
-#include <QPalette>
-#include "kvi_tal_popupmenu.h"
-
 #include <QMessageBox>
-#include "kvi_tal_widgetstack.h" 
+#include <QPalette>
 
 #ifndef AVERAGE_CHANNEL_USERS
 	#define AVERAGE_CHANNEL_USERS 101

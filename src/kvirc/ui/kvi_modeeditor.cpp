@@ -31,11 +31,10 @@
 #include "kvi_ircconnectionuserinfo.h"
 #include "kvi_styled_controls.h"
 #include "kvi_toolwindows_container.h"
-#include "kvi_tal_scrollview.h"
 
 #include <QLayout>
 #include <QLabel>
-
+#include <QScrollArea>
 
 //////////////////////////////////////////////////////////////////////
 // class KviModeEditor
@@ -44,7 +43,7 @@
 
 //static char checkable_modes_table[KVI_NUM_CHECKABLE_MODES] = { 'p','s','t','n','m','i'};
 
-// FIXME: This widget should use a KviTalScrollView!
+// FIXME: This widget should use a QScrollArea!
 
 KviModeEditor::KviModeEditor(QWidget * par,KviWindowToolPageButton* button,const char * nam,KviConsole * c,const char * mode,const char * key,const char * limit)
 : KviWindowToolWidget(par,button)
@@ -68,18 +67,11 @@ KviModeEditor::KviModeEditor(QWidget * par,KviWindowToolPageButton* button,const
 	
 	QGridLayout *pMasterLayout = new QGridLayout(this,2,1,2,2);
 
-#ifdef COMPILE_USE_QT4
 	setFocusPolicy(Qt::ClickFocus);
-#else
-	setFocusPolicy(QWidget::ClickFocus);
-#endif
 	
-	KviTalScrollView *pScrollView = new KviTalScrollView(this);
-#ifdef COMPILE_USE_QT4
+	QScrollArea *pScrollView = new QScrollArea(this);
+
 	pScrollView->viewport()->setBackgroundRole(QPalette::Background);
-#else
-	pScrollView->viewport()->setBackgroundMode(QWidget::PaletteBackground);
-#endif
 	
 	pMasterLayout->addWidget(pScrollView,0,0);
 
@@ -206,7 +198,7 @@ KviModeEditor::KviModeEditor(QWidget * par,KviWindowToolPageButton* button,const
 	g->setRowStretch(i,1);
 	g->setColStretch(2,1);
 
-	pScrollView->addChild(pBackground,0,0);
+	//pScrollView->addChild(pBackground,0,0);
 	registerSelf();
 }
 

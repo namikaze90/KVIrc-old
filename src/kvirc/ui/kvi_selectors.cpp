@@ -181,10 +181,10 @@ KviPasswordSelector::KviPasswordSelector(QWidget * par,const QString & txt,QStri
 
 
 KviPixmapPreview::KviPixmapPreview(QWidget * par)
-: KviTalScrollView(par)
+: QScrollArea(par)
 {
 	m_pPixmap = 0;
-	resizeContents(0,0);
+	//resizeContents(0,0);
 }
 
 
@@ -199,12 +199,12 @@ void KviPixmapPreview::setPixmap(KviPixmap * pix)
 	{
 		if(m_pPixmap->pixmap())
 		{
-			resizeContents(m_pPixmap->pixmap()->width(),m_pPixmap->pixmap()->height());
+			//resizeContents(m_pPixmap->pixmap()->width(),m_pPixmap->pixmap()->height());
 			update();
 			return;
 		}
 	}
-	resizeContents(0,0);
+	//resizeContents(0,0);
 	update();
 }
 

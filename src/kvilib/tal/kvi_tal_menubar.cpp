@@ -28,22 +28,13 @@
 
 	KviTalMenuBar::KviTalMenuBar(QWidget * par,const char * nam)
 	: KMenuBar(par,nam)
-	{
-	}
-
-	KviTalMenuBar::~KviTalMenuBar()
-	{
-	}
-
 #else
-
 	KviTalMenuBar::KviTalMenuBar(QWidget * par,const char * nam)
 	: QMenuBar(par)
+#endif
 	{
 	}
 
 	KviTalMenuBar::~KviTalMenuBar()
 	{
 	}
-
-#endif

@@ -40,6 +40,7 @@
 #include <QPainter>
 #include <QCursor>
 #include <QEvent>
+#include <QScrollArea>
 //#include <qdrawutil.h>
 
 #include <math.h>
@@ -296,7 +297,7 @@ void KviMdiManager::maximizeChild(KviMdiChild * lpC)
 void KviMdiManager::resizeEvent(QResizeEvent *e)
 {
 	//If we have a maximized children at the top , adjust its size
-	KviTalScrollView::resizeEvent(e);
+	QScrollArea::resizeEvent(e);
 	KviMdiChild *lpC=m_pZ->last();
 	if(lpC)
 	{
@@ -544,8 +545,8 @@ void KviMdiManager::enterSDIMode(KviMdiChild *lpC)
 #endif
 		emit enteredSdiMode();
 		
-		setVScrollBarMode(KviTalScrollView::AlwaysOff);
-		setHScrollBarMode(KviTalScrollView::AlwaysOff);
+		setVScrollBarMode(QScrollArea::AlwaysOff);
+		setHScrollBarMode(QScrollArea::AlwaysOff);
 	}
 
 	updateSDIMode();
@@ -616,8 +617,8 @@ void KviMdiManager::leaveSDIMode()
 	if(m_iSdiMinimizeItemId != 0)m_pFrm->mainMenuBar()->removeItem(m_iSdiMinimizeItemId);
 #endif
 
-	setVScrollBarMode(KviTalScrollView::Auto);
-	setHScrollBarMode(KviTalScrollView::Auto);
+	setVScrollBarMode(QScrollArea::Auto);
+	setHScrollBarMode(QScrollArea::Auto);
 
 	emit leftSdiMode();
 }

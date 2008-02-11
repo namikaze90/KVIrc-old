@@ -23,13 +23,12 @@
 //
 
 #include "kvi_settings.h"
-
 #include "kvi_string.h"
-#include "kvi_tal_widgetstack.h"
 
 #include <QTabBar>
 #include <QWidget>
 #include <QPushButton>
+#include <QStackedWidget>
 
 class KVIRC_API KviCtcpPageDialog : public QWidget
 {
@@ -38,9 +37,9 @@ public:
 	KviCtcpPageDialog();
 	~KviCtcpPageDialog();
 protected:
-	KviTalWidgetStack * m_pWidgetStack;
-	QTabBar      * m_pTabBar;
-	QPushButton  * m_pCloseButton;
+	QStackedWidget * m_pWidgetStack;
+	QTabBar        * m_pTabBar;
+	QPushButton    * m_pCloseButton;
 public:
 	void popup();
 	void addPage(const QString &szNick,const QString &szUser,const QString &szHost,const QString &szMsg);

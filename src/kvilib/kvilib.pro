@@ -24,11 +24,9 @@ HEADERS += \
     tal/kvi_tal_listview.h \
     tal/kvi_tal_mainwindow.h \
     tal/kvi_tal_menubar.h \
-    tal/kvi_tal_scrollview.h \
     tal/kvi_tal_toolbar.h \
     tal/kvi_tal_toolbardocktype.h \
     tal/kvi_tal_tooltip.h \
-    tal/kvi_tal_widgetstack.h \
     tal/kvi_tal_windowstate.h \
     system/kvi_byteorder.h \
     system/kvi_env.h \
@@ -104,10 +102,8 @@ SOURCES += tal/kvi_tal_application.cpp \
     tal/kvi_tal_mainwindow.cpp \
     tal/kvi_tal_menubar.cpp \
     tal/kvi_tal_popupmenu.cpp \
-    tal/kvi_tal_scrollview.cpp \
     tal/kvi_tal_toolbar.cpp \
     tal/kvi_tal_tooltip.cpp \
-    tal/kvi_tal_widgetstack.cpp \
     system/kvi_env.cpp \
     system/kvi_locale.cpp \
     system/kvi_thread.cpp \
