@@ -26,12 +26,11 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
-#include <QHash>
-
 #include "kvi_string.h"
 #include "kvi_avatar.h"
 #include "kvi_regusersdb.h"
+
+#include <QHash>
 
 class KviIrcUserDataBase;
 

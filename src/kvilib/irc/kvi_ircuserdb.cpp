@@ -236,8 +236,6 @@ void KviIrcUserDataBase::setupConnectionWithReguserDb()
 	connect(g_pRegisteredUserDataBase,SIGNAL(userChanged(const QString&)),this,SLOT(registeredUserChanged(const QString&)));
 	connect(g_pRegisteredUserDataBase,SIGNAL(userAdded(const QString&)),this,SLOT(registeredUserAdded(const QString&)));
 	connect(g_pRegisteredUserDataBase,SIGNAL(databaseCleared()),this,SLOT(registeredDatabaseCleared()));
-
-
 }
 
 void KviIrcUserDataBase::registeredUserRemoved(const QString& user)

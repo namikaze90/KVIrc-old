@@ -380,7 +380,7 @@ search_finished:
 	s->setLinkFilter(d->szLinkFilter);
 	s->m_szPass= d->szPass;
 	s->m_szNick= d->szNick;
-    s->m_szInitUMode = d->szInitUMode;
+	s->m_szInitUMode = d->szInitUMode;
 	s->setIpV6(d->bIpV6);
 	s->setUseSSL(d->bSSL);
 	r->insertServer(s);
@@ -629,6 +629,3 @@ void KviIrcServerDataBase::save(const QString &filename)
 		}
 	}
 }
-
-
-

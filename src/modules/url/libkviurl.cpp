@@ -602,7 +602,7 @@ void loadBanList()
 
 
 /*
- 	@doc: url.list
+	@doc: url.list
 	@type:
 		command
 	@title:
@@ -623,8 +623,7 @@ void loadBanList()
 		The list is saved to file when you click on the menu item or when you unload the plugin
 		on condition that you have checked the relative checkbox in configuration dialog.[br]
 		You can also open the url in your web browser double clicking on it in the url list window.[br][br]
-
-  */
+*/
 
 static bool url_kvs_cmd_list(KviKvsModuleCommandCall * c)
 {
@@ -664,7 +663,7 @@ bool urllist()
 
 
 /*
- 	@doc: url.config
+	@doc: url.config
 	@type:
 		command
 	@title:
@@ -684,7 +683,7 @@ bool urllist()
 		<blockquote>if the word "ftp" is inserted in the ban list and if in a window there is an output like "ftp.kvirc.net",
 		the url will not be catched.</blockquote></I>
 		<HR>
-  */
+*/
 
 static bool url_kvs_cmd_config(KviKvsModuleCommandCall * c)
 {
@@ -763,7 +762,8 @@ bool urllist_module_event_onUrl(KviKvsModuleEventCall * c)
 }
 
 
-/*	@doc: url.load
+/*
+	@doc: url.load
 	@type:
 		command
 	@title:
@@ -827,18 +827,18 @@ static bool url_module_cleanup(KviModule *m)
 	}
 
 	delete g_pList;
-    g_pList = 0;
+	g_pList = 0;
 	delete g_pBanList;
-    g_pBanList = 0;
+	g_pBanList = 0;
 
 	delete g_pUrlDlgList;
-    g_pUrlDlgList = 0;
+	g_pUrlDlgList = 0;
 	delete g_pUrlAction;
 	g_pUrlAction = 0;
 
 
 	delete g_pUrlIconPixmap;
-    g_pUrlIconPixmap = 0;
+	g_pUrlIconPixmap = 0;
 
 	return true;
 }
@@ -851,7 +851,6 @@ static bool url_module_can_unload(KviModule *m)
 
 void url_module_config()
 {
-
 	if (!g_pConfigDialog) g_pConfigDialog = new ConfigDialog();
 }
 
@@ -889,11 +888,10 @@ void url_module_config()
 KVIRC_MODULE(
 	"URL",
 	"4.0.0" ,
-	"Copyright (C) 2002 Andrea Parrella <yap@yapsoft.it>" ,
+	"Copyright (C) 2002 Andrea Parrella <yap@yapsoft.it>",
 	"url list module for KVIrc",
 	url_module_init,
 	url_module_can_unload,
 	0,
 	url_module_cleanup
 )
-

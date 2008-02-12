@@ -32,6 +32,7 @@ tmphighlight
 toolbar
 toolbareditor
 torrent
+url
 window
 
 [first port] No Qt3 code but perhaps through tal files
@@ -63,4 +64,3 @@ help
 iograph
 notifier
 reguser
-url
