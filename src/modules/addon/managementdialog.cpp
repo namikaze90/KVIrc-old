@@ -35,7 +35,6 @@
 #include "kvi_kvs_script.h"
 #include "kvi_sourcesdate.h"
 #include "kvi_draganddrop.h"
-#include "kvi_tal_scrollview.h"
 
 #include <QPushButton>
 #include <QLayout>
