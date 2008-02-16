@@ -93,6 +93,8 @@ KviUIntSelector::KviUIntSelector(QWidget * par,const QString & txt,unsigned int 
 	this->setLayout(pLayout);
 	pLayout->setSpacing(4);
 	pLayout->setStretchFactor(m_pLabel,1);
+	pLayout->addWidget(m_pLabel);
+	pLayout->addWidget(m_pSpinBox);
 }
 
 void KviUIntSelector::setPrefix(const QString & txt)
@@ -144,6 +146,8 @@ KviStringSelector::KviStringSelector(QWidget * par,const QString & txt,QString *
 	this->setLayout(pLayout);
 	pLayout->setSpacing(4);
 	pLayout->setStretchFactor(m_pLineEdit,1);
+	pLayout->addWidget(m_pLabel);
+	pLayout->addWidget(m_pLineEdit);
 
 	m_pOption = pOption;
 
@@ -328,6 +332,9 @@ KviFileSelector::KviFileSelector(QWidget * par,const QString & txt,QString * pOp
 	this->setLayout(pLayout);
 	pLayout->setSpacing(4);
 	pLayout->setStretchFactor(m_pLineEdit,1);
+	pLayout->addWidget(m_pLabel);
+	pLayout->addWidget(m_pLineEdit);
+	pLayout->addWidget(m_pButton);
 
 	m_pOption = pOption;
 
@@ -520,6 +527,8 @@ KviColorSelector::KviColorSelector(QWidget * par,const QString & txt,QColor * pO
 	this->setLayout(pLayout);
 	pLayout->setSpacing(4);
 	pLayout->setStretchFactor(m_pLabel,1);
+	pLayout->addWidget(m_pLabel);
+	pLayout->addWidget(m_pButton);
 
 	setButtonPalette(pOption);
 
@@ -576,6 +585,9 @@ KviFontSelector::KviFontSelector(QWidget * par,const QString & txt,QFont * pOpti
 	this->setLayout(pLayout);
 	pLayout->setSpacing(4);
 	pLayout->setStretchFactor(m_pLabel,1);
+	pLayout->addWidget(m_pLabel);
+	pLayout->addWidget(m_pButton);
+	
 
 	setButtonFont(pOption);
 
@@ -631,6 +643,9 @@ KviMircTextColorSelector::KviMircTextColorSelector(QWidget * par,const QString &
 	pLayout->setSpacing(4);
 	pLayout->setStretchFactor(m_pLabel,1);
 
+	pLayout->addWidget(m_pLabel);
+	pLayout->addWidget(m_pButton);
+	
 	m_pUFore = uFore;
 	m_pUBack = uBack;
 	

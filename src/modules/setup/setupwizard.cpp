@@ -76,41 +76,40 @@ extern QString szMircIni;
 KviSetupPage::KviSetupPage(KviSetupWizard * w)
 : QWizardPage(w)
 {
+	debug("setting up setup page...");
 	// we need this to set localized text on buttons (see QT doc/ QWizard class)
 	w->setButtonText(QWizard::BackButton,__tr2qs("< &Back"));
 	w->setButtonText(QWizard::NextButton,__tr2qs("&Next >"));
 	w->setButtonText(QWizard::FinishButton,__tr2qs("Finish"));
-	w->setButtonText(QWizard::CancelButton,__tr2qs("Help"));
+	//w->setButtonText(QWizard::CancelButton,__tr2qs("Help"));
 	//w->setButtonText(QWizard::HelpButton,__tr2qs("Help"));
 
-	QHBoxLayout * pLayout = new QHBoxLayout(this);
+	QVBoxLayout * pLayout = new QVBoxLayout();
 	this->setLayout(pLayout);
 	pLayout->setSpacing(8);
 
-	m_pPixmapLabel = new QLabel(this);
-	m_pPixmapLabel->setPixmap(*(w->m_pLabelPixmap));
-	m_pPixmapLabel->setFixedSize(w->m_pLabelPixmap->size());
-	m_pPixmapLabel->setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
-	m_pPixmapLabel->setMargin(0);
-
-	m_pVBox = new QWidget(this);
-	QVBoxLayout * pVLayout = new QVBoxLayout(this);
-	pVLayout->setSpacing(8);
-	m_pVBox->setLayout(pVLayout);
-
-	QLabel * l = new QLabel(m_pVBox);
+	QLabel * l = new QLabel(this);
 	l->setAlignment(Qt::AlignAuto | Qt::AlignTop);
 	QString szHeader = "<table width=\"100%\"><tr><td bgcolor=\"#303030\">" \
-			"<h1><font color=\"#FFFFFF\">KVIrc " KVI_VERSION "</font></h1>" \
+			"<h3><font color=\"#FFFFFF\">&nbsp;KVIrc " KVI_VERSION "</font></h3>" \
 			"</td></tr></table>";
 	l->setText(szHeader);
-	pVLayout->addWidget(l);
-
+	
+	m_pVBox = new QWidget(this);
+	QVBoxLayout * pVLayout = new QVBoxLayout();
+	pVLayout->setSpacing(8);
+	m_pVBox->setLayout(pVLayout);
+	
+	pLayout->addWidget(l);
+	pLayout->addWidget(m_pVBox);
+	
 	m_pTextLabel = new QLabel(m_pVBox);
 	m_pTextLabel->setWordWrap(true);
 	m_pTextLabel->setAlignment(Qt::AlignJustify | Qt::AlignVCenter);
 	pVLayout->addWidget(m_pTextLabel);
 	pVLayout->setStretchFactor(m_pTextLabel,1);
+	
+	debug("finished setting up setup page");
 }
 
 KviSetupPage::~KviSetupPage()
@@ -124,7 +123,7 @@ KviSetupWizard::KviSetupWizard()
 	setModal(true);
 	g_bFoundMirc = false;
 	QString szLabelText;
-
+	
 	QString szImagePath;
 	g_pApp->getGlobalKvircDirectory(szImagePath,KviApp::Pics,"kvi_setup_label.png");
 
@@ -135,6 +134,12 @@ KviSetupWizard::KviSetupWizard()
 		m_pLabelPixmap = new QPixmap(180,400);
 	}
 
+	setPixmap(QWizard::WatermarkPixmap, *(m_pLabelPixmap));
+	setOption(QWizard::NoCancelButton, true);
+	setOption(QWizard::HaveFinishButtonOnEarlyPages, true);
+	setOption(QWizard::HaveNextButtonOnLastPage, true);
+	setWindowTitle(__tr2qs("KVIrc setup"));
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Welcome
 
@@ -158,15 +163,15 @@ KviSetupWizard::KviSetupWizard()
 #ifdef COMPILE_ON_WINDOWS
 	m_pCreateUrlHandlers = new QCheckBox(__tr2qs("Make KVIrc default IRC client"),m_pWelcome->m_pVBox);
 	m_pCreateUrlHandlers->setChecked(true);
+	m_pWelcome->m_pVBox->layout()->addWidget(m_pCreateUrlHandlers);
 #endif
 #ifdef COMPILE_KDE_SUPPORT
 	m_pCreateDesktopShortcut = new QCheckBox(__tr2qs("Create desktop shortcut"),m_pWelcome->m_pVBox);
 	m_pCreateDesktopShortcut->setChecked(true);
+	m_pWelcome->m_pVBox->layout()->addWidget(m_pCreateDesktopShortcut);
 #endif
 	button(QWizard::BackButton)->setEnabled(false);
 	button(QWizard::HelpButton)->setEnabled(false);
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// License
@@ -201,8 +206,6 @@ KviSetupWizard::KviSetupWizard()
 	addPage(m_pLicense);
 
 	button(QWizard::HelpButton)->setEnabled(false);
-
-	setCaption(__tr2qs("KVIrc Setup"));
 #else
 	m_pLicense = 0;
 #endif
@@ -225,13 +228,19 @@ KviSetupWizard::KviSetupWizard()
 	QString tmp;
 
 	m_pDirButtonGroup = new QButtonGroup(m_pDirectory->m_pVBox);
+	
 	m_pDirButtonGroup->setObjectName(__tr2qs("Store configuration in folder"));
-	m_pDirUsePrev = new QRadioButton(__tr2qs("Use settings folder from previous installation"),this);
+	
+	
+	// Use settings from previous installation - <<<<<<
+	m_pDirUsePrev = new QRadioButton(__tr2qs("Use settings folder from previous installation"),m_pDirectory->m_pVBox);
+	m_pDirectory->m_pVBox->layout()->addWidget(m_pDirUsePrev);
 	connect(m_pDirUsePrev,SIGNAL(clicked()),this,SLOT(oldDirClicked()));
 	m_pDirButtonGroup->addButton(m_pDirUsePrev);
 	
-	m_pOldPathBox = new QWidget(this);
-	QHBoxLayout * pHLayout = new QHBoxLayout(this);
+	m_pOldPathBox = new QWidget(m_pDirectory->m_pVBox);
+	m_pDirectory->m_pVBox->layout()->addWidget(m_pOldPathBox);
+	QHBoxLayout * pHLayout = new QHBoxLayout(m_pOldPathBox);
 	m_pOldPathBox->setLayout(pHLayout);
 
 	m_pOldDataPathEdit = new QLineEdit(m_pOldPathBox);
@@ -243,16 +252,21 @@ KviSetupWizard::KviSetupWizard()
 	pHLayout->setSpacing(3);
 	pHLayout->setStretchFactor(m_pOldDataPathEdit,1);
 	pHLayout->addWidget(pb);
+	// >>>>>>> - Use settings from previous installation
 	
-	m_pDirUseNew = new QRadioButton(__tr2qs("Use new settings folder"),this);
+	// Use new settings folder - <<<<<<
+	m_pDirUseNew = new QRadioButton(__tr2qs("Use new settings folder"),m_pDirectory->m_pVBox);
+	m_pDirectory->m_pVBox->layout()->addWidget(m_pDirUseNew);
 	connect(m_pDirUseNew,SIGNAL(clicked()),this,SLOT(newDirClicked()));
 	m_pDirButtonGroup->addButton(m_pDirUseNew);
 	
-	QLabel* l = new QLabel(this);
+	QLabel * l = new QLabel(m_pDirectory->m_pVBox);
 	l->setText(__tr2qs("Settings folder:"));
+	m_pDirectory->m_pVBox->layout()->addWidget(l);
 
-	m_pNewPathBox = new QWidget(this);
-	QHBoxLayout * pH2Layout = new QHBoxLayout(this);
+	m_pNewPathBox = new QWidget(m_pDirectory->m_pVBox);
+	m_pDirectory->m_pVBox->layout()->addWidget(m_pNewPathBox);
+	QHBoxLayout * pH2Layout = new QHBoxLayout();
 	m_pNewPathBox->setLayout(pH2Layout);
 
 	m_pDataPathEdit = new QLineEdit(m_pNewPathBox);
@@ -275,15 +289,17 @@ KviSetupWizard::KviSetupWizard()
 	tmp.append(KVI_LOCAL_KVIRC_SUBDIRECTORY_NAME);
 	KviFileUtils::adjustFilePath(tmp);
 	m_pDataPathEdit->setText(tmp);
+	
 
 
-
-	l = new QLabel(this);
+	l = new QLabel(m_pDirectory->m_pVBox);
 	l->setText(__tr2qs("Download files to folder:"));
+	m_pDirectory->m_pVBox->layout()->addWidget(l);
 
 
-	m_pNewIncomingBox = new QWidget(this);
-	QHBoxLayout * pH3Layout = new QHBoxLayout(this);
+	m_pNewIncomingBox = new QWidget(m_pDirectory->m_pVBox);
+	m_pDirectory->m_pVBox->layout()->addWidget(m_pNewIncomingBox);
+	QHBoxLayout * pH3Layout = new QHBoxLayout(m_pNewIncomingBox);
 	m_pNewIncomingBox->setLayout(pH3Layout);
 
 	m_pIncomingPathEdit = new QLineEdit(m_pNewIncomingBox);
@@ -304,19 +320,18 @@ KviSetupWizard::KviSetupWizard()
 	
 	m_pDirUseNew->toggle();
 	newDirClicked();
-
+	// >>>>>> - Use new settings folder
+	
 #ifdef COMPILE_ON_WINDOWS
-	m_pDirMakePortable = new QRadioButton(__tr2qs("All settings in  shared program folder (portable)"),this);
+	m_pDirMakePortable = new QRadioButton(__tr2qs("All settings in  shared program folder (portable)"),m_pDirectory->m_pVBox);
+	m_pDirectory->m_pVBox->layout()->addWidget(m_pDirMakePortable);
 	m_pDirButtonGroup->addButton(m_pDirMakePortable);
 #endif
-	m_pDirRestore = new QRadioButton(__tr2qs("Restore from backup archive"),this);
+	m_pDirRestore = new QRadioButton(__tr2qs("Restore from backup archive"),m_pDirectory->m_pVBox);
+	m_pDirectory->m_pVBox->layout()->addWidget(m_pDirRestore);
 	m_pDirRestore->setEnabled(FALSE);
 	m_pDirButtonGroup->addButton(m_pDirRestore);
 	
-	l = new QLabel(m_pDirectory->m_pVBox,"<b> </b>");
-
-	//m_pDirectory->m_pVBox->setStretchFactor(m_pDirectory->m_pTextLabel,1);
-
 	button(QWizard::HelpButton)->setEnabled(false);
 
 	connect(m_pDataPathEdit,SIGNAL(textChanged ( const QString & )),this,SLOT(newDataTextChanged ( const QString & )));
@@ -340,18 +355,26 @@ KviSetupWizard::KviSetupWizard()
 	else nick = "newbie";
 	if(nick.isEmpty())nick = "newbie";
 	if(nick == "root")nick = "newbie";
-//m_pIdentity->m_pVBox
+
+	// basic properties - <<<<<<
 	QGroupBox * gbox = new QGroupBox(__tr2qs("Basic Properties"),m_pIdentity->m_pVBox);
+	m_pIdentity->m_pVBox->layout()->addWidget(gbox);
+	QVBoxLayout * bplayout = new QVBoxLayout();
+	gbox->setLayout(bplayout);
+	bplayout->setSpacing(1);
 
 	m_pNickSelector = new KviStringSelector(gbox,__tr2qs("Nickname:"),&(KVI_OPTION_STRING(KviOption_stringNickname1)),true);
+	bplayout->addWidget(m_pNickSelector);
 	m_pNickSelector->setMinimumLabelWidth(120);
 	
 	QValidator * v = new QRegExpValidator(QRegExp("[^-0-9 ][^ ]*"),gbox);
 	m_pNickSelector->setValidator(v);
 	
 	m_pRealNameSelector = new KviStringSelector(gbox,__tr2qs("Real name:"),&(KVI_OPTION_STRING(KviOption_stringRealname)),true);
+	bplayout->addWidget(m_pRealNameSelector);
 	m_pRealNameSelector->setMinimumLabelWidth(120);
 
+	// >>>>>> - basic properties
 
 	QString szOptionalCtcpUserInfo = __tr2qs("This field is optional and will appear as part of the CTCP USERINFO reply.");
 	QString szCenterBegin("<center>");
@@ -359,9 +382,16 @@ KviSetupWizard::KviSetupWizard()
 	QString szTrailing = "<br><br>" + szOptionalCtcpUserInfo + szCenterEnd;
 
 	gbox = new QGroupBox(__tr2qs("Profile"),m_pIdentity->m_pVBox);
+	QVBoxLayout * gboxlayout = new QVBoxLayout();
+	gbox->setLayout(gboxlayout);
+	m_pIdentity->m_pVBox->layout()->addWidget(gbox);
+	gboxlayout->setSpacing(1);
 
+	// age box - <<<<<<
 	QWidget * hb = new QWidget(gbox);
-	QHBoxLayout * pH4Layout = new QHBoxLayout(gbox);
+	gboxlayout->addWidget(hb);
+	
+	QHBoxLayout * pH4Layout = new QHBoxLayout();
 	hb->setLayout(pH4Layout);
 	pH4Layout->setSpacing(4);
 	
@@ -386,9 +416,12 @@ KviSetupWizard::KviSetupWizard()
 	m_pAgeCombo->setCurrentItem(i);
 	pH4Layout->addWidget(m_pAgeCombo);
 	pH4Layout->setStretchFactor(m_pAgeCombo,1);
-
+	// >>>>>> - age box
+	
+	// gender - <<<<<<
 	hb = new QWidget(gbox);
-	QHBoxLayout * pH5Layout = new QHBoxLayout(gbox);
+	gboxlayout->addWidget(hb);
+	QHBoxLayout * pH5Layout = new QHBoxLayout();
 	hb->setLayout(pH5Layout);
 	pH5Layout->setSpacing(4);
 	
@@ -410,20 +443,23 @@ KviSetupWizard::KviSetupWizard()
 
 	pH5Layout->addWidget(m_pGenderCombo);
 	pH5Layout->setStretchFactor(m_pGenderCombo,1);
+	
+	// >>>>>> - gender
 
 	m_pLocationSelector = new KviStringSelector(gbox,__tr2qs("Location:"),&(KVI_OPTION_STRING(KviOption_stringCtcpUserInfoLocation)),true);
 	m_pLocationSelector->setMinimumLabelWidth(120);
+	gboxlayout->addWidget(m_pLocationSelector);
 
 	m_pLanguagesSelector = new KviStringSelector(gbox,__tr2qs("Languages:"),&(KVI_OPTION_STRING(KviOption_stringCtcpUserInfoLanguages)),true);
 	m_pLanguagesSelector->setMinimumLabelWidth(120);
+	gboxlayout->addWidget(m_pLanguagesSelector);
 
 	m_pOtherInfoSelector = new KviStringSelector(gbox,__tr2qs("Other:"),&(KVI_OPTION_STRING(KviOption_stringCtcpUserInfoOther)),true);
 	m_pOtherInfoSelector->setMinimumLabelWidth(120);
+	gboxlayout->addWidget(m_pOtherInfoSelector);
 
 	m_pIdentity->setTitle(__tr2qs("Identity"));
 	addPage(m_pIdentity);
-
-	l = new QLabel(m_pIdentity->m_pVBox,"<b> </b>");
 
 	button(QWizard::HelpButton)->setEnabled(false);
 
@@ -503,14 +539,17 @@ KviSetupWizard::KviSetupWizard()
 	m_pServersButtonGroup = new QButtonGroup(m_pServers->m_pVBox);
 	m_pServersButtonGroup->setObjectName(__tr2qs("Choose a server to connect"));
 	
-	m_pServersChooseFromList = new QRadioButton(__tr2qs("Choose from built-in server list"),this);
+	m_pServersChooseFromList = new QRadioButton(__tr2qs("Choose from built-in server list"),m_pServers->m_pVBox);
+	m_pServers->m_pVBox->layout()->addWidget(m_pServersChooseFromList);
 	m_pServersButtonGroup->addButton(m_pServersChooseFromList);
 	
-	m_pServersSpecifyManually = new QRadioButton(__tr2qs("Specify server manually"),this);
+	m_pServersSpecifyManually = new QRadioButton(__tr2qs("Specify server manually"),m_pServers->m_pVBox);
+	m_pServers->m_pVBox->layout()->addWidget(m_pServersSpecifyManually);
 	m_pServersButtonGroup->addButton(m_pServersSpecifyManually);
 
-	hb = new QWidget(this);
-	QHBoxLayout * pH6Layout = new QHBoxLayout(this);
+	hb = new QWidget(m_pServers->m_pVBox);
+	m_pServers->m_pVBox->layout()->addWidget(hb);
+	QHBoxLayout * pH6Layout = new QHBoxLayout();
 	hb->setLayout(pH6Layout);
 	
 	m_uServerPort=6667;
@@ -519,22 +558,27 @@ KviSetupWizard::KviSetupWizard()
 	pH6Layout->addWidget(m_pServerHostSelector);
 	pH6Layout->addWidget(m_pServerPortSelector);
 	
-	m_pServersOpenIrcUrl = new QRadioButton(__tr2qs("Open irc:// or irc6:// URL"),this);
+	m_pServersOpenIrcUrl = new QRadioButton(__tr2qs("Open irc:// or irc6:// URL"),m_pServers->m_pVBox);
+	m_pServers->m_pVBox->layout()->addWidget(m_pServersOpenIrcUrl);
 	m_pServersButtonGroup->addButton(m_pServersOpenIrcUrl);
 	m_szServerUrl="irc://";
-	m_pServerUrlSelector = new KviStringSelector(this,__tr2qs("URL:"),&m_szServerUrl,true);
+	m_pServerUrlSelector = new KviStringSelector(m_pServers->m_pVBox,__tr2qs("URL:"),&m_szServerUrl,true);
+	m_pServers->m_pVBox->layout()->addWidget(m_pServerUrlSelector);
 
 #ifdef COMPILE_ON_WINDOWS
-	m_pUseMircServerList = new QRadioButton(__tr2qs("Import server list from mIRC"),this);
+	m_pUseMircServerList = new QRadioButton(__tr2qs("Import server list from mIRC"),m_pServers->m_pVBox);
+	m_pServers->m_pVBox->layout()->addWidget(m_pUseMircServerList);
 	m_pUseMircServerList->setEnabled(false);
 	m_pServersButtonGroup->addButton(m_pUseMircServerList);
 #endif
 
-	m_pServersLoadConfig = new QRadioButton(__tr2qs("Use server config"),this);
+	m_pServersLoadConfig = new QRadioButton(__tr2qs("Use server config"),m_pServers->m_pVBox);
+	m_pServers->m_pVBox->layout()->addWidget(m_pServersLoadConfig);
 	m_pServersLoadConfig->setEnabled(FALSE);
 	m_pServersButtonGroup->addButton(m_pServersLoadConfig);
 
-	m_pServerConfigSelector = new KviFileSelector(this,__tr2qs("Config file:"),&m_szServerConfigFile,true);
+	m_pServerConfigSelector = new KviFileSelector(m_pServers->m_pVBox,__tr2qs("Config file:"),&m_szServerConfigFile,true);
+	m_pServers->m_pVBox->layout()->addWidget(m_pServerConfigSelector);
 	m_pServerConfigSelector->setEnabled(FALSE);
 
 	m_pServersChooseFromList->toggle();
@@ -552,8 +596,8 @@ KviSetupWizard::KviSetupWizard()
 		KviConfig cfg(szTmp,KviConfig::Read);
 		cfg.setGroup("Setup");
 		if(cfg.readBoolEntry("hideServerList",FALSE)) {
-			setAppropriate(m_pServers,false);
-			setFinishEnabled(m_pIdentity,true);
+			//setAppropriate(m_pServers,false);
+			//setFinishEnabled(m_pIdentity,true);
 			KVI_OPTION_BOOL(KviOption_boolShowChannelsJoinOnIrc) = false;
 			KVI_OPTION_BOOL(KviOption_boolShowServersConnectDialogOnStart) = false;
 		}
@@ -564,11 +608,11 @@ KviSetupWizard::KviSetupWizard()
 			{
 				case 1:
 					m_pDirUseNew->toggle();
-					setAppropriate(m_pDirectory,false);
+					//setAppropriate(m_pDirectory,false);
 					break;
 				case 2:
 					m_pDirMakePortable->toggle();
-					setAppropriate(m_pDirectory,false);
+					//setAppropriate(m_pDirectory,false);
 					break;
 			}
 		}
@@ -647,9 +691,7 @@ void KviSetupWizard::oldDirClicked()
 	m_pNewPathBox->setEnabled(false);
 	m_pNewIncomingBox->setEnabled(false);
 	
-	//if(m_pIdentity) setAppropriate(m_pIdentity,false);
-//	if(m_pTheme) setAppropriate(m_pTheme,false);
-	//if(m_pServers) setAppropriate(m_pServers,false);
+	button(QWizard::NextButton)->setEnabled(false);
 	
 	bool pState;
 	if(m_pOldDataPathEdit->text().isEmpty()) pState=false;
@@ -678,9 +720,7 @@ void KviSetupWizard::newDirClicked()
 	m_pNewPathBox->setEnabled(true);
 	m_pNewIncomingBox->setEnabled(true);
 	
-	//if(m_pIdentity) setAppropriate(m_pIdentity,true);
-//	if(m_pTheme) setAppropriate(m_pTheme,true);
-	//if(m_pServers) setAppropriate(m_pServers,true);
+	button(QWizard::NextButton)->setEnabled(true);
 	
 	bool pState;
 	if(m_pDataPathEdit->text().isEmpty() || m_pIncomingPathEdit->text().isEmpty()) pState=false;
@@ -711,6 +751,7 @@ void KviSetupWizard::chooseOldDataPath()
 			m_pOldDataPathEdit->setText(szBuffer);
 		}
 	}
+	button(QWizard::FinishButton)->setEnabled(!m_pOldDataPathEdit->text().isEmpty());
 }
 
 void KviSetupWizard::chooseDataPath()
