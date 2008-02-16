@@ -526,7 +526,7 @@ static bool action_module_cleanup(KviModule *m)
 KVIRC_MODULE(
 	"action",                                                      // module name
 	"4.0.0",                                                        // module version
-	"Copyright (C) 2004 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
+	"Copyright (C) 2008 Szymon Stefanek (pragma at kvirc dot net)", // author & (C)
 	"Interface to the system actions",
 	action_module_init,
 	0,

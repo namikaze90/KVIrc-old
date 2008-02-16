@@ -5,7 +5,7 @@
 //	 Code improvements by Carbone Alessandro & Tonino Imbesi
 //
 //   This file is part of the KVIrc IRC client distribution
-//   Copyright (C) 1999-2004 Szymon Stefanek <pragma at kvirc dot net>
+//   Copyright (C) 1999-2008 Szymon Stefanek <pragma at kvirc dot net>
 //
 //   This program is FREE software. You can redistribute it and/or
 //   modify it under the terms of the GNU General Public License

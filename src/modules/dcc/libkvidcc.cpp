@@ -2757,7 +2757,7 @@ static bool dcc_module_can_unload(KviModule *m)
 KVIRC_MODULE(
 	"Dcc",
 	"4.0.0",
-	"Copyright (C) 2000-2004:\n" \
+	"Copyright (C) 2000-2008:\n" \
 	"  Szymon Stefanek (pragma at kvirc dot net)\n",
 	"DCC extension for KVIrc\n",
 	dcc_module_init,

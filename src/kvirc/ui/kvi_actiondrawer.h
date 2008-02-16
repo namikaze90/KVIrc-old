@@ -6,7 +6,7 @@
 //   Created on Sun 21 Nov 2004 05:44:22 by Szymon Stefanek
 //
 //   This file is part of the KVIrc IRC Client distribution
-//   Copyright (C) 2004 Szymon Stefanek <pragma at kvirc dot net>
+//   Copyright (C) 2008 Szymon Stefanek <pragma at kvirc dot net>
 //
 //   This program is FREE software. You can redistribute it and/or
 //   modify it under the terms of the GNU General Public License
