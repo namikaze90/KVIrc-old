@@ -279,7 +279,7 @@ void KviScriptSocketObject::reset()
 		The return value is meaningful only if the socket is in connected or connecting state.
 
 		!fn: $setProtocol(<protocol>)
-		Let KVIrc use TCP jr UDP protocol
+		Let KVIrc use TCP or UDP protocol
 
 		!fn: $remotePort()
 		Returns the port of the remote end of this socket.[br]
@@ -598,12 +598,12 @@ bool  KviKvsObject_socket::functionConnect(KviKvsObjectFunctionCall *c)
 #endif
 	{
 		debug ("ok connecting");
-		debug ("connectinhg on ip %s ",m_szRemoteIp.latin1());
+		debug ("connecting on ip %s ",m_szRemoteIp.latin1());
 		debug ("non so ip");
 		m_iStatus = KVI_SCRIPT_SOCKET_STATUS_CONNECTING;
 		delayedConnect();
 	} else {
-		debug ("connectinhg on ip %s port %d",m_szRemoteIp.latin1(),m_uRemotePort);
+		debug ("connecting on ip %s port %d",m_szRemoteIp.latin1(),m_uRemotePort);
 		m_iStatus = KVI_SCRIPT_SOCKET_STATUS_DNS;
 		delayedLookupRemoteIp();
 	}
@@ -667,7 +667,7 @@ bool KviKvsObject_socket::functionListen(KviKvsObjectFunctionCall *c)
 
 #ifdef COMPILE_IPV6_SUPPORT
 	m_sock = kvi_socket_create(m_bIpV6 ? KVI_SOCKET_PF_INET6 : KVI_SOCKET_PF_INET,
-								m_bUdp ? KVI_SOCKET_TYPE_DGRAM : KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
+		m_bUdp ? KVI_SOCKET_TYPE_DGRAM : KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
 #else
 	m_sock = kvi_socket_create(KVI_SOCKET_PF_INET,m_bUdp ? KVI_SOCKET_TYPE_DGRAM : KVI_SOCKET_TYPE_STREAM,KVI_SOCKET_PROTO_TCP);
 #endif

@@ -117,7 +117,7 @@ class KviKvsObject_socket : public KviKvsObject
 public:
 	KVSO_DECLARE_OBJECT(KviKvsObject_socket)
 protected:
-	bool               m_bUdp;  
+	bool               m_bUdp;
 	kvi_socket_t       m_sock;
 	int                m_iStatus;
 	QString             m_szRemoteIp;
@@ -133,13 +133,13 @@ protected:
 	unsigned int       m_uInDataLen;
 	bool               m_bIpV6;
 	unsigned int       m_uConnectionId;
-	kvs_uint_t m_uRemotePort;
+	kvs_uint_t         m_uRemotePort;
 	KviDataBuffer    * m_pOutBuffer;
 	QTimer           * m_pFlushTimer;
 
 	kvi_socket_t       m_secondarySock;
 	kvi_u32_t          m_uSecondaryPort;
-	QString             m_szSecondaryIp;
+	QString            m_szSecondaryIp;
 protected:
 	bool functionStatus(KviKvsObjectFunctionCall *c);
 	bool functionRemotePort(KviKvsObjectFunctionCall *c);
