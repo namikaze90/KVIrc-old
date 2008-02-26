@@ -39,6 +39,7 @@
 
 
 extern KviAboutDialog * g_pAboutDialog;
+extern KviApp * g_pApp;
 /*
 "<font color=\"#FFFF00\"><b>KVIrc public releases :</b></font><br>\n" \
 "<br>\n" \
