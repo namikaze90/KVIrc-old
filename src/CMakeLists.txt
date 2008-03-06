@@ -1,5 +1,5 @@
 # Find subdirs
-ADD_SUBDIRECTORY(kvilib kvirc modules)
+SUBDIRS(kvilib kvirc modules)
 
 IF(UNIX)
 	IF(APPLE)
