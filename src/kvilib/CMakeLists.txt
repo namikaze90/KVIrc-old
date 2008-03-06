@@ -154,4 +154,4 @@ SET(kvilib_SRCS
 # After this call, files will be moc'ed to moc_kvi_*.cpp
 QT4_WRAP_CPP(kvilib_MOC_SRCS ${kvilib_MOC_HDRS})
 
-ADD_EXECUTABLE(libkvi ${kvilib_SRCS} ${kvilib_MOC_SRCS})
+ADD_LIBRARY(libkvilib ${kvilib_SRCS} ${kvilib_MOC_SRCS})
