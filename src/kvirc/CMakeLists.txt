@@ -17,10 +17,6 @@ INCLUDE_DIRECTORIES(
 	../kvilib/system
 )
 
-TARGET_LINK_LIBRARIES(
-	${QT_LIBRARIES}
-)
-
 SET(kvirc_MOC_HDRS
 	ui/kvi_actiondrawer.h
 	ui/kvi_channel.h
@@ -431,4 +427,8 @@ SET(kvilib_SRCS
 # After this call, files will be moc'ed to moc_kvi_*.cpp
 QT4_WRAP_CPP(kvirc_MOC_SRCS ${kvirc_MOC_HDRS})
 
+# Create bin
 ADD_EXECUTABLE(kvirc ${kvirc_SRCS} ${kvirc_MOC_SRCS})
+
+# Link libraries
+TARGET_LINK_LIBRARIES(kvirc ${QT_LIBRARIES})
