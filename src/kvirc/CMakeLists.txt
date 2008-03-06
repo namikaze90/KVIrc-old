@@ -1,7 +1,6 @@
 # CMakeLists.txt for src/kvirc/
 
 INCLUDE_DIRECTORIES(
-	${QT_INCLUDE_DIR}
 	kernel
 	kvs
 	module
@@ -431,4 +430,4 @@ QT4_WRAP_CPP(kvirc_MOC_SRCS ${kvirc_MOC_HDRS})
 ADD_EXECUTABLE(kvirc ${kvirc_SRCS} ${kvirc_MOC_SRCS})
 
 # Link libraries
-TARGET_LINK_LIBRARIES(kvirc ${QT_LIBRARIES})
+TARGET_LINK_LIBRARIES(kvirc libkvilib ${LIBS})

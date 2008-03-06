@@ -1,13 +1,5 @@
 # CMakeLists.txt for src/kvilib/
 
-INCLUDE_DIRECTORIES(
-	${QT_INCLUDE_DIR}
-)
-
-TARGET_LINK_LIBRARIES(
-	${QT_LIBRARIES}
-)
-
 SET(kvilib_MOC_HDRS
 	tal/kvi_tal_application_qt.h
 	tal/kvi_tal_menubar_qt.h
@@ -154,4 +146,6 @@ SET(kvilib_SRCS
 # After this call, files will be moc'ed to moc_kvi_*.cpp
 QT4_WRAP_CPP(kvilib_MOC_SRCS ${kvilib_MOC_HDRS})
 
+# Create library
 ADD_LIBRARY(libkvilib ${kvilib_SRCS} ${kvilib_MOC_SRCS})
+TARGET_LINK_LIBRARIES(libkvilib ${LIBS})

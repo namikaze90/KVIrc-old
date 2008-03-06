@@ -1,8 +1,5 @@
 # CMakeLists for src/
 
-# Find subdirs
-SUBDIRS(kvilib kvirc modules)
-
 # OS check
 IF(UNIX)
 	IF(APPLE)
@@ -18,3 +15,6 @@ ELSE(UNIX)
 		SET(KVI_INSTALL_PREFIX .)
 	ENDIF(WIN32)
 ENDIF(UNIX)
+
+# Find subdirs
+SUBDIRS(kvilib kvirc modules)
