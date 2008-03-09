@@ -1,12 +1,12 @@
 # CMakeLists for src/modules/eventeditor
 
 SET(kvieventeditor_MOC_HDRS
-	eventeventeditor.h
+	eventeditor.h
 )
 
 SET(kvieventeditor_SRCS
-	eventeventeditor.cpp
-	eventeventeditor.cpp
+	eventeditor.cpp
+	eventeditor.cpp
 )
 
 # After this call, files will be moc'ed to moc_kvi_*.cpp

@@ -57,13 +57,18 @@ IF(X11_FOUND)
 	SET(LIBS ${LIBS} ${X11_LIBRARIES})
 ENDIF(X11_FOUND)
 
-# Check for Doxygen
-#INCLUDE(${CMAKE_ROOT}/Modules/FindDoxygen.cmake)
+# Check for threads
+FIND_PACKAGE(Threads REQUIRED)
+IF(Threads_FOUND)
+	INCLUDE_DIRECTORIES(${Threads_INCLUDE_DIR})
+	SET(LIBS ${LIBS} ${Threads_LIBRARIES})
+ENDIF(Threads_FOUND)
 
-# Check for Cygwin
-#INCLUDE(${CMAKE_ROOT}/Modules/FindCygwin.cmake)
-
-
+#CMakeUnixFindMake.cmake
+#FindDoxygen.cmake
+#FindCygwin.cmake
+#CMakeFindXCode.cmake
+#CheckLibraryExists.cmake
 
 # Search for subdirectories
 SUBDIRS(src data)

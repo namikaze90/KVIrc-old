@@ -1,6 +1,6 @@
 # CMakeLists for src/modules/action
 
-SET(kviabout_SRCS
+SET(kviaction_SRCS
 	libkviaction.cpp
 )
 
