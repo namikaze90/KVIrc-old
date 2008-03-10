@@ -6,7 +6,7 @@ SET(kvieventeditor_MOC_HDRS
 
 SET(kvieventeditor_SRCS
 	eventeditor.cpp
-	eventeditor.cpp
+	libkvieventeditor.cpp
 )
 
 # After this call, files will be moc'ed to moc_kvi_*.cpp
