@@ -1,5 +1,11 @@
 # CMakeLists.txt for src/kvilib/
 
+INCLUDE_DIRECTORIES(
+    config
+    core
+    system
+)
+
 SET(kvilib_MOC_HDRS
 	tal/kvi_tal_application_qt.h
 	tal/kvi_tal_menubar_qt.h
