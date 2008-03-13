@@ -33,7 +33,7 @@ SUBDIRS(
 	texticons term theme tip tmphighlight toolbar toolbareditor trayicon
 	url
 	window
-	
+
 	# broken modules
 	# notifier, torrent
 

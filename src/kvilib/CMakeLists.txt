@@ -4,6 +4,7 @@ INCLUDE_DIRECTORIES(
     config
     core
     system
+    ${QT_INCLUDES}
 )
 
 SET(kvilib_MOC_HDRS

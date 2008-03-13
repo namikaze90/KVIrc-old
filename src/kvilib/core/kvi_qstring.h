@@ -113,7 +113,7 @@ namespace KviQString
 	extern KVILIB_API void appendNumber(QString &s,int iInteger);
 	extern KVILIB_API void appendNumber(QString &s,unsigned int uInteger);
 	extern KVILIB_API void appendNumber(QString &s,kvi_u64_t uInteger);
-	
+
 	extern KVILIB_API void cutFromFirst(QString &s,const QChar &c,bool bIncluded = true);
 	extern KVILIB_API void cutFromLast(QString &s,const QChar &c,bool bIncluded = true);
 	extern KVILIB_API void cutToFirst(QString &s,const QChar &c,bool bIncluded = true,bool bClearIfNotFound = false);
@@ -122,11 +122,11 @@ namespace KviQString
 	extern KVILIB_API void cutFromLast(QString &s,const QString &c,bool bIncluded = true);
 	extern KVILIB_API void cutToFirst(QString &s,const QString &c,bool bIncluded = true,bool bClearIfNotFound = false);
 	extern KVILIB_API void cutToLast(QString &s,const QString &c,bool bIncluded = true,bool bClearIfNotFound = false);
-	
+
 	extern KVILIB_API QString upperISO88591(const QString &szSrc);
 	extern KVILIB_API QString lowerISO88591(const QString &szSrc);
 	extern KVILIB_API QString getToken(QString &szString,const QChar &sep);
-	
+
 	extern KVILIB_API void transliterate(QString &s,const QString &szToFind,const QString &szReplacement);
 
 	extern KVILIB_API void bufferToHex(QString &szRetBuffer,const unsigned char * buffer,unsigned int len);
@@ -141,7 +141,7 @@ namespace KviQString
 	{
 		return s.toLower();
 	}
-	
+
 	inline int find(const QString &s,QChar c,int index = 0,bool cs = true)
 	{
 		return s.indexOf(c,index,cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
@@ -202,7 +202,7 @@ namespace KviQString
 	//          at the end of the instruction and the c pointer gets thus invalidated.
 	//          Use
 	//           KviQCString tmp = KviQString::toUtf8(something);
-	//           char * c = tmp.data(); 
+	//           char * c = tmp.data();
 	//          instead.
 	//          Yes, I know that it sucks, but it's the only way to
 	//          transit to qt 4.x more or less cleanly...
@@ -213,9 +213,9 @@ namespace KviQString
 
 	inline KviQCString toLocal8Bit(const QString &s)
 	{
-		return s.local8Bit();
+		return s.toLocal8Bit();
 	}
-	
+
 	inline kvi_i64_t toI64(QString &szNumber,bool * bOk)
 	{
 #if SIZEOF_LONG_INT == 8
@@ -224,7 +224,7 @@ namespace KviQString
 		return szNumber.toLongLong(bOk);
 #endif
 	}
-	
+
 	inline kvi_u64_t toU64(QString &szNumber,bool * bOk)
 	{
 #if SIZEOF_LONG_INT == 8
