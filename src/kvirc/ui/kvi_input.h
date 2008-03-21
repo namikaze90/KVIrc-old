@@ -28,11 +28,12 @@
 #include "kvi_settings.h"
 #include "kvi_string.h"
 
-#include <QWidget>
+#include <QFrame>
 #include <QPixmap>
 //#include <QDialog>
 #include <QToolButton>
 
+class KviTalPopupMenu;
 class KviUserListView;
 class KviWindow;
 class KviInput;

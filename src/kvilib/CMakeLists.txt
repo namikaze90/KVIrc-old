@@ -1,10 +1,14 @@
 # CMakeLists.txt for src/kvilib/
 
 INCLUDE_DIRECTORIES(
-    config
-    core
-    system
-    ${QT_INCLUDES}
+	config
+	core
+	ext
+	file
+	irc
+	net
+	system
+	${QT_INCLUDES}
 )
 
 SET(kvilib_MOC_HDRS
