@@ -53,8 +53,12 @@
 	#include <sys/socket.h>
 	#include <netinet/tcp.h>
 	#include <netinet/in.h>
-	#include <fcntl.h>
 	#include <unistd.h>
+	#ifndef __extern_inline
+		// broken libc distro :/
+		#define __extern_inline extern inline
+	#endif
+	#include <fcntl.h>
 
 	#define KVI_INVALID_SOCKET (-1)
 
