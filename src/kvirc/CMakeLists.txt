@@ -213,7 +213,7 @@ SET(kvirc_MOC_HDRS
 	kernel/kvi_userinput.h
 )
 
-SET(kvilib_SRCS
+SET(kvirc_SRCS
 	ui/kvi_actiondrawer.cpp
 	ui/kvi_channel.cpp
 	ui/kvi_colorwin.cpp
