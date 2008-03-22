@@ -1,0 +1,22 @@
+# CMakeLists for src/modules/setup
+
+# From qmake
+#win32 {
+#	LIBS = -lole32 -luuid
+#}
+
+SET(kvieditor_MOC_HDRS
+	setupwizard.h
+)
+
+SET(kvisetup_SRCS
+	libkvisetup.cpp
+	setupwizard.cpp
+)
+
+# After this call, files will be moc'ed to moc_kvi_*.cpp
+QT4_WRAP_CPP(kvisetup_MOC_SRCS ${kvisetup_MOC_HDRS})
+
+# Create library
+ADD_LIBRARY(kvisetup ${kvisetup_SRCS} ${kvisetup_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(libkvilib kvisetup)
