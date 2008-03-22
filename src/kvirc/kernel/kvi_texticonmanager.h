@@ -28,7 +28,7 @@
 #include "kvi_settings.h"
 
 #include <QPixmap>
-
+#include <QHash>
 
 
 class KVIRC_API KviTextIcon

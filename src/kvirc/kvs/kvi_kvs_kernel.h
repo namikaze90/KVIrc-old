@@ -25,11 +25,10 @@
 //=============================================================================
 
 #include "kvi_settings.h"
-
 #include "kvi_kvs_parser.h"
-
 #include "kvi_qstring.h"
 
+#include <QHash>
 
 
 class KviKvsTreeNodeSpecialCommand;

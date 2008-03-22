@@ -26,9 +26,9 @@
 
 #include "kvi_settings.h"
 #include "kvi_qstring.h"
-
-
 #include "kvi_kvs_object_functionhandler.h"
+
+#include <QHash>
 
 class KviKvsObject;
 class KviKvsObjectClass;

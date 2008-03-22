@@ -28,12 +28,12 @@
 #include "kvi_string.h"
 #include "kvi_toolwindows_container.h"
 
-#include <QDialog> 
-#include <QLineEdit> 
+#include <QDialog>
+#include <QLineEdit>
 #include <QWidget>
 #include <QPushButton>
 
-
+class QListViewItem;
 class KviMaskEditor;
 class KviChannel;
 

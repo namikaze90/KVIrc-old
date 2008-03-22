@@ -29,7 +29,7 @@
 #include "kvi_qstring.h"
 
 #include <QObject>
-
+#include <QHash>
 
 
 
