@@ -1,6 +1,6 @@
 # CMakeLists for src/modules/mask
 
-SET(kvilogview_SRCS
+SET(kvimask_SRCS
 	libkvimask.cpp
 )
 

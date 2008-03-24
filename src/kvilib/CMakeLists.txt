@@ -159,5 +159,5 @@ QT4_WRAP_CPP(kvilib_MOC_SRCS ${kvilib_MOC_HDRS})
 #QT4_AUTOMOC(${kvilib_MOC_SRCS})
 
 # Create library
-ADD_LIBRARY(libkvilib ${kvilib_SRCS} ${kvilib_MOC_SRCS})
-TARGET_LINK_LIBRARIES(libkvilib ${LIBS})
+ADD_LIBRARY(kvilib ${kvilib_SRCS} ${kvilib_MOC_SRCS})
+TARGET_LINK_LIBRARIES(kvilib ${LIBS})

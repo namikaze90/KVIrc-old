@@ -1,19 +1,19 @@
 # CMakeLists.txt for src/modules/
 
 INCLUDE_DIRECTORIES(
-	../../kvilib/tal/
-	../../kvilib/config/
-	../../kvilib/core/
-	../../kvilib/ext/
-	../../kvilib/file/
-	../../kvilib/irc/
-	../../kvilib/net/
-	../../kvilib/system/
-	../../kvirc/kernel/
-	../../kvirc/kvs/
-	../../kvirc/module/
-	../../kvirc/sparser/
-	../../kvirc/ui/
+	../kvilib/tal/
+	../kvilib/config/
+	../kvilib/core/
+	../kvilib/ext/
+	../kvilib/file/
+	../kvilib/irc/
+	../kvilib/net/
+	../kvilib/system/
+	../kvirc/kernel/
+	../kvirc/kvs/
+	../kvirc/module/
+	../kvirc/sparser/
+	../kvirc/ui/
 )
 
 SUBDIRS(
@@ -26,7 +26,7 @@ SUBDIRS(
 	ident
 	lamerizer links list log logview
 	mask math mediaplayer mircimport my
-	objects options
+	objects
 	popupeditor
 	raweditor regchan reguser rijndael
 	setup sharedfile sharedfileswindow snd socketspy spaste str system
@@ -35,7 +35,7 @@ SUBDIRS(
 	window
 
 	# broken modules
-	# notifier, torrent
+	# notifier, options, torrent
 
 	# modules to deprecate ?
 	# perl, perlcore
