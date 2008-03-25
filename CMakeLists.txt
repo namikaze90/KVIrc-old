@@ -90,6 +90,7 @@ IF(CMAKE_HAVE_THREADS_LIBRARY)
 	LIST(APPEND LIBS ${CMAKE_THREAD_LIBS_INIT})
 ENDIF()
 
+#Unused by now
 #CMakeUnixFindMake.cmake
 #FindDoxygen.cmake
 #FindCygwin.cmake
