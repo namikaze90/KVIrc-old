@@ -26,7 +26,7 @@ SUBDIRS(
 	ident
 	lamerizer links list log logview
 	mask math mediaplayer mircimport my
-	objects
+	objects 
 	popupeditor
 	raweditor regchan reguser rijndael
 	setup sharedfile sharedfileswindow snd socketspy spaste str system
@@ -39,4 +39,7 @@ SUBDIRS(
 
 	# modules to deprecate ?
 	# perl, perlcore
+
+	# forgotten ?
+	# clock iograph
 )

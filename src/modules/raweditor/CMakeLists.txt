@@ -13,5 +13,7 @@ SET(kviraweditor_SRCS
 QT4_WRAP_CPP(kviraweditor_MOC_SRCS ${kviraweditor_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kviraweditor ${kviraweditor_SRCS} ${kviraweditor_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kviraweditor)
+ADD_LIBRARY(kviraweditor MODULE ${kviraweditor_SRCS} ${kviraweditor_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kviraweditor)
+
+INSTALL(TARGETS kviraweditor LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

@@ -8,5 +8,7 @@ SET(kviregchan_SRCS
 QT4_WRAP_CPP(kviregchan_MOC_SRCS ${kviregchan_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kviregchan ${kviregchan_SRCS} ${kviregchan_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kviregchan)
+ADD_LIBRARY(kviregchan MODULE ${kviregchan_SRCS} ${kviregchan_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kviregchan)
+
+INSTALL(TARGETS kviregchan LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

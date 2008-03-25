@@ -8,5 +8,7 @@ SET(kviperl_SRCS
 QT4_WRAP_CPP(kviperl_MOC_SRCS ${kviperl_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kviperl ${kviperl_SRCS} ${kviperl_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kviaddon)
+ADD_LIBRARY(kviperl MODULE ${kviperl_SRCS} ${kviperl_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kviaddon)
+
+INSTALL(TARGETS kviperl LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

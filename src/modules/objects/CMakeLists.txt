@@ -107,5 +107,7 @@ SET(kviobjects_SRCS
 QT4_WRAP_CPP(kviobjects_MOC_SRCS ${kviobjects_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kviobjects ${kviobjects_SRCS} ${kviobjects_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kviaddon)
+ADD_LIBRARY(kviobjects MODULE ${kviobjects_SRCS} ${kviobjects_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kviaddon)
+
+INSTALL(TARGETS kviobjects LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

@@ -5,5 +5,7 @@ SET(kvimask_SRCS
 )
 
 # Create library
-ADD_LIBRARY(kvimask ${kvimask_SRCS} ${kvimask_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvimask)
+ADD_LIBRARY(kvimask MODULE ${kvimask_SRCS} ${kvimask_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvimask)
+
+INSTALL(TARGETS kvimask LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

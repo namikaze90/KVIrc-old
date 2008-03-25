@@ -8,5 +8,7 @@ SET(kvifile_SRCS
 QT4_WRAP_CPP(kvifile_MOC_SRCS ${kvifile_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvifile ${kvifile_SRCS} ${kvifile_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvifile)
+ADD_LIBRARY(kvifile MODULE ${kvifile_SRCS} ${kvifile_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvifile)
+
+INSTALL(TARGETS kvifile LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

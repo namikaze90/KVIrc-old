@@ -23,5 +23,7 @@ SET(kviperlcore_SRCS
 QT4_WRAP_CPP(kviperlcore_MOC_SRCS ${kviperlcore_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kviperlcore ${kviperlcore_SRCS} ${kviperlcore_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kviperlcore)
+ADD_LIBRARY(kviperlcore MODULE ${kviperlcore_SRCS} ${kviperlcore_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kviperlcore)
+
+INSTALL(TARGETS kviperlcore LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

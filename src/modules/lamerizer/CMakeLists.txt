@@ -12,5 +12,7 @@ SET(kvilamerizer_SRCS
 QT4_WRAP_CPP(kvilamerizer_MOC_SRCS ${kvilamerizer_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvilamerizer ${kvilamerizer_SRCS} ${kvilamerizer_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvilamerizer)
+ADD_LIBRARY(kvilamerizer MODULE ${kvilamerizer_SRCS} ${kvilamerizer_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvilamerizer)
+
+INSTALL(TARGETS kvilamerizer LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

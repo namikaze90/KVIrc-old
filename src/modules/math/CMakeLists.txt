@@ -8,5 +8,7 @@ SET(kvimath_SRCS
 QT4_WRAP_CPP(kvimath_MOC_SRCS ${kvimath_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvimath ${kvimath_SRCS} ${kvimath_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvimath)
+ADD_LIBRARY(kvimath MODULE ${kvimath_SRCS} ${kvimath_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvimath)
+
+INSTALL(TARGETS kvimath LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

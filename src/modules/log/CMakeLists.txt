@@ -8,5 +8,7 @@ SET(kvilog_SRCS
 QT4_WRAP_CPP(kvilog_MOC_SRCS ${kvilog_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvilog ${kvilog_SRCS} ${kvilog_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvilog)
+ADD_LIBRARY(kvilog MODULE ${kvilog_SRCS} ${kvilog_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvilog)
+
+INSTALL(TARGETS kvilog LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

@@ -14,5 +14,7 @@ SET(kvispaste_SRCS
 QT4_WRAP_CPP(kvispaste_MOC_SRCS ${kvispaste_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvispaste ${kvispaste_SRCS} ${kvispaste_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvispaste)
+ADD_LIBRARY(kvispaste MODULE ${kvispaste_SRCS} ${kvispaste_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvispaste)
+
+INSTALL(TARGETS kvispaste LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

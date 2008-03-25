@@ -13,5 +13,7 @@ SET(kvichannelsjoin_SRCS
 QT4_WRAP_CPP(kvichannelsjoin_MOC_SRCS ${kvichannelsjoin_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvichannelsjoin ${kvichannelsjoin_SRCS} ${kvichannelsjoin_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvichannelsjoin)
+ADD_LIBRARY(kvichannelsjoin MODULE ${kvichannelsjoin_SRCS} ${kvichannelsjoin_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvichannelsjoin)
+
+INSTALL(TARGETS kvichannelsjoin LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

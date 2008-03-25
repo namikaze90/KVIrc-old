@@ -8,5 +8,7 @@ SET(kviaction_SRCS
 QT4_WRAP_CPP(kviaction_MOC_SRCS ${kviaction_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kviaction ${kviaction_SRCS} ${kviaction_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kviaction)
+ADD_LIBRARY(kviaction MODULE ${kviaction_SRCS} ${kviaction_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kviaction)
+
+INSTALL(TARGETS kviaction LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

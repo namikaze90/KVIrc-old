@@ -13,5 +13,7 @@ SET(kvitoolbareditor_SRCS
 QT4_WRAP_CPP(kvitoolbareditor_MOC_SRCS ${kvitoolbareditor_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvitoolbareditor ${kvitoolbareditor_SRCS} ${kvitoolbareditor_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvitoolbareditor)
+ADD_LIBRARY(kvitoolbareditor MODULE ${kvitoolbareditor_SRCS} ${kvitoolbareditor_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvitoolbareditor)
+
+INSTALL(TARGETS kvitoolbareditor LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

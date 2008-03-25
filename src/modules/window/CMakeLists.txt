@@ -13,5 +13,7 @@ SET(kviwindow_SRCS
 QT4_WRAP_CPP(kviwindow_MOC_SRCS ${kviwindow_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kviwindow ${kviwindow_SRCS} ${kviwindow_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kviwindow)
+ADD_LIBRARY(kviwindow MODULE ${kviwindow_SRCS} ${kviwindow_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kviwindow)
+
+INSTALL(TARGETS kviwindow LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

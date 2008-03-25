@@ -13,5 +13,7 @@ SET(kvilinks_SRCS
 QT4_WRAP_CPP(kvilinks_MOC_SRCS ${kvilinks_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvilinks ${kvilinks_SRCS} ${kvilinks_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvilinks)
+ADD_LIBRARY(kvilinks MODULE ${kvilinks_SRCS} ${kvilinks_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvilinks)
+
+INSTALL(TARGETS kvilinks LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

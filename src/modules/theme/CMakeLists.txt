@@ -19,5 +19,7 @@ SET(kvitheme_SRCS
 QT4_WRAP_CPP(kvitheme_MOC_SRCS ${kvitheme_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvitheme ${kvitheme_SRCS} ${kvitheme_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvitheme)
+ADD_LIBRARY(kvitheme MODULE ${kvitheme_SRCS} ${kvitheme_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvitheme)
+
+INSTALL(TARGETS kvitheme LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

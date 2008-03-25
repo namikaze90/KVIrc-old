@@ -16,6 +16,19 @@ SET(KVI_VERSION_BRANCH "4.0")
 
 SET(LIBS)
 
+# Install path
+IF(UNIX)
+	IF(APPLE)
+	# MacOS X
+		SET(KVI_INSTALL_PREFIX .)
+	ELSE()
+	# Linux
+		SET(KVI_INSTALL_PREFIX /usr/local)
+	ENDIF()
+ELSEIF(WIN32)
+	SET(KVI_INSTALL_PREFIX .)
+ENDIF()
+
 # Skel from cmake.org
 #FIND_PACKAGE(PNG)
 #IF(PNG_FOUND)

@@ -8,5 +8,7 @@ SET(kvitmphighlight_SRCS
 QT4_WRAP_CPP(kvitmphighlight_MOC_SRCS ${kvitmphighlight_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvitmphighlight ${kvitmphighlight_SRCS} ${kvitmphighlight_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvitmphighlight)
+ADD_LIBRARY(kvitmphighlight MODULE ${kvitmphighlight_SRCS} ${kvitmphighlight_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvitmphighlight)
+
+INSTALL(TARGETS kvitmphighlight LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

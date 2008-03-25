@@ -8,5 +8,7 @@ SET(kvicontext_SRCS
 QT4_WRAP_CPP(kvicontext_MOC_SRCS ${kvicontext_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvicontext ${kvicontext_SRCS} ${kvicontext_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvicontext)
+ADD_LIBRARY(kvicontext MODULE ${kvicontext_SRCS} ${kvicontext_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvicontext)
+
+INSTALL(TARGETS kvicontext LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

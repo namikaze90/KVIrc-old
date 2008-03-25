@@ -16,5 +16,7 @@ ENDIF(WIN32)
 QT4_WRAP_CPP(kviident_MOC_SRCS ${kviident_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kviident ${kviident_SRCS} ${kviident_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kviident)
+ADD_LIBRARY(kviident MODULE ${kviident_SRCS} ${kviident_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kviident)
+
+INSTALL(TARGETS kviident LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

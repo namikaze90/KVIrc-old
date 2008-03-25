@@ -17,5 +17,7 @@ SET(kvireguser_SRCS
 QT4_WRAP_CPP(kvireguser_MOC_SRCS ${kvireguser_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvireguser ${kvireguser_SRCS} ${kvireguser_MOC_SRCS})
-#TARGET_LINK_LIBRARIES(libkvilib kvireguser)
+ADD_LIBRARY(kvireguser MODULE ${kvireguser_SRCS} ${kvireguser_MOC_SRCS})
+#TARGET_LINK_LIBRARIES(kvilib kvireguser)
+
+INSTALL(TARGETS kvireguser LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

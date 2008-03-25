@@ -159,5 +159,8 @@ QT4_WRAP_CPP(kvilib_MOC_SRCS ${kvilib_MOC_HDRS})
 #QT4_AUTOMOC(${kvilib_MOC_SRCS})
 
 # Create library
-ADD_LIBRARY(kvilib ${kvilib_SRCS} ${kvilib_MOC_SRCS})
-TARGET_LINK_LIBRARIES(kvilib ${LIBS})
+ADD_LIBRARY(kvilib-${KVI_VERSION} ${kvilib_SRCS} ${kvilib_MOC_SRCS})
+TARGET_LINK_LIBRARIES(kvilib-${KVI_VERSION} ${LIBS})
+
+# Installation directives
+INSTALL(TARGETS kvilib-${KVI_VERSION} ARCHIVE DESTINATION ${KVI_INSTALL_PREFIX}/lib)
