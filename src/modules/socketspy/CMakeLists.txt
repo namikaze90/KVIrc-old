@@ -13,7 +13,9 @@ SET(kvisocketspy_SRCS
 QT4_WRAP_CPP(kvisocketspy_MOC_SRCS ${kvisocketspy_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvisocketspy MODULE ${kvisocketspy_SRCS} ${kvisocketspy_MOC_SRCS})
+ADD_LIBRARY(kvisocketspy SHARED ${kvisocketspy_SRCS} ${kvisocketspy_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvisocketspy)
 
+# Install target
+SET_TARGET_PROPERTIES(kvisocketspy PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvisocketspy LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

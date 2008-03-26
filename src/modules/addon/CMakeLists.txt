@@ -13,7 +13,9 @@ SET(kviaddon_SRCS
 QT4_WRAP_CPP(kviaddon_MOC_SRCS ${kviaddon_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kviaddon MODULE ${kviaddon_SRCS} ${kviaddon_MOC_SRCS})
+ADD_LIBRARY(kviaddon SHARED ${kviaddon_SRCS} ${kviaddon_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kviaddon)
 
+# Install target
+SET_TARGET_PROPERTIES(kviaddon PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kviaddon LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

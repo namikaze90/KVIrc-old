@@ -16,7 +16,9 @@ SET(kvirijndael_SRCS
 QT4_WRAP_CPP(kvirijndael_MOC_SRCS ${kvirijndael_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvirijndael MODULE ${kvirijndael_SRCS} ${kvirijndael_MOC_SRCS})
+ADD_LIBRARY(kvirijndael SHARED ${kvirijndael_SRCS} ${kvirijndael_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvirijndael)
 
+# Install target
+SET_TARGET_PROPERTIES(kvirijndael PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvirijndael LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

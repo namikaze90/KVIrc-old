@@ -18,7 +18,9 @@ SET(kvisetup_SRCS
 QT4_WRAP_CPP(kvisetup_MOC_SRCS ${kvisetup_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvisetup MODULE ${kvisetup_SRCS} ${kvisetup_MOC_SRCS})
+ADD_LIBRARY(kvisetup SHARED ${kvisetup_SRCS} ${kvisetup_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvisetup)
 
+# Install target
+SET_TARGET_PROPERTIES(kvisetup PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvisetup LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

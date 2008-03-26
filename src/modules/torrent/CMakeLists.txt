@@ -17,7 +17,9 @@ SET(kvitorrent_SRCS
 QT4_WRAP_CPP(kvitorrent_MOC_SRCS ${kvitorrent_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvitorrent MODULE ${kvitorrent_SRCS} ${kvitorrent_MOC_SRCS})
+ADD_LIBRARY(kvitorrent SHARED ${kvitorrent_SRCS} ${kvitorrent_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvitorrent)
 
+# Install target
+SET_TARGET_PROPERTIES(kvitorrent PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvitorrent LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

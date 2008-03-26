@@ -29,7 +29,9 @@ SET(kvimediaplayer_SRCS
 QT4_WRAP_CPP(kvimediaplayer_MOC_SRCS ${kvimediaplayer_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvimediaplayer MODULE ${kvimediaplayer_SRCS} ${kvimediaplayer_MOC_SRCS})
+ADD_LIBRARY(kvimediaplayer SHARED ${kvimediaplayer_SRCS} ${kvimediaplayer_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kviaddon)
 
+# Install target
+SET_TARGET_PROPERTIES(kvimediaplayer PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvimediaplayer LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

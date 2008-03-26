@@ -13,7 +13,9 @@ SET(kvifiletransferwindow_SRCS
 QT4_WRAP_CPP(kvifiletransferwindow_MOC_SRCS ${kvifiletransferwindow_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvifiletransferwindow MODULE ${kvifiletransferwindow_SRCS} ${kvifiletransferwindow_MOC_SRCS})
+ADD_LIBRARY(kvifiletransferwindow SHARED ${kvifiletransferwindow_SRCS} ${kvifiletransferwindow_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvifiletransferwindow)
 
+# Install target
+SET_TARGET_PROPERTIES(kvifiletransferwindow PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvifiletransferwindow LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

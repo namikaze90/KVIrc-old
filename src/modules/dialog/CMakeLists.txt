@@ -12,7 +12,9 @@ SET(kvidialog_SRCS
 QT4_WRAP_CPP(kvidialog_MOC_SRCS ${kvidialog_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvidialog MODULE ${kvidialog_SRCS} ${kvidialog_MOC_SRCS})
+ADD_LIBRARY(kvidialog SHARED ${kvidialog_SRCS} ${kvidialog_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvidialog)
 
+# Install target
+SET_TARGET_PROPERTIES(kvidialog PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvidialog LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

@@ -13,7 +13,9 @@ SET(kvieventeditor_SRCS
 QT4_WRAP_CPP(kvieventeditor_MOC_SRCS ${kvieventeditor_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvieventeditor MODULE ${kvieventeditor_SRCS} ${kvieventeditor_MOC_SRCS})
+ADD_LIBRARY(kvieventeditor SHARED ${kvieventeditor_SRCS} ${kvieventeditor_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvieventeditor)
 
+# Install target
+SET_TARGET_PROPERTIES(kvieventeditor PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvieventeditor LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

@@ -18,7 +18,9 @@ SET(kvistr_SRCS
 QT4_WRAP_CPP(kvistr_MOC_SRCS ${kvistr_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvistr MODULE ${kvistr_SRCS} ${kvistr_MOC_SRCS})
+ADD_LIBRARY(kvistr SHARED ${kvistr_SRCS} ${kvistr_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvistr)
 
+# Install target
+SET_TARGET_PROPERTIES(kvistr PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvistr LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

@@ -12,7 +12,9 @@ SET(kvitip_SRCS
 QT4_WRAP_CPP(kvitip_MOC_SRCS ${kvitip_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvitip MODULE ${kvitip_SRCS} ${kvitip_MOC_SRCS})
+ADD_LIBRARY(kvitip SHARED ${kvitip_SRCS} ${kvitip_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvitip)
 
+# Install target
+SET_TARGET_PROPERTIES(kvitip PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvitip LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

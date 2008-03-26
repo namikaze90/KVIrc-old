@@ -8,7 +8,9 @@ SET(kvichan_SRCS
 QT4_WRAP_CPP(kvichan_MOC_SRCS ${kvichan_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvichan MODULE ${kvichan_SRCS} ${kvichan_MOC_SRCS})
+ADD_LIBRARY(kvichan SHARED ${kvichan_SRCS} ${kvichan_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvichan)
 
+# Install target
+SET_TARGET_PROPERTIES(kvichan PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvichan LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

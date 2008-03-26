@@ -17,7 +17,9 @@ SET(kvitrayicon_SRCS
 QT4_WRAP_CPP(kvitrayicon_MOC_SRCS ${kvitrayicon_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvitrayicon MODULE ${kvitrayicon_SRCS} ${kvitrayicon_MOC_SRCS})
+ADD_LIBRARY(kvitrayicon SHARED ${kvitrayicon_SRCS} ${kvitrayicon_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvitrayicon)
 
+# Install target
+SET_TARGET_PROPERTIES(kvitrayicon PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvitrayicon LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)

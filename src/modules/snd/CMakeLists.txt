@@ -17,7 +17,9 @@ SET(kvisnd_SRCS
 QT4_WRAP_CPP(kvisnd_MOC_SRCS ${kvisnd_MOC_HDRS})
 
 # Create library
-ADD_LIBRARY(kvisnd MODULE ${kvisnd_SRCS} ${kvisnd_MOC_SRCS})
+ADD_LIBRARY(kvisnd SHARED ${kvisnd_SRCS} ${kvisnd_MOC_SRCS})
 #TARGET_LINK_LIBRARIES(kvilib kvisnd)
 
+# Install target
+SET_TARGET_PROPERTIES(kvisnd PROPERTIES VERSION ${KVI_VERSION} SOVERSION ${KVI_MAJOR})
 INSTALL(TARGETS kvisnd LIBRARY DESTINATION ${KVI_INSTALL_PREFIX}/share/kvirc/${KVI_VERSION_BRANCH}/modules/)
