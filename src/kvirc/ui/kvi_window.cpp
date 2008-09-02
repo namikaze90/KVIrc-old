@@ -1158,7 +1158,7 @@ void KviWindow::maximize()
 bool KviWindow::isMinimized()
 {
 	if(mdiParent())
-		return (mdiParent()->state() == KviMdiChild::Minimized);
+		return (!mdiParent()->isVisible());
 	else
 		return QWidget::isMinimized();
 }
@@ -1189,6 +1189,7 @@ void KviWindow::restore()
 
 QRect KviWindow::externalGeometry()
 {
+
 #ifndef COMPILE_ON_MAC
 	return mdiParent() ? mdiParent()->restoredGeometry() : frameGeometry();
 #else

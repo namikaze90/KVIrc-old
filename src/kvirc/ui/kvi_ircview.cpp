@@ -2860,8 +2860,7 @@ void KviIrcView::paintEvent(QPaintEvent *p)
 
 	// if the mdiManager is in SDI mode and this window is attacched but is not the toplevel one
 	// then it is hidden completely behind the other windows and we can avoid to paint it :)
-	if(g_pFrame->mdiManager()->isInSDIMode() &&
-		(m_pKviWindow->mdiParent() != g_pFrame->mdiManager()->topChild()) &&
+	if((m_pKviWindow->mdiParent() != g_pFrame->mdiManager()->topChild()) &&
 		(m_pKviWindow->mdiParent()))
 	{
 		m_iUnprocessedPaintEventRequests = 0; // assume a full repaint when this widget is shown...

@@ -2,7 +2,7 @@
 #define _KVI_MDIMANAGER_H_
 //=============================================================================
 //
-//   File : kvi_mdimanager.h
+//   File : kvi+_mdimanager.h
 //   Creation date : Wed Jun 21 2000 17:28:04 by Szymon Stefanek
 //
 //   This file is part of the KVirc irc client distribution
@@ -32,6 +32,7 @@
 #include <QWidget>
 #include <QFrame>
 #include <QPixmap>
+#include <QMdiArea>
 
 #define KVI_MDICHILD_BORDER 4
 #define KVI_MDICHILD_SPACING 2
@@ -45,45 +46,52 @@
 	class KviMdiChild;
 #endif
 
-//class KviMdiCaptionButton;
 class KviFrame;
 class KviTalPopupMenu;
 class KviTalHBox;
 class KviSdiButtonBox;
-class KviMenuBarToolButton;
 
-class KVIRC_API KviMdiManager : public KviTalScrollView
+class KVIRC_API KviMdiManager : public QMdiArea
 {
 	friend class KviMdiChild;
 	friend class KviMdiCaption;
 	Q_OBJECT
 public:
-	KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name);
+	KviMdiManager(QWidget * parent,KviFrame * pFrm, const char * name);
 	~KviMdiManager();
 public:
+	/// Get the currently active window
 	KviMdiChild * topChild(){ return m_pZ->last(); };
+
 	KviMdiChild * highestChildExcluding(KviMdiChild * pChild);
-	void manageChild(KviMdiChild * lpC,bool bCascade = true,QRect * setGeom = 0);
-	void setTopChild(KviMdiChild *lpC,bool bSetFocus);
+
+	/// Add an KviMdiChild to the area
+	void manageChild(KviMdiChild * lpC, bool bCascade = true, QRect * setGeom = 0);
+
+	/// Bring the KviMdiChild to the front
+	void setTopChild(KviMdiChild * lpC, bool bSetFocus);
+
+	/// Show the KviMdiChild and bring it to the front
 	void showAndActivate(KviMdiChild * lpC);
-	KviTalPopupMenu * windowPopup(){ return m_pWindowPopup; };
+
+	KviTalPopupMenu * windowPopup() { return m_pWindowPopup; };
+
+	/// Move the focus the the top window
 	void focusTopChild();
-	void destroyChild(KviMdiChild *lpC,bool bFocusTopChild = true);
+
+	/// Remove and delete the subwindow
+	void destroyChild(KviMdiChild * lpC, bool bFocusTopChild = true);
+
+	/// Get all visible subwindows
 	int getVisibleChildCount();
+
+	/// deleted
 	bool isInSDIMode();
 protected:
+
+	/// The window list of all childwindows
+	// TODO: Replace by Qt one??????
 	KviPointerList<KviMdiChild>  * m_pZ; // topmost child is the last in the list
-
-	KviMenuBarToolButton     * m_pSdiRestoreButton;
-	KviMenuBarToolButton     * m_pSdiMinimizeButton;
-	KviMenuBarToolButton     * m_pSdiCloseButton;
-	KviMenuBarToolButton     * m_pSdiIconButton;
-
-	KviTalHBox               * m_pSdiControls;
-	int                        m_iSdiIconItemId;
-	int                        m_iSdiRestoreItemId;
-	int                        m_iSdiMinimizeItemId;
-	int                        m_iSdiCloseItemId;
 
 	KviTalPopupMenu               * m_pWindowPopup;
 	KviTalPopupMenu               * m_pTileMethodPopup;
@@ -107,7 +115,7 @@ public slots:
 	void expandVertical();
 	void expandHorizontal();
 	void minimizeAll();
-	// void restoreAll(); <-- this does nothing
+	void restoreAll(); //<-- this does nothing (not working?)
 	void tile();
 	void toggleAutoTile();
 

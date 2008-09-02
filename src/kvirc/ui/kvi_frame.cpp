@@ -712,23 +712,33 @@ docking_done:
 	}
 }
 
-KviMdiChild * KviFrame::dockWindow(KviWindow *wnd,bool bShow,bool bCascade,QRect *setGeom)
+KviMdiChild * KviFrame::dockWindow(KviWindow * wnd, bool bShow, bool bCascade, QRect * setGeom)
 {
 	if(wnd->mdiParent())return wnd->mdiParent();
+
 	KviMdiChild * lpC = new KviMdiChild(m_pMdi,"");
+
 	lpC->setClient(wnd);
+	lpC->setGeometry(wnd->geometry());
+
 	wnd->youAreDocked();
+
 	m_pMdi->manageChild(lpC,bCascade,setGeom);
-	if(bShow)m_pMdi->showAndActivate(lpC);
+
+	if(bShow) m_pMdi->showAndActivate(lpC);
+
 	return lpC;
 }
 
 void KviFrame::undockWindow(KviWindow *wnd)
 {
 	if(!(wnd->mdiParent()))return;
+
 	KviMdiChild * lpC = wnd->mdiParent();
+
 	lpC->unsetClient();
 	m_pMdi->destroyChild(lpC,false);
+
 	wnd->youAreUndocked();
 	wnd->raise();
 	wnd->setFocus();
