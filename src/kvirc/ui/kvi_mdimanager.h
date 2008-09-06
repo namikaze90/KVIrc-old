@@ -91,11 +91,11 @@ protected:
 
 	/// The window list of all childwindows
 	// TODO: Replace by Qt one??????
-	KviPointerList<KviMdiChild>  * m_pZ; // topmost child is the last in the list
+	KviPointerList<KviMdiChild>		* m_pZ; // topmost child is the last in the list
 
-	KviTalPopupMenu               * m_pWindowPopup;
-	KviTalPopupMenu               * m_pTileMethodPopup;
-	KviFrame                 * m_pFrm;
+	KviTalPopupMenu					* m_pWindowPopup;
+	KviTalPopupMenu					* m_pTileMethodPopup;
+	KviFrame						* m_pFrm;
 protected:
 	void updateContentsSize();
 	//void childMaximized(KviMdiChild *lpC);
@@ -103,6 +103,7 @@ protected:
 	void childRestored(KviMdiChild *lpC,bool bWasMaximized);
 	void childMoved(KviMdiChild * lpC);
 	void maximizeChild(KviMdiChild * lpC);
+
 	virtual void focusInEvent(QFocusEvent *e);
 	virtual void mousePressEvent(QMouseEvent *e);
 	virtual void resizeEvent(QResizeEvent *e);
@@ -129,20 +130,13 @@ protected slots:
 	void menuActivated(int id);
 	void tileMethodMenuActivated(int id);
 	void fillWindowPopup();
-	void sdiMinimizeButtonDestroyed();
-	void sdiRestoreButtonDestroyed();
-	void sdiCloseButtonDestroyed();
-	void sdiIconButtonDestroyed();
 private:
 	void ensureNoMaximized();
 	void tileAllInternal(int maxWnds,bool bHorizontal);
 	QPoint getCascadePoint(int indexOfWindow);
-	void enterSDIMode(KviMdiChild *lpC);
-	void leaveSDIMode();
-	void updateSDIMode();
-signals:
-	void enteredSdiMode();
-	void leftSdiMode();
+//signals:
+//	void enteredSdiMode();
+//	void leftSdiMode();
 };
 
 #endif //_KVI_MDIMANAGER_H_

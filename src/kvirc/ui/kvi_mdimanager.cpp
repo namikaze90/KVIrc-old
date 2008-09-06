@@ -206,7 +206,7 @@ void KviMdiManager::destroyChild(KviMdiChild *lpC,bool bFocusTopChild)
 KviMdiChild * KviMdiManager::highestChildExcluding(KviMdiChild * pChild)
 {
 	KviMdiChild * c = m_pZ->last();
-	while(c && (c == pChild))c = m_pZ->prev();
+	while(c && (c == pChild)) c = m_pZ->prev();
 	return c;
 }
 
@@ -287,7 +287,6 @@ void KviMdiManager::childMinimized(KviMdiChild * lpC,bool bWasMaximized)
 			if(!lpC)return; //??
 			if(lpC->state()==KviMdiChild::Minimized)
 			{
-				if(bWasMaximized)leaveSDIMode();
 				return;
 			}
 			lpC->maximize(); //do nrot animate the change
@@ -298,7 +297,6 @@ void KviMdiManager::childMinimized(KviMdiChild * lpC,bool bWasMaximized)
 	} else {
 		// Unique window minimized...it won't loose the focus...!!
 		setFocus(); //Remove focus from the child
-		if(bWasMaximized)leaveSDIMode();
 	}
 	updateContentsSize();
 }
@@ -308,7 +306,6 @@ void KviMdiManager::childRestored(KviMdiChild * lpC,bool bWasMaximized)
 	if(bWasMaximized)
 	{
 		if(lpC != m_pZ->last())return; // do nothing in this case
-		leaveSDIMode();
 		updateContentsSize();
 	}
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
@@ -356,11 +353,6 @@ void KviMdiManager::updateContentsSize()
 {
 }
 
-
-void KviMdiManager::updateSDIMode()
-{
-}
-
 void KviMdiManager::activeChildSystemPopup()
 {
 	KviMdiChild * lpC = m_pZ->last();
@@ -381,10 +373,6 @@ bool KviMdiManager::isInSDIMode()
 }
 
 
-void KviMdiManager::enterSDIMode(KviMdiChild *lpC)
-{
-}
-
 void KviMdiManager::relayoutMenuButtons()
 {
 	// force a re-layout of the menubar in Qt4 (see the note in enterSDIMode())
@@ -397,32 +385,6 @@ void KviMdiManager::relayoutMenuButtons()
 	// also force an activation of the top MdiChild since it probably didn't get it yet*/
 	KviMdiChild * c = topChild();
 	if(c) c->activate(false);
-}
-
-
-void KviMdiManager::sdiIconButtonDestroyed()
-{
-
-}
-
-void KviMdiManager::sdiMinimizeButtonDestroyed()
-{
-
-}
-
-void KviMdiManager::sdiRestoreButtonDestroyed()
-{
-
-}
-
-void KviMdiManager::sdiCloseButtonDestroyed()
-{
-
-}
-
-void KviMdiManager::leaveSDIMode()
-{
-	emit leftSdiMode();
 }
 
 #define KVI_TILE_METHOD_ANODINE 0

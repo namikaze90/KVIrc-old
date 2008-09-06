@@ -113,8 +113,6 @@ KviFrame::KviFrame()
 	setUsesBigPixmaps(KVI_OPTION_BOOL(KviOption_boolUseBigIcons));
 
 	m_pMdi      = new KviMdiManager(m_pSplitter,this,"mdi_manager");
-	connect(m_pMdi,SIGNAL(enteredSdiMode()),this,SLOT(enteredSdiMode()));
-	connect(m_pMdi,SIGNAL(leftSdiMode()),this,SLOT(leftSdiMode()));
 
 	// This theoretically had to exists before KviMdiManager (that uses enterSdiMode)
 	m_pMenuBar   = new KviMenuBar(this,"main_menu_bar");
@@ -925,16 +923,6 @@ void KviFrame::windowActivationChange(bool bOldActive)
 	} else {
 		if(g_pActiveWindow)g_pActiveWindow->lostUserFocus();
 	}
-}
-
-void KviFrame::enteredSdiMode()
-{
-	updateCaption();
-}
-
-void KviFrame::leftSdiMode()
-{
-	updateCaption();
 }
 
 #define KVI_DEFAULT_FRAME_CAPTION "KVIrc " KVI_VERSION " " KVI_RELEASE_NAME
