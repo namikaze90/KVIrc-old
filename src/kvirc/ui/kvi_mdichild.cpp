@@ -324,9 +324,9 @@ void KviMdiChild::focusInEvent(QFocusEvent *)
 {
 	// We gained focus by click , tab or from the caption label
 	// Bring this child to top
-	m_pManager->setTopChild(this,false); //Do not focus by now...
+	//m_pManager->setTopChild(this,false); //Do not focus by now...
 	/*The client is our focusProxy ! it should be focused by Qt !*/
 #ifdef _KVI_DEBUG_CLASS_NAME_
-	__range_valid(focusProxy() == m_pClient);
+	//__range_valid(focusProxy() == m_pClient);
 #endif
 }

@@ -59,8 +59,6 @@ KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)
 : QMdiArea(parent)
 {
 	setFrameShape(NoFrame);
-	m_pZ = new KviPointerList<KviMdiChild>;
-	m_pZ->setAutoDelete(true);
 
 	m_pFrm = pFrm;
 
@@ -80,7 +78,6 @@ KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)
 
 KviMdiManager::~KviMdiManager()
 {
-	delete m_pZ;
 }
 
 void KviMdiManager::reloadImages()
@@ -120,10 +117,6 @@ void KviMdiManager::manageChild(KviMdiChild * lpC,bool bCascade,QRect *setGeom)
 	__range_valid(lpC);
 
 	QMdiSubWindow * w = this->addSubWindow((QMdiSubWindow*)lpC);
-	qDebug("%p %p",w,lpC);
-	//hidden -> last in the Z order
-	m_pZ->insert(0,lpC);
-	qDebug("Added window");
 
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
 }
@@ -131,7 +124,7 @@ void KviMdiManager::manageChild(KviMdiChild * lpC,bool bCascade,QRect *setGeom)
 void KviMdiManager::showAndActivate(KviMdiChild * lpC)
 {
 	lpC->show();
-	//setTopChild(lpC,true);
+	setTopChild(lpC,true);
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
 }
 
@@ -139,32 +132,8 @@ void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 {
 	__range_valid(lpC);
 	// The following check fails safely at startup....
-	//	__range_valid(lpC->isVisible() || lpC->testWState(WState_ForceHide));
 
-	KviMdiChild * pOldTop = m_pZ->last();
-	if(pOldTop != lpC)
-	{
-		m_pZ->setAutoDelete(false);
-
-		if(!m_pZ->removeRef(lpC))
-		{
-			m_pZ->setAutoDelete(true);
-			return; // no such child ?
-		}
-
-		KviMdiChild * pMaximizedChild = pOldTop;
-		if(pOldTop)
-		{
-			if(pOldTop->state() != KviMdiChild::Maximized) pMaximizedChild = 0;
-		}
-
-		m_pZ->setAutoDelete(true);
-		m_pZ->append(lpC);
-
-		if(pMaximizedChild) lpC->maximize(); //do not animate the change
-		lpC->raise();
-		if(pMaximizedChild) pMaximizedChild->restore();
-	}
+	setActiveSubWindow((QMdiSubWindow*) lpC);
 
 	if(bSetFocus)
 	{
@@ -173,42 +142,47 @@ void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 			lpC->setFocus();
 		}
 	}
-}
 
-void KviMdiManager::focusInEvent(QFocusEvent *)
-{
-	focusTopChild();
 }
 
 void KviMdiManager::destroyChild(KviMdiChild *lpC,bool bFocusTopChild)
 {
-
-#ifdef _KVI_DEBUG_CHECK_RANGE_
-	//Report invalid results in a debug session
-	__range_valid(m_pZ->removeRef(lpC));
-#else
-	m_pZ->removeRef(lpC);
-#endif
-
 	if(bFocusTopChild)focusTopChild();
 
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows)) tile();
-
-	updateContentsSize();
 }
 
 KviMdiChild * KviMdiManager::highestChildExcluding(KviMdiChild * pChild)
 {
-	KviMdiChild * c = m_pZ->last();
-	while(c && (c == pChild)) c = m_pZ->prev();
-	return c;
+	QList<QMdiSubWindow *> tmp = subWindowList(QMdiArea::StackingOrder);
+	QListIterator<QMdiSubWindow*> wl(tmp);
+	wl.toBack();
+
+	KviMdiChild * c;
+	while (wl.hasPrevious())
+	{
+			c = (KviMdiChild*) wl.previous();
+			if (!c->inherits("KviMdiChild")) continue;
+			if (c == pChild) continue;
+			return c;
+	}
+	return 0;
 }
 
 QPoint KviMdiManager::getCascadePoint(int indexOfWindow)
 {
 	QPoint pnt(0,0);
 	if(indexOfWindow==0)return pnt;
-	KviMdiChild *lpC=m_pZ->first();
+	QList<QMdiSubWindow *> tmp = subWindowList(QMdiArea::StackingOrder);
+
+	if (!tmp.last()->inherits("KviMdiChild"))
+	{
+		debug("QMdiSubWindow inherits not from KviMdiChild!");
+		return pnt;
+	}
+
+	KviMdiChild * lpC = (KviMdiChild *) tmp.last();
+
 	int step=0;
 	int availableHeight=viewport()->height()-(lpC ? lpC->minimumSize().height() : KVI_MDICHILD_MIN_HEIGHT);
 	int availableWidth=viewport()->width()-(lpC ? lpC->minimumSize().width() : KVI_MDICHILD_MIN_WIDTH);
@@ -226,10 +200,10 @@ QPoint KviMdiManager::getCascadePoint(int indexOfWindow)
 	return pnt;
 }
 
-void KviMdiManager::mousePressEvent(QMouseEvent *e)
+void KviMdiManager::mousePressEvent(QMouseEvent * e)
 {
 	//Popup the window menu
-	if(e->button() & Qt::RightButton)m_pWindowPopup->popup(mapToGlobal(e->pos()));
+	if(e->button() & Qt::RightButton) m_pWindowPopup->popup(mapToGlobal(e->pos()));
 }
 
 void KviMdiManager::childMoved(KviMdiChild *)
@@ -243,7 +217,7 @@ void KviMdiManager::maximizeChild(KviMdiChild * lpC)
 
 
 
-void KviMdiManager::resizeEvent(QResizeEvent *e)
+void KviMdiManager::resizeEvent(QResizeEvent * e)
 {
 }
 
@@ -255,91 +229,70 @@ void KviMdiManager::childMaximized(KviMdiChild * lpC)
 	{
 		enterSDIMode(lpC);
 	}
-	updateContentsSize();
 }
 */
 
 void KviMdiManager::childMinimized(KviMdiChild * lpC,bool bWasMaximized)
 {
 	__range_valid(lpC);
-	if(m_pZ->findRef(lpC) == -1)return;
-	if(m_pZ->count() > 1)
+
+	if(subWindowList().count() > 1)
 	{
-		m_pZ->setAutoDelete(false);
-#ifdef _KVI_DEBUG_CHECK_RANGE_
-		//Report invalid results in a debug session
-		__range_valid(m_pZ->removeRef(lpC));
-#else
-		m_pZ->removeRef(lpC);
-#endif
-		m_pZ->setAutoDelete(true);
-		m_pZ->insert(0,lpC);
-		if(bWasMaximized)
+		if(!bWasMaximized)
 		{
-			// Need to maximize the top child
-			lpC = m_pZ->last();
-			if(!lpC)return; //??
-			if(lpC->state()==KviMdiChild::Minimized)
-			{
-				return;
-			}
-			lpC->maximize(); //do nrot animate the change
-		} else {
-			if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
+			if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows)) tile();
 		}
+
 		focusTopChild();
 	} else {
 		// Unique window minimized...it won't loose the focus...!!
 		setFocus(); //Remove focus from the child
 	}
-	updateContentsSize();
 }
 
-void KviMdiManager::childRestored(KviMdiChild * lpC,bool bWasMaximized)
+void KviMdiManager::childRestored(KviMdiChild * lpC, bool bWasMaximized)
 {
 	if(bWasMaximized)
 	{
-		if(lpC != m_pZ->last())return; // do nothing in this case
-		updateContentsSize();
+		if(lpC != subWindowList().last()) return; // do nothing in this case
 	}
-	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
+	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows)) tile();
 }
 
 void KviMdiManager::focusTopChild()
 {
-	KviMdiChild *lpC=m_pZ->last();
+	if (!activeSubWindow()->inherits("KviMdiChild")) return;
+	KviMdiChild * lpC = (KviMdiChild *) subWindowList().last();
+
 	if(!lpC)return;
 	if(!lpC->isVisible())return;
-	//	if(lpC->state()==KviMdiChild::Minimized)return;
-	//	debug("Focusing top child %s",lpC->name());
-	//disable the labels of all the other children
-	/*for(KviMdiChild *pC=m_pZ->first();pC;pC=m_pZ->next())
-	{
-		if(pC != lpC)
-			pC->captionLabel()->setActive(false);
-	}*/
+
 	lpC->raise();
 	if(!lpC->hasFocus())lpC->setFocus();
+
 }
 
 void KviMdiManager::minimizeActiveChild()
 {
-	KviMdiChild * lpC = m_pZ->last();
-	if(!lpC)return;
-	if(lpC->state() != KviMdiChild::Minimized)lpC->minimize();
+	if (!activeSubWindow()->inherits("KviMdiChild")) return;
+
+	KviMdiChild * lpC = (KviMdiChild *) activeSubWindow();
+	if(lpC->state() != KviMdiChild::Minimized) lpC->minimize();
 }
 
 void KviMdiManager::restoreActiveChild()
 {
-	KviMdiChild * lpC = m_pZ->last();
-	if(!lpC)return;
+	if (!activeSubWindow()->inherits("KviMdiChild")) return;
+
+	KviMdiChild * lpC = (KviMdiChild *) activeSubWindow();
 	if(lpC->state() == KviMdiChild::Maximized)lpC->restore();
 }
 
 void KviMdiManager::closeActiveChild()
 {
-	KviMdiChild * lpC = m_pZ->last();
-	if(!lpC)return;
+	if (!activeSubWindow()->inherits("KviMdiChild")) return;
+
+	KviMdiChild * lpC = (KviMdiChild *) activeSubWindow();
 	lpC->close();
 }
 
@@ -349,8 +302,10 @@ void KviMdiManager::updateContentsSize()
 
 void KviMdiManager::activeChildSystemPopup()
 {
-	KviMdiChild * lpC = m_pZ->last();
-	if(!lpC)return;
+	if (!activeSubWindow()->inherits("KviMdiChild")) return;
+
+	KviMdiChild * lpC = (KviMdiChild *) activeSubWindow();
+
 	QPoint pnt;
 	/*if(m_pSdiIconButton)
 	{
@@ -369,13 +324,6 @@ bool KviMdiManager::isInSDIMode()
 
 void KviMdiManager::relayoutMenuButtons()
 {
-	// force a re-layout of the menubar in Qt4 (see the note in enterSDIMode())
-	// by resetting the corner widget
-/*	if(m_pSdiControls)
-	{
-		m_pFrm->mainMenuBar()->setCornerWidget(0,Qt::TopRightCorner);
-		m_pFrm->mainMenuBar()->setCornerWidget(m_pSdiControls,Qt::TopRightCorner);
-	}
 	// also force an activation of the top MdiChild since it probably didn't get it yet*/
 	KviMdiChild * c = topChild();
 	if(c) c->activate(false);
@@ -434,13 +382,26 @@ void KviMdiManager::fillWindowPopup()
 	m_pWindowPopup->insertSeparator();
 	m_pWindowPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MINIMIZE)),(__tr2qs("Mi&nimize All")),this,SLOT(minimizeAll()));
     m_pWindowPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_RESTORE)),(__tr2qs("&Restore all")),this,SLOT(restoreAll()));
-//
+
 	m_pWindowPopup->insertSeparator();
 	int i = 100;
 	QString szItem;
 	QString szCaption;
-	for(KviMdiChild * lpC = m_pZ->first(); lpC; lpC = m_pZ->next())
+	QList<QMdiSubWindow*> tmp = subWindowList(QMdiArea::StackingOrder);
+	QListIterator<QMdiSubWindow*> m_pZ(tmp);
+
+	KviMdiChild * lpC;
+
+	while (m_pZ.hasNext())
 	{
+		lpC = (KviMdiChild *) m_pZ.next();
+
+		if (!lpC->inherits("KviMdiChild"))
+		{
+			i++;
+			continue;
+		}
+
 		szItem.setNum(((uint)i)-99);
 		szItem+=". ";
 
@@ -478,30 +439,45 @@ void KviMdiManager::menuActivated(int id)
 {
 	if(id<100)return;
 	id-=100;
-	__range_valid(((uint)id) < m_pZ->count());
-	KviMdiChild * lpC = m_pZ->at(id);
-	if(!lpC)return;
-	if(lpC->state()==KviMdiChild::Minimized)lpC->restore();
-	setTopChild(lpC,true);
+	QList<QMdiSubWindow *> tmp = subWindowList(QMdiArea::StackingOrder);
+
+	__range_valid(((uint)id) < tmp.count());
+
+	if (!tmp.at(id)->inherits("KviMdiChild")) return;
+	KviMdiChild * lpC = (KviMdiChild *) tmp.at(id);
+
+	if(!lpC) return;
+	if(lpC->state() == KviMdiChild::Minimized) lpC->restore();
+
+	setTopChild(lpC, true);
 }
 
 void KviMdiManager::ensureNoMaximized()
 {
+	QList<QMdiSubWindow *> tmp = subWindowList(QMdiArea::StackingOrder);
+
 	KviMdiChild * lpC;
 
-	for(lpC=m_pZ->first();lpC;lpC=m_pZ->next())
+	for(int i = 0; i < tmp.count(); i++)
 	{
-		if(lpC->state()==KviMdiChild::Maximized)lpC->restore();
+		if (tmp.at(i)->inherits("KviMdiChild"))
+		{
+			lpC = (KviMdiChild *) tmp.at(i);
+			if(lpC->state() == KviMdiChild::Maximized) lpC->restore();
+		}
 	}
 }
 
 void KviMdiManager::tileMethodMenuActivated(int id)
 {
 	int idx = m_pTileMethodPopup->itemParameter(id);
-	if(idx < 0)idx = 0;
-	if(idx >= KVI_NUM_TILE_METHODS)idx = KVI_TILE_METHOD_PRAGMA9VER;
+
+	if(idx < 0) idx = 0;
+	if(idx >= KVI_NUM_TILE_METHODS) idx = KVI_TILE_METHOD_PRAGMA9VER;
+
 	KVI_OPTION_UINT(KviOption_uintTileMethod) = idx;
-	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
+
+	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows)) tile();
 }
 
 void KviMdiManager::cascadeWindows()
@@ -522,37 +498,35 @@ void KviMdiManager::expandHorizontal()
 
 void KviMdiManager::minimizeAll()
 {
-	KviPointerList<KviMdiChild> list;
-	list.copyFrom(m_pZ);
+	QList<QMdiSubWindow *> tmp = subWindowList(QMdiArea::StackingOrder);
 
-	list.setAutoDelete(false);
-	m_pFrm->setActiveWindow((KviWindow*)m_pFrm->firstConsole());
-	while(!list.isEmpty())
+	KviMdiChild * lpC;
+
+	for(int i = 0; i < tmp.count(); i++)
 	{
-		KviMdiChild *lpC=list.first();
-		if(lpC->state() != KviMdiChild::Minimized)lpC->minimize();
-		list.removeFirst();
+		if (tmp.at(i)->inherits("KviMdiChild"))
+		{
+			lpC = (KviMdiChild *) tmp.at(i);
+			if(lpC->state() == KviMdiChild::Minimized) lpC->minimize();
+		}
 	}
-	focusTopChild();
-	updateContentsSize();
 }
 
 
 void KviMdiManager::restoreAll()
 {
-	int idx=0;
-	KviPointerList<KviMdiChild> list;
-	list.copyFrom(m_pZ);
+	QList<QMdiSubWindow *> tmp = subWindowList(QMdiArea::StackingOrder);
 
-	list.setAutoDelete(false);
-	while(!list.isEmpty())
+	KviMdiChild * lpC;
+
+	for(int i = 0; i < tmp.count(); i++)
 	{
-		KviMdiChild *lpC=list.first();
-		if(lpC->state() != KviMdiChild::Normal && (!(lpC->plainCaption()).contains("CONSOLE") ))
-		lpC->restore();
-		list.removeFirst();
+		if (tmp.at(i)->inherits("KviMdiChild"))
+		{
+			lpC = (KviMdiChild *) tmp.at(i);
+			if(lpC->state() == KviMdiChild::Normal) lpC->restore();
+		}
 	}
-	focusTopChild();
 }
 
 

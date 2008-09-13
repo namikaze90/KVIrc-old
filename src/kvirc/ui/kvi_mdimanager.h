@@ -61,7 +61,7 @@ public:
 	~KviMdiManager();
 public:
 	/// Get the currently active window
-	KviMdiChild * topChild(){ return m_pZ->last(); };
+	KviMdiChild * topChild(){ return (KviMdiChild*)subWindowList(QMdiArea::StackingOrder).first(); };
 
 	KviMdiChild * highestChildExcluding(KviMdiChild * pChild);
 
@@ -88,14 +88,10 @@ public:
 	/// deleted
 	bool isInSDIMode();
 protected:
-
-	/// The window list of all childwindows
-	// TODO: Replace by Qt one??????
-	KviPointerList<KviMdiChild>		* m_pZ; // topmost child is the last in the list
-
 	KviTalPopupMenu					* m_pWindowPopup;
 	KviTalPopupMenu					* m_pTileMethodPopup;
 	KviFrame						* m_pFrm;
+
 protected:
 	void updateContentsSize();
 	//void childMaximized(KviMdiChild *lpC);
@@ -104,7 +100,6 @@ protected:
 	void childMoved(KviMdiChild * lpC);
 	void maximizeChild(KviMdiChild * lpC);
 
-	virtual void focusInEvent(QFocusEvent *e);
 	virtual void mousePressEvent(QMouseEvent *e);
 	virtual void resizeEvent(QResizeEvent *e);
 	virtual void paintEvent(QPaintEvent * event);
