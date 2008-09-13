@@ -152,24 +152,18 @@ void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 			return; // no such child ?
 		}
 
-		// disable the labels of all the other children
-		//for(KviMdiChild *pC=m_pZ->first();pC;pC=m_pZ->next())
-		//{
-		//	pC->captionLabel()->setActive(false);
-		//}
 		KviMdiChild * pMaximizedChild = pOldTop;
 		if(pOldTop)
 		{
-			//pOldTop->captionLabel()->setActive(false);
-			if(pOldTop->state() != KviMdiChild::Maximized)pMaximizedChild=0;
+			if(pOldTop->state() != KviMdiChild::Maximized) pMaximizedChild = 0;
 		}
 
 		m_pZ->setAutoDelete(true);
 		m_pZ->append(lpC);
 
-		if(pMaximizedChild)lpC->maximize(); //do not animate the change
+		if(pMaximizedChild) lpC->maximize(); //do not animate the change
 		lpC->raise();
-		if(pMaximizedChild)pMaximizedChild->restore();
+		if(pMaximizedChild) pMaximizedChild->restore();
 	}
 
 	if(bSetFocus)
