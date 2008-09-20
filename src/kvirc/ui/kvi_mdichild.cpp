@@ -163,7 +163,6 @@ void KviMdiChild::windowStateChangedEvent( Qt::WindowStates oldState, Qt::Window
 
 void KviMdiChild::maximize()
 {
-	showNormal();
 	showMaximized();
 	m_State = Maximized;
 }

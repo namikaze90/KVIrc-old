@@ -163,7 +163,8 @@ KviFrame::KviFrame()
 	installAccelerators(this);
 
 	layout()->setSizeConstraint(QLayout::SetNoConstraint);
-	connect(this, SIGNAL(deleteWnd(KviWindow*)), this, SLOT(deleteWindow(KviWindow*)), Qt::QueuedConnection);
+	connect(this, SIGNAL(signalDeleteWindow(KviWindow*)), this, SLOT(deleteWindow(KviWindow*)), Qt::QueuedConnection);
+	connect(this, SIGNAL(signalMaximizeMdiChildWindow(KviMdiChild*)), this, SLOT(maximizeMdiChildWindow(KviMdiChild*)), Qt::QueuedConnection);
 }
 
 KviFrame::~KviFrame()
@@ -537,9 +538,12 @@ void KviFrame::saveWindowProperties(KviWindow * wnd,const QString &szSection)
 
 	g_pWinPropertiesConfig->writeEntry("IsDocked",wnd->mdiParent());
 
-//	KviWindow * top = g_pActiveWindow;
-//	if(!top)top = wnd;
-//	g_pWinPropertiesConfig->writeEntry("IsMaximized",top->isMaximized());
+	if (wnd->mdiParent())
+	{
+		g_pWinPropertiesConfig->writeEntry("IsMaximized",wnd->mdiParent()->isMaximized());
+	} else {
+		g_pWinPropertiesConfig->writeEntry("IsMaximized",wnd->isMaximized());
+	}
 
 	g_pWinPropertiesConfig->writeEntry("WinRect",wnd->externalGeometry());
 
@@ -606,13 +610,18 @@ void KviFrame::closeWindow(KviWindow *wnd)
 	{
 		m_pMdi->destroyChild(wnd->mdiParent(),true);
 	}
-	emit deleteWnd(wnd);
+	emit signalDeleteWindow(wnd);
 
 }
 
 void KviFrame::deleteWindow(KviWindow * wnd)
 {
 	delete wnd;
+}
+
+void KviFrame::maximizeMdiChildWindow(KviMdiChild * lpC)
+{
+		lpC->maximize();
 }
 
 void KviFrame::addWindow(KviWindow *wnd,bool bShow)
@@ -646,14 +655,7 @@ void KviFrame::addWindow(KviWindow *wnd,bool bShow)
 		if(KVI_OPTION_BOOL(KviOption_boolWindowsRememberProperties))
 		{
 			bool bDocked    = g_pWinPropertiesConfig->readBoolEntry("IsDocked",true);
-			//bool bMaximized = g_pWinPropertiesConfig->readBoolEntry("IsMaximized",false);
-			bool bMaximized;
-
-			if(KVI_OPTION_BOOL(KviOption_boolMdiManagerInSdiMode))
-			{
-				bMaximized = true;
-				//KVI_OPTION_BOOL(KviOption_boolMdiManagerInSdiMode) = false;
-			} else bMaximized = false;
+			bool bMaximized = g_pWinPropertiesConfig->readBoolEntry("IsMaximized",false);
 
 			QRect rect      = g_pWinPropertiesConfig->readRectEntry("WinRect",QRect(10,10,500,380));
 
@@ -664,15 +666,18 @@ void KviFrame::addWindow(KviWindow *wnd,bool bShow)
 				// are always cascaded : this is true for consoles , queries (and other windows) but not channels (and some other windows)
 				KviMdiChild * lpC = dockWindow(wnd,false,bGroupSettings,&rect);
 				lpC->setRestoredGeometry(rect);
+
 				wnd->triggerCreationEvents();
 				if(bShow)
 				{
+					if(bMaximized) emit signalMaximizeMdiChildWindow(lpC);
+
 					m_pMdi->showAndActivate(lpC);
-					if(bMaximized)wnd->maximize();
+
 					// Handle the special case of this top level widget not being the active one.
 					// In this situation the child will not get the focusInEvent
 					// and thus will not call out childWindowActivated() method
-					if(!isActiveWindow())childWindowActivated(wnd);
+					if(!isActiveWindow()) childWindowActivated(wnd);
 				}
 			} else {
 				wnd->setGeometry(rect);

@@ -225,6 +225,7 @@ protected slots:
 	void accelActivated();
 	void toolbarsPopupSelected(int id);
 	void deleteWindow(KviWindow * wnd);
+	void maximizeMdiChildWindow(KviMdiChild * lpC);
 signals:
 	void activeWindowChanged();       // almost never 0.. but may be
 	void activeContextChanged();      // may be 0!
@@ -235,7 +236,8 @@ signals:
 	void activeConnectionServerInfoChanged();
 	void activeConnectionLagChanged();
 	void activeWindowSelectionStateChanged(bool bGotSelectionNow);
-	void deleteWnd(KviWindow * wnd);
+	void signalDeleteWindow(KviWindow * wnd);
+	void signalMaximizeMdiChildWindow(KviMdiChild * lpC);
 protected:
 	void applyOptions();
 private:
