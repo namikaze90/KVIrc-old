@@ -103,23 +103,9 @@ KviMdiChild::~KviMdiChild()
 
 void KviMdiChild::closeEvent(QCloseEvent * e)
 {
-	if (!m_bCloseEnabled)
-	{
-		e->ignore();
-		return;
-	}
-
-	if(widget())
-	{
-		qDebug("Closing client");
-		if (widget()->close())
-		{
-			if(m_pManager) m_pManager->removeSubWindow(this);
-			e->accept();
-		} else {
-			e->ignore();
-		}
-	}
+	debug("Closing client");
+	widget()->close();
+	e->ignore();
 }
 
 QRect KviMdiChild::restoredGeometry()

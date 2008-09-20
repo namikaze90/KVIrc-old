@@ -163,6 +163,7 @@ KviFrame::KviFrame()
 	installAccelerators(this);
 
 	layout()->setSizeConstraint(QLayout::SetNoConstraint);
+	connect(this, SIGNAL(deleteWnd(KviWindow*)), this, SLOT(deleteWindow(KviWindow*)), Qt::QueuedConnection);
 }
 
 KviFrame::~KviFrame()
@@ -601,13 +602,18 @@ void KviFrame::closeWindow(KviWindow *wnd)
 
 	// and shut it down...
 	// KviWindow will call childWindowDestroyed() here
-	if(wnd->mdiParent()) {
+	if(wnd->mdiParent())
+	{
 		m_pMdi->destroyChild(wnd->mdiParent(),true);
-	} else {
-		delete wnd;
 	}
+	emit deleteWnd(wnd);
+
 }
 
+void KviFrame::deleteWindow(KviWindow * wnd)
+{
+	delete wnd;
+}
 
 void KviFrame::addWindow(KviWindow *wnd,bool bShow)
 {

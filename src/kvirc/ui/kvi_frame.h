@@ -224,6 +224,7 @@ protected slots:
 
 	void accelActivated();
 	void toolbarsPopupSelected(int id);
+	void deleteWindow(KviWindow * wnd);
 signals:
 	void activeWindowChanged();       // almost never 0.. but may be
 	void activeContextChanged();      // may be 0!
@@ -234,6 +235,7 @@ signals:
 	void activeConnectionServerInfoChanged();
 	void activeConnectionLagChanged();
 	void activeWindowSelectionStateChanged(bool bGotSelectionNow);
+	void deleteWnd(KviWindow * wnd);
 protected:
 	void applyOptions();
 private:

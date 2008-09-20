@@ -147,6 +147,9 @@ void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 
 void KviMdiManager::destroyChild(KviMdiChild *lpC,bool bFocusTopChild)
 {
+	removeSubWindow(lpC);
+	//delete lpC;
+
 	if(bFocusTopChild)focusTopChild();
 
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows)) tile();
@@ -261,6 +264,7 @@ void KviMdiManager::childRestored(KviMdiChild * lpC, bool bWasMaximized)
 
 void KviMdiManager::focusTopChild()
 {
+	if (!activeSubWindow()) return;
 	if (!activeSubWindow()->inherits("KviMdiChild")) return;
 	KviMdiChild * lpC = (KviMdiChild *) subWindowList().last();
 

@@ -99,7 +99,7 @@ public:
 	void setClient(QWidget * w);
 
 	/// Returns the currently in the window visible widget
-	QWidget * client(){ return m_pClient; };
+	QWidget * client() { return m_pClient; };
 
 	/// Removes the client widget
 	void unsetClient();
