@@ -133,6 +133,14 @@ void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 	__range_valid(lpC);
 	// The following check fails safely at startup....
 
+	QList<QMdiSubWindow *> tmp = subWindowList(QMdiArea::StackingOrder);
+
+	if (tmp.last()->inherits("KviMdiChild"))
+	{
+		KviMdiChild * oldlpC = (KviMdiChild *) tmp.last();
+		if (oldlpC && oldlpC->isMaximized()) lpC->maximize();
+	}
+
 	setActiveSubWindow((QMdiSubWindow*) lpC);
 
 	if(bSetFocus)
@@ -148,7 +156,6 @@ void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 void KviMdiManager::destroyChild(KviMdiChild *lpC,bool bFocusTopChild)
 {
 	removeSubWindow(lpC);
-	//delete lpC;
 
 	if(bFocusTopChild)focusTopChild();
 
@@ -266,6 +273,7 @@ void KviMdiManager::focusTopChild()
 {
 	if (!activeSubWindow()) return;
 	if (!activeSubWindow()->inherits("KviMdiChild")) return;
+
 	KviMdiChild * lpC = (KviMdiChild *) subWindowList().last();
 
 	if(!lpC)return;
@@ -273,7 +281,6 @@ void KviMdiManager::focusTopChild()
 
 	lpC->raise();
 	if(!lpC->hasFocus())lpC->setFocus();
-
 }
 
 void KviMdiManager::minimizeActiveChild()
