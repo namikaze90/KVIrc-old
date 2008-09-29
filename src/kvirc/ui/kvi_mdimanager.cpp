@@ -157,6 +157,14 @@ void KviMdiManager::destroyChild(KviMdiChild *lpC,bool bFocusTopChild)
 {
 	removeSubWindow(lpC);
 
+	if (lpC->isMaximized() && activeSubWindow())
+	{
+		if (!activeSubWindow()->inherits("KviMdiChild")) return;
+
+		KviMdiChild * tmp = (KviMdiChild *) activeSubWindow();
+		tmp->maximize();
+	}
+
 	if(bFocusTopChild)focusTopChild();
 
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows)) tile();
@@ -187,7 +195,7 @@ QPoint KviMdiManager::getCascadePoint(int indexOfWindow)
 
 	if (!tmp.last()->inherits("KviMdiChild"))
 	{
-		debug("QMdiSubWindow inherits not from KviMdiChild!");
+		debug("QMdiSubWindow doesn't inherit from KviMdiChild!");
 		return pnt;
 	}
 
