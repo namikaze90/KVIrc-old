@@ -1158,9 +1158,11 @@ void KviWindow::maximize()
 bool KviWindow::isMinimized()
 {
 	if(mdiParent())
-		return (!mdiParent()->isVisible());
-	else
+	{
+		return (mdiParent()->state() == KviMdiChild::Minimized);
+	} else {
 		return QWidget::isMinimized();
+	}
 }
 
 bool KviWindow::isMaximized()

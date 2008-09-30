@@ -163,8 +163,8 @@ void KviMdiChild::windowStateChangedEvent( Qt::WindowStates oldState, Qt::Window
 
 void KviMdiChild::maximize()
 {
-	showMaximized();
 	m_State = Maximized;
+	showMaximized();
 }
 
 void KviMdiChild::restore()
@@ -172,21 +172,20 @@ void KviMdiChild::restore()
 	switch(state())
 	{
 		case Maximized:
+			m_State = Normal;
 			showNormal();
 			m_pManager->childRestored(this,true);
-			m_State = Normal;
-
 		break;
 		case Minimized:
+			m_State = Normal;
 			showNormal();
 			m_pManager->childRestored(this,false);
-			m_State = Normal;
 		break;
 		case Normal:
+			m_State = Normal;
 			if(!isVisible())
 			{
 				show();
-				m_State = Normal;
 			}
 			return;
 		break;
@@ -195,25 +194,24 @@ void KviMdiChild::restore()
 
 void KviMdiChild::minimize()
 {
-	qDebug("Going to minimize...");
 	switch(state())
 	{
 		case Maximized:
+			m_State = Minimized;
 			showMinimized();
 			hide();
 			m_pManager->childMinimized(this,true);
-			m_State = Minimized;
 		break;
 		case Normal:
+			m_State = Minimized;
 			hide();
 			m_pManager->childMinimized(this,false);
-			m_State = Minimized;
 		break;
 		case Minimized:
+			m_State = Minimized;
 			if(isVisible())
 			{
 				hide();
-				m_State = Minimized;
 			}
 			return;
 		break;

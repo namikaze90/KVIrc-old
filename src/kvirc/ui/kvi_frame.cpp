@@ -610,8 +610,8 @@ void KviFrame::closeWindow(KviWindow *wnd)
 	{
 		m_pMdi->destroyChild(wnd->mdiParent(),true);
 	}
-	emit signalDeleteWindow(wnd);
 
+	emit signalDeleteWindow(wnd);
 }
 
 void KviFrame::deleteWindow(KviWindow * wnd)

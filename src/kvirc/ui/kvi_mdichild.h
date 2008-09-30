@@ -63,7 +63,7 @@ public:
 	KviMdiChild(KviMdiManager* par,const char * name = 0);
 	~KviMdiChild();
 public:
-	enum MdiChildState { Maximized , Minimized , Normal };
+	enum MdiChildState { Maximized = 0 , Minimized , Normal };
 protected:
 	/// Contains the according KviMdiManager object.
 	KviMdiManager              * m_pManager;
