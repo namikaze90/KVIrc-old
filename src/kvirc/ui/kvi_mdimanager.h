@@ -24,6 +24,10 @@
 //
 //=============================================================================
 
+/**
+* \file kvi_mdimanager.h
+* \brief The MDI-manager
+*/
 
 #include "kvi_settings.h"
 #include "kvi_pointerlist.h"
@@ -51,6 +55,16 @@ class KviTalPopupMenu;
 class KviTalHBox;
 class KviSdiButtonBox;
 
+/**
+* \class KviMdiManager
+* \brief Handles all MDI windows
+* This MDI-manager is based on QMdiArea of Qt 4. It handles all docked windows and does their tiling.
+* Basicly all windows are managed by the KviFrame, which also gives the order to the MDI-manager to dock or undock a window.
+* What does that mean?
+* All windows in KVIrc are of the type QWidget which can be standalone windows. These are packed into a QMdiSubWindow and added to the MDI-manager.
+* So the KviMdiManager gets a KviMdiChild which will be set as main widget of our QMdiSubWindow. When it'll be undocked QMdiSubWindow will be removed and our KviWindow is "free" again.
+*/
+
 class KVIRC_API KviMdiManager : public QMdiArea
 {
 	friend class KviMdiChild;
@@ -65,13 +79,22 @@ public:
 
 	KviMdiChild * highestChildExcluding(KviMdiChild * pChild);
 
-	/// Add an KviMdiChild to the area
+	/** Add an KviMdiChild to the area
+	* \param lpC The KviMdiChild
+	* \param bCascade Cascade window or not.
+	* \param setGeom Sets the windows geometry before shown
+	*/
 	void manageChild(KviMdiChild * lpC, bool bCascade = true, QRect * setGeom = 0);
 
-	/// Bring the KviMdiChild to the front
+	/** Bring the KviMdiChild to the foreground
+	* \param lpC The KviMdiChild
+	* \param bSetFocus If set the KviMdiChild will get the keyboard focus
+	*/
 	void setTopChild(KviMdiChild * lpC, bool bSetFocus);
 
-	/// Show the KviMdiChild and bring it to the front
+	/** Show the KviMdiChild and bring it to the front
+	* \param lpC The KviMdiChild which will be shown.
+	*/
 	void showAndActivate(KviMdiChild * lpC);
 
 	KviTalPopupMenu * windowPopup() { return m_pWindowPopup; };
@@ -79,7 +102,10 @@ public:
 	/// Move the focus the the top window
 	void focusTopChild();
 
-	/// Remove and delete the subwindow
+	/** Remove and delete the subwindow
+	* \param lpC The KviMdiChild which will be destroyed.
+	* \param bFocusTopChild Defines if the next window which will appear afterwards will get the focus or not.
+	*/
 	void destroyChild(KviMdiChild * lpC, bool bFocusTopChild = true);
 
 	/// Get all visible subwindows

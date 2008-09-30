@@ -22,6 +22,10 @@
 //
 //=============================================================================
 
+/**
+* \file kvi_mdimanager.cpp
+* \brief The MDI-manager
+*/
 
 
 #include "kvi_debug.h"

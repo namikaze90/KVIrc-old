@@ -22,6 +22,11 @@
 //
 //=============================================================================
 
+/**
+* \file kvi_window.cpp
+* \brief Contains the KviWindow class
+*/
+
 #define KVI_WINDOW_MIN_WIDTH 100
 #define KVI_WINDOW_MIN_HEIGHT 100
 

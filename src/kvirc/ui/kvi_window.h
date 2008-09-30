@@ -24,6 +24,12 @@
 //
 //=============================================================================
 
+/**
+* \file kvi_window.h
+* \brief Contains the KviWindow class
+*/
+
+
 #include "kvi_app.h"
 #include "kvi_string.h"
 #include "kvi_qstring.h"
@@ -121,6 +127,11 @@ class QPushButton;
 #define KVI_ACTIVITY_HOT 4
 #define KVI_ACTIVITY_VERYHOT 5
 #define KVI_ACTIVITY_FIRE 6
+
+/**
+* \class KviWindow
+* \brief Base class for all windows in KVIrc
+*/
 
 class KVIRC_API KviWindow : public QWidget
 {
