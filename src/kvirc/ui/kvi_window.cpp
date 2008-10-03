@@ -1165,21 +1165,17 @@ bool KviWindow::isMinimized()
 	if(mdiParent())
 	{
 		return (mdiParent()->state() == KviMdiChild::Minimized);
-	} else {
-		return QWidget::isMinimized();
 	}
+	return QWidget::isMinimized();
 }
 
 bool KviWindow::isMaximized()
 {
 	if(mdiParent())
+	{
 		return (mdiParent()->state() == KviMdiChild::Maximized);
-	// Heh...how to check it ?
-	// Empirical check
-	int wdth = (g_pApp->desktop()->width() * 75) / 100;
-	int hght = (g_pApp->desktop()->height() * 75) / 100;
-
-	return ((x() <= 1)&&(y() <= 1)&&(width() >= wdth)&&(height() >= hght));
+	}
+	return QWidget::isMaximized();
 }
 
 void KviWindow::restore()
