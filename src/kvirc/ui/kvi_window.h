@@ -276,6 +276,7 @@ public:
 //	virtual void getBaseLogFileName(KviStr &buffer);
 	virtual void getBaseLogFileName(QString &buffer);
 	virtual void updateCaption();
+	void updateCaptionListItem();
 	virtual void applyOptions();
 	virtual void updateIcon();
 	virtual void ownMessage(const QString &text){};

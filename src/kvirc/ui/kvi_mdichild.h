@@ -86,6 +86,8 @@ private:
 	QString						  m_szPlainCaption;
 	/// If window can be closed or not
 	bool						  m_bCloseEnabled;
+private:
+	void updateCaption();
 public:
 	/// Read the current geometry
 	QRect restoredGeometry();

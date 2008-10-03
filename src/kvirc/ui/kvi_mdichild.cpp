@@ -173,13 +173,14 @@ void KviMdiChild::windowStateChangedEvent( Qt::WindowStates oldState, Qt::Window
 		m_State = Normal;
 		m_pManager->childRestored(this,true);
 	}
+	updateCaption();
 }
 
 void KviMdiChild::maximize()
 {
-	debug("Maximiert");
 	m_State = Maximized;
 	showMaximized();
+	updateCaption();
 }
 
 void KviMdiChild::restore()
@@ -197,6 +198,7 @@ void KviMdiChild::restore()
 			{
 				showNormal();
 			} else maximize();
+			updateCaption();
 			m_pManager->childRestored(this,false);
 		break;
 		case Normal:
@@ -233,6 +235,15 @@ void KviMdiChild::minimize()
 			}
 			return;
 		break;
+	}
+	updateCaption();
+}
+
+void KviMdiChild::updateCaption()
+{
+	if (m_pClient && m_pClient->inherits("KviWindow"))
+	{
+		((KviWindow*)m_pClient)->updateCaptionListItem();
 	}
 }
 

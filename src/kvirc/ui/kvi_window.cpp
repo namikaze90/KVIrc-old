@@ -668,6 +668,11 @@ void KviWindow::updateCaption()
 		g_pFrame->updateCaption();
 }
 
+void KviWindow::updateCaptionListItem()
+{
+	if(m_pWindowListItem) m_pWindowListItem->captionChanged();
+}
+
 void KviWindow::createSystemTextEncodingPopup()
 {
 	if(!g_pMdiWindowSystemTextEncodingPopup)
