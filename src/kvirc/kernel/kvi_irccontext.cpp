@@ -157,8 +157,11 @@ void KviIrcContext::closeAllDeadChannels()
 	while(m_pDeadChannels)
 	{
 		KviChannel * c = m_pDeadChannels->first();
-		if(c)m_pFrame->closeWindow(c);
-		else {
+		if(c)
+		{
+			m_pFrame->closeWindow(c);
+			QApplication::processEvents(QEventLoop::ExcludeSocketNotifiers & QEventLoop::ExcludeUserInputEvents);
+		} else {
 			// ops....
 			delete m_pDeadChannels;
 			m_pDeadChannels = 0;
@@ -171,8 +174,11 @@ void KviIrcContext::closeAllDeadQueries()
 	while(m_pDeadQueries)
 	{
 		KviQuery * q = m_pDeadQueries->first();
-		if(q)m_pFrame->closeWindow(q);
-		else {
+		if(q)
+		{
+			m_pFrame->closeWindow(q);
+			QApplication::processEvents(QEventLoop::ExcludeSocketNotifiers & QEventLoop::ExcludeUserInputEvents);
+		} else {
 			// ops....
 			delete m_pDeadQueries;
 			m_pDeadQueries = 0;
@@ -185,8 +191,11 @@ void KviIrcContext::closeAllContextWindows()
 	while(m_pContextWindows)
 	{
 		KviWindow * w = m_pContextWindows->first();
-		if(w)m_pFrame->closeWindow(w);
-		else {
+		if(w)
+		{
+			m_pFrame->closeWindow(w);
+			QApplication::processEvents(QEventLoop::ExcludeSocketNotifiers & QEventLoop::ExcludeUserInputEvents);
+		} else {
 			// ops...
 			delete m_pContextWindows;
 			m_pContextWindows = 0;
