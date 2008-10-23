@@ -161,17 +161,34 @@ void KviMdiChild::windowStateChangedEvent( Qt::WindowStates oldState, Qt::Window
 		m_State = Minimized;
 		m_pManager->childMinimized(this,true);
 		emit hideSignal();
+		updateCaption();
+		return;
 	}
 
 	if (newState & Qt::WindowMaximized)
 	{
+		m_LastState = m_State;
 		m_State = Maximized;
+		updateCaption();
+		return;
 	}
 
 	if ((oldState & Qt::WindowMaximized) && !(newState & Qt::WindowMaximized))
 	{
+		m_LastState = m_State;
 		m_State = Normal;
 		m_pManager->childRestored(this,true);
+		updateCaption();
+		return;
+	}
+
+	if ((oldState & Qt::WindowMinimized) && !(newState & Qt::WindowMinimized))
+	{
+		m_LastState = m_State;
+		m_State = Normal;
+		m_pManager->childRestored(this,true);
+		updateCaption();
+		return;
 	}
 	updateCaption();
 }
@@ -180,6 +197,7 @@ void KviMdiChild::maximize()
 {
 	m_State = Maximized;
 	showMaximized();
+	show();
 	updateCaption();
 }
 
@@ -305,7 +323,7 @@ void KviMdiChild::unsetClient()
 	__range_valid(m_pClient!=0);
 	if(!m_pClient)return;
 
-	setFocusProxy(0); //remove the focus proxy...
+	//setFocusProxy(0); //remove the focus proxy...
 	//Kewl...the reparent function has a small prob now..
 	//the new toplelvel widgets gets not reenabled for dnd
 #ifndef COMPILE_ON_MAC

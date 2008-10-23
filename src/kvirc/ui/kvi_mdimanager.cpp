@@ -75,8 +75,8 @@ KviMdiManager::KviMdiManager(QWidget * parent,KviFrame * pFrm,const char * name)
 	viewport()->setAutoFillBackground(false);
 //	setStaticBackground(true);
 
-	setFocusPolicy(Qt::NoFocus);
-	viewport()->setFocusPolicy(Qt::NoFocus);
+	//setFocusPolicy(Qt::NoFocus);
+	//viewport()->setFocusPolicy(Qt::NoFocus);
 	connect(g_pApp,SIGNAL(reloadImages()),this,SLOT(reloadImages()));
 }
 
@@ -286,10 +286,24 @@ void KviMdiManager::focusTopChild()
 	if (!activeSubWindow()) return;
 	if (!activeSubWindow()->inherits("KviMdiChild")) return;
 
-	KviMdiChild * lpC = (KviMdiChild *) subWindowList().last();
+	KviMdiChild * lpC;
+
+	QList<QMdiSubWindow *> tmp = subWindowList(QMdiArea::ActivationHistoryOrder);
+	QListIterator<QMdiSubWindow*> wl(tmp);
+	wl.toBack();
+
+	while (wl.hasPrevious())
+	{
+			lpC = (KviMdiChild*) wl.previous();
+			if (!lpC->inherits("KviMdiChild")) continue;
+
+			if (lpC->state() != KviMdiChild::Minimized)
+			{
+				break;
+			}
+	}
 
 	if(!lpC)return;
-	if(!lpC->isVisible())return;
 
 	lpC->raise();
 	if(!lpC->hasFocus())lpC->setFocus();
@@ -342,6 +356,7 @@ void KviMdiManager::activeChildSystemPopup()
 bool KviMdiManager::isInSDIMode()
 {
 	return false;
+
 }
 
 
