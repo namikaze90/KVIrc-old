@@ -244,15 +244,12 @@ void KviMdiManager::resizeEvent(QResizeEvent * e)
 }
 
 
-/*
+
 void KviMdiManager::childMaximized(KviMdiChild * lpC)
 {
-	if(lpC == m_pZ->last())
-	{
-		enterSDIMode(lpC);
-	}
+		m_bInSDIMode = true;
 }
-*/
+
 
 void KviMdiManager::childMinimized(KviMdiChild * lpC,bool bWasMaximized)
 {
@@ -264,7 +261,6 @@ void KviMdiManager::childMinimized(KviMdiChild * lpC,bool bWasMaximized)
 		{
 			if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows)) tile();
 		}
-
 		focusTopChild();
 	} else {
 		// Unique window minimized...it won't loose the focus...!!
@@ -279,6 +275,7 @@ void KviMdiManager::childRestored(KviMdiChild * lpC, bool bWasMaximized)
 		if(lpC != subWindowList().last()) return; // do nothing in this case
 	}
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows)) tile();
+	if (bWasMaximized) m_bInSDIMode = false;
 }
 
 void KviMdiManager::focusTopChild()
@@ -304,7 +301,7 @@ void KviMdiManager::focusTopChild()
 	}
 
 	if(!lpC)return;
-
+	if(isInSDIMode()) lpC->maximize();
 	lpC->raise();
 	if(!lpC->hasFocus())lpC->setFocus();
 }
@@ -355,8 +352,7 @@ void KviMdiManager::activeChildSystemPopup()
 
 bool KviMdiManager::isInSDIMode()
 {
-	return false;
-
+	return m_bInSDIMode;
 }
 
 

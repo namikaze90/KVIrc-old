@@ -162,7 +162,8 @@ public slots:
 signals:
 	/// Signal is emitted when user clicks on the window icon
 	void systemPopupRequest(const QPoint & pnt);
-	/// Signal is used to hide the window
+	/// Signal is used to minimize the window
+	void minimizeSignal();
 	void hideSignal();
 protected:
 	// TODO: ???

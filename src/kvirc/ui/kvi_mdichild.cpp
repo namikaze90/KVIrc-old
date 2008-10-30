@@ -81,7 +81,7 @@ KviMdiChild::KviMdiChild(KviMdiManager * par, const char * name)
 	m_pClient = 0;
 
 	connect(this, SIGNAL(windowStateChanged(Qt::WindowStates,Qt::WindowStates)), this, SLOT(windowStateChangedEvent(Qt::WindowStates,Qt::WindowStates)));
-	connect(this, SIGNAL(hideSignal()), this, SLOT(minimize()), Qt::QueuedConnection);
+	connect(this, SIGNAL(minimizeSignal()), this, SLOT(minimize()), Qt::QueuedConnection);
 
 	m_restoredGeometry   = QRect(10,10,320,240);
 	setMinimumSize(KVI_MDICHILD_MIN_WIDTH,KVI_MDICHILD_MIN_HEIGHT);
@@ -103,7 +103,6 @@ KviMdiChild::~KviMdiChild()
 
 void KviMdiChild::closeEvent(QCloseEvent * e)
 {
-	debug("Closing client");
 	widget()->close();
 	e->ignore();
 }
@@ -155,20 +154,28 @@ void KviMdiChild::setWindowTitle(const QString & plain,const QString & xmlActive
 
 void KviMdiChild::windowStateChangedEvent( Qt::WindowStates oldState, Qt::WindowStates newState )
 {
+	// check if window has been minmized
 	if (!(oldState & Qt::WindowMinimized) && (newState & Qt::WindowMinimized))
 	{
 		m_LastState = m_State;
 		m_State = Minimized;
+		// notify KviMdiManager
 		m_pManager->childMinimized(this,true);
-		emit hideSignal();
+		// call the queued event since we can't change state while being in another event
+		emit minimizeSignal();
+		// update channelist caption
 		updateCaption();
 		return;
 	}
 
-	if (newState & Qt::WindowMaximized)
+	// check if window has been maximized
+	if (!(oldState & Qt::WindowMaximized) && newState & Qt::WindowMaximized)
 	{
 		m_LastState = m_State;
 		m_State = Maximized;
+
+		m_pManager->childMaximized(this);
+		// update channelist caption
 		updateCaption();
 		return;
 	}
@@ -178,6 +185,7 @@ void KviMdiChild::windowStateChangedEvent( Qt::WindowStates oldState, Qt::Window
 		m_LastState = m_State;
 		m_State = Normal;
 		m_pManager->childRestored(this,true);
+		// update channelist caption
 		updateCaption();
 		return;
 	}
@@ -186,18 +194,22 @@ void KviMdiChild::windowStateChangedEvent( Qt::WindowStates oldState, Qt::Window
 	{
 		m_LastState = m_State;
 		m_State = Normal;
+		// notify KviMdiManager
 		m_pManager->childRestored(this,true);
+		// update channelist caption
 		updateCaption();
 		return;
 	}
-	updateCaption();
 }
 
 void KviMdiChild::maximize()
 {
+	m_LastState = m_State;
 	m_State = Maximized;
+
 	showMaximized();
-	show();
+	m_pManager->childMaximized(this);
+
 	updateCaption();
 }
 
@@ -323,22 +335,6 @@ void KviMdiChild::unsetClient()
 	__range_valid(m_pClient!=0);
 	if(!m_pClient)return;
 
-	//setFocusProxy(0); //remove the focus proxy...
-	//Kewl...the reparent function has a small prob now..
-	//the new toplelvel widgets gets not reenabled for dnd
-#ifndef COMPILE_ON_MAC
-	QPoint p=m_pClient->mapToGlobal(QPoint(0,0));
-	m_pClient->setParent(0, m_pClient->windowFlags() & ~Qt::WindowType_Mask);
-	m_pClient->setGeometry(p.x(),p.y(),m_pClient->width(),m_pClient->height());
-	m_pClient->show();
-#else
-	QRect r = g_pApp->desktop()->availableGeometry(m_pClient);
-	r.moveBy(0, 22);
-	m_pClient->reparent(0,r.topLeft(),true);
-	m_pClient->setParent(0, m_pClient->windowFlags() & ~Qt::WindowType_Mask);
-	m_pClient->setGeometry(r.topLeft().x(),r.topLeft().y(),m_pClient->width(),m_pClient->height());
-	m_pClient->show();
-#endif
 	m_pClient=0;
 	setObjectName("mdi_child");
 }
@@ -352,11 +348,4 @@ void KviMdiChild::activate(bool bSetFocus)
 
 void KviMdiChild::focusInEvent(QFocusEvent *)
 {
-	// We gained focus by click , tab or from the caption label
-	// Bring this child to top
-	//m_pManager->setTopChild(this,false); //Do not focus by now...
-	/*The client is our focusProxy ! it should be focused by Qt !*/
-#ifdef _KVI_DEBUG_CLASS_NAME_
-	//__range_valid(focusProxy() == m_pClient);
-#endif
 }

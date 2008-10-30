@@ -111,8 +111,10 @@ public:
 	/// Get all visible subwindows
 	int getVisibleChildCount();
 
-	/// deleted
+	/// Check if we are in SDI mode
 	bool isInSDIMode();
+private:
+	bool m_bInSDIMode;
 protected:
 	KviTalPopupMenu					* m_pWindowPopup;
 	KviTalPopupMenu					* m_pTileMethodPopup;
@@ -120,7 +122,7 @@ protected:
 
 protected:
 	void updateContentsSize();
-	//void childMaximized(KviMdiChild *lpC);
+	void childMaximized(KviMdiChild *lpC);
 	void childMinimized(KviMdiChild *lpC,bool bWasMaximized);
 	void childRestored(KviMdiChild *lpC,bool bWasMaximized);
 	void childMoved(KviMdiChild * lpC);
