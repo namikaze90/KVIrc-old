@@ -788,19 +788,13 @@ KviTalPopupMenu * KviWindow::generatePopup()
 	                                        __tr2qs("Sa&ve Window Properties"),this,SLOT(savePropertiesAsDefault()));
 
 	fillContextPopup(g_pMdiWindowSystemMainPopup);
-	debug("finished");
+
 	return g_pMdiWindowSystemMainPopup;
 }
 
 void KviWindow::systemPopupRequest(const QPoint &pnt)
 {
-	if(!g_pMdiWindowSystemMainPopup)
-		generatePopup();
-	else
-	{
-		g_pMdiWindowSystemMainPopup->clear();
-		g_pMdiWindowSystemMainPopup->disconnect();
-	}
+	generatePopup();
 
 	g_pMdiWindowSystemMainPopup->popup(pnt);
 }
