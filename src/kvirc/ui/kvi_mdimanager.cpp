@@ -239,14 +239,6 @@ void KviMdiManager::maximizeChild(KviMdiChild * lpC)
 {
 }
 
-
-
-void KviMdiManager::resizeEvent(QResizeEvent * e)
-{
-}
-
-
-
 void KviMdiManager::childMaximized(KviMdiChild * lpC)
 {
 		m_bInSDIMode = true;

@@ -129,7 +129,6 @@ protected:
 	void maximizeChild(KviMdiChild * lpC);
 
 	virtual void mousePressEvent(QMouseEvent *e);
-	virtual void resizeEvent(QResizeEvent *e);
 	virtual void paintEvent(QPaintEvent * event);
 	virtual bool focusNextPrevChild(bool pNext);
 public slots:
