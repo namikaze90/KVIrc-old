@@ -87,6 +87,9 @@ KviMdiChild::KviMdiChild(KviMdiManager * par, const char * name)
 	setMinimumSize(KVI_MDICHILD_MIN_WIDTH,KVI_MDICHILD_MIN_HEIGHT);
 	m_bCloseEnabled = true;
 	m_State = Normal;
+
+	connect(systemMenu(), SIGNAL(aboutToShow()), this, SLOT(updateSystemPopup()));
+
 	setAutoFillBackground(true);
 }
 
@@ -277,21 +280,6 @@ void KviMdiChild::updateCaption()
 	}
 }
 
-/*
-void KviMdiChild::systemPopupAboutToShow()
-{
-	m_pSystemPopup->clear();
-	if(m_state != Maximized)m_pSystemPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MAXIMIZE)),__tr("&Maximize"),this,SLOT(maximize()));
-	if(m_state != Minimized)m_pSystemPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_MINIMIZE)),__tr("M&inimize"),this,SLOT(minimize()));
-	if(m_state != Normal)m_pSystemPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_RESTORE)),__tr("&Restore"),this,SLOT(restore()));
-	if(closeEnabled())
-	{
-		m_pSystemPopup->insertSeparator();
-		m_pSystemPopup->insertItem(*(g_pIconManager->getSmallIcon(KVI_SMALLICON_CLOSE)),__tr("&Close"),this,SLOT(closeRequest()));
-	}
-}
-*/
-
 void KviMdiChild::moveEvent(QMoveEvent *e)
 {
 #ifdef COMPILE_PSEUDO_TRANSPARENCY
@@ -308,14 +296,7 @@ void KviMdiChild::moveEvent(QMoveEvent *e)
 
 void KviMdiChild::systemPopupSlot()
 {
-/*
-	if(sender()->inherits("QToolButton"))
-	{
-		emit systemPopupRequest(((QToolButton *)sender())->mapToGlobal(QPoint(0,((QToolButton *)sender())->height())));
-	} else {
-*/
-		//emit systemPopupRequest(m_pCaption->mapToGlobal(QPoint(5,5)));
-//	}
+		emit systemPopupRequest(QCursor::pos());
 }
 
 void KviMdiChild::setClient(QWidget * w)
@@ -348,4 +329,18 @@ void KviMdiChild::activate(bool bSetFocus)
 
 void KviMdiChild::focusInEvent(QFocusEvent *)
 {
+}
+
+void KviMdiChild::updateSystemPopup()
+{
+	if(m_pClient->inherits("KviWindow"))
+	{
+		systemMenu()->clear();
+		QMenu * tmp = ((KviWindow*) m_pClient)->generatePopup();
+		if (tmp)
+		{
+			systemMenu()->addActions(tmp->actions());
+		}
+	}
+
 }

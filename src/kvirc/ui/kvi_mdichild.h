@@ -41,6 +41,8 @@
 #include <QWindowStateChangeEvent>
 #include <QTimer>
 
+#include "kvi_tal_popupmenu.h"
+
 class KviMdiManager;
 class KviMdiChild;
 class QCursor;
@@ -158,7 +160,8 @@ public slots:
 
 	/// Event is used to catch minmize event of the KviMdiSubWindow
 	void windowStateChangedEvent( Qt::WindowStates oldState, Qt::WindowStates newState );
-
+private slots:
+	void updateSystemPopup();
 signals:
 	/// Signal is emitted when user clicks on the window icon
 	void systemPopupRequest(const QPoint & pnt);
