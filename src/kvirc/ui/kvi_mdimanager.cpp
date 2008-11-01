@@ -122,6 +122,8 @@ void KviMdiManager::manageChild(KviMdiChild * lpC,bool bCascade,QRect *setGeom)
 
 	QMdiSubWindow * w = this->addSubWindow((QMdiSubWindow*)lpC);
 
+	if(isInSDIMode()) lpC->maximize();
+
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
 }
 

@@ -747,7 +747,7 @@ void KviFrame::undockWindow(KviWindow *wnd)
 
 	lpC->unsetClient();
 	m_pMdi->destroyChild(lpC,false);
-
+	wnd->show();
 	wnd->youAreUndocked();
 	wnd->raise();
 	wnd->setFocus();

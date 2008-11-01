@@ -315,8 +315,8 @@ void KviMdiChild::unsetClient()
 {
 	__range_valid(m_pClient!=0);
 	if(!m_pClient)return;
-
-	m_pClient=0;
+	setWidget(0);
+	m_pClient = 0;
 	setObjectName("mdi_child");
 }
 
