@@ -75,7 +75,7 @@ public:
 	~KviMdiManager();
 public:
 	/// Get the currently active window
-	KviMdiChild * topChild(){ return (KviMdiChild*)subWindowList(QMdiArea::StackingOrder).first(); };
+	KviMdiChild * topChild();
 
 	KviMdiChild * highestChildExcluding(KviMdiChild * pChild);
 

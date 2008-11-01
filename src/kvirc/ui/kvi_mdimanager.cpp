@@ -134,6 +134,11 @@ void KviMdiManager::showAndActivate(KviMdiChild * lpC)
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
 }
 
+KviMdiChild * KviMdiManager::topChild()
+{
+	return (KviMdiChild*)activeSubWindow();
+};
+
 void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 {
 	__range_valid(lpC);
