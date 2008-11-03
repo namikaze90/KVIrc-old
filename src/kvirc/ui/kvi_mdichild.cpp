@@ -82,6 +82,8 @@ KviMdiChild::KviMdiChild(KviMdiManager * par, const char * name)
 
 	connect(this, SIGNAL(windowStateChanged(Qt::WindowStates,Qt::WindowStates)), this, SLOT(windowStateChangedEvent(Qt::WindowStates,Qt::WindowStates)));
 	connect(this, SIGNAL(minimizeSignal()), this, SLOT(minimize()), Qt::QueuedConnection);
+	connect(this, SIGNAL(restoreSignal()), this, SLOT(restore()), Qt::QueuedConnection);
+	connect(this, SIGNAL(maximizeSignal()), this, SLOT(maximize()), Qt::QueuedConnection);
 
 	m_restoredGeometry   = QRect(10,10,320,240);
 	setMinimumSize(KVI_MDICHILD_MIN_WIDTH,KVI_MDICHILD_MIN_HEIGHT);
@@ -203,6 +205,21 @@ void KviMdiChild::windowStateChangedEvent( Qt::WindowStates oldState, Qt::Window
 		updateCaption();
 		return;
 	}
+}
+
+void KviMdiChild::queuedMinimize()
+{
+	emit minimizeSignal();
+}
+
+void KviMdiChild::queuedRestore()
+{
+	emit restoreSignal();
+}
+
+void KviMdiChild::queuedMaximize()
+{
+	emit maximizeSignal();
 }
 
 void KviMdiChild::maximize()

@@ -122,7 +122,7 @@ void KviMdiManager::manageChild(KviMdiChild * lpC,bool bCascade,QRect *setGeom)
 
 	QMdiSubWindow * w = this->addSubWindow((QMdiSubWindow*)lpC);
 
-	if(isInSDIMode()) lpC->maximize();
+	if(isInSDIMode()) lpC->queuedMaximize();
 
 	if(KVI_OPTION_BOOL(KviOption_boolAutoTileWindows))tile();
 }
@@ -149,7 +149,7 @@ void KviMdiManager::setTopChild(KviMdiChild *lpC,bool bSetFocus)
 	if (tmp.last()->inherits("KviMdiChild"))
 	{
 		KviMdiChild * oldlpC = (KviMdiChild *) tmp.last();
-		if (oldlpC && oldlpC->isMaximized()) lpC->maximize();
+		if (oldlpC && oldlpC->isMaximized()) lpC->queuedMaximize();
 	}
 
 	setActiveSubWindow((QMdiSubWindow*) lpC);
@@ -173,7 +173,7 @@ void KviMdiManager::destroyChild(KviMdiChild *lpC,bool bFocusTopChild)
 		if (!activeSubWindow()->inherits("KviMdiChild")) return;
 
 		KviMdiChild * tmp = (KviMdiChild *) activeSubWindow();
-		tmp->maximize();
+		tmp->queuedMaximize();
 	}
 
 	if(bFocusTopChild)focusTopChild();
@@ -300,7 +300,7 @@ void KviMdiManager::focusTopChild()
 	}
 
 	if(!lpC)return;
-	if(isInSDIMode()) lpC->maximize();
+	if(isInSDIMode()) lpC->queuedMaximize();
 	lpC->raise();
 	if(!lpC->hasFocus())lpC->setFocus();
 }

@@ -147,6 +147,13 @@ public:
 	/// Activate this subwindow
 	void activate(bool bSetFocus);
 
+	/// Since Qt sometimes does not like changing window states while being in another event
+	void queuedMinimize();
+	/// Since Qt sometimes does not like changing window states while being in another event
+	void queuedRestore();
+	/// Since Qt sometimes does not like changing window states while being in another event
+	void queuedMaximize();
+
 public slots:
 	/// Maximize this window
 	void maximize();
@@ -167,6 +174,8 @@ signals:
 	void systemPopupRequest(const QPoint & pnt);
 	/// Signal is used to minimize the window
 	void minimizeSignal();
+	void maximizeSignal();
+	void restoreSignal();
 	void hideSignal();
 protected:
 	// TODO: ???
