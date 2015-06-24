@@ -1,4 +1,5 @@
 # Compilation Guide for VS 2013 CE 32/64bit
+***! INCOMPLETE !***
 
 ## Description:
 This Guide will give a detailed explanation on how to compile KVIrc yourself
@@ -23,15 +24,28 @@ This Guide will give a detailed explanation on how to compile KVIrc yourself
 ## Install (& and compile) Requirements:
 
 1.  Microsoft Visual Studio 2013 CE:
-    * Download Visual Studio from the link above
+    * Download Visual Studio from the link above, the Installation will take about  
+      8 GB of Space, though only if you don't select a product from the extras.  
+      You probably wouldn't need them anyway, except if you want to develop  
+      Windows Apps or ASP.NET Pages and so on.
 2.  Qt5:
-    * Download the Qt Online Installer, rund an deselect everything, Qt Creator  
-      can't be deselected so you have to stick with it. Now choose only the point  
-      for the VS 2013 32bit Sources
-3.  OpenSSL:
-4.  Perl:
+    * Download the Qt Online Installer; run it. On the Screen to select the Products  
+      you want to install deselect everything, Qt Creator can't be deselected so you  
+      have to stick with it. Now choose only the point for the VS 2013 32bit Sources  
+      (msvc2013 32bit).
+3.  Perl:
     * ActivePerl:
     * Strawberry Perl:
+4.  OpenSSL:  
+    * ***Install first Perl, otherwise you won't be able to compile OpenSSL!***
+    * Download the Source Package, because we are going to compile OpenSSL ourself.  
+     + Extract the Archive to something like `C:\projects\src\openssl`
+     + Open a VS2013 x86 Native Prompt, Windows + R:  
+       `%comspec% /k ""C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"" x86`  
+       `perl Configure VC-WIN32 --prefix=C:\projects\openssl_x86_32`  
+       `ms\do_ms`  
+       `nmake -f ms\nt.mak`  
+       `nmake -f ms\nt.mak install`
 5.  Python:
 6.  CMake:
 7.  zlib:
@@ -46,11 +60,11 @@ This Guide will give a detailed explanation on how to compile KVIrc yourself
 
 1. Open a VS2013 32bit shell:
 2. Choose a Directory where you will clone the Sourcecode:  
-   `mdir C:\projects cd C:\projects`  
+   `mkdir C:\projects cd C:\projects`  
    `git clone https://github.com/kvirc/KVIrc.git`  
    `cd KVIrc`
 3. Change to the new Directory and create a folder named `build`  
-   `mdir build`  
+   `mkdir build`  
    `cd build`
 4. Copy the `win_vs_cmake.bat` to your `build`-Directory  
    `copy ..\doc\win_vs_cmake.bat .`
